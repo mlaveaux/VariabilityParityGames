@@ -1,11 +1,10 @@
 \documentclass[]{article}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.5in]{geometry}
 \usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage{amsfonts}
 
 
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -22,93 +21,115 @@
 
 \section{Definitions}
 \subsection{Transition systems}
-From \cite{Classen2013FeaturedTS}.
+Similar to \cite{Classen2013FeaturedTS}.
 
-\begin{definition}An LTS is a tuple $M = (S, Act, trans, I, AP, L)$, where:
+\begin{definition}An LTS is a tuple $M = (S, Act, trans, I)$, where:
 	\begin{itemize}
 		\item $S$ is a set of states,
 		\item $Act$ a set of actions,
-		\item $trans \subseteq S \times Act \times S$ is the transition relation with $(s,a,s') \in trans$ denoted as $s \xrightarrow a s'$,
-		\item $I \subseteq S$ is a set of initial states,
-		\item $AP$ is a set of atomic propositions, and
-		\item $L : S \rightarrow 2^{AP}$ is a labelling function.
+		\item $trans \subseteq S \times Act \times S$ is the transition relation with $(s,a,s') \in trans$ denoted by $s \xrightarrow a s'$,
+		\item $I \subseteq S$ is a set of initial states.
 	\end{itemize}
 \end{definition}
 
-\begin{definition}An FTS is a tuple $M = (S, Act, trans, I, AP, L, N, px, \gamma)$, where:
+\begin{definition}An FTS is a tuple $M = (S, Act, trans, I, N, P, \gamma)$, where:
 	\begin{itemize}
-		\item $S, Act, trans, I, AP, L$ are defined as in an LTS,
+		\item $S, Act, trans, I$ are defined as in an LTS,
 		\item $N$ is a set of features,
-		\item $px \subseteq \mathcal{P}(N)$ is a set of products, ie. feature assignments, that are valid,
-		\item $\gamma : trans \rightarrow \mathbb{B}(N)$ is a total function, labelling each transition with a Boolean expression over the features. A product $p \in \mathcal{P}(N)$ satisfying the Boolean expression of transition $t$ is denoted as $p \models \gamma(t)$, $\gamma(t)(p) = 1$ or $p \in [\![\gamma(t)]\!]$. 
+		\item $P \subseteq \mathcal{P}(N)$ is a set of products, ie. feature assignments, that are valid,
+		\item $\gamma : trans \rightarrow \mathbb{B}(N)$ is a total function, labelling each transition with a Boolean expression over the features. A product $p \in \mathcal{P}(N)$ satisfying the Boolean expression of transition $t$ is denoted by $p \models \gamma(t)$, $\gamma(t)(p) = 1$ or $p \in [\![\gamma(t)]\!]$. 
 		
-		A transition $s \xrightarrow a s'$ and $\gamma((s,a,s')) = f$ is denoted as $s \xrightarrow {a \backslash f} s'$. 
+		A transition $s \xrightarrow a s'$ and $\gamma((s,a,s')) = f$ is denoted by $s \xrightarrow {a / f} s'$. 
 	\end{itemize}
 \end{definition}
 
 \begin{definition}
-	The projection of an FTS fts to a product $p \in px$, noted $fts_{|p}$, is the LTS $t=(S,Act,trans', I, AP, L)$, where $trans' = \{t \in trans\ |\ p \models \gamma(t)\}$.
+	The projection of an FTS $M$ to a product $p \in P$, noted $M_{|p}$, is the LTS $M'=(S,Act,trans', I)$, where $trans' = \{t \in trans\ |\ p \models \gamma(t)\}$.
 \end{definition}
+
+\section{Goal}
+Similar to \cite{inproceedings}.
+
+Given an FTS $M = (S, Act, trans, I, N, P, \gamma)$ and a modal $\mu$-calculus formula $\varphi$ we want to find the set $P_s \subseteq P$ such that:
+\begin{itemize}
+	\item for every $p \in P_s$ we have $M_{|p} \models \varphi$,
+	\item for every $p \in P \backslash P_s$ we have $M_{|p} \not\models \varphi$.
+\end{itemize}
+Furthermore for every $p \in P \backslash P_s$ we want a counter example.
+
+If $P_s = P$, ie. all products satisfy $\varphi$, we write $M \models \varphi$.
 
 \section{Variability Parity Games}
-\subsection{Option 1}
 \begin{definition}
-	A Variability Parity Game is a tuple $VG = (V,V_0, V_1, E, \rho, N, \gamma)$, where:
+	A variability parity game is a tuple $G = (V,V_0, V_1, E, \rho, N, A, \gamma)$, where:
 	\begin{itemize}
-		\item $V = V_0 \cup V_1$,
-		\item $V_0 \cap V_1 = \emptyset$,
+		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
 		\item $V_0$ is the set of vertices for player $0$,
 		\item $V_1$ is the set of vertices for player $1$, 
 		\item $E \subseteq V \times V$ is the edge relation,
 		\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment,
 		\item $N$ is a set of features,
+		\item $A \subseteq \mathcal{P}(N)$ is a set of feature assignments for which the game can be played,
 		\item $\gamma : E \rightarrow \mathbb{B}(N)$ is a total function, labelling each edge with a Boolean expression over the features.
 	\end{itemize}
 \end{definition}
-A VPG is played for a specific $p \subseteq N$. A path $\pi$ is valid if for all pairs $\pi_i$ and  $\pi_{i+1})$ we have $(\pi_i, \pi_{i+1}) \in E$ and $p \models \gamma((\pi_i, \pi_{i+1}))$.
+A VPG is played for a specific $a \in A$. A path $\pi$ is valid iff for all pairs $\pi_i$ and $\pi_{i+1}$ in $\pi$ we have $(\pi_i, \pi_{i+1}) \in E$ and $a \models \gamma((\pi_i, \pi_{i+1}))$.
 
-Not deadlock free, so player $\alpha \in \{0,1\}$ wins iff $\overline{\alpha}$ can't make a move or if the highest priority occurring infinitely often has the same parity as the player.
+Not deadlock free, so player $\alpha \in \{0,1\}$ wins iff $\overline{\alpha}$ can't make a move or if the highest priority occurring infinitely often has the same parity as $\alpha$.
 
-For a $p \subseteq N$ we have winning sets $W_0^p$ and $W_1^p$.
+For an $a \in A$ we have winning sets $W_0^a$ and $W_1^a$.
 
 \begin{definition}
-	The projection of a VPG vpg to a product $p \subseteq N$, noted $vpg_{|p}$, is the PG $pg = (V, V_0, V_1, E', \rho)$, where $E' = \{ e \in E\ |\ p \models \gamma(e)\}$.
+	The projection of a VPG $G = (V,V_0, V_1, E, \rho, N, A, \gamma)$ to an assignment $a \in A$, noted $G_{|a}$, is the PG $G' = (V, V_0, V_1, E', \rho)$, where $E' = \{ e \in E\ |\ a \models \gamma(e)\}$.
 \end{definition}
 
 \begin{definition}
-	FTS2VPG(fts, $\varphi$) converts an FTS and a formula to a VPG. 
+	LTS2PG($M, \varphi$) converts LTS $M$ and formula $\varphi$ to a PG.
+	
+	Use some existing (proven) method.
 	
 	...
 \end{definition}
-
 \begin{definition}
-LTS2PG(lts, $\varphi$) converts an LTS and a formula to a PG.
+	FTS2VPG($M, \varphi$) converts FTS $M$ and formula $\varphi$ to a VPG. Very similar to LTS2PG, guard edges created by diamond or box operators. The set of features in the VPG is equal to the set of features in the FTS, similarly the set of feature assignments in the VPG is equal to the set of valid products in the FTS.
 
-Use some existing definition.
+...
 \end{definition}
+
 
 \begin{theorem}
 	\label{vpgproj}
-	$W_\alpha^p$ for VPG vpg is equal to $W_\alpha$ in $vpg_{|p}$ for any $p \subseteq N$ and $\alpha \in \{0,1\}$.
+	$W_\alpha^a$ for VPG $G = (V,V_0, V_1, E, \rho, N, A, \gamma)$ is equal to $W_\alpha$ in $G_{|a}$ for any $a \in A$ and $\alpha \in \{0,1\}$.
 \end{theorem}
 
-From this it theorem follows that the VPG is positionally determined and that the winning sets cover the entire graph.
+From this theorem it follows that the VPG is positionally determined.
 
 \begin{lemma}
 	\label{vpgftsproj}
-	FTS2VPG$(fts, \varphi)_{|p}$ is equal to LTS2PG$(fts_{|p},\varphi)$ for any $p \subseteq N$.
+	Given 
+	\begin{itemize}
+		\item FTS $M = (S, Act, trans, I, N, P, \gamma)$,
+		\item formula $\varphi$ and
+		\item $p \in P$
+	\end{itemize}
+	FTS2VPG$(M, \varphi)_{|p}$ is equal to LTS2PG$(M_{|p},\varphi)$ .
 \end{lemma}
 
 \begin{theorem}
-	Given FTS $fts = (S, Act, trans, I, AP, L, N, px, \gamma)$ and formula $\varphi$.\\
-	For any product $p \in px$ and state $s \in S$ we have:\\
-	$fts$ satisfies $\varphi$ for product $p$ in state $s$ iff $s \in W_0^p$ in FTS2VPG(fts, $\varphi$).
+	Given
+	\begin{itemize}
+		\item FTS $M = (S, Act, trans, I, N, P, \gamma)$,
+		\item formula $\varphi$,
+		\item $p \in P$ and
+		\item state $s \in S$
+	\end{itemize}
+it holds that $M$ satisfies $\varphi$ for product $p$ in state $s$ iff $s \in W_0^p$ in FTS2VPG($M, \varphi$).
 \begin{proof}
 	
-	Winning set $W_0^p$ in FTS2VPG($fts, \varphi$) is equal to winning set $W_0$ in FTS2VPG($fts, \varphi$)$_{|p}$ (using theorem \ref{vpgproj}). Furthermore FTS2VPG($fts, \varphi$)$_{|p}$ is equal to LTS2PG$(fts_{|p}, \varphi)$ (using lemma \ref{vpgftsproj}).
+	Winning set $W_0^p$ in FTS2VPG($M, \varphi$) is equal to winning set $W_0$ in FTS2VPG($M, \varphi$)$_{|p}$ (using theorem \ref{vpgproj}). Furthermore FTS2VPG($M, \varphi$)$_{|p}$ is equal to LTS2PG$(M_{|p}, \varphi)$ (using lemma \ref{vpgftsproj}).
 	
-	So winning set  $W_0^p$ in FTS2VPG($fts, \varphi$) is equal to winning set $W_0$ in LTS2PG$(fts_{|p}, \varphi)$.
-	Since $fts_{|p}$ satisfies $\varphi$ in state $s$ iff $s \in W_0$ in LTS2PG$(fts_{|p}, \varphi)$ (existing LTS verification theory) the theorem holds.
+	So winning set  $W_0^p$ in FTS2VPG($M, \varphi$) is equal to winning set $W_0$ in LTS2PG$(M_{|p}, \varphi)$.
+	Since $M_{|p}$ satisfies $\varphi$ in state $s$ iff $s \in W_0$ in LTS2PG$(M_{|p}, \varphi)$ (existing LTS verification theory) the theorem holds.
 \end{proof}
 \end{theorem}
 \bibliography{mybib} 
