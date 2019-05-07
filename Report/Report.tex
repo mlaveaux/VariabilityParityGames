@@ -24,7 +24,8 @@
 \subsection{Transition systems}
 Similar to \cite{Classen2013FeaturedTS}.
 
-\begin{definition}An LTS is a tuple $M = (S, Act, trans, s_0)$, where:
+\begin{definition}
+	\label{def_lts}An LTS is a tuple $M = (S, Act, trans, s_0)$, where:
 	\begin{itemize}
 		\item $S$ is a set of states,
 		\item $Act$ a set of actions,
@@ -33,7 +34,8 @@ Similar to \cite{Classen2013FeaturedTS}.
 	\end{itemize}
 \end{definition}
 
-\begin{definition}An FTS is a tuple $M = (S, Act, trans, s_0, N, P, \gamma)$, where:
+\begin{definition}
+	\label{def_fts}An FTS is a tuple $M = (S, Act, trans, s_0, N, P, \gamma)$, where:
 	\begin{itemize}
 		\item $S, Act, trans, s_0$ are defined as in an LTS,
 		\item $N$ is a set of features,
@@ -45,10 +47,12 @@ Similar to \cite{Classen2013FeaturedTS}.
 \end{definition}
 
 \begin{definition}
+	\label{def_fts_proj}
 	The projection of an FTS $M$ to a product $p \in P$, noted $M_{|p}$, is the LTS $M'=(S,Act,trans', s_0)$, where $trans' = \{t \in trans\ |\ p \models \gamma(t)\}$.
 \end{definition}
 
-\begin{definition}\cite{Bradfield2018}
+\begin{definition}
+	\label{def_mu}\cite{Bradfield2018}
 	A modal $\mu$-calculus formula over the set of actions $\mathcal{A}$ and a set of variables $\mathcal{X}$ is defined by
 	\[ \varphi = \top\ |\ \bot\ |\ X\ |\ \varphi \vee \varphi\ |\ \varphi \wedge \varphi\ |\ \langle a \rangle \varphi\ |\ [a]\varphi\ |\ \mu X.\varphi\ |\ \nu X.\varphi \]
 	with $a \in \mathcal{A}$ and $X \in \mathcal{X}$. 
@@ -57,6 +61,11 @@ Similar to \cite{Classen2013FeaturedTS}.
 	No negations in the language because negations can be pushed inside to the propositions, ie. the $\top$ and $\bot$ elements..
 \end{definition}
 A fixed point formula $\varphi$ with variable $X$ can be unfolded; the occurrences of $X$ are replaced by $\varphi$. A fixed point formula is equivalent to its unfolding, ie. $\mu X. \varphi$ is equivalent to $\mu X. \varphi[X:=\mu X. \varphi]$. \cite{Bradfield2018}
+
+\begin{definition}
+	\label{def_sat}
+	Given LTS $M = (S, Act, trans, s_0)$, state $s \in S$ and mu-calculus formula $\varphi$ we write $M,s \models \varphi$ if and only if $\varphi$ is satisfied in state $s$ for LTS $M$. If $M, s_0 \models \varphi$ we write $M \models \varphi$.
+\end{definition}
 \section{Goal}
 Similar to \cite{inproceedings}.
 
@@ -72,6 +81,7 @@ If $P_s = P$, ie. all products satisfy $\varphi$, we write $M \models \varphi$.
 \section{Parity Games}
 \subsection{Parity games}
 \begin{definition}
+	\label{def_PG}\cite{Bradfield2018}
 	A parity game (PG) is a tuple $G = (V, V_0, V_1, E, \rho)$, where:
 	\begin{itemize}
 		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
@@ -81,9 +91,17 @@ If $P_s = P$, ie. all products satisfy $\varphi$, we write $M \models \varphi$.
 		\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment.
 	\end{itemize}
 \end{definition}
+We write $\alpha \in \{0,1\}$ to denote an arbitrary player. We write $\overline{\alpha}$ to denote $\alpha$'s opponent, ie. $\overline{0} = 1$ and $\overline{1} = 0$.
+
+A parity game is played by players 0 and 1. A play starts with placing a token on vertex $v \in V$. Player $\alpha$ moves the token if the token is on a vertex owned by $\alpha$, ie. $v \in V_\alpha$. The token can be moved to $w \in V$, with $(v,w) \in E$. A series of moves results in a sequence of vertices, called path. For path $\pi$ we write $\pi_i$ to denote the $i^{\text{th}}$ vertex in path $\pi$. A play ends when the token is on vertex $v \in V_\alpha$ and $\alpha$ can't move the token anywhere, in this case player $\overline{\alpha}$ wins the play. If the play results in an infinite path then we determine the highest priority that occurs infinitely often in $\{ \rho(\pi_i) | \pi_i \in \pi\}$, if the highest priority is odd then player $1$ wins, if it is even player $0$ wins.
+
+A strategy for player $\alpha$ is a function $\sigma : V^*V_\alpha \rightarrow V$ that maps a path ending in a vertex owned by player $\alpha$ to the next vertex. Parity games are positionally determined \cite{Bradfield2018}, therefore a strategy $\sigma: V_\alpha \rightarrow V$ that maps the current vertex to the next vertex is sufficient. 
+
+A strategy $\sigma$ for player $\alpha$ is winning from vertex $v$ if and only if any play that results from following $\sigma$ results in a win for player $\alpha$. The graph can be divided in two partitions $W_0 \subseteq V$ and $W_1 \subseteq V$, called winning sets. If and only if $v \in W_\alpha$ then player $\alpha$ has a winnings strategy from $v$. Every vertex in the graph is either in $W_0$ or $W_1$ \cite{Bradfield2018}. Furthermore finite parity games are decidable \cite{Bradfield2018}.
 \subsection{Featured parity games}
 \begin{definition}
-	A featured parity game (FPG) is a tuple $G = (V,V_0, V_1, E, \rho, N, P, \gamma, v_0)$, where:
+	\label{def_FPG}
+	A featured parity game (FPG) is a tuple $G = (V,V_0, V_1, E, \rho, N, P, \gamma)$, where:
 	\begin{itemize}
 		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
 		\item $V_0$ is the set of vertices owned by player $0$,
@@ -91,25 +109,24 @@ If $P_s = P$, ie. all products satisfy $\varphi$, we write $M \models \varphi$.
 		\item $E \subseteq V \times V$ is the edge relation,
 		\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment,
 		\item $N$ is a set of features,
-		\item $P$ is a set of products
-		\item $\gamma : E \rightarrow \mathbb{B}(N)$ is a total function, labelling each edge with a Boolean expression over the features,
-		\item $v_0 \in V$ is a starting vertex.
+		\item $P \subseteq \mathcal{P}(N)$ is a set of products, ie. feature assignments, for which the game can be played/
+		\item $\gamma : E \rightarrow \mathbb{B}(N)$ is a total function, labelling each edge with a Boolean expression over the features.
 	\end{itemize}
 \end{definition}
-An FPG is played by player $0$ and $1$. A FPG is played for a specific product $p \in P$, the game starts by placing a token on a vertex $v \in V$. When the token is on vertex $v \in V$ that is owned by player $\alpha \in \{0,1\}$, ie. $v \in V_\alpha$, then player $\alpha$ can move the token to another vertex $w$ such that $(v,w) \in E$ and $p \models \gamma(v,w)$.
+An FPG is played similarly to a PG, however the game is played for a specific product $p \in P$. Player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $p \models \gamma(v,w)$.
 
-For a $p \in P$ we have winnings sets $W_0^p \subseteq V$ and $W_1^p \subseteq V$.
+A game played for product $p \in P$ results in winnings sets $W_0^p$ and $W_1^p$, which are defined similar to the $W_0$ and $W_1$ winning sets for parity games.
+
 \begin{definition}
-The projection from FPG $G^F = (V^F,V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma, v_0)$ to a product $p \in P$, noted $G^F_{|p}$, is the parity game $(V,V_0,V_1, E, \rho)$ where:
-\begin{itemize}	
-	\item $(V,E)$ is the subgraph of $(V^F,E')$ that is reachable from $v_0 \in V^F$. With $E' = \{ e \in E^F| p \models \gamma(e) \}$,
-	\item $V_0 = V_0^F \cap V$,
-	\item $V_1 = V_1^F \cap V$,
-	\item $\rho(v) = \rho^F(v)$ for all $v \in V$.
-\end{itemize}
+	\label{def_FPG_proj}
+The projection from FPG $G = (V,V_0, V_1, E, \rho, N, P, \gamma)$ to a product $p \in P$, noted $G_{|p}$, is the parity game $(V,V_0,V_1, E', \rho)$ where $E' = \{ e \in E| p \models \gamma(e) \}$.
 \end{definition}
+
+Playing FPG $G$ for a specific product $p\in P$ is the same as playing the PG $G_{|p}$. Any path that is valid in $G$ for $p$ is also valid in $G_{|p}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|p}$ and $W_\alpha^p$ for $G$ are identical. Since parity games are positionally determined so are FPGs. Similarly, since finite parity games are decidable, so are finite FPGs.
+
 \subsection{Variability parity games}
 \begin{definition}
+	\label{def_VPG}
 	A variability parity game (VPG) is a tuple $G = (V,V_0, V_1, E, \rho, \mathfrak{C}, \theta)$, where:
 	\begin{itemize}
 		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
@@ -121,26 +138,39 @@ The projection from FPG $G^F = (V^F,V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma, v_0
 		\item $\theta : E \rightarrow \mathcal{P}(\mathfrak{C})\ \backslash\ \{0\}$ is the configuration mapping, satisfying for all $v \in V$, $\bigcup\{\theta(v,w)|(v,w) \in E\} = \mathfrak{C}$.
 	\end{itemize}
 \end{definition}
-A VPG is played by player $0$ and $1$. A VPG is played for a specific $c \in \mathfrak{C}$, the game starts by placing a token on a vertex $v \in V$. When the token is on vertex $v \in V$ that is owned by player $\alpha \in  \{0,1\}$, ie. $v \in V_\alpha$, then player $\alpha$ can move the token to another vertex $w$ such that $(v,w) \in E$ and $c \in \theta(v,w)$.
+A VPG is played similarly to a PG, however the game is played for a specific configuration $c \in \mathfrak{C}$. Player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Furthermore VPGs don't have deadlocks, every play results in an infinite path.
 
-For a $c \in \mathfrak{C}$ we have winnings sets $W_0^c \subseteq V$ and $W_1^c \subseteq V$.
+A game played for configuration $c \in \mathfrak{C}$ results in winning sets $W_0^c$ and $W_1^c$, which are defined similar to the $W_0$ and $W_1$ winning sets for parity games.
 
-\subsection{Relations}
-\begin{tikzpicture}
-\matrix (m) [matrix of math nodes,row sep=4em,column sep=5em,minimum width=2em]
+\begin{definition}
+	\label{def_VPG_proj} The projection from VPG $G = (V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)$ to a configuration $c \in \mathfrak{C}$, noted $G_{|c}$, is the parity game $(V, V_0, V_1, E', \rho)$ where $E' = \{ e\in E | c \in \theta(e)\}$.
+\end{definition}
+
+Playing VPG $G$ for a specific configuration $c \in \mathfrak{C}$ is the same as playing the PG $G_{|c}$. Any path that is valid in $G$ for $c$ is also valid in $G_{|c}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|c}$ and $W_\alpha^c$ for $G$ are identical. Since parity games are positionally determined so are VPGs. Similarly, since finite parity games are decidable, so are finite VPGs.
+
+\subsection{Creating parity games}
+Originating from an FTS and a modal $\mu$-calculus we can create an FPG (from which we can create a PG by projection) and from the FPG we can create a VPG. For a specific product we can project the FTS to an LTS, from which we can create a PG. The relation between the transition systems and games is displayed in the following diagram.
+\\\begin{tikzpicture}
+\matrix (m) [matrix of math nodes,row sep=4em,column sep=1em,minimum width=2em]
 {
-	\text{FTS} & \text{FPG} & \text{VPG} \\
-	\text{LTS} & \text{PG} \\};
+	\text{FTS} & \  &\ & \text{FPG} &\ & \text{VPG} \\
+	\text{LTS} & \ & \text{PG} & \text{\ \ PG} \\};
 \path[-stealth]
 (m-1-1) edge [double] node [left] {$\Pi$} (m-2-1)
-edge node [above] {$\varphi$} (m-1-2)
-(m-2-1.east|-m-2-2) edge node [above] {$\varphi$} (m-2-2)
-(m-1-2) edge [double] node [right] {$\Pi$} (m-2-2)
-edge [dashed] (m-1-3);
-\end{tikzpicture}
-\subsection{Creating parity games}
-\begin{definition}\cite{Bradfield2018}
-	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and formula $\varphi$ to a PG $(V, V_0, V_1, E, \rho)$.
+edge node [above] {$\varphi$} (m-1-4)
+(m-2-1.east|-m-2-3) edge node [above] {$\varphi$}
+ (m-2-3)
+ (m-2-3.east|-m-2-4) node {$\ \ \ \ \subseteq$}
+ (m-2-4)
+(m-1-4) edge [double] node [right] {$\Pi$} (m-2-4)
+edge (m-1-6);
+\end{tikzpicture}\\
+The projections are defined in the previous section. In this section we will define the horizontal arrows in the diagram. First we show how to create a PG from an LTS and a  modal $\mu$-calculus formula, this part is well studied and the approach is based on \cite{Bradfield2018}.
+
+
+\begin{definition}
+	\label{def_LTS2PG}\cite{Bradfield2018}
+	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and closed formula $\varphi$ to a PG $(V, V_0, V_1, E, \rho)$.
 	
 	A vertex in the parity game is represented by a pair $(s, \psi)$ where $s \in S$ and $\psi$ is a modal $\mu$-calculus formula.
 	
@@ -148,7 +178,7 @@ edge [dashed] (m-1-3);
 	\begin{itemize}
 		\item $V = V_0 \cup V_1$,
 		\item $V_0 \cap V_1 = \emptyset$, 
-		\item $(s_0, \varphi) \in V$,
+		\item $(s_0, \varphi) \in V$ and
 		\item for every $v = (s, \psi) \in V$ we have:
 		\begin{itemize}
 			\item If $\psi = \top$ then $v \in V_1$.
@@ -167,10 +197,12 @@ edge [dashed] (m-1-3);
 				\subitem $(v, (s,\psi_2)) \in E$.
 			\item If $\psi = \langle a \rangle \psi_1$ then $v \in V_0$ and for every $s \xrightarrow{ a} s'$ we have $(s', \psi_1) \in V$ and $(v, (s', \psi_1)) \in E$.
 			\item If $\psi = [ a ] \psi_1$ then $v \in V_1$ and for every $s \xrightarrow{ a} s'$ we have $(s', \psi_1) \in V$ and $(v, (s', \psi_1)) \in E$.
-			\item If $\psi = \mu X. \psi_1$ then $(v, (s, \psi_1(\mu X. \psi_1[X:=\mu X. \psi_1]))) \in E$.
-			\item If $\psi = \nu X. \psi_1$ then $(v, (s, \psi_1(\nu X. \psi_1[X:=\mu X. \psi_1]))) \in E$.
+			\item If $\psi = \mu X. \psi_1$ then $(s, \psi_1(\mu X. \psi_1[X:=\mu X. \psi_1])) \in V$ and $(v, (s, \psi_1(\mu X. \psi_1[X:=\mu X. \psi_1]))) \in E$.
+			\item If $\psi = \nu X. \psi_1$ then $(s, \psi_1(\nu X. \psi_1[X:=\nu X. \psi_1])) \in V$ and $(v, (s, \psi_1(\nu X. \psi_1[X:=\nu X. \psi_1]))) \in E$.
 		\end{itemize}
+	Note that since $\varphi$ is closed and we use unfolding the case where $\psi = X$ does not happen.
 	\end{itemize}
+
 
 Finally we have $\rho(s, \psi) = \begin{cases}
 2 \lfloor adepth(X) / 2 \rfloor & \text{if } \psi = \nu X. \psi'\\
@@ -178,19 +210,21 @@ Finally we have $\rho(s, \psi) = \begin{cases}
 0 & \text{otherwise}
 \end{cases}$
 \end{definition}
-
+Next we define the transformation from FTS to FPG.
 \begin{definition}
-	FTS2FPG($M, \varphi$) converts FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ and formula $\varphi$ to FPG $(V, V_0, V_1, E, \rho, N, P, \gamma', v_0)$.
+	\label{def_FTS2FPG}
+	FTS2FPG($M, \varphi$) converts FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ and closed formula $\varphi$ to FPG $(V, V_0, V_1, E, \rho, N, P, \gamma')$.
 	
-	We have $(V, V_0, V_1, E, \rho)$ = LTS2PG($(S, Act, trans, s_0), \varphi$), $v_0 = (s_0, \varphi)$ and
+	We have $(V, V_0, V_1, E, \rho)$ = LTS2PG($(S, Act, trans, s_0), \varphi$) and
 	\[ \gamma'((s, \psi),(s', \psi')) = \begin{cases}
 	\gamma(s,a,s') & \text{if }\psi = \langle a \rangle \psi'\text{ or }\psi = [a]\psi' \\
 	\top & \text{otherwise}
 	\end{cases}\]
 \end{definition}
-
+Finally we define how to create a VPG from an FPG. This transformation abstracts from the notion of products and uses configuration for a syntactically more pleasant representation. Furthermore in VPGs deadlocks are removed, this is done by creating two losing vertices $l_0$ and $l_1$ such that player $\alpha$ loses when the token is in vertex $l_\alpha$. Any vertex that can not move for a configuration will get an edge that is admissible for that configuration towards one of the losing vertices.
 \begin{definition}
-	FPG2VPG($G^F$) converts FPG $G^F = (V^F, V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma, v_0)$ to VPG $G = (V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)$.
+	\label{def_FPG2VPG}
+	FPG2VPG($G^F$) converts FPG $G^F = (V^F, V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma)$ to VPG $G = (V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)$.
 	
 	Let $P$ be defined as  $\{p_0, p_1, \dots, p_m\}$, we define $\mathfrak{C} = \{c_0, c_1, \dots, c_m\}$.
 	
@@ -207,45 +241,101 @@ Finally we have $\rho(s, \psi) = \begin{cases}
 	\end{cases} \]
 	where $m_o$ is the highest odd priority given by $\rho^F$ or $1$ if no odd priorities occur. And $m_e$ is the highest even priority given by $\rho^F$ or $0$ if no even priorities occur.
 \end{definition}
-\begin{theorem}
-	\label{vpgproj}
-	Given:
-	\begin{itemize}
-		\item VPG $G = (V,V_0, V_1, E, \rho, \mathfrak{C}, \theta)$,
-		\item $c \in \mathfrak{C}$,
-		\item $\alpha \in \{0,1\}$
-	\end{itemize}
-	it holds for winning sets $W_\alpha^c$ in $G$ and $W_\alpha$ in $G_{|c}$ that $W_\alpha \subseteq W_\alpha^c$.
-\end{theorem}
 
-From this theorem it follows that the VPG is positionally determined.
-
+\subsection{Correctness}
 \begin{lemma}
-	\label{vpgftsproj}
-	Given 
+	\label{lem_PGsubPGA} Given:
 	\begin{itemize}
-		\item FTS $M = (S, Act, trans, I, N, P, \gamma)$,
-		\item formula $\varphi$ and
-		\item $p \in P$
+		\item FTS $M = (S,Act, trans, s_0, N, P, \gamma)$,
+		\item a closed modal mu-calculus formula $\varphi$,
+		\item a product $p \in P$,
+		\item a player $\alpha \in \{0,1\}$.
 	\end{itemize}
-	FTS2VPG$(M, \varphi)_{|f(p)}$ is equal to LTS2PG$(M_{|p},\varphi)$ .
+	For the winning sets $W_\alpha$ in LTS2PG($M_{|p}, \varphi$) and $W_\alpha'$ in FTS2FPG($M, \varphi$)$_{|p}$ it holds that $W_\alpha \subseteq W_\alpha'$.
+\begin{proof}
+	Let $G^F = $FTS2FPG($M, \varphi$)$ = (V^F, V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma')$, using definition \ref{def_FTS2FPG}, and $G^F_{|p} = (V^F, V_0^F, V_1^F, {E^F}')$, using definition \ref{def_FPG_proj}. Furthermore we have $M_{|p} = (S, Act, trans', s_0)$ and we let $G = $ LTS2PG$(M_{|p}, \varphi) = (V, V_0, V_1, E, \rho)$. We depict the different transition systems and games in the following diagram.
+	
+	\begin{tikzpicture}
+	\matrix (m) [matrix of math nodes,row sep=4em,column sep=1em,minimum width=2em]
+	{
+		\text{\ \ FTS }M & \  &\ & \text{FPG } G^F  \\
+		\text{LTS }M_{|p} & \ & \text{PG } G & \text{\ \ PG }G_{|p}^F \\};
+	\path[-stealth]
+	(m-1-1) edge [double] node [left] {$\Pi$} (m-2-1)
+	edge node [above] {$\varphi$} (m-1-4)
+	(m-2-1.east|-m-2-3) edge node [above] {$\varphi$}
+	(m-2-3)
+	(m-2-3.east|-m-2-4) node {$\ \ \ \ \subseteq$}
+	(m-2-4)
+	(m-1-4) edge [double] node [right] {$\Pi$} (m-2-4);
+	\end{tikzpicture}
+	
+	Finally let $W_\alpha$ be the winning set of $G$ and $W_\alpha'$ the winning set of $G_{|p}^F$. We will show that $W_\alpha \subseteq W_\alpha'$ by showing that the game $G$ is a subset of the game $G_{|p}^F$ and that every vertex in $v \in V$ has no outgoing vertex in game $G_{|p}^F$ that does not exist in game $G$. Therefore the game behaves the exact same for every vertex that is in both games. Specifically we have to show that:
+	\begin{itemize}
+		\item $V_0 \subseteq V_0^F$,
+		\item $V_1 \subseteq V_1^F$,
+		\item $E \subseteq {E^F}'$,
+		\item $\rho \subseteq \rho^F$ and
+		\item for all $v \in V_\alpha$ we have $\forall (v,w) \in {E^F}'\ |\ (v,w)\in E$.
+	\end{itemize}
+
+Game $G$ is created by 
+\[  (V, V_0, V_1, E, \rho) = LTS2PG((S, Act, trans', s_0),\varphi) \]
+and game $G_{|p}^F$ is created by 
+\[ (V^F, V_0^F, V_1^F, E^F, \rho^F) = LTS2PG((S,Act, trans, s_0), \varphi)\]
+ using definitions \ref{def_LTS2PG} and \ref{def_FTS2FPG}. Using definition \ref{def_fts_proj} we find that $trans' \subseteq trans$. Using definition \ref{def_LTS2PG} it is trivial that $LTS2PG$ is monotonic in the $trans$ parameter. So given that $trans' \subseteq trans$ we get $V_0 \subseteq V_0^F$, $V_1 \subseteq V_1^F$, $E \subseteq E^F$ and $\rho \subseteq \rho^F$. 
+ 
+ To show that $E \subseteq {E^F}'$ we let $((s,\psi),(s',\psi')) \in E$. Since $E \subseteq E^F$ we have $((s,\psi),(s',\psi')) \in E^F$. We distinguish two cases:
+ \begin{itemize}
+ 	\item  If $\psi = \langle a \rangle \psi_1$ or $\psi = [a] \psi_1$ then there exists an $a \in Act$ such that $(s,a,s') \in trans'$. Using definition \ref{def_fts_proj} we get $(s,a,s') \in trans$ and $p \models \gamma(s,a,s')$. Using definition \ref{def_FTS2FPG} we find that $\gamma'((s,\psi),(s',\psi')) = \gamma(s,a,s')$ and therefore $p \models \gamma'((s,\psi),(s',\psi'))$. Now using definition \ref{def_FPG_proj} we find $((s,\psi),(s',\psi')) \in {E^F}'$.
+ 	\item Otherwise the existence of the edge does not depend on the $trans$ parameter and therefore $((s,\psi),(s',\psi')) \in {E^F}'$ if $(s,\psi) \in V^F$, since $V^F \subseteq V$ we have $(s,\psi) \in V^F$.
+ \end{itemize}
+
+
+Let $(s,\psi) \in V$ and $((s,\psi),(s',\psi')) \in {E^F}'$, we will show $((s,\psi),(s',\psi'))\in E$. We distinguish two cases:
+\begin{itemize}
+	\item If $\psi = \langle a \rangle \psi_1$ or $\psi = [a] \psi_1$ then there exists an $a \in Act$ such that $(s,a,s') \in trans$. Using definition \ref{def_FPG_proj} we get $p \models \gamma'(s,a,s')$. Using definition \ref{def_FTS2FPG} we get $p \models \gamma(s,a,s')$. Using the projection definition \ref{def_FTS2FPG} we get $(s,a,s') \in trans'$ and therefore $((s,\psi),(s',\psi'))\in E$.
+	\item Otherwise the existence of the edge does not depend on the $trans$ parameter and therefore $((s,\psi),(s',\psi')) \in E$ if $(s,\psi) \in V$, since $(s,\psi) \in V$ was assumed we have $((s,\psi),(s',\psi')) \in E$.
+\end{itemize}
+	\end{proof}
 \end{lemma}
 
 \begin{theorem}
-	Given
+	\label{the_FPG_ver_FTS}
+	Given:
 	\begin{itemize}
-		\item FTS $M = (S, Act, trans, I, N, P, \gamma)$,
-		\item formula $\varphi$,
-		\item $p \in P$ and
+		\item FTS $M = (S, Act, trans, s_0, N, P, \gamma)$,
+		\item closed modal mu-calculus formula $\varphi$,
+		\item product $p \in P$ and
 		\item state $s \in S$
 	\end{itemize}
-it holds that $M$ satisfies $\varphi$ for product $p$ in state $s$ iff $s \in W_0^p$ in FTS2VPG($M, \varphi$).
+it holds that $M_{|p}, s \models \varphi$ if and only if $(s, \varphi) \in W_0^p$ in FTS2FPG($M, \varphi$).
 \begin{proof}
+	The winning set $W_\alpha^p$ is equal to winning set $W_\alpha$ in FTS2FPG($M, \varphi$)$_{|p}$ using definition \ref{def_FPG}. Using lemma \ref{lem_PGsubPGA} we find that for winning set $W_\alpha'$ for game LTS2PG($M_{|p}, \varphi$) it holds that $W_\alpha' \subseteq W_\alpha = W_\alpha^p$. Using \cite{Bradfield2018} we know that $M_{|p}, s \models \varphi$ if and only if $(s, \varphi) \in W_0'$. Given that $(s, \varphi)$ exists in either $W_0'$ or $W_1'$ we can conclude that $(s, \varphi) \in W_0^p$ if and only if $(s, \varphi) \in W_0'$ and therefore $(s, \varphi) \in W_0^p$ if and only if  $M_{|p}, s \models \varphi$.
+\end{proof}
+\end{theorem}
+
+\begin{theorem}
+	\label{the_FPG_sub_VPG}
+	Given:
+	\begin{itemize}
+		\item FPG $G^F = (V^F, V_0^F, V_1^F, E^F, \rho^F, N, \{p_0, p_1, \dots, p_m\}, \gamma)$,
+		\item product $p_i$,
+		\item player $\alpha \in \{0,1\}$
+	\end{itemize}
+we have for winning sets $W_\alpha^{p_i}$ in $G$ and $W_\alpha^{c_i}$ in FPG2VPG($G^F$) that $W_\alpha^{p_i} \subseteq W_\alpha^{c_i}$.
+\begin{proof}
+	Let $G = (V,V_0,V_1, E, \rho, \mathfrak{C},\theta) =$ FPG2VPG($G^F$). Consider finite play $\pi$ that is valid in game $G^F$ for product $p_i$. We have for every $(\pi_i, \pi_{i+1})$ in $\pi$ that $(\pi_i, \pi_{i+1}) \in E^F$ and $p_i \models \gamma((\pi_i, \pi_{i+1}))$. From definition \ref{def_FPG2VPG} it follows that $(\pi_i, \pi_{i+1}) \in E$ and $c_i \in \theta(\pi_i, \pi_{i+1})$. So we can conclude that path $\pi$ is also valid in game $G$ for configuration $c_i$. Since the play is finite the winner is determined by the last vertex $v$ in $\pi$, player $\alpha$ wins such that $v \in V_{\overline{\alpha}}$. Furthermore we know, because the play is finite, that there exists no $(v,w) \in E^F$ with $p \models \gamma(v,w)$. From this we can conclude that $(v, l_{\overline{\alpha}}) \in E$ and $c_i \in \theta(v, l_{\overline{\alpha}})$. Vertex $l_{\overline{\alpha}}$ has one outgoing edge, namely to itself. So finite play $\pi$ will in game $G^F$ results in an infinite play $\pi(l_{\overline{\alpha}})^\omega$. Vertex $l_{\overline{\alpha}}$ has a priority with the same parity as player $\alpha$, so player $\alpha$ wins the infinite play in $G$ for configuration $c_i$.
 	
-	Winning set $W_0^p$ in FTS2VPG($M, \varphi$) is equal to winning set $W_0$ in FTS2VPG($M, \varphi$)$_{|p}$ (using theorem \ref{vpgproj}). Furthermore FTS2VPG($M, \varphi$)$_{|p}$ is equal to LTS2PG$(M_{|p}, \varphi)$ (using lemma \ref{vpgftsproj}).
+	Consider infinite play $\pi$ that is valid in game $G^F$ for product $p_i$. As shown above this play is also valid in game $G$ for configuration $c_i$. Since the win conditions of both games are the same the play will result in the same winner.
 	
-	So winning set  $W_0^p$ in FTS2VPG($M, \varphi$) is equal to winning set $W_0$ in LTS2PG$(M_{|p}, \varphi)$.
-	Since $M_{|p}$ satisfies $\varphi$ in state $s$ iff $s \in W_0$ in LTS2PG$(M_{|p}, \varphi)$ (existing LTS verification theory) the theorem holds.
+	Consider infinite play $\pi$ that is valid in game $G$ for configuration $c_i$. We distinguish two cases:
+	\begin{itemize}
+		\item If $l_\alpha$ doesn't occur in $\pi$ then the path is also valid for game $G^F$ with product $p_i$ and has the same winner.
+		\item If $\pi = \pi'(l_\alpha)^\omega$ then the winner is player $\overline{\alpha}$. The path $\pi'$ is valid for game $G^F$ with product $p_i$. Let vertex $v$ be the last vertex of $\pi'$. Since $(v, l_\alpha) \in E$ and $c_i \in \theta(v,l_\alpha)$ we know that there is no $(v,w) \in E^F$ with $p_i \models \gamma(v,w)$ and that vertex $v$ is owned by player $\alpha$. So in game $G^F$ player $\alpha$ can't move at vertex $v$ and therefore loses the game (in which case the winner is also $\overline{\alpha}$.
+	\end{itemize}
+
+We have shown that every path (finite or infinite) in game $G^F$ with product $p_i$ can be played in game $G$ with configuration $c_i$ and that they have the same winner. Furthermore every infinite path in game $G$ with configuration $c_i$ can be either played as an infinite path or the first part of the path can be played in $G^F$ with product $p_i$ and they have the same winner. From this we can conclude that the theorem holds.
 \end{proof}
 \end{theorem}
 \bibliography{mybib} 
