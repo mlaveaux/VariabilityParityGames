@@ -115,7 +115,7 @@ edge node [above] {$\varphi$} (m-1-2)
 	\caption[LTS $M$]{LTS $M$}
 	\label{fig:exverltsprojempty}
 \end{figure}
-Consider the LTS in figure \ref{fig:exverltsprojempty} and formula $\varphi = \mu X.[a]X \vee \langle b \rangle \top$ expressing that on any path reached by a's can eventually do a b action. The resulting parity game is depicted in figure \ref{fig:exverpg}. Solving this parity game results in the following winning sets:
+Consider the LTS in figure \ref{fig:exverltsprojempty} and formula $\varphi = \mu X.[a]X \vee \langle b \rangle \top$ expressing that on any path reached by a's can eventually do a b action. We will use this as a working example in the next few sections. The resulting parity game is depicted in figure \ref{fig:exverpg}. Solving this parity game results in the following winning sets:
 \begin{align*}
 W_0 = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top)\\
 & (s_1, [a]X \vee \langle b \rangle \top)\\
@@ -136,8 +136,7 @@ With the strategies $\sigma_0$ for player $0$ and $\sigma_1$ for player $1$ bein
 \sigma_0 = \{
 &(s_1, [a]X \vee \langle b \rangle \top) \mapsto (s_1, [a] X), \\
 &(s_2, [a]X \vee \langle b \rangle \top) \mapsto (s_2, \langle b \rangle \top) \} \\
-\sigma_1 = \{
-&(s_1, [a] X) \mapsto (s_1, X) \} \\
+\sigma_1 = \{\} \\
 \end{align*}
 \begin{figure}[h]
 	\centering

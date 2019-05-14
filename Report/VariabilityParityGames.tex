@@ -1,0 +1,57 @@
+Next we will introduce \textit{variability parity games} (VPGs). VPGs are very similar to FPGs, they do however abstract from the notion of features and instead uses configuration for a syntactically more pleasant representation that is not solely tailored for FTSs. Furthermore in VPGs deadlocks are removed and therefore only having to reason about infinite paths and no longer about finite paths. Finally we will show the relation between VPGs and FTS verification, which is almost identical to the relation between FPGs and FTS verification.
+
+First we introduce VPGs:
+\begin{definition}
+\label{def_VPG}
+A variability parity game (VPG) is a tuple $(V,V_0, V_1, E, \rho, \mathfrak{C}, \theta)$, where:
+\begin{itemize}
+	\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
+	\item $V_0$ is the set of vertices owned by player $0$,
+	\item $V_1$ is the set of vertices owned by player $1$, 
+	\item $E \subseteq V \times V$ is the edge relation; we assume that $E$ is total, i.e. for all $v\in V$ there is some $w \in V$ such that $(v,w) \in E$,
+	\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment,
+	\item $\mathfrak{C}$ is a finite set of configurations,
+	\item $\theta : E \rightarrow \mathcal{P}(\mathfrak{C})\ \backslash\ \{0\}$ is the configuration mapping, satisfying for all $v \in V$, $\bigcup\{\theta(v,w)|(v,w) \in E\} = \mathfrak{C}$.
+\end{itemize}
+\end{definition}
+A VPG is played similarly to a PG, however the game is played for a specific configuration $c \in \mathfrak{C}$. Player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Furthermore VPGs don't have deadlocks, therefore every play results in an infinite path.
+
+A game played for configuration $c \in \mathfrak{C}$ results in winning sets $W_0^c$ and $W_1^c$, which are defined similar to the $W_0$ and $W_1$ winning sets for parity games.
+
+\begin{definition}
+\label{def_VPG_proj} The projection from VPG $G = (V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)$ to a configuration $c \in \mathfrak{C}$, noted $G_{|c}$, is the parity game $(V, V_0, V_1, E', \rho)$ where $E' = \{ e\in E | c \in \theta(e)\}$.
+\end{definition}
+
+Playing VPG $G$ for a specific configuration $c \in \mathfrak{C}$ is the same as playing the PG $G_{|c}$. Any path that is valid in $G$ for $c$ is also valid in $G_{|c}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|c}$ and $W_\alpha^c$ for $G$ are identical. Since parity games are positionally determined so are VPGs. Similarly, since finite parity games are decidable, so are finite VPGs.
+\subsection{Creating variability parity games}
+We will define a translation from an FPG to a VPG. This relation is shown in the following diagram:
+\\\begin{tikzpicture}
+\matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]
+{
+	\text{FPG} & \text{VPG} \\
+};
+\path[-stealth]
+(m-1-1)
+edge (m-1-2);
+\end{tikzpicture}\\
+To do so we have to translate products to configuration, which is trivial, furthermore we have to make the FPG deadlock free. This is done by creating two losing vertices $l_0$ and $l_1$ such that player $\alpha$ loses when the token is in vertex $l_\alpha$. Any vertex that can not move for a configuration will get an edge that is admissible for that configuration towards one of the losing vertices.
+\begin{definition}
+	\label{def_FPG2VPG}
+	FPG2VPG($G^F$) converts FPG $G^F = (V^F, V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma)$ to VPG $G = (V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)$.
+	
+	Let $P$ be defined as  $\{p_0, p_1, \dots, p_m\}$, we define $\mathfrak{C} = \{c_0, c_1, \dots, c_m\}$.
+	
+	We create vertices $l_0$ and $l_1$ and define $V_0 = V_0^F \cup \{l_0\}$, $V_1 = V_1^F \cup \{l_1\}$ and $V = V_0 \cup V_1$.
+	
+	We construct $E$ by first making $E = E^F$ and adding edges $(l_0, l_0)$ and $(l_1, l_1)$ to $E$. Simultaneously we construct $\theta$ by first making $\theta(e) = \{c_i \in \mathfrak{C} | p_i \models \gamma(e)\}$ for every $e \in E^F$. Furthermore $\theta(l_0,l_0) = \theta(l_1,l_1) = \mathfrak{C}$.
+	
+	Next, for every vertex $v \in V_\alpha$ with $\alpha = \{0,1\}$, we have $C = \mathfrak{C} \backslash \bigcup \{\theta(v,w)|(v,w) \in E\}$. If $C \neq \emptyset$ then we add $(v, l_\alpha)$ to $E$ and make $\theta(v,l_\alpha) = C$.
+	Finally we have 
+	\[ \rho(v) = \begin{cases}
+	1  & \text{if } v = l_0 \\
+	0 & \text{if } v = l_1 \\
+	\rho^F(v) &\text{otherwise}
+	\end{cases} \]
+\end{definition}
+Again considering our previous working example we can translate the FPG shown in figure \ref{fig:exverfpg} to the VPG shown in figure........
+

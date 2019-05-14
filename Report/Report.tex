@@ -26,6 +26,8 @@
 
 \maketitle
 
+\tableofcontents
+
 \section{Introduction}
 \input{introduction}
 
@@ -41,89 +43,8 @@
 \section{Variability parity games}
 \input{VariabilityParityGames}
 
-\section{Definitions}
-\subsection{Transition systems}
-Similar to \cite{Classen2013FeaturedTS}.
-
-
-
-
-\begin{definition}
-	\label{def_fts_proj}
-	The projection of an FTS $M$ to a product $p \in P$, noted $M_{|p}$, is the LTS $M'=(S,Act,trans', s_0)$, where $trans' = \{t \in trans\ |\ p \models \gamma(t)\}$.
-\end{definition}
-
-A fixed point formula $ \sigma X. \varphi$, with $\sigma \in \{\mu,\nu\}$, can be unfolded which results in the formula $\varphi$ where very $X$ is replaced by $\sigma X. \varphi$, ie. $\varphi[X:=\sigma X. \varphi]$. A fixed point formula is equivalent to its unfolding, ie. $\sigma X. \varphi$ is equivalent to $\varphi[X:=\sigma X. \varphi]$. \cite{Bradfield2018}
-
-
-\begin{definition}
-	\label{def_sat}
-	Given LTS $M = (S, Act, trans, s_0)$, state $s \in S$ and mu-calculus formula $\varphi$ we write $M,s \models \varphi$ if and only if $\varphi$ is satisfied in state $s$ for LTS $M$. If $M, s_0 \models \varphi$ we write $M \models \varphi$.
-\end{definition}
-\section{Goal}
-Similar to \cite{inproceedings}.
-
-Given an FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ and a modal $\mu$-calculus formula $\varphi$ we want to find the set $P_s \subseteq P$ such that:
-\begin{itemize}
-	\item for every $p \in P_s$ we have $M_{|p} \models \varphi$,
-	\item for every $p \in P \backslash P_s$ we have $M_{|p} \not\models \varphi$.
-\end{itemize}
-A counterexample for every $p \in P \backslash P_s$ is preferred.
-
-If $P_s = P$, ie. all products satisfy $\varphi$, we write $M \models \varphi$.
-
-\section{Parity Games}
-\subsection{Parity games}
-
-\subsection{Featured parity games}
-\begin{definition}
-	\label{def_FPG}
-	A featured parity game (FPG) is a tuple $(V,V_0, V_1, E, \rho, N, P, \gamma)$, where:
-	\begin{itemize}
-		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
-		\item $V_0$ is the set of vertices owned by player $0$,
-		\item $V_1$ is the set of vertices owned by player $1$, 
-		\item $E \subseteq V \times V$ is the edge relation,
-		\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment,
-		\item $N$ is a set of features,
-		\item $P \subseteq \mathcal{P}(N)$ is a set of products, ie. feature assignments, for which the game can be played,
-		\item $\gamma : E \rightarrow \mathbb{B}(N)$ is a total function, labelling each edge with a Boolean expression over the features.
-	\end{itemize}
-\end{definition}
-An FPG is played similarly to a PG, however the game is played for a specific product $p \in P$. Player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $p \models \gamma(v,w)$.
-
-A game played for product $p \in P$ results in winnings sets $W_0^p$ and $W_1^p$, which are defined similar to the $W_0$ and $W_1$ winning sets for parity games.
-
-\begin{definition}
-	\label{def_FPG_proj}
-The projection from FPG $G = (V,V_0, V_1, E, \rho, N, P, \gamma)$ to a product $p \in P$, noted $G_{|p}$, is the parity game $(V,V_0,V_1, E', \rho)$ where $E' = \{ e \in E\ |\ p \models \gamma(e) \}$.
-\end{definition}
-
-Playing FPG $G$ for a specific product $p\in P$ is the same as playing the PG $G_{|p}$. Any path that is valid in $G$ for $p$ is also valid in $G_{|p}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|p}$ and $W_\alpha^p$ for $G$ are identical. Since parity games are positionally determined so are FPGs. Similarly, since finite parity games are decidable, so are finite FPGs.
-
 \subsection{Variability parity games}
-\begin{definition}
-	\label{def_VPG}
-	A variability parity game (VPG) is a tuple $(V,V_0, V_1, E, \rho, \mathfrak{C}, \theta)$, where:
-	\begin{itemize}
-		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
-		\item $V_0$ is the set of vertices owned by player $0$,
-		\item $V_1$ is the set of vertices owned by player $1$, 
-		\item $E \subseteq V \times V$ is the edge relation; we assume that $E$ is total, i.e. for all $v\in V$ there is some $w \in V$ such that $(v,w) \in E$,
-		\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment,
-		\item $\mathfrak{C}$ is a finite set of configurations,
-		\item $\theta : E \rightarrow \mathcal{P}(\mathfrak{C})\ \backslash\ \{0\}$ is the configuration mapping, satisfying for all $v \in V$, $\bigcup\{\theta(v,w)|(v,w) \in E\} = \mathfrak{C}$.
-	\end{itemize}
-\end{definition}
-A VPG is played similarly to a PG, however the game is played for a specific configuration $c \in \mathfrak{C}$. Player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Furthermore VPGs don't have deadlocks, every play results in an infinite path.
 
-A game played for configuration $c \in \mathfrak{C}$ results in winning sets $W_0^c$ and $W_1^c$, which are defined similar to the $W_0$ and $W_1$ winning sets for parity games.
-
-\begin{definition}
-	\label{def_VPG_proj} The projection from VPG $G = (V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)$ to a configuration $c \in \mathfrak{C}$, noted $G_{|c}$, is the parity game $(V, V_0, V_1, E', \rho)$ where $E' = \{ e\in E | c \in \theta(e)\}$.
-\end{definition}
-
-Playing VPG $G$ for a specific configuration $c \in \mathfrak{C}$ is the same as playing the PG $G_{|c}$. Any path that is valid in $G$ for $c$ is also valid in $G_{|c}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|c}$ and $W_\alpha^c$ for $G$ are identical. Since parity games are positionally determined so are VPGs. Similarly, since finite parity games are decidable, so are finite VPGs.
 
 \subsection{Creating parity games}
 Originating from an FTS and a modal $\mu$-calculus we can create an FPG (from which we can create a PG by projection) and from the FPG we can create a VPG. For a specific product we can project the FTS to an LTS, from which we can create a PG. The relation between the transition systems and games is displayed in the following diagram.
@@ -219,49 +140,7 @@ Finally we define how to create a VPG from an FPG. This transformation abstracts
 \end{definition}
 
 \subsection{Correctness}
-\begin{theorem}
-	\label{the_PGsubPGA} Given:
-	\begin{itemize}
-		\item FTS $M = (S,Act, trans, s_0, N, P, \gamma)$,
-		\item a closed modal mu-calculus formula $\varphi$,
-		\item a product $p \in P$
-	\end{itemize}
-	it holds that he parity games LTS2PG($M_{|p}, \varphi$) and FTS2FPG($M, \varphi$)$_{|p}$  are identical.
-\begin{proof}
-	Let $G^F = $FTS2FPG($M, \varphi$)$ = (V^F, V_0^F, V_1^F, E^F, \rho^F, N, P, \gamma')$, using definition \ref{def_FTS2FPG}, and $G^F_{|p} = (V^F, V_0^F, V_1^F, {E^F}', \rho^F)$, using definition \ref{def_FPG_proj}. Furthermore we have $M_{|p} = (S, Act, trans', s_0)$ and we let $G = $ LTS2PG$(M_{|p}, \varphi) = (V, V_0, V_1, E, \rho)$. We depict the different transition systems and games in the following diagram.
-	
-	\begin{tikzpicture}
-	\matrix (m) [matrix of math nodes,row sep=4em,column sep=1em,minimum width=2em]
-	{
-		\text{\ \ FTS }M & \  &\ & \text{FPG } G^F  \\
-		\text{LTS }M_{|p} & \ & \text{PG } G & \text{\ \ PG }G_{|p}^F \\};
-	\path[-stealth]
-	(m-1-1) edge [double] node [left] {$\Pi$} (m-2-1)
-	edge node [above] {$\varphi$} (m-1-4)
-	(m-2-1.east|-m-2-3) edge node [above] {$\varphi$}
-	(m-2-3)
-	(m-1-4) edge [double] node [right] {$\Pi$} (m-2-4);
-	\end{tikzpicture}\\
-	We will prove that $G = G_{|p}^F$. We first note that game $G$ is created by 
-	\[  (V, V_0, V_1, E, \rho) = LTS2PG((S, Act, trans', s_0),\varphi) \]
-	and the vertices, edges and priorities of game $G^F$ are created by 
-	\[ (V^F, V_0^F, V_1^F, E^F, \rho^F) = LTS2PG((S,Act, trans, s_0), \varphi)\]
-	Using the definition of LTS2PG (\ref{def_LTS2PG}) we find that the vertices and the priorities only depend on the states in $S$ and the formula $\varphi$, since these are identical in the above two statements we immediately get $V = V^F, V_0 = V_0^F, V_1 = V_1^F$ and $\rho = \rho^F$. The vertices and priorities don't change when an FTS is projected, therefore $G_{|p}^F$ has the same vertices and priorities as $G^F$.
-	
-	Now we are left with showing that $E = {E^F}'$ in order to conclude that that $G = G^F_{|p}$. We will do this by showing $E \subseteq {E^F}'$ and $E \supseteq {E^F}'$.
-	
-	First let $e \in E$. Note that a vertex in the parity game is represented by a pair of a state and a formula. So we can write $e = ((s,\psi),(s',\psi'))$. To show that $e \in {E^F}'$ we distinguish two cases:
-	\begin{itemize}
-		\item  If $\psi = \langle a \rangle \psi_1$ or $\psi = [a] \psi_1$ then there exists an $a \in Act$ such that $(s,a,s') \in trans'$. Using definition \ref{def_fts_proj} we get $(s,a,s') \in trans$ and $p \models \gamma(s,a,s')$. Using definition \ref{def_FTS2FPG} we find that $\gamma'((s,\psi),(s',\psi')) = \gamma(s,a,s')$ and therefore $p \models \gamma'((s,\psi),(s',\psi'))$. Now using definition \ref{def_FPG_proj} we find $((s,\psi),(s',\psi')) \in {E^F}'$.
-		\item Otherwise the existence of the edge does not depend on the $trans$ parameter and therefore $((s,\psi),(s',\psi')) \in {E^F}'$ if $(s,\psi) \in V^F$, since $V^F = V$ we have $(s,\psi) \in V^F$.
-	\end{itemize}
-	We can conclude that $E \subseteq {E^F}'$, next we will show $E \supseteq {E^F}'$. Let $e = ((s,\psi),(s',\psi')) \in {E^F}'$. We distinguish two cases:
-	\begin{itemize}
-		\item If $\psi = \langle a \rangle \psi_1$ or $\psi = [a] \psi_1$ then there exists an $a \in Act$ such that $(s,a,s') \in trans$. Using definition \ref{def_FPG_proj} we get $p \models \gamma'(s,a,s')$. Using definition \ref{def_FTS2FPG} we get $p \models \gamma(s,a,s')$. Using the projection definition \ref{def_FTS2FPG} we get $(s,a,s') \in trans'$ and therefore $((s,\psi),(s',\psi'))\in E$.
-		\item Otherwise the existence of the edge does not depend on the $trans$ parameter and therefore $((s,\psi),(s',\psi')) \in E$ if $(s,\psi) \in V$, since $V^F = V$ we have $(s,\psi) \in V$.
-	\end{itemize}
-	\end{proof}
-\end{theorem}
+
 
 \begin{theorem}
 	\label{the_FPG_ver_FTS}

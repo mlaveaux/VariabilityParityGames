@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20190514151821"/>
+<info created="D:20190513152140" modified="D:20190514163529"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -394,7 +394,7 @@ h
 144 640 m
 144 608 l
 </path>
-<text transformations="translations" pos="144 624" stroke="black" type="label" width="2.816" height="6.227" depth="0" valign="baseline" size="small">f</text>
+<text transformations="translations" pos="144 624" stroke="black" type="label" width="3.577" height="8.302" depth="0" valign="baseline" size="large">f</text>
 <path stroke="black" arrow="normal/normal">
 160 656 m
 208 592 l
@@ -419,5 +419,16 @@ h
 208 656 m
 160 592 l
 </path>
+<text transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 80 0" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 0 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 -32 -128" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 112 -128" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 32 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" halign="right" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 48 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 16 -112" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 64 -112" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" halign="right" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 80 -256" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
+<text matrix="1 0 0 1 80 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="9.298" height="8.302" depth="0" valign="baseline" size="large" style="math">\top</text>
 </page>
 </ipe>

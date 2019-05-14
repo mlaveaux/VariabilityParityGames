@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20190514163540"/>
+<info created="D:20190513152140" modified="D:20190514170819"/>
+<preamble>\usepackage{amsfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -391,6 +392,11 @@ h
 246.628 528 l
 </path>
 <path stroke="black" arrow="normal/normal">
+144 640 m
+144 608 l
+</path>
+<text transformations="translations" pos="144 624" stroke="black" type="label" width="9.77" height="5.151" depth="1.79" valign="baseline" size="large" style="math">c_1</text>
+<path stroke="black" arrow="normal/normal">
 160 656 m
 208 592 l
 </path>
@@ -413,6 +419,62 @@ h
 <path stroke="black" arrow="normal/normal">
 208 656 m
 160 592 l
+</path>
+<text transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 80 0" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 0 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 -32 -128" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 112 -128" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 32 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" halign="right" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 48 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 16 -112" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 64 -112" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" halign="right" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 80 -256" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 80 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<path matrix="0.707107 -0.707107 0.707107 0.707107 -562.94 -17.803" stroke="black">
+64 800 m
+64 768 l
+96 768 l
+96 800 l
+h
+</path>
+<text matrix="1 0 0 1 -32 -240" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
+<path stroke="black" arrow="normal/normal">
+36 469.373 m
+36 448 l
+60 448 l
+60 469.372 l
+</path>
+<path stroke="black" arrow="normal/normal">
+144 505.373 m
+70.6279 480 l
+</path>
+<text matrix="1 0 0 1 -44 -260" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<path matrix="1 0 0 1 104 -368" stroke="black">
+64 800 m
+64 768 l
+96 768 l
+96 800 l
+h
+</path>
+<text matrix="1 0 0 1 104 -368" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<text matrix="1 0 0 1 -28.0004 -302.628" transformations="translations" pos="64 800" stroke="black" type="label" width="8.219" height="8.305" depth="1.79" halign="right" valign="center" size="large" style="math">l_0</text>
+<text matrix="1 0 0 1 99.9996 -394.628" transformations="translations" pos="64 800" stroke="black" type="label" width="8.219" height="8.305" depth="1.79" halign="right" valign="center" size="large" style="math">l_1</text>
+<path stroke="black" arrow="normal/normal">
+144 448 m
+168 416 l
+</path>
+<path stroke="black" arrow="normal/normal">
+224 448 m
+200 416 l
+</path>
+<text matrix="1 0 0 1 8 -316" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 64 -316" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<path stroke="black" arrow="normal/normal">
+176 400 m
+176 384 l
+192 384 l
+192 400 l
 </path>
 </page>
 </ipe>
