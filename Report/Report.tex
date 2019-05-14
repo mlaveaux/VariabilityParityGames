@@ -1,9 +1,15 @@
 \documentclass[]{article}
-\usepackage[margin=0.5in]{geometry}
+\usepackage{geometry}
 \usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage{amsfonts}
 \usepackage{tikz}
+\usepackage{eurosym}
+\DeclareRobustCommand{\officialeuro}{%
+	\ifmmode\expandafter\text\fi
+	{\fontencoding{U}\fontfamily{eurosym}\selectfont e}}
+\usepackage{caption}
+\usepackage{subcaption}
 \usetikzlibrary{matrix}
 
 \newtheorem{definition}{Definition}[section]
@@ -23,64 +29,33 @@
 \section{Introduction}
 \input{introduction}
 
+\section{Verifying transition systems}
+\input{VerifyingTransitionSystems}
+
+\section{Verification using parity games}
+\input{VerificationUsingParityGames}
+
+\section{Featured parity games}
+\input{FeaturedParityGames}
+
+\section{Variability parity games}
+\input{VariabilityParityGames}
+
 \section{Definitions}
 \subsection{Transition systems}
 Similar to \cite{Classen2013FeaturedTS}.
 
-\begin{definition}
-	\label{def_lts}An LTS is a tuple $M = (S, Act, trans, s_0)$, where:
-	\begin{itemize}
-		\item $S$ is a set of states,
-		\item $Act$ a set of actions,
-		\item $trans \subseteq S \times Act \times S$ is the transition relation with $(s,a,s') \in trans$ denoted by $s \xrightarrow a s'$,
-		\item $s_0 \in S$ is the initial state.
-	\end{itemize}
-\end{definition}
 
-\begin{definition}
-	\label{def_fts}An FTS is a tuple $M = (S, Act, trans, s_0, N, P, \gamma)$, where:
-	\begin{itemize}
-		\item $S, Act, trans, s_0$ are defined as in an LTS,
-		\item $N$ is a non-empty set of features,
-		\item $P \subseteq \mathcal{P}(N)$ is a set of products, ie. feature assignments, that are valid,
-		\item $\gamma : trans \rightarrow \mathbb{B}(N)$ is a total function, labelling each transition with a Boolean expression over the features. A product $p \in \mathcal{P}(N)$ satisfying the Boolean expression of transition $t$ is denoted by $p \models \gamma(t)$, $\gamma(t)(p) = 1$ or $p \in [\![\gamma(t)]\!]$. 
-		
-		A transition $s \xrightarrow a s'$ and $\gamma((s,a,s')) = f$ is denoted by $s \xrightarrow {a / f} s'$. 
-	\end{itemize}
-\end{definition}
+
 
 \begin{definition}
 	\label{def_fts_proj}
 	The projection of an FTS $M$ to a product $p \in P$, noted $M_{|p}$, is the LTS $M'=(S,Act,trans', s_0)$, where $trans' = \{t \in trans\ |\ p \models \gamma(t)\}$.
 \end{definition}
 
-\begin{definition}
-	\label{def_mu_syntax}\cite{Groote}
-	A modal $\mu$-calculus formula over the set of actions $Act$ and a set of variables $\mathcal{X}$ is defined by
-	\[ \varphi = \top\ |\ \bot\ |\ X\ |\ \varphi \vee \varphi\ |\ \varphi \wedge \varphi\ |\ \langle a \rangle \varphi\ |\ [a]\varphi\ |\ \mu X.\varphi\ |\ \nu X.\varphi \]
-	with $a \in Act$ and $X \in \mathcal{X}$. 
-	
-	
-	No negations in the language because negations can be pushed inside to the propositions, ie. the $\top$ and $\bot$ elements.
-\end{definition}
 A fixed point formula $ \sigma X. \varphi$, with $\sigma \in \{\mu,\nu\}$, can be unfolded which results in the formula $\varphi$ where very $X$ is replaced by $\sigma X. \varphi$, ie. $\varphi[X:=\sigma X. \varphi]$. A fixed point formula is equivalent to its unfolding, ie. $\sigma X. \varphi$ is equivalent to $\varphi[X:=\sigma X. \varphi]$. \cite{Bradfield2018}
 
-\begin{definition} 
-	\label{def_mu_sem}\cite{Groote} For LTS $(S, Act, trans, s_0)$ we inductively define the interpretation of a modal $\mu$-calculus formula $\varphi$, notation
-	$[\![ \varphi ]\!]^\rho$, where $\rho : \mathcal{X} \rightarrow \mathcal{P}(S)$ is a logical variable valuation, as a set of states
-	where $\varphi$ is valid, by:
-	\begin{align*}
-	&[\![ \mathit{\top} ]\!]^\rho &&= S\\
-	&[\![ \mathit{\bot} ]\!]^\rho &&= \emptyset\\
-	&[\![ \varphi_1 \wedge \varphi_2 ]\!]^\rho &&= [\![ \varphi_1 ]\!]^\rho \cap [\![ \varphi_2 ]\!]^\rho \\
-	&[\![ \varphi_1 \vee \varphi_2 ]\!]^\rho &&= [\![ \varphi_1 ]\!]^\rho \cup [\![ \varphi_2 ]\!]^\rho\\
-	&[\![ \langle a \rangle \varphi ]\!]^\rho &&= \{s \in S|\exists_{s' \in S} s \xrightarrow {a} s' \wedge s' \in [\![ \varphi ]\!]^\rho\}\\
-	&[\![ [ a ] \varphi ]\!]^\rho &&= \{s \in S|\forall_{s' \in S} s \xrightarrow {a} s' \implies s' \in [\![ \varphi ]\!]^\rho\}\\
-	&[\![ \mu X. \varphi ]\!]^\rho &&= \bigcap_{f \subseteq S}\{f | f = [\![ \varphi ]\!]^{\rho[X:=f]}\}\\
-	&[\![ \nu X. \varphi ]\!]^\rho &&= \bigcup_{f \subseteq S}\{f | f = [\![ \varphi ]\!]^{\rho[X:=f]}\}\\
-	&[\![ X ]\!]^\rho &&= \rho(X)
-	\end{align*}
-\end{definition}
+
 \begin{definition}
 	\label{def_sat}
 	Given LTS $M = (S, Act, trans, s_0)$, state $s \in S$ and mu-calculus formula $\varphi$ we write $M,s \models \varphi$ if and only if $\varphi$ is satisfied in state $s$ for LTS $M$. If $M, s_0 \models \varphi$ we write $M \models \varphi$.
@@ -192,10 +167,10 @@ The projections are defined in the previous section. In this section we will def
 	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and closed formula $\varphi$ to a PG $(V, V_0, V_1, E, \rho)$.
 	
 	A vertex in the parity game is represented by a pair $(s, \psi)$ where $s \in S$ and $\psi$ is a modal $\mu$-calculus formula. We will create a vertex for every state with every subformula of $\varphi$ except subformula's of the form $X$. Furthermore we create a vertex for every state with the unfolding of every fixpoint formula. Formally we define the set of vertices by first defining the set of subformula's:
-	\[ F = \{ \psi\ |\ \psi \text{ is a subformula of } \varphi \} \text{, note that $\varphi$ is a subformula of $\varphi$} \]
-	The set of subformula's that are of the form $X$:
+	\[ F = \{ \psi\ |\ \psi \text{ is a subformula of } \varphi \} \text{, note that $\varphi$ is a subformula of $\varphi$,} \]
+	the set of subformula's that are of the form $X$:
 	\[ F_X = \{ \psi \in F\ |\ \psi = X\} \]
-	 And the set of the unfolding of fixedpoint subformula's:
+	and the set of unfolded fixedpoint subformula's:
 	 \[ F_\sigma = \{\psi[X:=\sigma X. \psi]\ |\ \sigma X. \psi \in F \text{ with } \sigma \in \{\mu, \nu\}\} \]
 	Having these sets we can define the set of vertices by:
 	\[ V = S \times (F \backslash F_X \cup F_{\sigma})\]
