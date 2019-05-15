@@ -48,55 +48,72 @@ We translate an FTS to an FPG by first creating a PG from the diagram as if ther
 	\top & \text{otherwise}
 	\end{cases}\]
 \end{definition}
-Consider our working example which we extend to an FTS depicted in figure \ref{fig:exverfts}, for this example we have features $N = \{f\}$ and products $P = \{\emptyset, \{f\}\}$.
+Consider our working example which we extend to an FTS depicted in figure \ref{fig:exverfts}, for this example we have features $N = \{f, g\}$ and products $P = \{\emptyset, \{f\},\{f,g\}\}$.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.3]{Examples/ExamleVerification/FTS}
 	\caption[FTS $M$]{FTS $M$}
 	\label{fig:exverfts}
 \end{figure}
-
-We can translate this FTS with formula $\varphi = \mu X. [a] X \vee \langle b \rangle \top$ to an FPG depicted in figure \ref{fig:exverfpg}. As we can see from the FTS if feature $f$ is enabled then we have an infinite path of a's where b is never enabled, therefore $\varphi$ doesn't hold for $M_{|\{f\}}$ however as we have seen $\varphi$ does hold for $M_{|\emptyset}$. For the product $\emptyset$ we have the same winning set as before:
-\begin{align*}
-W_0^\emptyset = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top)\\
-& (s_1, [a]X \vee \langle b \rangle \top)\\
-& (s_1, [a]X)\\
-& (s_1, X)\\
-& (s_1, \top)\\
-& (s_2, \mu X.[a]X \vee \langle b \rangle \top)\\
-& (s_2, [a]X \vee \langle b \rangle \top)\\
-& (s_2, [a]X)\\
-& (s_2, X)\\
-& (s_2, \langle b \rangle \top)\\
-& (s_2, \top)\\
-\}\\
-W_1^\emptyset = \{& (s_1, \langle b \rangle \top )\}
-\end{align*}
-In the FPG we can see that if $f$ is enabled then player $1$ can move the token from $(s_1, [a]X)$ to $(s_1,X)$. This results in player $0$ either moving the token to $(s_1, \langle b \rangle \top)$ and losing or an infinite path where $1$ occurs infinitely often which is also player $1$ wins. For product $\{f\}$ we have winning sets:
-\begin{align*}
-W_0^{\{f\}} = \{
-& (s_1, \top)\\
-& (s_2, \mu X.[a]X \vee \langle b \rangle \top)\\
-& (s_2, [a]X \vee \langle b \rangle \top)\\
-& (s_2, X)\\
-& (s_2, \langle b \rangle \top)\\
-& (s_2, \top)\\
-\}\\
-W_1^{\{f\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top)\\
-& (s_1, [a]X \vee \langle b \rangle \top)\\
-& (s_1, [a]X)\\
-& (s_1, X)\\
-& (s_1, \langle b \rangle \top )\\
-& (s_2, [a]X)\}
-\end{align*}
-
-In the next section we will show how the winning sets relate to the model verification problem.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.3]{Examples/ExamleVerification/FPG}
 	\caption[FPG for $M$ and $\varphi$]{FPG for $M$ and $\varphi$}
 	\label{fig:exverfpg}
 \end{figure}
+We can translate this FTS with formula $\varphi = \mu X. [a] X \vee \langle b \rangle \top$ to an FPG depicted in figure \ref{fig:exverfpg}. As we can see from the FTS if feature $f$ is enabled then we have an infinite path of a's where b is never enabled except if feature g is also enabled, therefore $\varphi$ doesn't hold for $M_{|\{f\}}$ however as we have seen $\varphi$ does hold for $M_{|\emptyset}$ and finally $\varphi$ holds for $M_{|\{f,g\}}$. For the product $\emptyset$ we have the same winning set as before:
+\begin{align*}
+W_0^\emptyset = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
+& (s_1, [a]X \vee \langle b \rangle \top),\\
+& (s_1, [a]X),\\
+& (s_1, X),\\
+& (s_1, \top),\\
+& (s_2, \mu X.[a]X \vee \langle b \rangle \top),\\
+& (s_2, [a]X \vee \langle b \rangle \top),\\
+& (s_2, [a]X),\\
+& (s_2, X),\\
+& (s_2, \langle b \rangle \top),\\
+& (s_2, \top)
+\}\\
+W_1^\emptyset = \{& (s_1, \langle b \rangle \top )\}
+\end{align*}
+In the FPG we can see that if $f$ is enabled then player $1$ can move the token from $(s_1, [a]X)$ to $(s_1,X)$. This results in player $0$ either moving the token to $(s_1, \langle b \rangle \top)$ and losing or an infinite path where $1$ occurs infinitely often which is also player $1$ wins. For product $\{f\}$ we have winning sets:
+\begin{align*}
+W_0^{\{f\}} = \{
+& (s_1, \top),\\
+& (s_2, \mu X.[a]X \vee \langle b \rangle \top),\\
+& (s_2, [a]X \vee \langle b \rangle \top),\\
+& (s_2, X),\\
+& (s_2, \langle b \rangle \top),\\
+& (s_2, \top)
+\}\\
+W_1^{\{f\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
+& (s_1, [a]X \vee \langle b \rangle \top),\\
+& (s_1, [a]X),\\
+& (s_1, X),\\
+& (s_1, \langle b \rangle \top ),\\
+& (s_2, [a]X)\}
+\end{align*}
+However if $g$ is also enabled then player $0$ can move from $(s_1, [a]X \vee \langle b \rangle \top)$ to $(s_1, \langle b \rangle \top)$, thus giving the following winning sets:
+\begin{align*}
+W_0^{\{f,g\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
+& (s_1, [a]X \vee \langle b \rangle \top),\\
+& (s_1, [a]X),\\
+& (s_1, X),\\
+& (s_1, \langle b \rangle \top ),\\
+& (s_1, \top),\\
+& (s_2, \mu X.[a]X \vee \langle b \rangle \top),\\
+& (s_2, [a]X \vee \langle b \rangle \top),\\
+& (s_2, [a]X),\\
+& (s_2, X),\\
+& (s_2, \langle b \rangle \top),\\
+& (s_2, \top)
+\}\\
+W_1^{\{f,g\}} = \{\}
+\end{align*}
+
+In the next section we will show how the winning sets relate to the model verification problem.
+
 
 \subsection{FTS verification using FPG}
 We can create an FPG from an FTS and project it to an PG, this is shown in the following diagram:\\

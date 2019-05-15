@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20190514170819"/>
+<info created="D:20190513152140" modified="D:20190515100534"/>
 <preamble>\usepackage{amsfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -395,7 +395,7 @@ h
 144 640 m
 144 608 l
 </path>
-<text transformations="translations" pos="144 624" stroke="black" type="label" width="9.77" height="5.151" depth="1.79" valign="baseline" size="large" style="math">c_1</text>
+<text transformations="translations" pos="144 624" stroke="black" type="label" width="21.725" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_1\}</text>
 <path stroke="black" arrow="normal/normal">
 160 656 m
 208 592 l
@@ -449,7 +449,7 @@ h
 144 505.373 m
 70.6279 480 l
 </path>
-<text matrix="1 0 0 1 -44 -260" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 -68 -252" transformations="translations" pos="144 752" stroke="black" type="label" width="36.74" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_0,c_1\}</text>
 <path matrix="1 0 0 1 104 -368" stroke="black">
 64 800 m
 64 768 l
@@ -476,5 +476,12 @@ h
 192 384 l
 192 400 l
 </path>
+<path stroke="black" arrow="normal/normal">
+144 505.373 m
+144 480 l
+</path>
+<text matrix="1 0 0 1 0 -260" transformations="translations" pos="144 752" stroke="black" type="label" width="21.725" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_2\}</text>
+<text matrix="1 0 0 1 -100 -312" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 36 -380" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
 </page>
 </ipe>
