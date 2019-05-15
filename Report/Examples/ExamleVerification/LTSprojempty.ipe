@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513153316" modified="D:20190514151353"/>
+<info created="D:20190513153316" modified="D:20190515132813"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -260,8 +260,8 @@ h
 <path matrix="1 0 0 1 64 -192" stroke="black">
 16 0 0 16 256 704 e
 </path>
-<text matrix="1 0 0 1 64 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_0</text>
-<text matrix="1 0 0 1 192 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_1</text>
+<text matrix="1 0 0 1 64 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_1</text>
+<text matrix="1 0 0 1 192 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_2</text>
 <path stroke="black" arrow="normal/normal">
 203.314 523.314 m
 148.943 0 0 -148.943 256 384 308.686 523.314 a

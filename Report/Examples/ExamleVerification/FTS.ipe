@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513153316" modified="D:20190515095542"/>
+<info created="D:20190513153316" modified="D:20190515132759"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -260,8 +260,8 @@ h
 <path matrix="1 0 0 1 64 -192" stroke="black">
 16 0 0 16 256 704 e
 </path>
-<text matrix="1 0 0 1 64 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_0</text>
-<text matrix="1 0 0 1 192 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_1</text>
+<text matrix="1 0 0 1 64 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_1</text>
+<text matrix="1 0 0 1 192 -192" transformations="translations" pos="128 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_2</text>
 <path stroke="black" arrow="normal/normal">
 203.314 523.314 m
 148.943 0 0 -148.943 256 384 308.686 523.314 a
@@ -292,7 +292,7 @@ h
 <text matrix="1 0 0 1 0 -64" transformations="translations" pos="256 544" stroke="black" type="label" width="26.276" height="8.965" depth="2.99" halign="center" valign="baseline" size="large">a $|\ \top$</text>
 <text matrix="1 0 0 1 112 -32" transformations="translations" pos="256 544" stroke="black" type="label" width="26.927" height="8.965" depth="2.99" halign="center" valign="center" size="large">b $|\ \top$</text>
 <text matrix="1 0 0 1 -64 -76" transformations="translations" pos="256 544" stroke="black" type="label" width="20.555" height="8.965" depth="2.99" halign="center" valign="baseline" size="large">a $|$ f</text>
-<path matrix="-1 -0 0 -1 384 1024" stroke="black" arrow="normal/normal">
+<path matrix="-1 0 0 -1 384 1024" stroke="black" arrow="normal/normal">
 192 496 m
 208 480
 192 480

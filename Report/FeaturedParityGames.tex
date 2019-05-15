@@ -1,4 +1,4 @@
-Before we can define variability parity games we first define \textit{featured parity games} (FPG), featured parity games extend the definition of parity games to capture the variability represented in an FTS. It uses the same concepts as FTSs, like features, products and a function that guards edges. In this section we will introduce the definition of FPGs and show that solving them answers the verification questions for FTS: For which products in the FTS does its projection satisfy $\varphi$?
+Before we can define variability parity games we first define \textit{featured parity games} (FPG), featured parity games extend the definition of parity games to capture the variability represented in an FTS. It uses the same concepts as FTSs: features, products and a function that guards edges. In this section we will introduce the definition of FPGs and show that solving them answers the verification questions for FTS: For which products in the FTS does its projection satisfy $\varphi$?
 
 First we introduce the definition of an FPG:
 \begin{definition}
@@ -27,17 +27,9 @@ The projection from FPG $G = (V,V_0, V_1, E, \rho, N, P, \gamma)$ to a product $
 
 Playing FPG $G$ for a specific product $p\in P$ is the same as playing the PG $G_{|p}$. Any path that is valid in $G$ for $p$ is also valid in $G_{|p}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|p}$ and $W_\alpha^p$ for $G$ are identical. Since parity games are positionally determined so are FPGs. Similarly, since finite parity games are decidable, so are finite FPGs.
 
+Solving an FPG means determining winning sets for every valid product in the FPG.
 \subsection{Creating featured parity games}
-A featured parity game can be created from an FTS in combination with a model $\mu$-calculus formula. This relation is shown in the following diagram:
-\\\begin{tikzpicture}
-\matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]
-{
-	\text{FTS} & \text{FPG} \\};
-\path[-stealth]
-(m-1-1)
-edge node [above] {$\varphi$} (m-1-2);
-\end{tikzpicture}\\
-We translate an FTS to an FPG by first creating a PG from the diagram as if there were no transition guards, next we apply the same guards to the FPG as are present in the FTS for edges that originate from transitions. The features and valid products in the FPG are identical to those in the FTS.
+An FPG can be created from an FTS in combination with a model $\mu$-calculus formula. We translate an FTS to an FPG by first creating a PG from the transition system as if there were no transition guards, next we apply the same guards to the FPG as are present in the FTS for edges that originate from transitions. The features and valid products in the FPG are identical to those in the FTS.
 \begin{definition}
 	\label{def_FTS2FPG}
 	$FTS2FPG(M, \varphi)$ converts FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ and closed formula $\varphi$ to FPG $(V, V_0, V_1, E, \rho, N, P, \gamma')$.
@@ -61,7 +53,7 @@ Consider our working example which we extend to an FTS depicted in figure \ref{f
 	\caption[FPG for $M$ and $\varphi$]{FPG for $M$ and $\varphi$}
 	\label{fig:exverfpg}
 \end{figure}
-We can translate this FTS with formula $\varphi = \mu X. [a] X \vee \langle b \rangle \top$ to an FPG depicted in figure \ref{fig:exverfpg}. As we can see from the FTS if feature $f$ is enabled then we have an infinite path of a's where b is never enabled except if feature g is also enabled, therefore $\varphi$ doesn't hold for $M_{|\{f\}}$ however as we have seen $\varphi$ does hold for $M_{|\emptyset}$ and finally $\varphi$ holds for $M_{|\{f,g\}}$. For the product $\emptyset$ we have the same winning set as before:
+We can translate this FTS with formula $\varphi = \mu X. ([a] X \vee \langle b \rangle \top)$ to an FPG depicted in figure \ref{fig:exverfpg}. As we can see from the FTS if feature $f$ is enabled and $g$ is disabled then we have an infinite path of $a$'s where $b$ is never enabled, therefore $\varphi$ doesn't hold for $M_{|\{f\}}$. If $g$ is enabled however we can always do a $b$ so $\varphi$ holds for $M_{|\{f,g\}}$. As we have seen $\varphi$ does hold for $M_{|\emptyset}$. For the product $\emptyset$ we have the same winning set as before:
 \begin{align*}
 W_0^\emptyset = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
 & (s_1, [a]X \vee \langle b \rangle \top),\\
@@ -77,7 +69,7 @@ W_0^\emptyset = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
 \}\\
 W_1^\emptyset = \{& (s_1, \langle b \rangle \top )\}
 \end{align*}
-In the FPG we can see that if $f$ is enabled then player $1$ can move the token from $(s_1, [a]X)$ to $(s_1,X)$. This results in player $0$ either moving the token to $(s_1, \langle b \rangle \top)$ and losing or an infinite path where $1$ occurs infinitely often which is also player $1$ wins. For product $\{f\}$ we have winning sets:
+In the FPG we can see that if $f$ is enabled and $g$ is disabled then player $1$ can move the token from $(s_1, [a]X)$ to $(s_1,X)$. This results in player $0$ either moving the token to $(s_1, \langle b \rangle \top)$ and losing or an infinite path where $1$ occurs infinitely often which is also player $1$ wins. For product $\{f\}$ we have winning sets:
 \begin{align*}
 W_0^{\{f\}} = \{
 & (s_1, \top),\\
@@ -94,7 +86,7 @@ W_1^{\{f\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
 & (s_1, \langle b \rangle \top ),\\
 & (s_2, [a]X)\}
 \end{align*}
-However if $g$ is also enabled then player $0$ can move from $(s_1, [a]X \vee \langle b \rangle \top)$ to $(s_1, \langle b \rangle \top)$, thus giving the following winning sets:
+However if $g$ is also enabled then player $0$ wins in $(s_1, \langle b \rangle \top)$, thus giving the following winning sets:
 \begin{align*}
 W_0^{\{f,g\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
 & (s_1, [a]X \vee \langle b \rangle \top),\\
@@ -112,11 +104,11 @@ W_0^{\{f,g\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
 W_1^{\{f,g\}} = \{\}
 \end{align*}
 
-In the next section we will show how the winning sets relate to the model verification problem.
+In the next section we will show how the winning sets relate to the model verification question.
 
 
 \subsection{FTS verification using FPG}
-We can create an FPG from an FTS and project it to an PG, this is shown in the following diagram:\\
+We can create an FPG from an FTS and project it to a PG, this is shown in the following diagram:\\
 \begin{tikzpicture}
 \matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]
 {
@@ -186,7 +178,7 @@ We will now show that the resulting parity games are identical.
 	\end{proof}
 \end{theorem}
 
-Having proven this we can put the relation between the different games and transition systems in the following diagram:
+Having proven this we can visualize the relation between the different games and transition systems in the following diagram:
 \\\begin{tikzpicture}
 \matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]
 {
@@ -200,7 +192,7 @@ edge node [above] {$\varphi$} (m-1-2)
 (m-1-2) edge [double] node [right] {$\Pi$} (m-2-2)
 ;
 \end{tikzpicture}\\
-Finally we will prove that solving an FTS answers the verification question.
+Finally we prove that solving an FTS, ie. finding winning sets for all products, answers the verification question.
 \begin{theorem}
 	\label{the_FPG_ver_FTS}
 	Given:
@@ -216,4 +208,4 @@ Finally we will prove that solving an FTS answers the verification question.
 	\end{proof}
 \end{theorem}
 
-Revisiting our prior example we can see the theorem in action by noting that $M_{|\emptyset} \models \varphi$ and $M_{|\{f\}} \not\models \varphi$. This is reflected in the winning sets: $(s_1, \mu X. [a]X \vee \langle b \rangle \top) \in W_0^\emptyset$ and $(s_1, \mu X. [a]X \vee \langle b \rangle \top) \notin W_0^{\{f\}}$ .
+Revisiting our prior example we can see the theorem in action by noting that $M_{|\emptyset} \models \varphi$ , $M_{|\{f\}} \not\models \varphi$ and $M_{|\{f,g\}} \models \varphi$. This is reflected by the vertex $(s_1, \mu X. [a]X \vee \langle b \rangle \top)$ being present in $W_0^\emptyset$ and $W_0^{\{f,g\}}$ but not in $W_0^{\{f\}}$.

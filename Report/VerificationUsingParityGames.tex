@@ -1,4 +1,4 @@
-Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a parity game. This is done by translating an LTS in combination with a formula to a parity game, the solution of the parity game provides the information needed to conclude if the model satisfies the formula. This relation is depicted in figure \ref{fig:ltsverificationusingpg}. This technique is well known and well studied, in this section we will first look at parity games, the translation from LTS and formula to a parity game and finally what we can do with this technique to verify FTS.
+Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a \textit{parity game}. This is done by translating an LTS in combination with a formula to a parity game, the solution of the parity game provides the information needed to conclude if the model satisfies the formula. This relation is depicted in figure \ref{fig:ltsverificationusingpg}. This technique is well known and well studied, in this section we will first look at parity games, the translation from LTS and formula to a parity game and finally what we can do with this technique to verify FTS.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{Diagrams/LTSVerificationUsingPG}
@@ -9,7 +9,7 @@ Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a p
 
 \subsection{Parity games}
 \begin{definition}
-	\label{def_PG}\cite{Bradfield2018}
+	\label{def_PG}(Based on \cite{Bradfield2018})
 	A parity game (PG) is a tuple $(V, V_0, V_1, E, \rho)$, where:
 	\begin{itemize}
 		\item $V = V_0 \cup V_1$ and $V_0 \cap V_1 = \emptyset$,
@@ -19,9 +19,9 @@ Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a p
 		\item $\rho :  V \rightarrow \mathbb{N}$ is a priority assignment.
 	\end{itemize}
 \end{definition}
-We write $\alpha \in \{0,1\}$ to denote an arbitrary player. We write $\overline{\alpha}$ to denote $\alpha$'s opponent, ie. $\overline{0} = 1$ and $\overline{1} = 0$.
+A parity game is played by players 0 and 1. We write $\alpha \in \{0,1\}$ to denote an arbitrary player. We write $\overline{\alpha}$ to denote $\alpha$'s opponent, ie. $\overline{0} = 1$ and $\overline{1} = 0$.
 
-A parity game is played by players 0 and 1. A play starts with placing a token on vertex $v \in V$. Player $\alpha$ moves the token if the token is on a vertex owned by $\alpha$, ie. $v \in V_\alpha$. The token can be moved to $w \in V$, with $(v,w) \in E$. A series of moves results in a sequence of vertices, called path. For path $\pi$ we write $\pi_i$ to denote the $i^{\text{th}}$ vertex in path $\pi$. A play ends when the token is on vertex $v \in V_\alpha$ and $\alpha$ can't move the token anywhere, in this case player $\overline{\alpha}$ wins the play. If the play results in an infinite path $\pi$ then we determine the highest priority that occurs infinitely often in this path, formally
+ A play starts with placing a token on vertex $v \in V$. Player $\alpha$ moves the token if the token is on a vertex owned by $\alpha$, ie. $v \in V_\alpha$. The token can be moved to $w \in V$, with $(v,w) \in E$. A series of moves results in a sequence of vertices, called path. For path $\pi$ we write $\pi_i$ to denote the $i^{\text{th}}$ vertex in path $\pi$. A play ends when the token is on vertex $v \in V_\alpha$ and $\alpha$ can't move the token anywhere, in this case player $\overline{\alpha}$ wins the play. If the play results in an infinite path $\pi$ then we determine the highest priority that occurs infinitely often in this path, formally
 \[ \max\{ p \ |\ \forall_j \exists_i j < i \wedge p = \rho(\pi_i) \}\] 
 If the highest priority is odd then player $1$ wins, if it is even player $0$ wins.
 \begin{figure}[h]
@@ -47,35 +47,21 @@ A strategy $\sigma$ for player $\alpha$ is winning from vertex $v$ if and only i
 \subsection{Creating parity games}
 A parity game can be created from a combination of an LTS and a modal $\mu$-calculus formula. To do this we first examine some of the properties of the modal $\mu$-calculus. 
 
-First we introduce the notion of unfolding, a fixpoint formula $\mu X . \varphi$ can be unfolded resulting in formula $\varphi$ where every occurrence of $X$ is replaced by $\mu X . \varphi$, denoted by $\varphi [ X:= \mu X . \varphi]$. A fixpoint formula is equivalent to its unfolding (\cite{Bradfield2018}), ie. for some LTS $[\![\mu X . \varphi]\!]^\eta = [\![\varphi[X:=\mu X . \varphi]]\!]^\eta$. The same holds for the fixpoint operator $\nu$.
+First we introduce the notion of unfolding, a fixpoint formula $\mu X . \varphi$ can be unfolded resulting in formula $\varphi$ where every occurrence of $X$ is replaced by $\mu X . \varphi$, denoted by $\varphi [ X:= \mu X . \varphi]$. A fixpoint formula is equivalent to its unfolding \cite{Bradfield2018}, ie. for some LTS $[\![\mu X . \varphi]\!]^\eta = [\![\varphi[X:=\mu X . \varphi]]\!]^\eta$. The same holds for the fixpoint operator $\nu$.
 
-Next we define alternating depth, this definition is literally taken from \cite{Bradfield2018}:
+Next we define alternating depth, this definition is taken from \cite{Bradfield2018}:
 \begin{definition}
 	The dependency order on bound variables of $\varphi$	is the smallest partial order such that $X \leq_\varphi Y$ if $X$ occurs free in $\sigma Y. \psi$ . The alternation depth of a $\mu$-variable X in formula $\varphi $ is the maximal length of a chain $X_1 \leq_\varphi  \dots \leq_\varphi X_n$ where $X = X_1$, variables $X_1, X_3, \dots$ are $\mu$-variables and variables $X_2, X_4, \dots$ are $\nu$-variables. The alternation depth of a $\nu$-variable is defined similarly. The alternation depth of formula $\varphi$, denoted $adepth(\varphi)$, is the maximum of the alternation depths of the variables bound in $\varphi$, or zero if there are no fixpoints.
 \end{definition}
-The example formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ which states that for an LTS with $Act = \{ ins, std\}$ the action std must occur infinitely often over all runs. Since $X$ occurs free in $\mu Y. ([ins] Y \wedge [std]X)$ we have $adepth(Y) = 1$ and $adepth(X) = 2$. As shown in \cite{Bradfield2018} we have find that formula $\mu X. \psi$ has the same alternation depth as its unfolding $\psi[X:=\mu X. \psi]$. Similarly for the greatest fixpoint.
+The example formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ which states that for an LTS with $Act = \{ ins, std\}$ the action \textit{std} must occur infinitely often over all runs. Since $X$ occurs free in $\mu Y. ([ins] Y \wedge [std]X)$ we have $adepth(Y) = 1$ and $adepth(X) = 2$. As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the same alternation depth as its unfolding $\psi[X:=\mu X. \psi]$. Similarly for the greatest fixpoint.
 
-We can now define the transformation from an LTS and a formula to a parity game. This relation is shown in the following diagram:
-
-\begin{tikzpicture}
-\matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]
-{
-	\text{LTS} & \text{PG} \\};
-\path[-stealth]
-(m-1-1)
-edge node [above] {$\varphi$} (m-1-2)
-;
-\end{tikzpicture}\\
+We can now define the transformation from an LTS and a formula to a parity game.
 \begin{definition}
-	\label{def_LTS2PG}\cite{Bradfield2018}
+	\label{def_LTS2PG}(Based on \cite{Bradfield2018})
 	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and closed formula $\varphi$ to a PG $(V, V_0, V_1, E, \rho)$.
 	
-	A vertex in the parity game is represented by a pair $(s, \psi)$ where $s \in S$ and $\psi$ is a modal $\mu$-calculus formula. We will create a vertex for every state with every subformula of $\varphi$ plus the unfoldings of fixpoint operators. Formally we define the set of vertices by first defining the set of subformula's:
-	\[ F = \{ \psi\ |\ \psi \text{ is a subformula of } \varphi \} \text{, note that $\varphi$ is a subformula of $\varphi$,} \]
-	and the set of unfolded fixpoint subformula's:
-	\[ F_\sigma = \{\psi[X:=\sigma X. \psi]\ |\ \sigma X. \psi \in F \text{ with } \sigma \in \{\mu, \nu\}\} \]
-	Having these sets we can define the set of vertices by:
-	\[ V = S \times (F \cup F_{\sigma})\]
+	A vertex in the parity game is represented by a pair $(s, \psi)$ where $s \in S$ and $\psi$ is a modal $\mu$-calculus formula. We will create a vertex for every state with every subformula of $\varphi$. Note that a formula is also a subformula of itself. We get the set of vertices:
+	\[ V = S \times \{ \psi\ |\ \psi \text{ is a subformula of } \varphi \} \]
 	
 	We create the parity game with the smallest set $E$ such that:
 	\begin{itemize}
@@ -97,7 +83,7 @@ edge node [above] {$\varphi$} (m-1-2)
 			\item If $\psi = [ a ] \psi'$ then $v \in V_1$ and for every $s \xrightarrow{ a} s'$ we have  $(v, (s', \psi')) \in E$.
 			\item If $\psi = \mu X. \psi'$ then $(v, (s, \psi')) \in E$.
 			\item If $\psi = \nu X. \psi'$ then $(v, (s, \psi')) \in E$.
-			\item If $\psi = X$ then $(v, \sigma X. \psi') \in E$ where $\sigma X. \psi' \in F$.
+			\item If $\psi = X$ then $(v, (s, \sigma X. \psi')) \in E$ where $\sigma \in \{\nu,\mu\}$ and $\sigma X. \psi'$ is a subformula of $\varphi$.
 		\end{itemize}
 		Note that directing formula $\sigma X. \psi'$ to $\psi'$ and directing $X$ to $\sigma X. \psi'$ is equivalent to using unfolding which would direct $\sigma X. \psi'$ to $\psi'[X:=\sigma X. \psi']$.
 	\end{itemize}
@@ -114,8 +100,13 @@ edge node [above] {$\varphi$} (m-1-2)
 	\includegraphics[scale=0.3]{Examples/ExamleVerification/LTSprojempty}
 	\caption[LTS $M$]{LTS $M$}
 	\label{fig:exverltsprojempty}
+\end{figure}\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{Examples/ExamleVerification/PG}
+\caption[Parity game $LTS2PG(M, \varphi)$]{Parity game $LTS2PG(M, \varphi)$}
+\label{fig:exverpg}
 \end{figure}
-Consider the LTS in figure \ref{fig:exverltsprojempty} and formula $\varphi = \mu X.[a]X \vee \langle b \rangle \top$ expressing that on any path reached by a's can eventually do a b action. We will use this as a working example in the next few sections. The resulting parity game is depicted in figure \ref{fig:exverpg}. Solving this parity game results in the following winning sets:
+Consider LTS $M$ in figure \ref{fig:exverltsprojempty} and formula $\varphi = \mu X.([a]X \vee \langle b \rangle \top)$ expressing that on any path reached by $a$'s we can eventually do a $b$ action. We will use this as a working example in the next few sections. The resulting parity game is depicted in figure \ref{fig:exverpg}. Solving this parity game results in the following winning sets:
 \begin{align*}
 W_0 = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
 & (s_1, [a]X \vee \langle b \rangle \top),\\
@@ -136,14 +127,8 @@ With the strategies $\sigma_0$ for player $0$ and $\sigma_1$ for player $1$ bein
 \sigma_0 = \{
 &(s_1, [a]X \vee \langle b \rangle \top) \mapsto (s_1, [a] X), \\
 &(s_2, [a]X \vee \langle b \rangle \top) \mapsto (s_2, \langle b \rangle \top) \} \\
-\sigma_1 = \{\} \\
+\sigma_1 = \{&\} \\
 \end{align*}
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.3]{Examples/ExamleVerification/PG}
-	\caption[Parity game resulting from $M$ and $\varphi$]{Parity game resulting from $M$ and $\varphi$}
-	\label{fig:exverpg}
-\end{figure}
 
 State $s$ in LTS $M$ only satisfies $\varphi$ iff player $0$ has a winning strategy from vertex $(s, \varphi)$. This is formally stated in the following theorem which is proven in \cite{Bradfield2018}.
 \begin{theorem}
@@ -151,7 +136,7 @@ State $s$ in LTS $M$ only satisfies $\varphi$ iff player $0$ has a winning strat
 \end{theorem}
 
 \subsection{FTSs and parity games}
-Using the theory we have seen thus far we can verify FTSs. Namely by verifying every projection of the FTS to a valid product. This relation is depicted in the following diagram where $\Pi$ indicates a projection:
+Using the theory we have seen thus far we can verify FTSs by verifying every projection of the FTS to a valid product. This relation is depicted in the following diagram where $\Pi$ indicates a projection:
 \\\begin{tikzpicture}
 \matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]
 {
@@ -163,10 +148,4 @@ Using the theory we have seen thus far we can verify FTSs. Namely by verifying e
 (m-2-2)
 ;
 \end{tikzpicture}\\
-As mentioned before verifying products dependently is potentially more efficient. In the next two sections we define an extension to parity games, namely \textit{variability parity games} (VPG) which can be used to verify an FTS. We will translate an FTS and a formula into a VPG which solution will provide the information needed to conclude for which products the FTS satisfies the formula. This relation is depicted in figure \ref{fig:ftsverificationusingvpg}.
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.5]{Diagrams/FTSVerificationUsingVPG}
-	\caption[FTS verification using VPG]{FTS verification using VPG}
-	\label{fig:ftsverificationusingvpg}
-\end{figure}
+As mentioned before verifying products dependently is potentially more efficient. In the next two sections we define an extension to parity games, namely \textit{variability parity games} (VPG) which can be used to verify an FTS. We will translate an FTS and a formula into a VPG which solution will provide the information needed to conclude for which products the FTS satisfies the formula.
