@@ -31,22 +31,22 @@ The modal $\mu$-calculus contains boolean constants $\top$ and $\bot$, propositi
 A modal $\mu$-calculus formula can be interpreted with an LTS, this results in a set of states for which the formula holds.
 \begin{definition}
 	\label{def_mu_sem} For LTS $(S, Act, trans, s_0)$ we inductively define the interpretation of a modal $\mu$-calculus formula $\varphi$, notation
-	$[\![ \varphi ]\!]^\eta$, where $\eta : \mathcal{X} \rightarrow \mathcal{P}(S)$ is a logical variable valuation, as a set of states
+	$\llbracket \varphi \rrbracket^\eta$, where $\eta : \mathcal{X} \rightarrow \mathcal{P}(S)$ is a logical variable valuation, as a set of states
 	where $\varphi$ is valid, by:
 	\begin{align*}
-	&[\![ \mathit{\top} ]\!]^\eta &&= S\\
-	&[\![ \mathit{\bot} ]\!]^\eta &&= \emptyset\\
-	&[\![ \varphi_1 \wedge \varphi_2 ]\!]^\eta &&= [\![ \varphi_1 ]\!]^\eta \cap [\![ \varphi_2 ]\!]^\eta \\
-	&[\![ \varphi_1 \vee \varphi_2 ]\!]^\eta &&= [\![ \varphi_1 ]\!]^\eta \cup [\![ \varphi_2 ]\!]^\eta\\
-	&[\![ \langle a \rangle \varphi ]\!]^\eta &&= \{s \in S|\exists_{s' \in S} s \xrightarrow {a} s' \wedge s' \in [\![ \varphi ]\!]^\eta\}\\
-	&[\![ [ a ] \varphi ]\!]^\eta &&= \{s \in S|\forall_{s' \in S} s \xrightarrow {a} s' \implies s' \in [\![ \varphi ]\!]^\eta\}\\
-	&[\![ \mu X. \varphi ]\!]^\eta &&= \bigcap_{f \subseteq S}\{f | f = [\![ \varphi ]\!]^{\eta[X:=f]}\}\\
-	&[\![ \nu X. \varphi ]\!]^\eta &&= \bigcup_{f \subseteq S}\{f | f = [\![ \varphi ]\!]^{\eta[X:=f]}\}\\
-	&[\![ X ]\!]^\eta &&= \eta(X)
+	&\llbracket {\top} \rrbracket^\eta &&= S\\
+	&\llbracket {\bot} \rrbracket^\eta &&= \emptyset\\
+	&\llbracket \varphi_1 \wedge \varphi_2 \rrbracket^\eta &&= \llbracket \varphi_1 \rrbracket^\eta \cap \llbracket \varphi_2 \rrbracket^\eta \\
+	&\llbracket \varphi_1 \vee \varphi_2 \rrbracket^\eta &&= \llbracket \varphi_1 \rrbracket^\eta \cup \llbracket \varphi_2 \rrbracket^\eta\\
+	&\llbracket \langle a \rangle \varphi \rrbracket^\eta &&= \{s \in S|\exists_{s' \in S} s \xrightarrow {a} s' \wedge s' \in \llbracket \varphi \rrbracket^\eta\}\\
+	&\llbracket [ a ] \varphi \rrbracket^\eta &&= \{s \in S|\forall_{s' \in S} s \xrightarrow {a} s' \implies s' \in \llbracket \varphi \rrbracket^\eta\}\\
+	&\llbracket \mu X. \varphi \rrbracket^\eta &&= \bigcap_{f \subseteq S}\{f | f = \llbracket \varphi \rrbracket^{\eta[X:=f]}\}\\
+	&\llbracket \nu X. \varphi \rrbracket^\eta &&= \bigcup_{f \subseteq S}\{f | f = \llbracket \varphi \rrbracket^{\eta[X:=f]}\}\\
+	&\llbracket X \rrbracket^\eta &&= \eta(X)
 	\end{align*}
 \end{definition}
 
-Given closed formula $\varphi$, LTS $M = (S, Act, trans, s_0)$ and $s \in S$ we write $(M,s) \models \varphi$ iff $s \in [\![ \varphi ]\!]^\eta$ for $M$, we say that formula $\varphi$ holds for $M$ in state $s$. If formula $\varphi$ holds for $M$ in the initial state we say that formula $\varphi$ holds for $M$ and write $M \models \varphi$.
+Given closed formula $\varphi$, LTS $M = (S, Act, trans, s_0)$ and $s \in S$ we write $(M,s) \models \varphi$ iff $s \in \llbracket \varphi \rrbracket^\eta$ for $M$, we say that formula $\varphi$ holds for $M$ in state $s$. If formula $\varphi$ holds for $M$ in the initial state we say that formula $\varphi$ holds for $M$ and write $M \models \varphi$.
 
 Again consider the coffee machine example (figure \ref{fig:coffeemachinebasiceurolts}) and formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ (taken from \cite{FamBasedModelCheckingWithMCRL2}) which states that action \textit{std} must occur infinitely often over all runs. Obviously this holds for the coffee machine, therefore we have $C \models \varphi$.
 

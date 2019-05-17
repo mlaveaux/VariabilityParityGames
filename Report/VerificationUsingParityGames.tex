@@ -49,19 +49,38 @@ A parity game can be created from a combination of an LTS and a modal $\mu$-calc
 
 First we introduce the notion of unfolding, a fixpoint formula $\mu X . \varphi$ can be unfolded resulting in formula $\varphi$ where every occurrence of $X$ is replaced by $\mu X . \varphi$, denoted by $\varphi [ X:= \mu X . \varphi]$. A fixpoint formula is equivalent to its unfolding \cite{Bradfield2018}, ie. for some LTS $[\![\mu X . \varphi]\!]^\eta = [\![\varphi[X:=\mu X . \varphi]]\!]^\eta$. The same holds for the fixpoint operator $\nu$.
 
-Next we define alternating depth, this definition is taken from \cite{Bradfield2018}:
+Next we define the Fischer-Ladner closure for a closed $\mu$-calculus formula 
+\cite{STREETT1989249,FISCHER1979194}. The Fischer-Ladner closure of $\varphi$ is the set $\textit{FL}(\varphi)$ of closed formula's containing at least $\varphi$. Furthermore for every formula $\psi$ in $\textit{FL}(\varphi)$ it holds that for every direct subformula $\psi'$ of $\psi$ there is a formula in $\textit{FL}(\varphi)$ that is equivalent to $\psi'$.
+\begin{definition}
+	\label{def_FLClosure}
+	The Fischer-Ladner closure of closed $\mu$-calculus formula $\varphi$ is the smallest set $\textit{FL}(\varphi)$ satisfying the following constraints:
+	\begin{itemize}
+		\item $\varphi \in \textit{FL}(\varphi)$,
+		\item if $\varphi_1 \vee \varphi_2 \in \textit{FL}(\varphi)$ then $\varphi_1 ,\varphi_2 \in \textit{FL}(\varphi)$,
+		\item if $\varphi_1 \wedge \varphi_2 \in \textit{FL}(\varphi)$ then $\varphi_1 ,\varphi_2 \in \textit{FL}(\varphi)$,
+		\item if $\langle a \rangle \varphi' \in \textit{FL}(\varphi)$ then $\varphi' \in \textit{FL}(\varphi)$,
+		\item if $[ a ] \varphi' \in \textit{FL}(\varphi)$ then $\varphi' \in \textit{FL}(\varphi)$,
+		\item if $\mu X . \varphi' \in \textit{FL}(\varphi)$ then $\varphi'[X:= \mu X . \varphi'] \in \textit{FL}(\varphi)$ and
+		\item if $\nu X . \varphi' \in \textit{FL}(\varphi)$ then $\varphi'[X:= \nu X . \varphi'] \in \textit{FL}(\varphi)$.
+		
+	\end{itemize}
+\end{definition}
+
+Finally we define alternating depth, this definition is taken from \cite{Bradfield2018}:
 \begin{definition}
 	The dependency order on bound variables of $\varphi$	is the smallest partial order such that $X \leq_\varphi Y$ if $X$ occurs free in $\sigma Y. \psi$ . The alternation depth of a $\mu$-variable X in formula $\varphi $ is the maximal length of a chain $X_1 \leq_\varphi  \dots \leq_\varphi X_n$ where $X = X_1$, variables $X_1, X_3, \dots$ are $\mu$-variables and variables $X_2, X_4, \dots$ are $\nu$-variables. The alternation depth of a $\nu$-variable is defined similarly. The alternation depth of formula $\varphi$, denoted $adepth(\varphi)$, is the maximum of the alternation depths of the variables bound in $\varphi$, or zero if there are no fixpoints.
 \end{definition}
 The example formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ which states that for an LTS with $Act = \{ ins, std\}$ the action \textit{std} must occur infinitely often over all runs. Since $X$ occurs free in $\mu Y. ([ins] Y \wedge [std]X)$ we have $adepth(Y) = 1$ and $adepth(X) = 2$. As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the same alternation depth as its unfolding $\psi[X:=\mu X. \psi]$. Similarly for the greatest fixpoint.
+
+
 
 We can now define the transformation from an LTS and a formula to a parity game.
 \begin{definition}
 	\label{def_LTS2PG}(Based on \cite{Bradfield2018})
 	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and closed formula $\varphi$ to a PG $(V, V_0, V_1, E, \rho)$.
 	
-	A vertex in the parity game is represented by a pair $(s, \psi)$ where $s \in S$ and $\psi$ is a modal $\mu$-calculus formula. We will create a vertex for every state with every subformula of $\varphi$. Note that a formula is also a subformula of itself. We get the set of vertices:
-	\[ V = S \times \{ \psi\ |\ \psi \text{ is a subformula of } \varphi \} \]
+	A vertex in the parity game is represented by a pair $(s, \psi)$ where $s \in S$ and $\psi$ is a modal $\mu$-calculus formula. We will create a vertex for every state with every formula in the Fischer-Ladner closure of $\varphi$. We get the set of vertices:
+	\[ V = S \times \textit{FL}(\varphi) \]
 	
 	We create the parity game with the smallest set $E$ such that:
 	\begin{itemize}
@@ -81,13 +100,11 @@ We can now define the transformation from an LTS and a formula to a parity game.
 			\subitem $(v, (s,\psi_2)) \in E$.
 			\item If $\psi = \langle a \rangle \psi'$ then $v \in V_0$ and for every $s \xrightarrow{ a} s'$ we have $(v, (s', \psi')) \in E$.
 			\item If $\psi = [ a ] \psi'$ then $v \in V_1$ and for every $s \xrightarrow{ a} s'$ we have  $(v, (s', \psi')) \in E$.
-			\item If $\psi = \mu X. \psi'$ then $(v, (s, \psi')) \in E$.
-			\item If $\psi = \nu X. \psi'$ then $(v, (s, \psi')) \in E$.
-			\item If $\psi = X$ then $(v, (s, \sigma X. \psi')) \in E$ where $\sigma \in \{\nu,\mu\}$ and $\sigma X. \psi'$ is a subformula of $\varphi$.
+			\item If $\psi = \mu X. \psi'$ then $(v, (s, \psi'[X:=\mu X. \psi'])) \in E$.
+			\item If $\psi = \nu X. \psi'$ then $(v, (s, \psi'[X:=\nu X. \psi'])) \in E$.
 		\end{itemize}
-		Note that directing formula $\sigma X. \psi'$ to $\psi'$ and directing $X$ to $\sigma X. \psi'$ is equivalent to using unfolding which would direct $\sigma X. \psi'$ to $\psi'[X:=\sigma X. \psi']$.
 	\end{itemize}
-	
+	Since the Fischer-Ladner formula's are closed we never get the case $\psi = X$.
 	
 	Finally we have $\rho(s, \psi) = \begin{cases}
 	2 \lfloor adepth(X) / 2 \rfloor & \text{if } \psi = \nu X. \psi'\\
