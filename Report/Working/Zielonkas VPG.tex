@@ -26,23 +26,25 @@
 \author{Sjef van Loo}
 
 \begin{document}
-$\alpha\textit{-VAttr} : \mathcal{P}(G) \rightarrow \mathcal{P}(\mathfrak{C} \times V) \rightarrow \mathcal{P}(\mathfrak{C} \times V)$\\
+$\alpha\textit{-VAttr} : \textit{VPG} \rightarrow \mathcal{P}(\mathfrak{C} \times V) \rightarrow \mathcal{P}(\mathfrak{C} \times V)$\\
 \begin{align*}
 \alpha\textit{-VAttr}(G, U) = \mu A . A &\cup U \\
 & \cup \{(c,v) \in \mathfrak{C} \times V_\alpha\ |\ \exists v' \in V : (c, v') \in A \wedge (v, v') \in E \wedge c \in \theta(v,v') \}\\
 & \cup \{(c,v) \in \mathfrak{C} \times V_{\overline{\alpha}}\ |\ \forall v' \in V : (v,v') \in E \wedge c \in \theta(v,v') \implies (c, v') \in A \}
 \end{align*}\\\\
 
-$\backslash : \mathcal{P}(G) \rightarrow \mathcal{P}(\mathfrak{C} \times V) \rightarrow \mathcal{P}(G)$\\
-$(V, V_0, V_1, E, \rho, \mathfrak{C}, \theta)\ \backslash\ CV = (V', V_0', V_1', E', \rho, \mathfrak{C}, \theta')$ such that:\\
+$\backslash : \textit{VPG} \rightarrow \mathcal{P}(\mathfrak{C} \times V) \rightarrow \textit{VPG}$\\
+$(V, V_0, V_1, E, \Omega, \mathfrak{C}, \theta)\ \backslash\ CV = (V', V_0', V_1', E', \Omega, \mathfrak{C}, \theta')$ such that:\\
 $\theta'(u,v) = \theta(u,v) \backslash \bigcup\{c\ |\ (c,w) \in CV \wedge (u = w \vee v = w)\}$\\
 $E' = \{e \in E\ |\ \theta'(e) \neq \emptyset \}$\\
-$V' = \{u \in V\ |\ \exists (v,w) \in E' : v = u \vee w = u\}$\\
+$V' = \{u \in V\ |\ \exists (v,w) \in E' : v = u \wedge w = u\}$\\
 $V_0' = V_0 \cap V'$\\
 $V_1' = V_1 \cap V'$\\\\\\
+Changes to the original arg: reason not about vertices but about configuration, vertex pairs. Introduce a new parameter $X$: exclusion set. This contains conf, vertex pairs that ought not to be considered. The reasons is that a vertex might still be in the subgame but some of the configurations are not to be considered for that vertex.\\\\\\
+Params: $\textit{VPG } G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta)$, $X \subseteq \mathfrak{C} \times V$
 \begin{algorithmic}[1]
-	\State $m \gets \min\{ \rho(v)\ |\ v \in V\}$
-	\State $h \gets\max\{ \rho(v)\ |\ v \in V\}$
+	\State $m \gets \min\{ \Omega(v)\ |\ v \in V\}$
+	\State $h \gets\max\{ \Omega(v)\ |\ v \in V\}$
 	\If{$h = m$ or $V = \emptyset$}
 		\If{$h$ is even or $V = \emptyset$}
 			\State \Return $(V,\emptyset)$
@@ -51,15 +53,15 @@ $V_1' = V_1 \cap V'$\\\\\\
 		\EndIf
 	\EndIf
 	\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
-	\State $U \gets \mathfrak{C} \times \{v \in V\ |\ \rho(v) = h\}$
+	\State $U \gets (\mathfrak{C} \times \{v \in V\ |\ \Omega(v) = h\}) \backslash X$
 	\State $A \gets \alpha\textit{-VAttr}(G, U)$
-	\State $(W_0', W_1') \gets \textit{Recursive}(G \backslash A) \backslash (A,A)$
+	\State $(W_0', W_1') \gets \textit{Recursive}(G \backslash A ,A \underbrace{ \cup X}_\text{?})$
 	\If{$W_{\overline{\alpha}}' =\emptyset$}
 		\State $W_\alpha \gets A \cup W_\alpha'$
 		\State $W_{\overline{\alpha}} \gets \emptyset$
 	\Else
 		\State $B \gets \overline{\alpha}\textit{-VAttr}(G,W_{\overline{\alpha}}')$
-		\State $(W_0, W_1) \gets \textit{Recursive}(G \backslash B) \backslash (B,B)$
+		\State $(W_0, W_1) \gets \textit{Recursive}(G \backslash B,B \cup X)$
 		\State $W_{\overline{\alpha}} \gets W_{\overline{\alpha}} \cup B$
 	\EndIf
 	\State \Return $(W_0, W_1)$
