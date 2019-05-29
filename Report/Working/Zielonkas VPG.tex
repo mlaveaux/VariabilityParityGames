@@ -149,7 +149,7 @@ Given MPG $G = (V, V_0, V_1, E, \Omega)$. It holds that $U \subseteq V$ is an $\
 		\begin{enumerate}
 			\item $W_0 \uplus W_1 = V$,
 			\item for any $\alpha \in \{0,1\}$ it holds that $W_\alpha$ is an $\overline{\alpha}$-MTrap in $G$ and
-			\item for every $c\in con(W_\alpha)$ there is a strategy $\sigma_\alpha^c$ such that $v \in cX$ is winning for player $\alpha$ in game $cG$.
+			\item for every $c\in con(W_\alpha)$ there is a strategy $\sigma_\alpha^c$ such that $v \in cW_\alpha$ is winning for player $\alpha$ in game $cG$.
 		\end{enumerate}
 	We will refer to the parts of the IH as IH1, IH2 and IH3.
 		
@@ -167,7 +167,7 @@ Given MPG $G = (V, V_0, V_1, E, \Omega)$. It holds that $U \subseteq V$ is an $\
 		
 		Using line 11 and 12 and lemma \ref{lem_MPG_attr_exc_trap} we get that $V\backslash A$ is an $\alpha$-MTrap in G.
 		
-		Using lemma \ref{lem_MPG_sub_trap_is_MPG} we find that $G \backslash^{\!\!M}A$ is an MPG. Since $U$ is non-empty therefore $A$ is non-empty and therefore $G \backslash^{\!\!M}A$ is smaller than $G$. Therefore we can apply the IH on it and we find $W_0'$ and $W_1'$. Let the associated strategies be $w_0^c$ and $w_1^c$.
+		Using lemma \ref{lem_MPG_sub_trap_is_MPG} we find that $G \backslash^{\!\!M}A$ is an MPG. Since $U$ is non-empty $A$ is non-empty and therefore $G \backslash^{\!\!M}A$ is smaller than $G$. Therefore we can apply the IH on it and we find $W_0'$ and $W_1'$. Let the associated strategies be $w_0^c$ and $w_1^c$.
 		
 		 We distinguish two cases:
 		\begin{itemize}
@@ -179,7 +179,7 @@ Given MPG $G = (V, V_0, V_1, E, \Omega)$. It holds that $U \subseteq V$ is an $\
 			
 			Consider play $\pi$ in game $cG$ and strategy $\sigma_\alpha^c$ that plays towards $cU$ when the token is in $cA \backslash cU$, plays $w^c_\alpha$ when the token is in $cV \backslash cA$ and plays an arbitrary edge when the token is in $cU$.
 			
-			Since $cA$ is an attractor the token will always reach $cU$ when in $cA$. So the token can only escape $cA$ through $cU$. Consider the token being in $cV\backslash cA$, if player $\overline{\alpha}$ plays to stay in $cV \backslash cA$ then player $\alpha$ wins, since strategy $w_\alpha^c$ is winning for every vertex in $cV \backslash cA$ if the token doesn't escape. If the token is played towards $cA$ by player $\overline{\alpha}$ then the play can eventually return to $cV \backslash cA$ in which case $cU$ is visited or the play can remain inside $cA$ in which case $cU$ is visited infinitely often. So a play can stay in $cV\backslash cA$ in which case player $\alpha$ wins, can play to and stay in $cA$ in which case player $\alpha$ wins or alternate between the two in which case $cU$ is infinitely often visited and player $\alpha$ wins.
+			Since $cA$ is an attractor the token will always reach $cU$ when in $cA$ and $\sigma_\alpha^c$ is played. So the token can only escape $cA$ through $cU$. Consider the token being in $cV\backslash cA$, if player $\overline{\alpha}$ plays to stay in $cV \backslash cA$ then player $\alpha$ wins, since strategy $w_\alpha^c$ is winning for every vertex in $cV \backslash cA$ if the token doesn't escape. If the token is played towards $cA$ by player $\overline{\alpha}$ then the play can eventually return to $cV \backslash cA$ in which case $cU$ is visited or the play can remain inside $cA$ in which case $cU$ is visited infinitely often. So a play can stay in $cV\backslash cA$ in which case player $\alpha$ wins, can play towards and stay in $cA$ in which case player $\alpha$ wins or alternate between the two in which case $cU$ is infinitely often visited and player $\alpha$ wins.
 			
 			This is implemented in line 14-16 of the algorithm.
 			
@@ -191,7 +191,7 @@ Given MPG $G = (V, V_0, V_1, E, \Omega)$. It holds that $U \subseteq V$ is an $\
 			
 			By lemma \ref{lem_MPG_sub_trap_is_MPG} we find that $G\backslash^{\!\!M}B$ is an MPG. Since $B$ is non-empty the game $G\backslash^{\!\!M}B$ is smaller than the game $G$, therefore we can apply the IH and we find $W_0''$ and $W_1''$. Let the associated strategies be $q_0^c$ and $q_1^c$. Finally let $W_\alpha = W_\alpha''$ and $W_{\overline{\alpha}} = W_{\overline{\alpha}}'' \cup B$ (lines 18-21).
 			
-			Since $W_\alpha'' \uplus W_{\overline{\alpha}}'' = V\backslash B$ by IH we have $W_\alpha \uplus = W_{\overline{\alpha}}$ (proving IH1).
+			Since $W_\alpha'' \uplus W_{\overline{\alpha}}'' = V\backslash B$ by IH we have $W_\alpha \uplus W_{\overline{\alpha}} = V$ (proving IH1).
 			
 			
 			$V \backslash B$ is an $\overline{\alpha}$-MTrap in G by lemma \ref{lem_MPG_attr_exc_trap}.
@@ -202,7 +202,7 @@ Given MPG $G = (V, V_0, V_1, E, \Omega)$. It holds that $U \subseteq V$ is an $\
 			
 			$W_{\overline{\alpha}}''$ is an $\alpha$-MTrap in $G\backslash^{\!\!M}B$ by IH.
 			
-			So $\overline{\alpha}$ has a strategy such that the token can not go from $W_{\overline{\alpha}}''$ to $W_\alpha''$. 
+			So $\overline{\alpha}$ has a strategy such that the token can not go from $W_{\overline{\alpha}}''$ to $W_\alpha''$ directly.
 			
 			Player $\overline{\alpha}$ can make sure $W_{\overline{\alpha}}''$ can only be left by going to $B$. In $B$ player $\overline{\alpha}$ has a strategy to stay in $B$ so player $\overline{\alpha}$ can force the token to stay inside $W_{\overline{\alpha}} = W_{\overline{\alpha}}'' \cup B$, hence it is an $\alpha$-MTrap (proving IH2 for $\overline{\alpha}$).
 			
@@ -210,10 +210,10 @@ Given MPG $G = (V, V_0, V_1, E, \Omega)$. It holds that $U \subseteq V$ is an $\
 			
 			Consider game $cG$, let the token be on vertex $v \in cV$. We distinguish three cases:
 			\begin{itemize}
-				\item If $v \in cW_{\overline{\alpha}}'$. We know that $cW_{\overline{\alpha}}'$ is an $\alpha$-trap in $cG$ and player $\overline{\alpha}$ has a winning strategy for every $v$.
+				\item If $v \in cW_{\overline{\alpha}}'$. We know that $cW_{\overline{\alpha}}'$ is an $\alpha$-trap in $cG$ because $V\backslash A$ is also an $\alpha$-trap and player $\overline{\alpha}$ has a winning strategy for every $v$.
 				\item If $v \in cB \backslash cW_{\overline{\alpha}}'$. Player $\overline{\alpha}$ has a strategy such that the token eventually ends up in $cW_{\overline{\alpha}}'$ and therefore player $\overline{\alpha}$ wins.
 				\item If $v \in cW_{\overline{\alpha}}''$. As shown above player $\overline{\alpha}$ has a strategy such that the token remains in $cW_{\overline{\alpha}}''$ or goes to $cB$. In the latter case player $\overline{\alpha}$ wins as shown above. In the first case player $\overline{\alpha}$ also wins by playing strategy $q_{\overline{\alpha}}^c$.
-				\item if $v \in cW_\alpha''$. Since $cW_\alpha''$ is an $\overline{\alpha}$-trap in $cG$, player $\alpha$ can play strategy $w_\alpha^c$ such that the token remains in $cW_\alpha''$ and player $\alpha$ wins.
+				\item if $v \in cW_\alpha''$. Since $cW_\alpha''$ is an $\overline{\alpha}$-trap in $cG$, player $\alpha$ can play strategy $q_\alpha^c$ such that the token remains in $cW_\alpha''$ and player $\alpha$ wins.
 			\end{itemize}
 		This proves IH3.
 		\end{itemize}
