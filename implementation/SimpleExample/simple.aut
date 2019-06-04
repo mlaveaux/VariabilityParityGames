@@ -1,0 +1,6 @@
+des (0,5,2)
+(0,"a(node(f,tt,ff))",0)
+(0,"b(node(f,node(g,tt,ff),ff))",0)
+(0,"a(tt)",1)
+(1,"a(tt)",0)
+(1,"b(tt)",1)

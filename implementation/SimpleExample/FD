@@ -1,0 +1,2 @@
+f,g
+node(f,tt, node(g,ff,tt))

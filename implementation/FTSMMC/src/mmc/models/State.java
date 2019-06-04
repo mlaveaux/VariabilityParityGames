@@ -53,6 +53,11 @@ public class State {
             Objects.equals(this.simpleTransitions, state.simpleTransitions);
     }
 
+    public boolean sameStateNr(State o)
+    {
+        return this.number == o.number;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.number, this.simpleTransitions);
@@ -64,5 +69,18 @@ public class State {
             "number=" + this.number +
             //", transitions=" + this.simpleTransitions +
             '}';
+    }
+    public void projectToAlberant(int product, StringBuilder sb)
+    {
+        for(Label l : getTransitionLabels())
+        {
+            if(l.satisfies(product))
+            {
+                for(State s: transition(l))
+                {
+                    sb.append('(' + String.valueOf(this.number) + ",\"" + l.getText() + "\"," + s.getNumber() + ")\n");
+                }
+            }
+        }
     }
 }

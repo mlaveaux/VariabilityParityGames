@@ -68,4 +68,16 @@ public class Lts {
             ", startIndex=" + this.startIndex +
             '}';
     }
+
+    public String projectToAlberant(int product)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(State s : this.states)
+        {
+            s.projectToAlberant(product, sb);
+        }
+        String a = sb.toString();
+        int nroftrans = a.split("\n").length;
+        return "des(0," + String.valueOf(nroftrans) +"," +String.valueOf(states.length)+")\n"+a;
+    }
 }

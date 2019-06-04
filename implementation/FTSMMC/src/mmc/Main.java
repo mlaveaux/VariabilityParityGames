@@ -1,8 +1,10 @@
 package mmc;
 
+import mmc.SVPG.SVPG;
 import mmc.features.FeatureDiagram;
 import mmc.aldebaran.LtsBuilder;
 import mmc.aldebaran.SyntaxException;
+import mmc.modal.visitors.CreateSVPG;
 import mmc.modal.visitors.EmersonLeiAlgorithm;
 import mmc.modal.visitors.FormulaCalculator;
 import mmc.modal.visitors.NaiveAlgorithm;
@@ -12,56 +14,80 @@ import mmc.modal.ParseException;
 import mmc.models.Lts;
 import mmc.models.State;
 
+import java.awt.*;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) {
-        try {
-            FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(new String[] {"C","Ct","Cp","M","Ma","Mq","L","Ll","Ln","Lh"},
-                    "node(C, node(Ct, node(M, node(Ma, node(L, tt, ff), node(Mq, node(L, tt, ff), ff)), node(Ma, ff, node(Mq, ff, node(L, tt, ff)))), node(Cp, node(M, node(Ma, node(L, tt, ff), node(Mq, node(L, tt, ff), ff)), node(Ma, ff, node(Mq, ff, node(L, tt, ff)))), ff)), node(Ct, ff, node(Cp, ff, node(M, node(Ma, node(L, tt, ff), node(Mq, node(L, tt, ff), ff)), node(Ma, ff, node(Mq, ff, node(L, tt, ff)))))))"
-            );
-            FeatureDiagram.PrimaryFD = FD;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if(args.length != 3) {
+        if(args.length != 4) {
             help();
             return;
         }
-        Lts lts = loadAldebaranLts(args[1]);
-        Formula formula = loadFormula(args[2]);
-        FormulaCalculator formulaCalculator = null;
+        loadFeatureDiagram(args[1]);
+        Lts fts = loadAldebaranLts(args[2]);
         switch (args[0].toLowerCase()) {
             case "project":
-                formulaCalculator = new NaiveAlgorithm(lts);
+                projectToLts(fts,args[3]);
                 break;
             case "vpg":
-                formulaCalculator = new EmersonLeiAlgorithm(lts);
+                Formula formula = loadFormula(args[3]);
+                createSVPG(fts, formula);
                 break;
             default:
                 help();
                 return;
         }
-
-        Set<State> states = formulaCalculator.calculate(formula);
-        Set<Integer> result = states.stream()
-                .map(State::getNumber)
-                .collect(Collectors.toSet());
-
-        System.out.println(formula);
-        System.out.println(String.format("Nesting depth: %s", formula.getNestingDepth()));
-        System.out.println(String.format("Alternation depth: %s", formula.getAlternationDepth()));
-        System.out.println(String.format("Dependent alternation depth: %s", formula.getDependentAlternationDepth()));
-        System.out.println(result);
-        System.out.println("Verdict: " + String.valueOf(result.contains(0)));
     }
 
+    private static void createSVPG(Lts fts, Formula formula)
+    {
+        SVPG svpg = new SVPG();
+        formula.accept(new CreateSVPG(svpg, fts, fts.getStart(),null));
+        svpg.makeInfinite();
+        System.out.print(svpg);
+    }
+
+    private static void projectToLts(Lts fts, String directory)
+    {
+        for(int i = 0;i< FeatureDiagram.PrimaryFD.products.size();i++)
+        {
+            int product = FeatureDiagram.PrimaryFD.products.get(i);
+            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
+
+            String proj = fts.projectToAlberant(product);
+            ArrayList<String> a = new ArrayList<String>();
+            a.add(proj);
+
+            try {
+                Files.write(Paths.get(directory, productString + ".aut"),
+                        a,
+                        Charset.forName("UTF-8"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void loadFeatureDiagram(String filename)
+    {
+        String fdfile = readFile(filename);
+        try {
+            FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(fdfile.split("\n")[0].split(","),
+                    fdfile.split("\n")[1]
+            );
+            FeatureDiagram.PrimaryFD = FD;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private static Lts loadAldebaranLts(String filename) {
         // http://www.mcrl2.org/web/user_manual/language_reference/lts.html#id1
         String aldebaran = readFile(filename);

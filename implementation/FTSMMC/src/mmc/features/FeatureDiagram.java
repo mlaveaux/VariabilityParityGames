@@ -10,7 +10,8 @@ public class FeatureDiagram extends BDD {
     private String[] features;
     private int[] featureVariables;
     public int FD;
-    private List<Integer> products;
+    public List<Integer> products;
+    public List<String> productStrings;
 
     public static FeatureDiagram FeatureDiagramFromBDD(String[] features, String BDD) throws Exception {
         FeatureDiagram fd = new FeatureDiagram(features);
@@ -31,19 +32,21 @@ public class FeatureDiagram extends BDD {
 
     protected void iniate(){
         products = new ArrayList<>();
-        findValidProducts(1,0);
+        productStrings = new ArrayList<>();
+        findValidProducts(1,0, "");
     }
 
-    private void findValidProducts(int i, int f)
+    private void findValidProducts(int i, int f, String productString)
     {
         if(f >= features.length)
         {
             if(super.and(i, FD) > 0) {
                 products.add(i);
+                productStrings.add(productString);
             }
         } else {
-            findValidProducts(super.and(i, featureVariables[f]), f + 1);
-            findValidProducts(super.and(i, super.not(featureVariables[f])), f + 1);
+            findValidProducts(super.and(i, featureVariables[f]), f + 1, productString + '1');
+            findValidProducts(super.and(i, super.not(featureVariables[f])), f + 1, productString + '0');
         }
     }
 
