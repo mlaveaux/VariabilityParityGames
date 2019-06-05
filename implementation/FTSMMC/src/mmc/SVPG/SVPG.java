@@ -109,7 +109,7 @@ public class SVPG {
         sb.append("confs ");
         sb.append(bddIntToString(FeatureDiagram.PrimaryFD.FD,boolLiteral));
 
-        sb.append(";\nParity " + String.valueOf(vertices.size()) + ";\n");
+        sb.append(";\nparity " + String.valueOf(vertices.size()) + ";\n");
         for(Vertex v : vertices){
             sb.append(String.format("%d %d %d ",Index.get(v), v.prio, v.owner));
             List<String> targets = new ArrayList<>();
@@ -120,7 +120,7 @@ public class SVPG {
             sb.append(String.join(",", targets));
             sb.append(";\n");
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     private String bddIntToString(int bdd, String trueLiteral) throws UnsupportedEncodingException {
