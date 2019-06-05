@@ -13,6 +13,12 @@ public class FeatureDiagram extends BDD {
     public List<Integer> products;
     public List<String> productStrings;
 
+    public int varCount()
+    {
+        return featureVariables.length;
+    }
+
+
     public static FeatureDiagram FeatureDiagramFromBDD(String[] features, String BDD) throws Exception {
         FeatureDiagram fd = new FeatureDiagram(features);
         fd.FD = BDDParser.parseBDD(BDD, fd);

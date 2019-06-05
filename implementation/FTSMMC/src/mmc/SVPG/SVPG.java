@@ -4,7 +4,9 @@ import mmc.features.FeatureDiagram;
 import mmc.modal.formulas.Formula;
 import mmc.models.State;
 
-import java.util.ArrayList;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
 import java.util.List;
 
 public class SVPG {
@@ -56,16 +58,83 @@ public class SVPG {
 
         for(Vertex v : this.vertices)
         {
-            int edgeConjunction = 0;
+            int edgeDisjunction = 0;
             for(Edge e : v.edges)
-                edgeConjunction = FeatureDiagram.PrimaryFD.or(edgeConjunction, e.configurations);
-            if(edgeConjunction != 1){
+                edgeDisjunction = FeatureDiagram.PrimaryFD.or(edgeDisjunction, e.configurations);
+            if(edgeDisjunction != 1){
                 Edge sinkEdge = new Edge();
                 sinkEdge.target = (v.owner == 0)?l0:l1;
-                sinkEdge.configurations = FeatureDiagram.PrimaryFD.not(edgeConjunction);
+                sinkEdge.configurations = FeatureDiagram.PrimaryFD.not(edgeDisjunction);
                 v.addEdge(sinkEdge);
                 sinkEdge = null;
             }
         }
+    }
+
+    public String projectToPG(int product)
+    {
+        Map<Vertex, Integer> Index = new HashMap<>();
+        int i = 0;
+        for(Vertex v : vertices){
+            Index.put(v, i++);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("parity " + String.valueOf(vertices.size()) + ";\n");
+        for(Vertex v : vertices){
+            sb.append(String.format("%d %d %d ",Index.get(v), v.prio, v.owner));
+            List<String> targets = new ArrayList<>();
+            for(Edge e : v.edges){
+                if(FeatureDiagram.PrimaryFD.and(e.configurations, product) > 0)
+                    targets.add(String.valueOf(Index.get(e.target)));
+            }
+
+            sb.append(String.join(",", targets));
+            sb.append(";\n");
+        }
+        return sb.toString();
+    }
+
+    public String toSVPG() throws UnsupportedEncodingException {
+        Map<Vertex, Integer> Index = new HashMap<>();
+        int i = 0;
+        for(Vertex v : vertices){
+            Index.put(v, i++);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("bools " + String.valueOf(FeatureDiagram.PrimaryFD.varCount())+";\n");
+        String boolLiteral = "";
+        for(i = 0;i<FeatureDiagram.PrimaryFD.varCount();i++)
+            boolLiteral+="-";
+        sb.append("confs ");
+        sb.append(bddIntToString(FeatureDiagram.PrimaryFD.FD,boolLiteral));
+
+        sb.append(";\nParity " + String.valueOf(vertices.size()) + ";\n");
+        for(Vertex v : vertices){
+            sb.append(String.format("%d %d %d ",Index.get(v), v.prio, v.owner));
+            List<String> targets = new ArrayList<>();
+            for(Edge e : v.edges){
+                    targets.add(String.valueOf(Index.get(e.target)) + "|" + bddIntToString(e.configurations,boolLiteral));
+            }
+
+            sb.append(String.join(",", targets));
+            sb.append(";\n");
+        }
+        return sb.toString();
+    }
+
+    private String bddIntToString(int bdd, String trueLiteral) throws UnsupportedEncodingException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        System.setOut(ps);
+
+        FeatureDiagram.PrimaryFD.printSet(bdd);
+        ps.flush();
+        byte[] products = baos.toByteArray();
+        String s = new String(products, "UTF-8");
+        s = s.trim().replace('\n','+');
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        s = s.replace("TRUE",trueLiteral);
+        return s;
     }
 }

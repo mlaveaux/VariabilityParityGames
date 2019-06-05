@@ -1,4 +1,0 @@
-( mu X. nu Y. ([pumpStart.(!pumpStop)*.pumpStop]X && [!pumpStart]Y))
-&&
-
-([true*.pumpStart] mu Z. [!pumpStop] Z)

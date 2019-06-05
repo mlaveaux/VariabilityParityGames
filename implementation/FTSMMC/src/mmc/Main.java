@@ -17,6 +17,7 @@ import mmc.models.State;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,10 +28,6 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length != 4) {
-            help();
-            return;
-        }
         loadFeatureDiagram(args[1]);
         Lts fts = loadAldebaranLts(args[2]);
         switch (args[0].toLowerCase()) {
@@ -39,7 +36,7 @@ public class Main {
                 break;
             case "vpg":
                 Formula formula = loadFormula(args[3]);
-                createSVPG(fts, formula);
+                createSVPG(fts, formula, args[4]);
                 break;
             default:
                 help();
@@ -47,12 +44,41 @@ public class Main {
         }
     }
 
-    private static void createSVPG(Lts fts, Formula formula)
+    private static void createSVPG(Lts fts, Formula formula, String directory)
     {
         SVPG svpg = new SVPG();
         formula.accept(new CreateSVPG(svpg, fts, fts.getStart(),null));
         svpg.makeInfinite();
-        System.out.print(svpg);
+        for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
+        {
+            int product = FeatureDiagram.PrimaryFD.products.get(i);
+            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
+            String proj = svpg.projectToPG(product);
+            ArrayList<String> a = new ArrayList<String>();
+            a.add(proj);
+            try {
+                Files.write(Paths.get(directory, productString),
+                        a,
+                        Charset.forName("UTF-8"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+
+            ArrayList<String> a = new ArrayList<String>();
+            a.add(svpg.toSVPG());
+            try {
+                Files.write(Paths.get(directory, "SVPG"),
+                        a,
+                        Charset.forName("UTF-8"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void projectToLts(Lts fts, String directory)
