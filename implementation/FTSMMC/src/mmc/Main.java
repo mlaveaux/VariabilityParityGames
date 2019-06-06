@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,17 +68,10 @@ public class Main {
         }
 
         try {
-
-            ArrayList<String> a = new ArrayList<String>();
-            a.add(svpg.toSVPG());
-            try {
-                Files.write(Paths.get(directory, "SVPG"),
-                        a,
-                        Charset.forName("UTF-8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (UnsupportedEncodingException e) {
+            Files.write(Paths.get(directory, "SVPG"),
+                    svpg.toSVPG().getBytes(Charset.forName("UTF-8")),
+                    StandardOpenOption.CREATE);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

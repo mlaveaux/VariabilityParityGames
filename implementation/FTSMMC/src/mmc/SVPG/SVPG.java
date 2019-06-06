@@ -102,7 +102,6 @@ public class SVPG {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("bools " + String.valueOf(FeatureDiagram.PrimaryFD.varCount())+";\n");
         String boolLiteral = "";
         for(i = 0;i<FeatureDiagram.PrimaryFD.varCount();i++)
             boolLiteral+="-";
