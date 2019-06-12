@@ -8,7 +8,9 @@ import mmc.models.Label;
 import mmc.models.Lts;
 import mmc.models.State;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CreateSVPG extends RecursiveVisitor {
@@ -39,7 +41,8 @@ public class CreateSVPG extends RecursiveVisitor {
 
         for(Label l : currentState.getTransitionLabels())
         {
-            if(l.getText().compareTo(formula.getAction().getText()) != 0)
+            List<String> actions = Arrays.asList(formula.getAction().getText().split("\\|\\|"));
+            if(!actions.contains(l.getText()))
                 continue;
             for(State t : currentState.transition(l))
             {
@@ -66,7 +69,8 @@ public class CreateSVPG extends RecursiveVisitor {
 
         for(Label l : currentState.getTransitionLabels())
         {
-            if(l.getText().compareTo(formula.getAction().getText()) != 0)
+            List<String> actions = Arrays.asList(formula.getAction().getText().split("\\|\\|"));
+            if(!actions.contains(l.getText()))
                 continue;
             for(State t : currentState.transition(l))
             {

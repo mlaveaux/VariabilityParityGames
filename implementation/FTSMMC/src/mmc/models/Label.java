@@ -10,9 +10,12 @@ public class Label {
 
     private int featureExpression;
 
-    public Label(String text) {
+    public Label(String text){
+        this(text, true);
+    }
+    public Label(String text, boolean parseFE) {
         int s = text.indexOf('(');
-        if(s == -1)
+        if(!parseFE || s == -1)
         {
             this.text = text;
             this.featureExpression = 1;

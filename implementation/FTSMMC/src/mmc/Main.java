@@ -4,10 +4,7 @@ import mmc.SVPG.SVPG;
 import mmc.features.FeatureDiagram;
 import mmc.aldebaran.LtsBuilder;
 import mmc.aldebaran.SyntaxException;
-import mmc.modal.visitors.CreateSVPG;
-import mmc.modal.visitors.EmersonLeiAlgorithm;
-import mmc.modal.visitors.FormulaCalculator;
-import mmc.modal.visitors.NaiveAlgorithm;
+import mmc.modal.visitors.*;
 import mmc.modal.formulas.Formula;
 import mmc.modal.ModalParser;
 import mmc.modal.ParseException;
@@ -30,15 +27,24 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) {
-        loadFeatureDiagram(args[1]);
-        Lts fts = loadAldebaranLts(args[2]);
+        Lts fts;
         switch (args[0].toLowerCase()) {
             case "project":
+                loadFeatureDiagram(args[1]);
+                fts = loadAldebaranLts(args[2]);
                 projectToLts(fts,args[3]);
                 break;
             case "vpg":
+                loadFeatureDiagram(args[1]);
+                fts = loadAldebaranLts(args[2]);
                 Formula formula = loadFormula(args[3]);
                 createSVPG(fts, formula, args[4]);
+                break;
+            case "parseaction":
+                Formula f = loadFormula(args[1]);
+                FormulaWriter fw = new FormulaWriter(parseActionList(args[2]));
+                f.accept(fw);
+                System.out.println(fw.getStringValue());
                 break;
             default:
                 help();
@@ -95,6 +101,11 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static String[] parseActionList(String filename){
+        String actionlistfile = readFile(filename);
+        return actionlistfile.split(",");
     }
 
     private static void loadFeatureDiagram(String filename)

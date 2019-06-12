@@ -23,7 +23,7 @@ public class ModalParser {
     private static final Set<Character> and_operator_first_set = new HashSet<>(Arrays.asList('&'));
     private static final Set<Character> or_operator_first_set = new HashSet<>(Arrays.asList('|'));
     private static final Set<Character> operator_first_set = new HashSet<>(Arrays.asList('|','&'));
-    private static final Set<Character> action_name_first_set = new HashSet<>(Arrays.asList('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','_'));
+    private static final Set<Character> action_name_first_set = new HashSet<>(Arrays.asList('(',')','!','*','|','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','_'));
 
     private Set<Character> formula_first_set;
     private String formula;
@@ -164,7 +164,7 @@ public class ModalParser {
         } else {
             throw new ParseException("formula expected.",i);
         }
-        return new DiamondFormula(new Label(action), f);
+        return new DiamondFormula(new Label(action, false), f);
     }
 
     private Formula parseBoxFormula() throws ParseException {
@@ -184,7 +184,7 @@ public class ModalParser {
         } else {
             throw new ParseException("formula expected.",i);
         }
-        return new BoxFormula(new Label(action), f);
+        return new BoxFormula(new Label(action, false), f);
     }
 
     private String parseActionName() throws ParseException {
