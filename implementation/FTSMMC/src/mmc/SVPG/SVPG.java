@@ -16,6 +16,12 @@ public class SVPG {
     {
         vertices = new ArrayList<>();
     }
+    public SVPG(Vertex[] vertices){
+        this();
+        for(int i = 0;i<vertices.length;i++){
+            this.vertices.add(vertices[i]);
+        }
+    }
     public Vertex findVertex(State originState, Formula originFormula)
     {
         for(Vertex v : vertices)
@@ -98,7 +104,7 @@ public class SVPG {
         Map<Vertex, Integer> Index = new HashMap<>();
         int i = 0;
         for(Vertex v : vertices){
-            Index.put(v, i++);
+            Index.put(v, 0000+(i++));
         }
 
         StringBuilder sb = new StringBuilder();

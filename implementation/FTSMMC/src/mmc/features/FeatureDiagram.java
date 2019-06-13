@@ -4,6 +4,7 @@ import jdd.bdd.BDD;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FeatureDiagram extends BDD {
     public static FeatureDiagram PrimaryFD;
@@ -64,5 +65,42 @@ public class FeatureDiagram extends BDD {
                 return featureVariables[i];
         }
         return -1;
+    }
+
+    public int getRandomConfigurations(float lambda){
+        int result = this.FD;
+        Random r = new Random();
+        for(int i = 0;i<featureVariables.length;i++){
+            float f = r.nextFloat();
+            if(f >= lambda){
+                int v = getVariable(String.valueOf(i));
+                if(f >= lambda + (1-lambda)/2){
+                    result = super.and(result,v);
+                } else {
+                    result = super.and(result, super.not(v));
+                }
+            }
+        }
+        return result;
+    }
+
+    public int getRandomConfigurations(){
+        int result = super.getZero();
+        Random r = new Random();
+        int nrofconfs = 1+r.nextInt((1 << this.num_vars)-1);
+        for(int i = 0;i<nrofconfs;i++){
+            int conf = r.nextInt(1 << this.num_vars);
+            int confbdd = super.getOne();
+            for(int j = 0;j< this.num_vars;j++){
+                if((1 << j) <= conf){
+                    conf -= (1<<j);
+                    confbdd = super.and(confbdd,this.featureVariables[j]);
+                } else {
+                    confbdd = super.and(confbdd,super.not(this.featureVariables[j]));
+                }
+            }
+            result = super.or(result,confbdd);
+        }
+        return result;
     }
 }

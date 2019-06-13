@@ -1,6 +1,8 @@
 package mmc;
 
+import mmc.SVPG.Edge;
 import mmc.SVPG.SVPG;
+import mmc.SVPG.Vertex;
 import mmc.features.FeatureDiagram;
 import mmc.aldebaran.LtsBuilder;
 import mmc.aldebaran.SyntaxException;
@@ -9,20 +11,15 @@ import mmc.modal.formulas.Formula;
 import mmc.modal.ModalParser;
 import mmc.modal.ParseException;
 import mmc.models.Lts;
-import mmc.models.State;
 
-import java.awt.*;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Random;
 
 public class Main {
 
@@ -46,9 +43,64 @@ public class Main {
                 f.accept(fw);
                 System.out.println(fw.getStringValue());
                 break;
+            case "randomgame":
+                randomSVPG(
+                        Integer.parseInt(args[1]),
+                        Integer.parseInt(args[2]),
+                        Integer.parseInt(args[3]),
+                        Integer.parseInt(args[4]),
+                        Integer.parseInt(args[5]),
+                        Float.parseFloat(args[6])
+                );
+                break;
             default:
                 help();
                 return;
+        }
+    }
+
+    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda){
+        String[] features = new String[c];
+        for(int i = 0;i<c;i++){
+            features[i] = String.valueOf(i);
+        }
+        try {
+            FeatureDiagram.PrimaryFD = FeatureDiagram.FeatureDiagramFromBDD(features,"tt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Random r = new Random();
+        Vertex[] vertices = new Vertex[n];
+        for(int i = 0;i<n;i++){
+            vertices[i] = new Vertex();
+            vertices[i].owner = r.nextInt(2);
+            vertices[i].prio = r.nextInt(p+1);
+        }
+        for(int i = 0;i<n;i++){
+            int m = r.nextInt(h-l+1) + l;
+            int conf = FeatureDiagram.PrimaryFD.getZero();
+            for(int j = 0;j<m;j++){
+                Edge e = new Edge();
+                e.target = vertices[r.nextInt(n)];
+                e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations();
+                conf = FeatureDiagram.PrimaryFD.or(conf, e.configurations);
+                vertices[i].addEdge(e);
+            }
+            if(conf != FeatureDiagram.PrimaryFD.FD){
+                Edge e = new Edge();
+                e.target = vertices[r.nextInt(n)];
+                e.configurations = FeatureDiagram.PrimaryFD.and(
+                        FeatureDiagram.PrimaryFD.FD,
+                        FeatureDiagram.PrimaryFD.not(conf)
+                        );
+                vertices[i].addEdge(e);
+            }
+        }
+        SVPG s = new SVPG(vertices);
+        try {
+            System.out.print(s.toSVPG());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
