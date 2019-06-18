@@ -195,6 +195,7 @@ public class Main {
         try {
             return lb.buildStrict(aldebaran);
         } catch (SyntaxException e) {
+            e.printStackTrace();
             System.err.println(String.format("Unable to parse aldebaran lts from: %s", filename));
             System.exit(2);
             return null;
@@ -207,6 +208,7 @@ public class Main {
         try {
             return mp.parse();
         } catch (ParseException e) {
+            e.printStackTrace();
             System.err.println(String.format("Unable to parse formula from: %s", filename));
             System.err.print(e);
             System.exit(2);

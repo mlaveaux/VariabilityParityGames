@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 
 public class Lexer implements Iterator<Token> {
     private int index;
-    private CharSequence input;
+    public CharSequence input;
     private final Map<TokenType, Matcher> matchers;
     private boolean eof;
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in `seq 1 1000`
+for i in `seq 1 125`
 do
 	N=$(((RANDOM%1000)+10))
 	P=$(((RANDOM%100)+1))

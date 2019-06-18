@@ -21,9 +21,8 @@ public class StrictParser extends Parser {
     }
 
     @Override
-    protected void parseTransition() {
-        super.parseTransition();
-        this.eatToken(TokenType.NEWLINE);
+    protected void parseTransition(String a) {
+        super.parseTransition(a);
     }
 
     @Override

@@ -19,10 +19,12 @@ public class Parser {
         this.lexer = lexer;
 
         this.parseHeader();
+        String[] trans = lexer.input.toString().split("\n");
+        assert(trans.length == this.transitions);
         for (int i = 0; i < this.transitions; i++) {
-            this.parseTransition();
+            this.parseTransition(trans[i]);
+            System.out.println("Parsed " + String.valueOf(i) + " out of " + this.transitions);
         }
-        this.eatToken(TokenType.EOF);
 
         return this.lts;
     }
@@ -60,20 +62,14 @@ public class Parser {
         return number;
     }
 
-    protected void parseTransition() {
-        this.eatToken(TokenType.LPAREN);
+    protected void parseTransition(String line) {
+        int fc = line.indexOf(',');
+        State start = this.lts.getState(Integer.valueOf(line.substring(1, fc)));
 
-        State start = this.parseState();
+        int lc = line.lastIndexOf(',');
+        Label label =  new Label(line.substring(fc+2,lc-1));
 
-        this.eatToken(TokenType.COMMA);
-
-        Label label = this.parseLabel();
-
-        this.eatToken(TokenType.COMMA);
-
-        State end = this.parseState();
-
-        this.eatToken(TokenType.RPAREN);
+        State end = this.lts.getState(Integer.valueOf(line.substring(lc+1, line.length() - 1)));
 
         boolean success = start.addTransition(label, end);
         if (!success) {

@@ -1,0 +1,5 @@
+(
+< (!liftButton_2*. direction_up. (!(liftButton_2 || direction_down  ))*. open_2>true &&
+< (!liftButton_3*. direction_up. (!(liftButton_3 || direction_down  ))*. open_3>true &&
+< (!liftButton_4*. direction_up. (!(liftButton_4 || direction_down  ))*. open_4>true
+)

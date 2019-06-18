@@ -1,0 +1,16 @@
+((
+	<true*><idling_1>true && (
+	<true*><idling_2>true &&(
+	<true*><idling_3>true &&(
+	<true*><idling_4>true &&
+	<true*><idling_5>true
+) ) ) )
+&&
+[ true*](
+	[idling_1] nu Y. <idling_1>Y && (
+	[idling_2] nu Y. <idling_2>Y && (
+	[idling_3] nu Y. <idling_3>Y && (
+	[idling_4] nu Y. <idling_4>Y && 
+	[idling_5] nu Y. <idling_5>Y
+) ) ) )
+)

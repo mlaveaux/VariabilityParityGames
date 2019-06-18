@@ -23,7 +23,7 @@ public class ModalParser {
     private static final Set<Character> and_operator_first_set = new HashSet<>(Arrays.asList('&'));
     private static final Set<Character> or_operator_first_set = new HashSet<>(Arrays.asList('|'));
     private static final Set<Character> operator_first_set = new HashSet<>(Arrays.asList('|','&'));
-    private static final Set<Character> action_name_first_set = new HashSet<>(Arrays.asList('(',')','!','*','|','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','_'));
+    private static final Set<Character> action_name_first_set = new HashSet<>(Arrays.asList('1','2','3','4', '5', '6', '7','8','9','0','(',')','!','*','|','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','_'));
 
     private Set<Character> formula_first_set;
     private String formula;
