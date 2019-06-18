@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="housekeeping">
+    <output-path>$PROJECT_DIR$/out/artifacts/housekeeping</output-path>
+    <root id="archive" name="FTSMMC.jar">
+      <element id="module-output" name="FTSMMC" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/jdd-108.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

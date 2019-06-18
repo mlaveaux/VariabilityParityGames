@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Main {
@@ -50,7 +52,8 @@ public class Main {
                         Integer.parseInt(args[3]),
                         Integer.parseInt(args[4]),
                         Integer.parseInt(args[5]),
-                        Float.parseFloat(args[6])
+                        Float.parseFloat(args[6]),
+                        args[7]
                 );
                 break;
             default:
@@ -59,7 +62,7 @@ public class Main {
         }
     }
 
-    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda){
+    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda, String directory){
         String[] features = new String[c];
         for(int i = 0;i<c;i++){
             features[i] = String.valueOf(i);
@@ -79,27 +82,40 @@ public class Main {
         for(int i = 0;i<n;i++){
             int m = r.nextInt(h-l+1) + l;
             int conf = FeatureDiagram.PrimaryFD.getZero();
+            boolean[] targeted = new boolean[n];
+            Arrays.fill(targeted, false);
             for(int j = 0;j<m;j++){
                 Edge e = new Edge();
-                e.target = vertices[r.nextInt(n)];
-                e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations();
+                int t = r.nextInt(n);
+                e.target = vertices[t];
+                if(targeted[t])
+                    continue;
+                targeted[t] = true;
+                e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations(lambda);
                 conf = FeatureDiagram.PrimaryFD.or(conf, e.configurations);
-                vertices[i].addEdge(e);
-            }
-            if(conf != FeatureDiagram.PrimaryFD.FD){
-                Edge e = new Edge();
-                e.target = vertices[r.nextInt(n)];
-                e.configurations = FeatureDiagram.PrimaryFD.and(
-                        FeatureDiagram.PrimaryFD.FD,
-                        FeatureDiagram.PrimaryFD.not(conf)
-                        );
                 vertices[i].addEdge(e);
             }
         }
         SVPG s = new SVPG(vertices);
+        s.makeInfinite();
+        for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
+        {
+            int product = FeatureDiagram.PrimaryFD.products.get(i);
+            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
+            String proj = s.projectToPG(product);
+            try {
+                Files.write(Paths.get(directory, "sSVPG"+productString),
+                        proj.getBytes(Charset.forName("UTF-8")),
+                        StandardOpenOption.CREATE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            System.out.print(s.toSVPG());
-        } catch (UnsupportedEncodingException e) {
+            Files.write(Paths.get(directory, "SVPG"),
+                    s.toSVPG().getBytes(Charset.forName("UTF-8")),
+                    StandardOpenOption.CREATE);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -117,7 +133,7 @@ public class Main {
             ArrayList<String> a = new ArrayList<String>();
             a.add(proj);
             try {
-                Files.write(Paths.get(directory, productString),
+                Files.write(Paths.get(directory, "sSVPG"+productString),
                         a,
                         Charset.forName("UTF-8"));
             } catch (IOException e) {

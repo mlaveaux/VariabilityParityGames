@@ -97,7 +97,7 @@ public class SVPG {
             sb.append(String.join(",", targets));
             sb.append(";\n");
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     public String toSVPG() throws UnsupportedEncodingException {
