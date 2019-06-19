@@ -6,6 +6,9 @@
 \usepackage{multicol}
 \usepackage{tikz}
 \usepackage{eurosym}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
 \DeclareRobustCommand{\officialeuro}{%
 	\ifmmode\expandafter\text\fi
 	{\fontencoding{U}\fontfamily{eurosym}\selectfont e}}
@@ -43,6 +46,10 @@
 
 \section{Variability parity games}
 \input{VariabilityParityGames}
+
+\pagebreak
+\section{Solving variability parity games}
+\input{solving}
 
 \bibliography{mybib} 
 \bibliographystyle{ieeetr}

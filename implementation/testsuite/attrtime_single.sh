@@ -10,7 +10,7 @@ do
         do
                 c=`echo $cc|sed 's/sSVPG//'`
                 $ALGDIR/run_single.sh SVPG $c > ../logs/${g}_${c}.log
-		ADD=`grep "Solving time" ../logs/${g}_${c}.log|awk -F':' '{ print $2 }'|awk '{ print $1 }'`
+		ADD=`grep "Attracting time" ../logs/${g}_${c}.log|awk -F':' '{ print $2 }'|awk '{ print $1 }'`
 		TIME=`echo $ADD + $TIME | bc`
         done
         cd ..

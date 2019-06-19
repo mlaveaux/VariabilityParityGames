@@ -2,6 +2,8 @@ package mmc.modal.formulas;
 
 import mmc.modal.visitors.FormulaVisitor;
 
+import java.util.Objects;
+
 public class LiteralTrue implements Formula {
     @Override
     public int getNestingDepth() {

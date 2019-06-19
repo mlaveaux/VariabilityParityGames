@@ -122,7 +122,10 @@ public class Main {
 
     private static void createSVPG(Lts fts, Formula formula, String directory)
     {
-        SVPG svpg = new SVPG();
+        Counter c = new Counter();
+        formula.accept(c);
+        System.out.println("Formula size: " + String.valueOf(c.counter));
+        SVPG svpg = new SVPG(c.counter * fts.getStates().length + 2);
         formula.accept(new CreateSVPG(svpg, fts, fts.getStart(),null));
         svpg.makeInfinite();
         for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
