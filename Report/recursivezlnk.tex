@@ -1,0 +1,241 @@
+\subsubsection{Original Zielonka's recursive algorithm}
+The original Zielonka's recursive algorithm, created from the constructive proof given in \cite{ZIELONKA1998135}, is defined for a total PG (ie. an infinite game). We have a few definitions that are relevant for the algorithm.
+\begin{algorithm}[h]
+	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
+	\begin{algorithmic}[1]
+		\State $m \gets \min\{ \Omega(v)\ |\ v \in V\}$
+		\State $h \gets\max\{ \Omega(v)\ |\ v \in V\}$
+		\If{$h = m$ or $V = \emptyset$}
+		\If{$h$ is even or $V = \emptyset$}
+		\State \Return $(V,\emptyset)$
+		\Else
+		\State \Return $(\emptyset, V)$
+		\EndIf
+		\EndIf
+		\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
+		\State $U \gets \{v \in V\ |\ \Omega(v) = h\}$
+		\State $A \gets \alpha\textit{-Attr}(G, U)$
+		\State $(W_0', W_1') \gets \textsc{RecursivePG}(G \backslash A)$
+		\If{$W_{\overline{\alpha}}' =\emptyset$}
+		\State $W_\alpha \gets A \cup W_\alpha'$
+		\State $W_{\overline{\alpha}} \gets \emptyset$
+		\Else
+		\State $B \gets \overline{\alpha}\textit{-Attr}(G,W_{\overline{\alpha}}')$
+		\State $(W_0'', W_1'') \gets \textsc{RecursivePG}(G \backslash B)$
+		\State $W_\alpha \gets W_\alpha''$
+		\State $W_{\overline{\alpha}} \gets W_{\overline{\alpha}}'' \cup B$
+		\EndIf
+		\State \Return $(W_0, W_1)$
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{definition}\cite{ZIELONKA1998135}
+	\label{def_attr}Given parity game $G = (V,V_0,V_1,E,\Omega)$ and a non-empty set $U \subseteq V$ we define $\alpha\textit{-Attr}(G,U)$ such that
+	\[U_0 = U \]
+	For $i \geq 0$:
+	\begin{align*}
+	U_{i+1} = &\{v \in V_\alpha\ |\ \exists v' \in V : v' \in U_i \wedge (v,v') \in E \}\\
+	\cup &\{v \in V_{\overline{\alpha}}\ |\ \forall v' \in V :(v,v') \in E \implies v' \in U_i \}
+	\end{align*}
+	\[\alpha\textit{-Attr}(G,U) = U_k \]
+	such that for $k$ we have
+	\[U_k = U_{k+1} \]
+\end{definition}
+\begin{definition}\cite{ZIELONKA1998135}
+\label{def_org_subgame}
+Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define the subgame $G \backslash U$ to be the game $(V', V_0', V_1', E', \Omega)$ with:
+\begin{itemize}
+	\item $V' = V \backslash U$,
+	\item $V_0' = V_0 \cap V'$,
+	\item $V_1' = V_1 \cap V'$ and
+	\item $E' = E \cap (V' \times V')$.
+\end{itemize}
+\end{definition}
+
+We can relax the subgame definition, to a definition where we only remove vertices and not remove edges.
+\begin{definition}
+	\label{def_relaxed_subgame}
+	Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define the relaxed subgame $G \backslash U$ to be the game $(V', V_0', V_1', ', \Omega)$ with:
+	\begin{itemize}
+		\item $V' = V \backslash U$,
+		\item $V_0' = V_0 \cap V'$ and
+		\item $V_1' = V_1 \cap V'$.
+	\end{itemize}
+\end{definition}
+We will show that using the relaxed subgame definition in the recursive algorithm gives the same result.
+\begin{lemma}
+	Using the relaxed subgame (\ref{def_relaxed_subgame}) definition in the recursive algorithm gives the same result as using the regular subgame definition (\ref{def_org_subgame}).
+	\begin{proof}
+		Let $E$ be the edge relation resulting from a regular subgame operation and $E'$ be the edge relation resulting from a relaxed subgame operation.
+		
+		We first observe that the difference between the two definitions is that in $E$ only edges exists that go from and go to vertices that are in $V$. In $E'$ edges can exists that go from and/or go to vertices that are not in $V$. We also find $E \subseteq E'$.
+		
+		Next we observe that the only place where edges are used in the algorithm is in the calculation of the attractor set. We will show that the attractor set calculated for $E$ is equal to the attractor set calculated for $E'$.
+		
+		Let $v \in V$, we distinguish two cases:
+		\begin{itemize}
+			\item Case: $v \in V_\alpha$.
+			
+			Vertex $v$ will only be attracted if there exists a $v' \in V$ such that there is an edge from $v$ to $v'$. Since $v$ and $v'$ are both in $V$ an edge $(v,v') \in E'$ will also exist in $E$, therefore the result is the same.
+			\item Case: $v \in V_{\overline{\alpha}}$.
+			
+		    Vertex $v$ will only be attracted if all the edges that go to $v' \in V$ are in $U_i$. Since edges that go from $v$ to $v'' \notin V$ are not considered the result for both $E$ and $E'$ will be the same.
+		\end{itemize}
+	\end{proof}
+\end{lemma}
+\subsubsection{Recursive algorithm for unified VPGs}
+We can modify the recursive algorithm to work with the function representation of vertices and edges introduced in section \ref{sec_unified_pg}.
+\begin{algorithm}[h]
+	\caption{$\textsc{recursiveUVPG}(\textit{PG } G = (\\
+		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
+		V_0 : \hat{V} \rightarrow 2^\mathfrak{C},\\
+		V_1 : \hat{V} \rightarrow 2^\mathfrak{C},\\
+		E : \hat{E} \rightarrow 2^\mathfrak{C},\\
+		\Omega : \hat{V} \rightarrow \mathbb{N}))$}
+	\begin{algorithmic}[1]
+		\State $m \gets \min\{ \Omega(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\State $h \gets \max\{ \Omega(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\If{$h = m$ or $V(\hat{v}) = \lambda^\emptyset$}
+		\If{$h$ is even or $V = \lambda^\emptyset$}
+		\State \Return $(V,\lambda^\emptyset)$
+		\Else
+		\State \Return $(\lambda^\emptyset, V)$
+		\EndIf
+		\EndIf
+		\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
+		\State $U \gets \{ \hat{v} |\ V(\hat{v}) \neq \emptyset \wedge \Omega(\hat{v}) = h\}$
+		\State $A \gets \alpha\textit{-FAttr}(G, U)$
+		\State $(W_0', W_1') \gets \textsc{recursiveUVPG}(G \backslash A)$
+		\If{$W_{\overline{\alpha}}' =\lambda^\emptyset$}
+		\State $W_\alpha \gets A \cup W_\alpha'$
+		\State $W_{\overline{\alpha}} \gets \lambda^\emptyset$
+		\Else
+		\State $B \gets \overline{\alpha}\textit{-FAttr}(G,W_{\overline{\alpha}}')$
+		\State $(W_0'', W_1'') \gets \textsc{recursiveUVPG}(G \backslash B)$
+		\State $W_\alpha \gets W_\alpha''$
+		\State $W_{\overline{\alpha}} \gets W_{\overline{\alpha}}'' \cup B$
+		\EndIf
+		\State \Return $(W_0, W_1)$
+	\end{algorithmic}
+\end{algorithm}
+We have two modified operators.
+\begin{definition}
+		\label{def_Uattr}Given unified VPG $G = (V, V_0,V_1,E,\Omega)$, represented function-wise, and a non-empty set $U \subseteq V$ we define $\alpha\textit{-FAttr}(G,U)$ such that
+	\[U_0 = U \]
+	For $i \geq 0$:
+	\[
+	U_{i+1}(\hat{v}) = \begin{cases}
+\bigcup_{\hat{v}'} (V(\hat{v}) \cap E(\hat{v},\hat{v}') \cap U_i(\hat{v}')) & \text{if } V_{\alpha}(\hat{v}) \neq \emptyset \\
+V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}')) \cup U_i(\hat{v}') \cup (\mathfrak{C}\backslash V(\hat{v}')) & \text{if } V_{\overline{\alpha}}(\hat{v}) \neq \emptyset \\
+	\end{cases}
+	\]
+	\[\alpha\textit{-FAttr}(G,U) = U_k \]
+	such that for $k$ we have
+	\[U_k = U_{k+1} \]
+\end{definition}
+
+\begin{definition}
+	\label{def_Usubgame}
+	For unified VPG $G = (V,V_0,V_1,E,\Omega)$, represented function-wise, and set $X \subseteq V$ we define the subgame $G \backslash X = (V',V_0',V_1',E,\Omega)$ such that:
+	\begin{itemize}
+		\item $V'(\hat{v}) = V(\hat{v}) \backslash X(\hat{v})$,
+		\item $V_0'(\hat{v}) = V'(\hat{v}) \cap V_0(\hat{v})$ and
+		\item $V_1'(\hat{v}) = V'(\hat{v}) \cap V_1(\hat{v})$.
+	\end{itemize}
+\end{definition}
+
+\begin{lemma}
+	\label{lem_attr_equal}
+	Given unified VPG $G = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise attractor $\alpha\textit{-FAttr}(G,\mathcal{U})$ is equivalent to the set-wise attractor $\alpha\textit{-Attr}(G,\mathcal{U})$ for any $\alpha \in \{0,1\}$.
+	\begin{proof}
+		Let $V,V_0,V_1,E,U$ be the set-wise representation and $V^\lambda,V_0^\lambda,V_1^\lambda,E^\lambda,U^\lambda$ be the function-wise representation of $\mathcal{V},\mathcal{V}_0,\mathcal{V}_1,\mathcal{E},\mathcal{U}$ respectively.
+		
+		The following properties hold by definition:
+		\[ (c,\hat{v}) \in X \iff c \in X^\lambda(\hat{v})\text{ for all } X\in \{V,V_0,V_1,U\}\]
+		\[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in E^\lambda(\hat{v},\hat{v}') \]
+		
+		Since the attractors are inductively defined and $U_0$ and $U^\lambda_0$ are equivalent (because $U$ and $U^\lambda$ are equivalent) we have to prove that for some $i \geq 0$, with $U_i$ being equivalent to $U^\lambda_i$, the sets $U_{i+1}$ and $U^\lambda_{i+1}$ are equivalent. The sets $U_{i+1}$ and $U^\lambda_{i+1}$ are equivalent iff:
+		\[ (c,\hat{v}) \in U_{i+1} \iff c \in U^\lambda_{i+1}(\hat{v}) \]
+		Let $(c,\hat{v}) \in V$, we consider 4 cases.
+		\begin{itemize}
+			\item Case: $(c, \hat{v}) \in V_{\alpha}$ and $(c,\hat{v}) \in U_{i+1}$:\\
+			To prove: $c \in U^\lambda_{i+1}(\hat{v})$.
+			
+			
+			It follows immediately that $c \in V^\lambda_{\alpha}(\hat{v})$ therefore $V^\lambda_{\alpha}(\hat{v}) \neq \emptyset$ so we get
+			\[ U^\lambda_{i+1} =\bigcup_{\hat{v}'} (V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap U^\lambda_i(\hat{v}')) \]
+			
+			There exists an $(c',\hat{v}') \in V$ such that $(c',\hat{v}') \in U_i$ and $((c,\hat{v}),(c',\hat{v}')) \in E$. Because edges don't cross configurations we can conclude that $c' = c$. Due to equivalence we have $c \in V^\lambda(\hat{v})$, $c \in U^\lambda_i(\hat{v}')$ and $c \in E^\lambda(\hat{v},\hat{v}')$. If we fill this in in the above formula we can conclude that $c \in U^\lambda_{i+1}(\hat{v})$.
+			\item Case: $(c, \hat{v}) \in V_{\alpha}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
+			To prove: $c \notin U^\lambda_{i+1}(\hat{v})$.
+			
+			
+			It follows immediately that $c \in V^\lambda_{\alpha}(\hat{v})$ therefore $V^\lambda_{\alpha}(\hat{v}) \neq \emptyset$ so we get
+			\[ U^\lambda_{i+1} =\bigcup_{\hat{v}'} (V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap U^\lambda_i(\hat{v}')) \]
+			
+			Assume $c \in U^\lambda_{i+1}(\hat{v})$. There must exist a $\hat{v}'$ such that $c \in V^\lambda(\hat{v})$, $c \in E^\lambda(\hat{v},\hat{v}')$ and $c \in U^\lambda_i(\hat{v}')$. Due to equivalence we have a vertex $(c,\hat{v}) \in V$, $((c,\hat{v}),(c,\hat{v}')) \in E$ and $(c,\hat{v}') \in U_i$. In which case $(c,\hat{v})$ would be attracted and would be in $U_{i+1}$ which is a contradiction.
+			\item Case: $(c, \hat{v}) \in V_{\overline{\alpha}}$ and $(c,\hat{v}) \in U_{i+1}$:\\
+			To prove: $c \in U^\lambda_{i+1}(\hat{v})$.
+			
+			
+			It follows immediately that $c \in V^\lambda_{\overline{\alpha}}(\hat{v})$ therefore $V^\lambda_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ so we get
+			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \cup (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
+			
+			Assume $c \notin U^\lambda_{i+1}(\hat{v})$. Because $c \in V^\lambda(\hat{v})$ there must exist an $\hat{v}$ such that
+			\[ c \notin ((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \text{ and } c \notin U^\lambda_i(\hat{v}') \text{ and } c \notin (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
+			which is equal to
+			\[ c \in E^\lambda(\hat{v},\hat{v}') \text{ and } c \notin U^\lambda_i(\hat{v}') \text{ and } c \in V^\lambda(\hat{v}') \]
+			By equivalence we have $((c,\hat{v}),(c,\hat{v}')) \in E$, $(c,\hat{v}') \notin U_i$ and $(c,\hat{v}') \in V$. Which means that $(c,\hat{v})$ will not be attracted and $(c,\hat{v}) \notin U_{i+1}$ which is a contradiction.
+			\item Case: $(c, \hat{v}) \in V_{\overline{\alpha}}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
+			To prove: $c \notin U^\lambda_{i+1}(\hat{v})$.
+			
+			
+			It follows immediately that $c \in V^\lambda_{\overline{\alpha}}(\hat{v})$ therefore $V^\lambda_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ so we get
+			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \cup (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
+			
+			There must exist a $(c,\hat{v}') \in V$ such that 
+			\[ ((c,\hat{v}),(c,\hat{v}')) \in E  \text{ and } (c,\hat{v}') \notin U_i \]
+			By equivalence we have 
+			\[ c \in V^\lambda(\hat{v}')  \text{ and } c \in E^\lambda(\hat{v},\hat{v}')  \text{ and } c \notin U^\lambda_i(\hat{v}') \]
+			Which is equal to
+			\[ c \notin (\mathfrak{C} \backslash V^\lambda(\hat{v}'))  \text{ and } c \notin (\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}'))  \text{ and } c \notin U^\lambda_i(\hat{v}') \]
+			From which we conclude
+			\[ c \notin ((\mathfrak{C} \backslash V^\lambda(\hat{v}')) \cup c \notin (\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup c \notin U^\lambda_i(\hat{v}')) \]
+			Therefore we have $c \notin U^\lambda_{i+1}(\hat{v})$.
+		\end{itemize}
+	\end{proof}
+\end{lemma}
+\begin{lemma}
+	\label{lem_subgame_eq}
+	Given unified VPG $G = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise subgame $G \backslash \mathcal{U}$ is equal to the relaxed set-wise subgame $G \backslash \mathcal{U}$.
+	\begin{proof}
+		Follows immediately from the subgame definitions (\ref{def_relaxed_subgame}, \ref{def_Usubgame}) and the equivalence relation between function-wise and set-wise games.
+	\end{proof}
+\end{lemma}
+
+\begin{theorem}
+	Given unified VPG $\mathcal{G} = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ the winning sets resulting from \textsc{recursiveUVPG($\mathcal{G}$)} ran over the function-wise representation of $G$ is equal to the winning sets resulting from \textsc{RecursivePG($\mathcal{G}$)} ran over the set-wise representation of $G$.
+	\begin{proof}
+		Let $G = (V,V_0,V_1,E,\Omega)$ be the set-wise representation of $\mathcal{G}$ and $G^\lambda = (V^\lambda, V^\lambda_0, V^\lambda_1, E^\lambda, \Omega)$ be the function-wise representation of $\mathcal{G}$.
+		
+		Proof by induction on $\mathcal{G}$.
+		
+		\textbf{Base} $\mathcal{V} = \emptyset$. 
+		
+		\textsc{recursiveUVPG($G^\lambda$)} returns $\lambda^\emptyset$ and \textsc{RecursivePG($G$)} returns $\emptyset$, these two results are equal therefore the theorem holds in this case.
+		
+		\textbf{Base} $\min\{\Omega(v)\ |\ v \in \mathcal{V}\} = \max\{\Omega(v)\ |\ v \in \mathcal{V}\}$.
+		
+		\textsc{recursiveUVPG($G^\lambda$)} returns $\lambda^\emptyset$ and \textsc{RecursivePG($G$)} returns $\emptyset$, these two results are equal therefore the theorem holds in this case.
+		
+		\textbf{Step}
+		
+		Player $\alpha$ gets the same value in both algorithms since the highest priority is equal for both algorithms.
+		
+		Set $\{v \in V\ |\ \Omega(v) = h\}$ is equal to $\{ \hat{v} |\ V(\hat{v}) \neq \emptyset \wedge \Omega(\hat{v}) = h\}$ by equivalence definition. So the values for $U$ are equal in both algorithms.
+		
+		For the rest of the algorithm it is sufficient to see that attractor sets are equal if the game and input set are equal (as shown in lemma \ref{lem_attr_equal}) and that the created subgames are equal (as shown in lemma \ref{lem_subgame_eq}). Since the subgames are equal we can apply the theorem on it by induction and conclude that the winning sets are also equal.
+	\end{proof}
+\end{theorem}
+
+We can now conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.

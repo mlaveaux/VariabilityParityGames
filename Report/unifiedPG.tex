@@ -1,0 +1,26 @@
+We can solve a VPG by solving a PG, we do this by creating a parity game that is the union of all the projections of the VPG to a configuration. We call the resulting PG the \textit{unification} of the VPG.
+\begin{definition}
+Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$ we define the unification of $\hat{G}$, denoted as $\hat{G}_{\downarrow}$, as
+\[  \hat{G}_{\downarrow} = \bigcup_{c\in \mathfrak{C}}\hat{G}_{|c} \]
+where the union of two PGs is trivially defined as
+\[ (V,V_0,V_1,E,\Omega) \cup (V',V_0',V_1',E',\Omega') = (V \cup V', V_0 \cup V_0', V_1 \cup V_1', E \cup E', \Omega \cup \Omega') \]
+\end{definition}
+We will use the hat decoration ($\hat{G},\hat{V},\hat{E},\hat{\Omega},\hat{W}$) when referring to a VPG and use no hat decoration when referring to a PG.
+
+Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in an unification as a pair consisting of a vertex and a configuration, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in an unification similarly, ie. $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$.
+
+\begin{theorem}
+	Given VPG $\hat{G} =  (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$. For winning sets $W_0$ and $W_1$ for game $\hat{G}_{\downarrow}$ and winning sets $\hat{W}^c_0$ and $\hat{W}^c_1$ for some configuration $c \in \mathfrak{C}$ it holds that
+	\[ (c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha\text{, for }\alpha \in \{0,1\} \]
+\end{theorem}
+
+\subsubsection{Representing unified parity games}
+A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$. The following relation holds:
+\[ (c,\hat{v}) \in X \iff c \in f(\hat{v}) \]
+We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\mathfrak{C}$. The following relation holds:
+\[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
+We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$. We call using a set of pairs to represent vertices a \textit{set-wise} representation and using functions to represent vertices a \textit{function-wise} representation. We say that a function-wise representation is equivalent to a set-wise representation if the above two relations hold.
+
+
+Finally we don't need a new priority assignment function, we can simply use the original priority assignment function because the following relation holds:
+\[ \hat{\Omega}(c,\hat{v}) = \Omega(\hat{v}) \]
