@@ -1,11 +1,11 @@
 #!/bin/bash
-for i in `seq 1 125`
+for i in `seq 1 100`
 do
-	N=$(((RANDOM%1000)+10))
-	P=$(((RANDOM%100)+1))
+	N=$(((RANDOM%100)+10))
+	P=$(((RANDOM%10)+1))
 	l=1
-	h=$(((RANDOM%($N/4))+1))
-	c=$(((RANDOM%6)+1))
+	h=$(((RANDOM%($N/10))+1))
+	c=$(((RANDOM%4)+1))
 	lambda=`seq 0 .01 1 | shuf | head -n1|sed 's/,/./'`
 
 	rm -f game${i}/*

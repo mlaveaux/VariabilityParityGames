@@ -12,5 +12,3 @@ cd ..
 ./time_single.sh minepump /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkBDD/ > minepump/logs/time_single.log
 ./attrtime_single.sh minepump /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkBDD/ > minepump/logs/attrtime_single.log
 
-
-for i in 2 3 5;do echo "Do $i";time java -jar -Xss100M -Xmx6G ../../../testsuite/housekeeping.jar vpg /home/sjef/AfstudeerRepo/implementation/WorkingExamples/Elevator/sjef/FD /home/sjef/AfstudeerRepo/implementation/WorkingExamples/Elevator/sjef/elevator.original.features.aut /home/sjef/AfstudeerRepo/implementation/WorkingExamples/Elevator/sjef/simpleformulas/prop${i}.mcf /home/sjef/AfstudeerRepo/implementation/WorkingExamples/Elevator/sjef/PGs/prop${i}/ > /tmp/log$i;done

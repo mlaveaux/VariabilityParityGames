@@ -22,8 +22,12 @@ public class SVPG {
     }
     public SVPG(Vertex[] vertices){
         this();
-        this.vertices = vertices;
-        n = this.vertices.length;
+        n = vertices.length;
+        this.vertices = new Vertex[n + 2];
+        for(int i = 0;i<n;i++)
+            this.vertices[i] = vertices[i];
+        this.vertices[n] = new Vertex();
+        this.vertices[n+1] = new Vertex();
     }
 
     public SVPG(int n) {
