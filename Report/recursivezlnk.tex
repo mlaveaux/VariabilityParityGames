@@ -34,7 +34,8 @@ The original Zielonka's recursive algorithm, created from the constructive proof
 	\[U_0 = U \]
 	For $i \geq 0$:
 	\begin{align*}
-	U_{i+1} = &\{v \in V_\alpha\ |\ \exists v' \in V : v' \in U_i \wedge (v,v') \in E \}\\
+	U_{i+1} = U_i\cup
+	&\{v \in V_\alpha\ |\ \exists v' \in V : v' \in U_i \wedge (v,v') \in E \}\\
 	\cup &\{v \in V_{\overline{\alpha}}\ |\ \forall v' \in V :(v,v') \in E \implies v' \in U_i \}
 	\end{align*}
 	\[\alpha\textit{-Attr}(G,U) = U_k \]
@@ -124,7 +125,7 @@ We have two modified operators.
 	\[U_0 = U \]
 	For $i \geq 0$:
 	\[
-	U_{i+1}(\hat{v}) = \begin{cases}
+	U_{i+1}(\hat{v}) = U_i(\hat{v}) \cup \begin{cases}
 \bigcup_{\hat{v}'} (V(\hat{v}) \cap E(\hat{v},\hat{v}') \cap U_i(\hat{v}')) & \text{if } V_{\alpha}(\hat{v}) \neq \emptyset \\
 V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}')) \cup U_i(\hat{v}') \cup (\mathfrak{C}\backslash V(\hat{v}')) & \text{if } V_{\overline{\alpha}}(\hat{v}) \neq \emptyset \\
 	\end{cases}
@@ -161,6 +162,8 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 			\item Case: $(c, \hat{v}) \in V_{\alpha}$ and $(c,\hat{v}) \in U_{i+1}$:\\
 			To prove: $c \in U^\lambda_{i+1}(\hat{v})$.
 			
+			If $(c,\hat{v}) \in U_i$ then $c \in U^\lambda_i(\hat{v})$ and therefore $c \in U^\lambda_{i+1}(\hat{v})$. Consider $(c,\hat{v}) \notin U_i$, we have $c \notin U_i(\hat{v})$.
+			
 			
 			It follows immediately that $c \in V^\lambda_{\alpha}(\hat{v})$ therefore $V^\lambda_{\alpha}(\hat{v}) \neq \emptyset$ so we get
 			\[ U^\lambda_{i+1} =\bigcup_{\hat{v}'} (V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap U^\lambda_i(\hat{v}')) \]
@@ -170,6 +173,8 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 			To prove: $c \notin U^\lambda_{i+1}(\hat{v})$.
 			
 			
+			First we observe that $(c,\hat{v}) \notin U_i$ and therefore $c \notin U^\lambda_i(\hat{v})$.
+			
 			It follows immediately that $c \in V^\lambda_{\alpha}(\hat{v})$ therefore $V^\lambda_{\alpha}(\hat{v}) \neq \emptyset$ so we get
 			\[ U^\lambda_{i+1} =\bigcup_{\hat{v}'} (V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap U^\lambda_i(\hat{v}')) \]
 			
@@ -177,6 +182,7 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 			\item Case: $(c, \hat{v}) \in V_{\overline{\alpha}}$ and $(c,\hat{v}) \in U_{i+1}$:\\
 			To prove: $c \in U^\lambda_{i+1}(\hat{v})$.
 			
+			If $(c,\hat{v}) \in U_i$ then $c \in U^\lambda_i(\hat{v})$ and therefore $c \in U^\lambda_{i+1}(\hat{v})$. Consider $(c,\hat{v}) \notin U_i$, we have $c \notin U_i(\hat{v})$.
 			
 			It follows immediately that $c \in V^\lambda_{\overline{\alpha}}(\hat{v})$ therefore $V^\lambda_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ so we get
 			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \cup (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
@@ -189,6 +195,7 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 			\item Case: $(c, \hat{v}) \in V_{\overline{\alpha}}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
 			To prove: $c \notin U^\lambda_{i+1}(\hat{v})$.
 			
+			First we observe that $(c,\hat{v}) \notin U_i$ and therefore $c \notin U^\lambda_i(\hat{v})$.
 			
 			It follows immediately that $c \in V^\lambda_{\overline{\alpha}}(\hat{v})$ therefore $V^\lambda_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ so we get
 			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \cup (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
@@ -239,3 +246,30 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 \end{theorem}
 
 We can now conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.
+
+We can implement the function attractor function using a queue to evaluate possibly relevant vertices.
+\begin{algorithm}[h]
+	\caption{$\textsc{$\alpha$-FAttr}(A : \hat{V} \rightarrow 2^\mathfrak{C})$}
+	\begin{algorithmic}[1]
+		\State Queue $Q \gets \{\hat{v}\ |\ A(\hat{v}) \neq \emptyset  \}$
+		\While{$Q$ is not empty}
+		\State $\hat{v} \gets Q.pop()$
+		\For{$E(\hat{v}',\hat{v}) \neq \emptyset$}
+			\If{$A(\hat{v}') = V(\hat{v})$} \State \textbf{continue} \EndIf
+			\If{$V_\alpha(\hat{v}') \neq \emptyset$}
+				\State $a \gets V(\hat{v}) \cap A(\hat{v}) \cap E(\hat{v}',\hat{v})$
+			\Else
+				\State $a \gets V(\hat{v}')$
+				\For{$E(\hat{v}',\hat{v}'') \neq \emptyset$}
+					\State $a \gets a \cap (\mathfrak{C}\backslash E(\hat{v}',\hat{v}'') \cup \mathfrak{C} \backslash V(\hat{v}'') \cup A(\hat{v}''))$
+				\EndFor
+			\EndIf
+			\If{$a = \emptyset$} \State \textbf{continue} \EndIf
+			\State $A(\hat{v}') \gets A(\hat{v}') \cup a$
+			\State $V(\hat{v}') \gets V(\hat{v}') \backslash a$
+			\State $Q.push(\hat{v}')$
+		\EndFor
+		\EndWhile
+		\State \Return $A$
+	\end{algorithmic}
+\end{algorithm}
