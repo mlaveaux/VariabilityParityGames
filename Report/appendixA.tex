@@ -1,0 +1,14 @@
+\begin{lemma}
+	\label{lem_md_ineq}
+	For $d,m \in \mathbb{N}$ with $d>1$ and $m \geq 0$ the following inequality holds:
+	\[ (m+d-1)^d + m+1 \leq (m+d)^d \]
+	\begin{proof}
+		We expand the inequality.
+		\begin{align*}
+		(m+d-1)^d + m + 1 & \leq (m+d)^d\\
+		(m+d-1)(m+d-1)^{d-1} + m + 1 & \leq (m+d)(m+d)^{d-1}\\
+		m(m+d-1)^{d-1} + d(m+d-1)^{d-1} - (m+d-1)^{d-1} + m + 1 & \leq m(m+d)^{d-1} + d(m+d)^{d-1}
+		\end{align*}
+		Since $d > 1$ and $m \geq 0$ we can see that the left hand term $m(m+d-1)^{d-1}$ is less or equal to the right hand term $m(m+d)^{d-1}$, similarly the left hand term $d(m+d-1)^{d-1}$ is less or equal to the right hand term $d(m+d)^{d-1}$. Finally the term $(m+d-1)^{d-1} \geq (m+1)^{d-1} \geq m+1$ and therefore $- (m+d-1)^{d-1} + m + 1  \leq 0$. This proves the lemma.
+	\end{proof}
+\end{lemma}

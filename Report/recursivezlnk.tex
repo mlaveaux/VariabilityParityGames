@@ -84,6 +84,7 @@ We will show that using the relaxed subgame definition in the recursive algorith
 		\end{itemize}
 	\end{proof}
 \end{lemma}
+
 \subsubsection{Recursive algorithm for unified VPGs}
 We can modify the recursive algorithm to work with the function representation of vertices and edges introduced in section \ref{sec_unified_pg}.
 \begin{algorithm}[h]
@@ -134,6 +135,14 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 	such that for $k$ we have
 	\[U_k = U_{k+1} \]
 \end{definition}
+
+\begin{lemma}
+	\label{lem_attr_requires_E}
+	Vertex $\hat{v}$ with configuration $c$, with $c \in V(\hat{v})$, can only be attracted if there is a vertex $\hat{v}'$ such that $c \in E(\hat{v}, \hat{v}')$ and $c \in U_i(\hat{v}')$.
+	\begin{proof}
+		We first observe that a v If $V_\alpha(\hat{v}) \neq \emptyset$ then this property follows immediately from definition \ref{def_Uattr}. If $V_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ we note that parity games are total and therefore also total for every configuration (lemma \ref{lem_UVPG_total}), therefore vertex $\hat{v}$ has an outgoing edge to $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w)}$.
+	\end{proof}
+\end{lemma}
 
 \begin{definition}
 	\label{def_Usubgame}
@@ -247,29 +256,97 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 
 We can now conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.
 
-We can implement the function attractor function using a queue to evaluate possibly relevant vertices.
+We can implement the function-wise attractor function using a queue to evaluate possibly relevant vertices.
 \begin{algorithm}[h]
-	\caption{$\textsc{$\alpha$-FAttr}(A : \hat{V} \rightarrow 2^\mathfrak{C})$}
+	\caption{$\textsc{$\alpha$-FAttractor}(G, A : \hat{V} \rightarrow 2^\mathfrak{C})$}
 	\begin{algorithmic}[1]
-		\State Queue $Q \gets \{\hat{v}\ |\ A(\hat{v}) \neq \emptyset  \}$
+		\State Queue $Q \gets \{\hat{v} \in \hat{V} \ |\ A(\hat{v}) \neq \emptyset  \}$
 		\While{$Q$ is not empty}
-		\State $\hat{v} \gets Q.pop()$
-		\For{$E(\hat{v}',\hat{v}) \neq \emptyset$}
-			\If{$A(\hat{v}') = V(\hat{v})$} \State \textbf{continue} \EndIf
-			\If{$V_\alpha(\hat{v}') \neq \emptyset$}
-				\State $a \gets V(\hat{v}) \cap A(\hat{v}) \cap E(\hat{v}',\hat{v})$
+		\State $\hat{v}' \gets Q.pop()$
+		\For{$E(\hat{v},\hat{v}') \neq \emptyset$}
+			\If{$A(\hat{v}) = V(\hat{v})$} \State \textbf{continue} \EndIf
+			\If{$V_\alpha(\hat{v}) \neq \emptyset$}
+				\State $a \gets V(\hat{v}) \cap E(\hat{v},\hat{v}') \cap A(\hat{v}')$
 			\Else
-				\State $a \gets V(\hat{v}')$
-				\For{$E(\hat{v}',\hat{v}'') \neq \emptyset$}
-					\State $a \gets a \cap (\mathfrak{C}\backslash E(\hat{v}',\hat{v}'') \cup \mathfrak{C} \backslash V(\hat{v}'') \cup A(\hat{v}''))$
+				\State $a \gets V(\hat{v})$
+				\For{$E(\hat{v},\hat{v}'') \neq \emptyset$}
+					\State $a \gets a \cap (\mathfrak{C}\backslash E(\hat{v},\hat{v}'') \cup A(\hat{v}'') \cup \mathfrak{C} \backslash V(\hat{v}''))$
 				\EndFor
 			\EndIf
 			\If{$a = \emptyset$} \State \textbf{continue} \EndIf
-			\State $A(\hat{v}') \gets A(\hat{v}') \cup a$
-			\State $V(\hat{v}') \gets V(\hat{v}') \backslash a$
-			\State $Q.push(\hat{v}')$
+			\State $A(\hat{v}) \gets A(\hat{v}) \cup a$
+			\State $Q.push(\hat{v})$
 		\EndFor
 		\EndWhile
 		\State \Return $A$
 	\end{algorithmic}
 \end{algorithm}
+\begin{theorem}
+Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}(G,U)$.
+	\begin{proof} We will prove two loop invariants over the while loop of the algorithm.
+		
+		\textbf{IV1}: For every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ with $c \in A(\hat{w})$ we have $c \in \alpha\textit{-FAttr}(G,U)(\hat{w})$.
+		
+		\textbf{IV2}: For every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ that can be attracted to $A$ either $c \in A(\hat{w})$ or there exists a $\hat{w}' \in Q$ such that $c \in E(\hat{w},\hat{w}')$.
+		
+		\textbf{Base}: Before the loop starts we have $A = U$, therefore IV1 holds. Furthermore all the vertices in $vert(A)$ are in $Q$ so IV2 also holds.
+		
+		\textbf{Step}: Consider the beginning of an iteration and assume IV1 and IV2 hold. To prove: IV1 and IV2 hold at the end of the iteration.
+		
+		Set $A$ only contains vertices with configurations that are in $\alpha\textit{-FAttr}(G,U)$. The set is only updated through lines 8-14 and 19 of the algorithm which reflects the exact definition of the attractor set therefore IV1 holds at the end of the iteration as well.
+		
+		Consider $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$, we distinguish three cases to prove IV2:
+		\begin{itemize}
+			\item $\hat{w}$ with $c$ can be attracted by the beginning of the iteration but not by the end.
+			
+			This case can't happen because $A(\hat{w})$ only increases during the algorithm for any $\hat{w}$ and the values for $E$ and $V$ are not changed throughout the algorithm.
+			\item $\hat{w}$ with $c$ can't be attracted by the beginning of the iteration but can by the end.
+			
+			For $\hat{w}$ with $c$ to be able to be attracted at the end of the iteration there must be some $\hat{w}'$ with $c$ such that during the iteration $c$ was added to $A(\hat{w}')$ (lemma \ref{lem_attr_requires_E}). Every $\hat{w}'$ for which $A(\hat{w}')$ is updated is added to the queue (lines 16-20). Therefore there we have $\hat{w}' \in Q$ with $c \in E(\hat{w},\hat{w}')$ and IV1 holds.
+			\item $\hat{w}$ with $c$ can be attracted by the beginning of the iteration and also by the end.
+			
+			Since IV2 holds at the beginning of the iteration we have either $c \in A(\hat{w})$ or we have some $\hat{w}' \in Q$ such that $c \in E(\hat{w},\hat{w}')$. In the former case IV2 holds trivially by the end of the iteration since $A(\hat{w})$ can only increase. For the latter case we distinguish two scenario's. 
+			
+			First we consider the case where vertex $\hat{v}'$ that is considered during the iteration (line 3 of the algorithm) is $\hat{w}'$. There is a vertex $c \in E(\hat{w},\hat{w}')$ by IV2. Therefore we can conclude that $\hat{w}$ is considered in the for loop starting at line $4$ and will be attracted in lines 8-14 and added to $A(\hat{w})$ in line 19. Therefore IV2 holds by the end of the iteration.
+			
+			Next we consider the case where $\hat{v}' \neq \hat{w}'$. In this case by the end of the iteration $\hat{w}'$ will still be in $Q$ and IV2 holds.
+		\end{itemize}
+	
+		When the while loop ends IV1 and IV2 hold so for every for every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ that can be attracted to $A$ we have $c \in A(\hat{w})$. Since we start with $A = U$ can conclude the soundness of the algorithm. IV2 shows the completeness.
+	\end{proof}
+\end{theorem}
+
+
+\subsubsection{Running time}
+We first analyse the running time of the attractor set. The queue can contain at most $c * n$ items. The first for loop occurs at most $c * e$ times. The second $c * n * e$ with $O(n)$ running time. Total $O(c * e * n^2) = O(c*n^4)$.
+
+Define $m = cn$ and $m_d = |\{(c,\hat{v})\ |\ c\in V(\hat{v})\ \wedge\ \Omega(\hat{v}) = d\}|$.
+
+In the recursive algorithm everything runs in $O(m)$ except for the attractor calculation. To get a running time we analyse its recursion. The first subgame decreases $d$ by one, the second subgame decreases the $m$ by one. This gives the following recursion:
+\begin{align*}
+T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(cn^4)\\
+T(m,1) &= O(m)\\
+T(0,d) &= O(m)
+\end{align*}
+From which we get 
+\begin{align*}
+T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(cn^4)\\
+&\leq m*T(m, d-1) + m*O(cn^4) + O(m)\\
+&\leq m*T(m, d-1) + (m+1)O(cn^4)\\
+T(m,1) &= O(m)
+\end{align*}
+We will now prove that $T(m,d) \leq (m+d)^dO(cn^4)$ by induction on $d$.
+
+\textbf{Base} $d = 1$: $T(m,1) = O(m) \leq O(cn^4)$.
+
+\textbf{step} 
+\[ T(m,d) \leq m*(m+d-1)^{d-1}O(cn^4) + (m+1)O(cn^4) \]
+Since $d > 1$ we have $m \leq m+d-1$
+\begin{align*}
+T(m,d) &\leq (m+d-1)^{d}O(cn^4) + (m+1)O(cn^4)\\
+& \leq ((m+d-1)^d + m + 1)O(cn^4)
+\end{align*}
+We have $(m+d-1)^d + m + 1 \leq (m+d)^d$ (using lemma \ref{lem_md_ineq}), we find:\\
+\[ T(m,d) \leq (m+d)^dO(cn^4) \]
+
+We conclude that the running time for the algorithm is $O((cn+d)^dcn^4) = O(cn^4(cn)^d)$.

@@ -19,6 +19,7 @@
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
+\usepackage[toc,page]{appendix}
 
 
 
@@ -50,6 +51,12 @@
 \pagebreak
 \section{Solving variability parity games}
 \input{solving}
+
+\begin{appendices}
+\section{Auxiliary theorems and lemma's}
+\label{appendix:proves}
+\input{appendixA}
+\end{appendices}
 
 \bibliography{mybib} 
 \bibliographystyle{ieeetr}

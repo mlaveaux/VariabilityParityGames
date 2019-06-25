@@ -13,7 +13,17 @@ Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and 
 	Given VPG $\hat{G} =  (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$. For winning sets $W_0$ and $W_1$ for game $\hat{G}_{\downarrow}$ and winning sets $\hat{W}^c_0$ and $\hat{W}^c_1$ for some configuration $c \in \mathfrak{C}$ it holds that
 	\[ (c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha\text{, for }\alpha \in \{0,1\} \]
 \end{theorem}
+\begin{definition}
+	A unified VPG $(V,V_0,V_1,E,\Omega)$ is total for every configuration iff for every $(c,v) \in V$ there exists a $(c,v') \in V$ such that $((c,v),(c,v')) \in E$.
+\end{definition}
 
+\begin{lemma}
+	\label{lem_UVPG_total}
+	A unified VPG $G = (V,V_0,V_1,E,\Omega)$ that is total is also total for every configuration.
+	\begin{proof}
+		Since $G$ is total we have for every $(c,v) \in V$ that there exists a $(c,v') \in V$ such that $((c,v),(c',v')) \in E$. Because unified VPGs don't have edges cross configurations we find that $c = c'$ and therefore $G$ is total for every configuration.
+	\end{proof}
+\end{lemma}
 \subsubsection{Representing unified parity games}
 A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$. The following relation holds:
 \[ (c,\hat{v}) \in X \iff c \in f(\hat{v}) \]
