@@ -1,7 +1,11 @@
+Next we will consider Zielonka's recursive algorithm \cite{ZIELONKA1998135} which is a parity game solving algorithm that we can use to solve unified parity games. The algorithm reasons about sets of states for which certain properties hold which makes the algorithm particularly appropriate to use because we can represent sets of states in unified VPGs as functions that map to sets of configurations. As we will see later we can represent these sets of configurations symbolically to exploit similarity between them.
 \subsubsection{Original Zielonka's recursive algorithm}
-The original Zielonka's recursive algorithm, created from the constructive proof given in \cite{ZIELONKA1998135}, is defined for a total PG (ie. an infinite game). We have a few definitions that are relevant for the algorithm.
-\begin{algorithm}[h]
+First we consider the original Zielonka's recursive algorithm, created from the constructive proof given in \cite{ZIELONKA1998135}, which solves solves total PGs. Pseudo code is presented in algorithm \ref{alg_zlnk_org}.
+
+The algorithm has a worst running time complexity of $O(e*n^d)$ where $n$ is the number of vertices, $e$ the number of edges and $d$ the number of distinct priorities in the parity game. If we apply the algorithm to solve a VPG with configurations $\mathfrak{C}$ product based we get a running time of $O(|\mathfrak{C}| *e*n^d)$.
+\begin{algorithm}
 	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
+	\label{alg_zlnk_org}
 	\begin{algorithmic}[1]
 		\State $m \gets \min\{ \Omega(v)\ |\ v \in V\}$
 		\State $h \gets\max\{ \Omega(v)\ |\ v \in V\}$
@@ -29,6 +33,8 @@ The original Zielonka's recursive algorithm, created from the constructive proof
 	\end{algorithmic}
 \end{algorithm}
 
+An exhaustive explanation of the algorithm can be found in \cite{ZIELONKA1998135}, we do introduce the definitions used in the algorithm. First we introduce the notion of an attractor set. An attractor set is a set of vertices $A \subseteq V$ calculated for player $\alpha$ given set $U \subseteq V$ where player $\alpha$ has a strategy to go from any vertex in $A$ to a vertex in $U$.
+
 \begin{definition}\cite{ZIELONKA1998135}
 	\label{def_attr}Given parity game $G = (V,V_0,V_1,E,\Omega)$ and a non-empty set $U \subseteq V$ we define $\alpha\textit{-Attr}(G,U)$ such that
 	\[U_0 = U \]
@@ -42,6 +48,9 @@ The original Zielonka's recursive algorithm, created from the constructive proof
 	such that for $k$ we have
 	\[U_k = U_{k+1} \]
 \end{definition}
+
+Next we present the definition of a subgame, where a PG game is given and a set of vertices which are removed from the game resulting in a subgame.
+
 \begin{definition}\cite{ZIELONKA1998135}
 \label{def_org_subgame}
 Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define the subgame $G \backslash U$ to be the game $(V', V_0', V_1', E', \Omega)$ with:
@@ -53,7 +62,8 @@ Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define th
 \end{itemize}
 \end{definition}
 
-We can relax the subgame definition, to a definition where we only remove vertices and not remove edges.
+We can relax the subgame definition given in \cite{ZIELONKA1998135} to a definition where we only remove vertices and not remove edges.
+
 \begin{definition}
 	\label{def_relaxed_subgame}
 	Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define the relaxed subgame $G \backslash U$ to be the game $(V', V_0', V_1', ', \Omega)$ with:
@@ -86,14 +96,14 @@ We will show that using the relaxed subgame definition in the recursive algorith
 \end{lemma}
 
 \subsubsection{Recursive algorithm for unified VPGs}
-We can modify the recursive algorithm to work with the function representation of vertices and edges introduced in section \ref{sec_unified_pg}.
-\begin{algorithm}[h]
+We can modify the recursive algorithm to work with the function representation of vertices and edges introduced in section \ref{sec_unified_pg}. Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}.
+\begin{algorithm}
 	\caption{$\textsc{recursiveUVPG}(\textit{PG } G = (\\
 		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
 		V_0 : \hat{V} \rightarrow 2^\mathfrak{C},\\
 		V_1 : \hat{V} \rightarrow 2^\mathfrak{C},\\
 		E : \hat{E} \rightarrow 2^\mathfrak{C},\\
-		\Omega : \hat{V} \rightarrow \mathbb{N}))$}
+		\Omega : \hat{V} \rightarrow \mathbb{N}))$}\label{alg_zlnk_UVPG}
 	\begin{algorithmic}[1]
 		\State $m \gets \min\{ \Omega(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
 		\State $h \gets \max\{ \Omega(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
@@ -120,7 +130,7 @@ We can modify the recursive algorithm to work with the function representation o
 		\State \Return $(W_0, W_1)$
 	\end{algorithmic}
 \end{algorithm}
-We have two modified operators.
+We have modified the attractor definition to work with the function-wise representation.
 \begin{definition}
 		\label{def_Uattr}Given unified VPG $G = (V, V_0,V_1,E,\Omega)$, represented function-wise, and a non-empty set $U \subseteq V$ we define $\alpha\textit{-FAttr}(G,U)$ such that
 	\[U_0 = U \]
@@ -135,25 +145,7 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 	such that for $k$ we have
 	\[U_k = U_{k+1} \]
 \end{definition}
-
-\begin{lemma}
-	\label{lem_attr_requires_E}
-	Vertex $\hat{v}$ with configuration $c$, with $c \in V(\hat{v})$, can only be attracted if there is a vertex $\hat{v}'$ such that $c \in E(\hat{v}, \hat{v}')$ and $c \in U_i(\hat{v}')$.
-	\begin{proof}
-		We first observe that a v If $V_\alpha(\hat{v}) \neq \emptyset$ then this property follows immediately from definition \ref{def_Uattr}. If $V_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ we note that parity games are total and therefore also total for every configuration (lemma \ref{lem_UVPG_total}), therefore vertex $\hat{v}$ has an outgoing edge to $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w)}$.
-	\end{proof}
-\end{lemma}
-
-\begin{definition}
-	\label{def_Usubgame}
-	For unified VPG $G = (V,V_0,V_1,E,\Omega)$, represented function-wise, and set $X \subseteq V$ we define the subgame $G \backslash X = (V',V_0',V_1',E,\Omega)$ such that:
-	\begin{itemize}
-		\item $V'(\hat{v}) = V(\hat{v}) \backslash X(\hat{v})$,
-		\item $V_0'(\hat{v}) = V'(\hat{v}) \cap V_0(\hat{v})$ and
-		\item $V_1'(\hat{v}) = V'(\hat{v}) \cap V_1(\hat{v})$.
-	\end{itemize}
-\end{definition}
-
+We will now prove that this new attractor definition gives a result equal to the original definition.
 \begin{lemma}
 	\label{lem_attr_equal}
 	Given unified VPG $G = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise attractor $\alpha\textit{-FAttr}(G,\mathcal{U})$ is equivalent to the set-wise attractor $\alpha\textit{-Attr}(G,\mathcal{U})$ for any $\alpha \in \{0,1\}$.
@@ -221,6 +213,18 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 		\end{itemize}
 	\end{proof}
 \end{lemma}
+
+We also modified the subgame definition to work with the function-wise representation. Note that this subgame definition is similar to the relaxed subgame definition (\ref{def_relaxed_subgame}) and not to the original subgame definition (\ref{def_org_subgame}).
+\begin{definition}
+	\label{def_Usubgame}
+	For unified VPG $G = (V,V_0,V_1,E,\Omega)$, represented function-wise, and set $X \subseteq V$ we define the subgame $G \backslash X = (V',V_0',V_1',E,\Omega)$ such that:
+	\begin{itemize}
+		\item $V'(\hat{v}) = V(\hat{v}) \backslash X(\hat{v})$,
+		\item $V_0'(\hat{v}) = V'(\hat{v}) \cap V_0(\hat{v})$ and
+		\item $V_1'(\hat{v}) = V'(\hat{v}) \cap V_1(\hat{v})$.
+	\end{itemize}
+\end{definition}
+We will now prove that this new subgame definition gives a result equal to the relaxed subgame definition.
 \begin{lemma}
 	\label{lem_subgame_eq}
 	Given unified VPG $G = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise subgame $G \backslash \mathcal{U}$ is equal to the relaxed set-wise subgame $G \backslash \mathcal{U}$.
@@ -229,6 +233,7 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 	\end{proof}
 \end{lemma}
 
+Next we prove the correctness of the algorithm by showing that the winning sets of the function-wise algorithm are equal to the winning sets of the set-wise algorithm.
 \begin{theorem}
 	Given unified VPG $\mathcal{G} = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ the winning sets resulting from \textsc{recursiveUVPG($\mathcal{G}$)} ran over the function-wise representation of $G$ is equal to the winning sets resulting from \textsc{RecursivePG($\mathcal{G}$)} ran over the set-wise representation of $G$.
 	\begin{proof}
@@ -256,9 +261,10 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 
 We can now conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.
 
-We can implement the function-wise attractor function using a queue to evaluate possibly relevant vertices.
-\begin{algorithm}[h]
-	\caption{$\textsc{$\alpha$-FAttractor}(G, A : \hat{V} \rightarrow 2^\mathfrak{C})$}
+\subsubsection{Function-wise attractor set}
+Next we present an algorithm to calculate the function-wise attractor, the pseudo code is presented in algorithm \ref{alg_fattr_alg}. The algorithm considers vertices that are in the attracted set for some configuration, for every such vertex the algorithm tries to attract vertices that are connected by an incoming edge. If a vertex is attracted for some configuration then this vertex will also be considered. We prove the correctness of the algorithm in the following lemma and theorem.
+\begin{algorithm}
+	\caption{$\textsc{$\alpha$-FAttractor}(G, A : \hat{V} \rightarrow 2^\mathfrak{C})$}\label{alg_fattr_alg}
 	\begin{algorithmic}[1]
 		\State Queue $Q \gets \{\hat{v} \in \hat{V} \ |\ A(\hat{v}) \neq \emptyset  \}$
 		\While{$Q$ is not empty}
@@ -281,6 +287,13 @@ We can implement the function-wise attractor function using a queue to evaluate 
 		\State \Return $A$
 	\end{algorithmic}
 \end{algorithm}
+\begin{lemma}
+\label{lem_attr_requires_E}
+Vertex $\hat{v}$ with configuration $c$, with $c \in V(\hat{v})$, can only be attracted if there is a vertex $\hat{v}'$ such that $c \in E(\hat{v}, \hat{v}')$ and $c \in U_i(\hat{v}')$.
+\begin{proof}
+	We first observe that a v If $V_\alpha(\hat{v}) \neq \emptyset$ then this property follows immediately from definition \ref{def_Uattr}. If $V_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ we note that parity games are total and therefore also total for every configuration (lemma \ref{lem_UVPG_total}), therefore vertex $\hat{v}$ has an outgoing edge to $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w)}$.
+\end{proof}
+\end{lemma}
 \begin{theorem}
 Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}(G,U)$.
 	\begin{proof} We will prove two loop invariants over the while loop of the algorithm.
@@ -318,35 +331,44 @@ Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\
 
 
 \subsubsection{Running time}
-We first analyse the running time of the attractor set. The queue can contain at most $c * n$ items. The first for loop occurs at most $c * e$ times. The second $c * n * e$ with $O(n)$ running time. Total $O(c * e * n^2) = O(c*n^4)$.
+We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ product based, family based with a set-wise representation and family based with a function-wise representation. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
-Define $m = cn$ and $m_d = |\{(c,\hat{v})\ |\ c\in V(\hat{v})\ \wedge\ \Omega(\hat{v}) = d\}|$.
+As stated before the product based approach using the original algorithm gives a running time of $O(c * e * n^d)$. We can also apply the original algorithm to a unified VP (represented set-wise) for a family based approach, in this case we get a parity game with $c*n$ vertices and $O(c*e)$ edges. which gives a running time $O(c*e*(nc)^d)$.
 
-In the recursive algorithm everything runs in $O(m)$ except for the attractor calculation. To get a running time we analyse its recursion. The first subgame decreases $d$ by one, the second subgame decreases the $m$ by one. This gives the following recursion:
+Next we analyse the running time for the algorithm using function-wise representation. We first analyse the running time of the attractor set. A vertex will be added to the queue when this vertex is attracted for some configuration, this can only happen $c*n$, once for every vertex configuration combination. 
+
+The first for loop considers all the incoming edges of a vertex. When we consider all vertices the for loop will have considered all edges, since we consider every vertex at most $c$ times the for loop will run at most $c*e$ times in total.
+
+The second for loop considers all outgoing edges of a vertex. The vertices that are considered are the vertices that have an edge going to the vertex being considered by the while loop. Since the while loop considers $c*n$ vertices the second for loop runs in total at most $c * n * e$ times. The loop itself performs set operations on the set of configurations which can be done in $O(c)$. This gives a total running time for the attractor set of $O(n*c^2*e)$.
+
+We will now analyse the recursion of the function-wise algorithm, first we define $m = cn$ for convenience. The first subgame created in the algorithm decreases $d$ by one, the second subgame decreases the $m$ by one. This gives the following recursion:
 \begin{align*}
-T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(cn^4)\\
+T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(n*c^2*e)\\
 T(m,1) &= O(m)\\
 T(0,d) &= O(m)
 \end{align*}
 From which we get 
 \begin{align*}
-T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(cn^4)\\
-&\leq m*T(m, d-1) + m*O(cn^4) + O(m)\\
-&\leq m*T(m, d-1) + (m+1)O(cn^4)\\
+T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(n*c^2*e)\\
+&\leq m*T(m, d-1) + m*O(n*c^2*e) + O(m)\\
+&\leq m*T(m, d-1) + (m+1)O(n*c^2*e)\\
 T(m,1) &= O(m)
 \end{align*}
-We will now prove that $T(m,d) \leq (m+d)^dO(cn^4)$ by induction on $d$.
+We will now prove that $T(m,d) \leq (m+d)^dO(n*c^2*e)$ by induction on $d$.
 
-\textbf{Base} $d = 1$: $T(m,1) = O(m) \leq O(cn^4)$.
+\textbf{Base} $d = 1$: $T(m,1) = O(m) \leq O(n*c^2*e)$.
 
 \textbf{step} 
-\[ T(m,d) \leq m*(m+d-1)^{d-1}O(cn^4) + (m+1)O(cn^4) \]
+\begin{align*}
+T(m,d) &\leq m*T(m,d-1) + (m+1)O(c^2 + n^3)\\
+&\leq m*(m+d-1)^{d-1}O(n*c^2*e) + (m+1)O(n*c^2*e)
+\end{align*}
 Since $d > 1$ we have $m \leq m+d-1$
 \begin{align*}
-T(m,d) &\leq (m+d-1)^{d}O(cn^4) + (m+1)O(cn^4)\\
-& \leq ((m+d-1)^d + m + 1)O(cn^4)
+T(m,d) &\leq (m+d-1)^{d}O(n*c^2*e) + (m+1)O(n*c^2*e)\\
+& = ((m+d-1)^d + m + 1)O(n*c^2*e)
 \end{align*}
 We have $(m+d-1)^d + m + 1 \leq (m+d)^d$ (using lemma \ref{lem_md_ineq}), we find:\\
-\[ T(m,d) \leq (m+d)^dO(cn^4) \]
+\[ T(m,d) \leq (m+d)^dO(n*c^2*e) \]
 
-We conclude that the running time for the algorithm is $O((cn+d)^dcn^4) = O(cn^4(cn)^d)$.
+We conclude that the running time for the function-wise algorithm is $O((cn+d)^dn*c^2*e) = O(n*c^2*e(cn)^d)$.

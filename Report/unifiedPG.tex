@@ -1,4 +1,4 @@
-We can solve a VPG by solving a PG, we do this by creating a parity game that is the union of all the projections of the VPG to a configuration. We call the resulting PG the \textit{unification} of the VPG.
+We can consider a VPG as a PG that is the union of all its projections. We call the resulting PG the \textit{unification} of the VPG.
 \begin{definition}
 Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$ we define the unification of $\hat{G}$, denoted as $\hat{G}_{\downarrow}$, as
 \[  \hat{G}_{\downarrow} = \bigcup_{c\in \mathfrak{C}}\hat{G}_{|c} \]
@@ -7,16 +7,20 @@ where the union of two PGs is trivially defined as
 \end{definition}
 We will use the hat decoration ($\hat{G},\hat{V},\hat{E},\hat{\Omega},\hat{W}$) when referring to a VPG and use no hat decoration when referring to a PG.
 
-Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in an unification as a pair consisting of a vertex and a configuration, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in an unification similarly, ie. $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$.
+Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in a unification as a pair consisting of a vertex and a configuration, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in a unification similarly, ie. $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that edges don't cross configurations, ie. for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$.
 
+If we solve the PG that is the unification of a VPG we have solved the VPG, as shown in the next theorem (which is proven in appendix \ref{appendix:proves}, theorem \ref{theA_solve_UVPG_is_solve_VPG}).
 \begin{theorem}
 	Given VPG $\hat{G} =  (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$. For winning sets $W_0$ and $W_1$ for game $\hat{G}_{\downarrow}$ and winning sets $\hat{W}^c_0$ and $\hat{W}^c_1$ for some configuration $c \in \mathfrak{C}$ it holds that
-	\[ (c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha\text{, for }\alpha \in \{0,1\} \]
+	\[(c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\}  \]
 \end{theorem}
+
+One of the properties of a PG is its totality; a game is total if every vertex has at least 1 outgoing vertex. Plays in a total PG will always result in an infinite path. VPGs are total, meaning that every vertex has at least 1 outgoing vertex admitting $c$ for every configuration $c \in \mathfrak{C}$. Because VPGs are total a unified VPG is also total. For unified VPGs we can however further investigate its totality by introducing the notion of being total for every configuration. 
 \begin{definition}
 	A unified VPG $(V,V_0,V_1,E,\Omega)$ is total for every configuration iff for every $(c,v) \in V$ there exists a $(c,v') \in V$ such that $((c,v),(c,v')) \in E$.
 \end{definition}
 
+It follows that if a unified VPG is total then it is also total for every configuration as shown in the following lemma.
 \begin{lemma}
 	\label{lem_UVPG_total}
 	A unified VPG $G = (V,V_0,V_1,E,\Omega)$ that is total is also total for every configuration.
@@ -24,13 +28,16 @@ Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and 
 		Since $G$ is total we have for every $(c,v) \in V$ that there exists a $(c,v') \in V$ such that $((c,v),(c',v')) \in E$. Because unified VPGs don't have edges cross configurations we find that $c = c'$ and therefore $G$ is total for every configuration.
 	\end{proof}
 \end{lemma}
-\subsubsection{Representing unified parity games}
-A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$. The following relation holds:
+
+\subsubsection{Representing unified variability parity games}
+Unified VPGs have a specific structure because they are the union of parity games that have the same vertices with the same owner and priority.
+
+We can represent a set $X \subseteq (\mathfrak{C} \times \hat{V})$ as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$ where the following relation holds:
 \[ (c,\hat{v}) \in X \iff c \in f(\hat{v}) \]
-We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\mathfrak{C}$. The following relation holds:
+We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\mathfrak{C}$ where the following relation holds:
 \[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
 We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$. We call using a set of pairs to represent vertices a \textit{set-wise} representation and using functions to represent vertices a \textit{function-wise} representation. We say that a function-wise representation is equivalent to a set-wise representation if the above two relations hold.
 
 
-Finally we don't need a new priority assignment function, we can simply use the original priority assignment function because the following relation holds:
+Finally we can simplify the priority function of a unified VPG, we don't actually need to create a new function that is the unification of all the projections, we can simply use the original priority assignment function because the following relation holds:
 \[ \hat{\Omega}(c,\hat{v}) = \Omega(\hat{v}) \]
