@@ -9,13 +9,24 @@ We will use the hat decoration ($\hat{G},\hat{V},\hat{E},\hat{\Omega},\hat{W}$) 
 
 Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in a unification as a pair consisting of a vertex and a configuration, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in a unification similarly, ie. $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that edges don't cross configurations, ie. for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$.
 
-If we solve the PG that is the unification of a VPG we have solved the VPG, as shown in the next theorem (which is proven in appendix \ref{appendix:proves}, theorem \ref{theA_solve_UVPG_is_solve_VPG}).
+If we solve the PG that is the unification of a VPG we have solved the VPG, as shown in the next theorem .
 \begin{theorem}
+	\label{theA_solve_UVPG_is_solve_VPG}
 	Given VPG $\hat{G} =  (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$. For winning sets $W_0$ and $W_1$ for game $\hat{G}_{\downarrow}$ and winning sets $\hat{W}^c_0$ and $\hat{W}^c_1$ for some configuration $c \in \mathfrak{C}$ it holds that
 	\[(c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\}  \]
+	\begin{proof}
+		The bi-implication is equal to  the following to implications.
+		\[ (c,\hat{v}) \in W_\alpha \implies \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\} \]
+		and
+		\[ (c,\hat{v}) \notin W_\alpha\implies \hat{v} \notin \hat{W}^c_\alpha \text{, for }\alpha \in \{0,1\}  \]
+		
+		Since the winning sets partition the game we have $\hat{v} \notin \hat{W}^c_\alpha \implies \hat{v} \in \hat{W}^c_{\overline{\alpha}}$ (similar for set $W$). Therefore it is sufficient to prove the first implication.
+		
+		Let $(c,\hat{v}) \in W_\alpha$, player $\alpha$ has a strategy to win game $\hat{G}_{\downarrow}$ from vertex $(c,\hat{v})$. Since $\hat{G}_{\downarrow}$ is the union of all the projections of $\hat{G}$ we can apply the same strategy to game $\hat{G}_{|c}$ to win vertex $\hat{v}$ as player $\alpha$. Because we can win $\hat{v}$ in the projection of $\hat{G}$ to $c$ we have $\hat{v} \in \hat{W}^c_\alpha$.
+	\end{proof}
 \end{theorem}
 
-One of the properties of a PG is its totality; a game is total if every vertex has at least 1 outgoing vertex. Plays in a total PG will always result in an infinite path. VPGs are total, meaning that every vertex has at least 1 outgoing vertex admitting $c$ for every configuration $c \in \mathfrak{C}$. Because VPGs are total a unified VPG is also total. For unified VPGs we can however further investigate its totality by introducing the notion of being total for every configuration. 
+One of the properties of a PG is its totality; a game is total if every vertex has at least 1 outgoing vertex. Plays in a total PG will always result in an infinite path. VPGs are total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$ at least 1 outgoing vertex admitting $c$. Because VPGs are total a unified VPG is also total. For unified VPGs we can however further investigate its totality by introducing the notion of being total for every configuration. 
 \begin{definition}
 	A unified VPG $(V,V_0,V_1,E,\Omega)$ is total for every configuration iff for every $(c,v) \in V$ there exists a $(c,v') \in V$ such that $((c,v),(c,v')) \in E$.
 \end{definition}
@@ -32,11 +43,11 @@ It follows that if a unified VPG is total then it is also total for every config
 \subsubsection{Representing unified variability parity games}
 Unified VPGs have a specific structure because they are the union of parity games that have the same vertices with the same owner and priority.
 
-We can represent a set $X \subseteq (\mathfrak{C} \times \hat{V})$ as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$ where the following relation holds:
+We can represent a set $X \subseteq (\mathfrak{C} \times \hat{V})$ as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$. The set $X$ and function $f$ are equivalent, denoted by the operator $=_\lambda$, iff the following relation holds:
 \[ (c,\hat{v}) \in X \iff c \in f(\hat{v}) \]
-We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\mathfrak{C}$ where the following relation holds:
+We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\mathfrak{C}$. The set $E$ and function $f$ are equivalent, denoted by the operator $=_\lambda$, iff the following relation holds:
 \[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
-We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$. We call using a set of pairs to represent vertices a \textit{set-wise} representation and using functions to represent vertices a \textit{function-wise} representation. We say that a function-wise representation is equivalent to a set-wise representation if the above two relations hold.
+We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. We call using a set of pairs to represent vertices a \textit{set-wise} representation and using functions to represent vertices a \textit{function-wise} representation.
 
 
 Finally we can simplify the priority function of a unified VPG, we don't actually need to create a new function that is the unification of all the projections, we can simply use the original priority assignment function because the following relation holds:

@@ -20,6 +20,7 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \usepackage[toc,page]{appendix}
+\usepackage{forest}
 
 
 
@@ -48,9 +49,18 @@
 \section{Variability parity games}
 \input{VariabilityParityGames}
 
-\pagebreak
-\section{Solving variability parity games}
-\input{solving}
+\section{Solving VPGs}
+\input{prod_fam_solving}
+
+\subsection{Preliminaries}
+\input{preliminatires_solving}
+
+\section{Unified variability parity games}
+\label{sec_unified_pg}
+\input{unifiedPG}
+
+\section{Recursive algorithm}
+\input{recursivezlnk.tex}
 
 \begin{appendices}
 \section{Auxiliary theorems and lemma's}
