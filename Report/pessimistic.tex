@@ -1,0 +1,13 @@
+Given a VPG with configurations $\mathfrak{C}$ we can try to determine sets $P_0,P_1$ such that the vertices in set $P_\alpha$ are won by player $\alpha \in \{0,1\}$ for any configuration in $\mathfrak{C}$. We can do so by creating a \textit{pessimistic} VPG; a pessimistic PG is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the PG allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
+\begin{definition}
+	\label{def_pess_game}
+	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we can create pessimistic VPG $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$. We have	
+	\[ G_{\triangleright\alpha} = \{V,V_0,V_1,E',\Omega \} \]
+	such that
+	\[ E' = \{ (v,w) \in E\ |\ v \in V_{\overline{\alpha}} \vee \theta(v,w) = \mathfrak{C} \} \]
+\end{definition}
+
+When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_0,W_1$, for which we have $W_\alpha = P_\alpha$ as shown in the following theorem.
+\begin{theorem}
+	Given VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ and configuration $c \in \mathfrak{C}$ with winning sets $W_0^c, W_1^c$ we have for any $\alpha \in \{0,1\}$ it holds that $P_\alpha \subseteq W_\alpha^c$ where $P_0,P_1$ are the the winning sets of game $G_{\triangleright\alpha}$.
+\end{theorem}
