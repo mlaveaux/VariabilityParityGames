@@ -55,15 +55,13 @@ Consider our working example which we extend to an FTS depicted in figure \ref{f
 \end{figure}
 We can translate this FTS with formula $\varphi = \mu X. ([a] X \vee \langle b \rangle \top)$ to an FPG depicted in figure \ref{fig:exverfpg}. As we can see from the FTS if feature $f$ is enabled and $g$ is disabled then we have an infinite path of $a$'s where $b$ is never enabled, therefore $\varphi$ doesn't hold for $M_{|\{f\}}$. If $g$ is enabled however we can always do a $b$ so $\varphi$ holds for $M_{|\{f,g\}}$. As we have seen $\varphi$ does hold for $M_{|\emptyset}$. For the product $\emptyset$ we have the same winning set as before:
 \begin{align*}
-W_0^\emptyset = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
-& (s_1, [a]X \vee \langle b \rangle \top),\\
-& (s_1, [a]X),\\
-& (s_1, X),\\
+W_0^\emptyset = \{& (s_1, \mu X.\phi),\\
+& (s_1, [a](\mu X.\phi) \vee \langle b \rangle \top),\\
+& (s_1, [a](\mu X.\phi)),\\
 & (s_1, \top),\\
-& (s_2, \mu X.[a]X \vee \langle b \rangle \top),\\
-& (s_2, [a]X \vee \langle b \rangle \top),\\
-& (s_2, [a]X),\\
-& (s_2, X),\\
+& (s_2, \mu X.\phi),\\
+& (s_2, [a](\mu X.\phi) \vee \langle b \rangle \top),\\
+& (s_2, [a](\mu X.\phi)),\\
 & (s_2, \langle b \rangle \top),\\
 & (s_2, \top)
 \}\\
@@ -73,31 +71,27 @@ In the FPG we can see that if $f$ is enabled and $g$ is disabled then player $1$
 \begin{align*}
 W_0^{\{f\}} = \{
 & (s_1, \top),\\
-& (s_2, \mu X.[a]X \vee \langle b \rangle \top),\\
-& (s_2, [a]X \vee \langle b \rangle \top),\\
-& (s_2, X),\\
+& (s_2, \mu X.\phi),\\
+& (s_2, [a](\mu X.\phi) \vee \langle b \rangle \top),\\
 & (s_2, \langle b \rangle \top),\\
 & (s_2, \top)
 \}\\
-W_1^{\{f\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
-& (s_1, [a]X \vee \langle b \rangle \top),\\
-& (s_1, [a]X),\\
-& (s_1, X),\\
+W_1^{\{f\}} = \{& (s_1, \mu X.\phi),\\
+& (s_1, [a](\mu X.\phi) \vee \langle b \rangle \top),\\
+& (s_1, [a](\mu X.\phi)),\\
 & (s_1, \langle b \rangle \top ),\\
-& (s_2, [a]X)\}
+& (s_2, [a](\mu X.\phi))\}
 \end{align*}
 However if $g$ is also enabled then player $0$ wins in $(s_1, \langle b \rangle \top)$, thus giving the following winning sets:
 \begin{align*}
-W_0^{\{f,g\}} = \{& (s_1, \mu X.[a]X \vee \langle b \rangle \top),\\
-& (s_1, [a]X \vee \langle b \rangle \top),\\
-& (s_1, [a]X),\\
-& (s_1, X),\\
+W_0^{\{f,g\}} = \{& (s_1, \mu X.\phi),\\
+& (s_1, [a](\mu X.\phi) \vee \langle b \rangle \top),\\
+& (s_1, [a](\mu X.\phi)),\\
 & (s_1, \langle b \rangle \top ),\\
 & (s_1, \top),\\
-& (s_2, \mu X.[a]X \vee \langle b \rangle \top),\\
-& (s_2, [a]X \vee \langle b \rangle \top),\\
-& (s_2, [a]X),\\
-& (s_2, X),\\
+& (s_2, \mu X.\phi),\\
+& (s_2, [a](\mu X.\phi) \vee \langle b \rangle \top),\\
+& (s_2, [a](\mu X.\phi)),\\
 & (s_2, \langle b \rangle \top),\\
 & (s_2, \top)
 \}\\
