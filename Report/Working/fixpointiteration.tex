@@ -86,11 +86,7 @@ Note that fixpoint iteration works for games with deadlocks.
 
 Set $P_\alpha$ calculated by the algorithm is winning for player $\alpha$ for all configuration in $\mathfrak{C}$.
 
-So the winning set calculation can be written as:
-\[ W_0 = (\sigma X_{d-1}\dots \mu X_1. \nu X_0.F_0) \cup P_0 \cap P_1 \]
-which is equal to
-\[ W_0 = \sigma X_{d-1}\dots \mu X_1. \nu X_0.(F_0 \cup P_0 \cap P_1)  \]
-which is equal to
+Claim: the following formula correctly calculates the winning sets for $G_{|c}$ with $c \in \mathfrak{C}$.
 \[ W_0 = \sigma X_{d-1}\dots P_1 \cap \mu X_1. P_0 \cup \nu X_0.P_1 \cap F_0  \]
 From which we can conclude that it is correct to let least fixed point variables start at $P_0$ and greatest fixed point variables at $P_1$.
 \end{document}

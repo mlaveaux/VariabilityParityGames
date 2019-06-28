@@ -352,7 +352,41 @@ Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\
 \subsection{Running time}
 We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ product based, family based with a set-wise representation and family based with a function-wise representation. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
-As stated before the product based approach using the original algorithm gives a running time of $O(c * e * n^d)$. We can also apply the original algorithm to a unified VPG (represented set-wise) for a family based approach, in this case we get a parity game with $c*n$ vertices and $O(c*e)$ edges. which gives a running time $O(c*e*(nc)^d)$.
+As stated before the product based approach using the original algorithm gives a running time of $O(c * e * n^d)$. We can also apply the original algorithm to a unified VPG (represented set-wise) for a family based approach, in this case we get a parity game with $c*n$ vertices and $O(c*e)$ edges. which gives a running time $O(c*e*(nc)^d)$. However this running time can be improved because unified PGs are $c$ disconnected graphs.
+
+The algorithm has two recursions, the first recursion lowers the number of distinct priorities by 1. The second recursion removes at least one edge, however the game is comprised of disjoint projection. Consider game $G_{|c}$, if $(G\backslash U)_{|c}$ contains a vertex that is won by player $\overline{\alpha}$ then this vertex is removed in the second recursion step. If there is no vertex won by player $\overline{\alpha}$ then the game is won in its entirety and the only vertices won by player $\overline{\alpha}$ are in different projections. We can conclude that for every $c$ the second recursion either removes a vertex or $(G\backslash U)_{|c}$ is entirely won by player $\alpha$. Let $\overline{n}$ denote be the maximum number of vertices that are won by player $\overline{\alpha}$ in game $(G\backslash U)_{|c}$. Since every projection has at most $n$ vertices the value for $\overline{n}$ can be at most $n$. Furthermore since $\overline{n}$ depends on $U$, which depends on the maximum priority, the value $\overline{n}$ gets reset when the top priority is removed in the first recursion. We can now write down the recursion:
+\[ T(d,\overline{n}) \leq T(d-1,n) + T(d, \overline{n} - 1) + O(ce) \]
+When $\overline{n} = 0$ we will get $W_{\overline{\alpha}}$ as a result of the first recursion. In such a case there will be only 1 recursion.
+\[ T(d,0) \leq T(d-1,n) + O(ce) \]
+Finally we have the base case where there is 1 priority:
+\[ T(1, \overline{n}) \leq O(cn) \]
+We expand the second recursion to get
+\begin{align*}
+T(d) &\leq (n+1)T(d-1) + (n+1)O(ce)\\
+T(1) &\leq O(cn)
+\end{align*}
+We will now prove that $T(d) \leq (n+d)^dO(ce)$ by induction on $d$.
+
+\textbf{Base} $d=1$: $T(1) \leq O(cn) \leq O(ce) \leq (n+1)^1O(ce)$
+
+\textbf{Step} $d > 1$:
+\begin{align*}
+T(d) &\leq (n+1)T(d-1) + (n+1)O(ce)\\
+&\leq (n+1)(n+d-1)^{d-1}O(ce) + (n+1)O(ce)
+\end{align*}
+Since $n+1 \leq n+d-1$ we get:
+\begin{align*}
+T(d) &\leq (n+d-1)(n+d-1)^{d-1}O(ce) + (n+1)O(ce)\\
+&\leq (n+d-1)^dO(ce) + (n+1)O(ce)\\
+&\leq ((n+d-1)^d + n + 1)O(ce)
+\end{align*}
+Using lemma \ref{lem_md_ineq} we get
+\begin{align*}
+T(d) &\leq (n+d)^dO(ce)
+\end{align*}
+This gives a running time complexity of $O(c*e*(n+d)^d) = O(c*e*n^d)$.
+
+
 
 Next we analyse the running time of the algorithm using a function-wise representation. First we consider the variant where sets of configurations are represented explicitly. We first analyse the running time of the attractor set. 
 
