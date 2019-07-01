@@ -61,9 +61,7 @@ An exhaustive explanation of the algorithm can be found in \cite{ZIELONKA1998135
 	\cup &\{v \in V_{\overline{\alpha}}\ |\ \forall v' \in V :(v,v') \in E \implies v' \in U_i \}
 	\end{align*}
 	Finally:
-	\[\alpha\textit{-Attr}(G,U) = U_k \]
-	such that for $k$ we have
-	\[U_k = U_{k+1} \]
+	\[\alpha\textit{-Attr}(G,U) = \bigcup_{i \geq 0} U_i \]
 \end{definition}
 
 Next we present the definition of a subgame, where a PG game is given and a set of vertices which are removed from the game resulting in a subgame.
@@ -79,52 +77,19 @@ Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define th
 \end{itemize}
 \end{definition}
 
-We can relax the subgame definition given in \cite{ZIELONKA1998135} to a definition where we only remove vertices and not remove edges.
-
-\begin{definition}
-	\label{def_relaxed_subgame}
-	Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define the subgame $G \backslash U$ to be the game $(V', V_0', V_1', ', \Omega)$ with:
-	\begin{itemize}
-		\item $V' = V \backslash U$,
-		\item $V_0' = V_0 \cap V'$ and
-		\item $V_1' = V_1 \cap V'$.
-	\end{itemize}
-\end{definition}
-We will show that using the relaxed subgame definition in the recursive algorithm gives the same result.
-\begin{lemma}
-	Using the relaxed subgame (\ref{def_relaxed_subgame}) definition in the recursive algorithm gives the same result as using the regular subgame definition (\ref{def_org_subgame}).
-	\begin{proof}
-		Let $E$ be the edge relation resulting from a regular subgame operation and $E'$ be the edge relation resulting from a relaxed subgame operation.
-		
-		We first observe that the difference between the two definitions is that in $E$ only edges exists that go from and go to vertices that are in $V$. In $E'$ edges can exists that go from and/or go to vertices that are not in $V$. We also find $E \subseteq E'$.
-		
-		Next we observe that the only place where edges are used in the algorithm is in the calculation of the attractor set. We will show that the attractor set calculated for $E$ is equal to the attractor set calculated for $E'$.
-		
-		Let $v \in V$, we distinguish two cases:
-		\begin{itemize}
-			\item Case: $v \in V_\alpha$.
-			
-			Vertex $v$ will only be attracted if there exists a $v' \in V$ such that there is an edge from $v$ to $v'$. Since $v$ and $v'$ are both in $V$ an edge $(v,v') \in E'$ will also exist in $E$, therefore the result is the same.
-			\item Case: $v \in V_{\overline{\alpha}}$.
-			
-		    Vertex $v$ will only be attracted if all the edges that go to $v' \in V$ are in $U_i$. Since edges that go from $v$ to $v'' \notin V$ are not considered the result for both $E$ and $E'$ will be the same.
-		\end{itemize}
-	\end{proof}
-\end{lemma}
-
 \subsection{Recursive algorithm using a function-wise representation}
 We can modify the recursive algorithm to work with the function-wise representation of vertices and edges introduced in section \ref{sec_unified_pg}. Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}.
 \begin{algorithm}
 	\caption{$\textsc{recursiveUVPG}(\textit{PG } G = (\\
 		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
-		V_0 : \hat{V} \rightarrow 2^\mathfrak{C},\\
-		V_1 : \hat{V} \rightarrow 2^\mathfrak{C},\\
+		\hat{V}_0 \subseteq \hat{V},\\
+		\hat{V}_1 \subseteq \hat{V},\\
 		E : \hat{E} \rightarrow 2^\mathfrak{C},\\
-		\Omega : \hat{V} \rightarrow \mathbb{N}))$}\label{alg_zlnk_UVPG}
+		\hat{\Omega} : \hat{V}\rightarrow \mathbb{N}$}\label{alg_zlnk_UVPG}
 	\begin{algorithmic}[1]
-		\State $m \gets \min\{ \Omega(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
-		\State $h \gets \max\{ \Omega(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
-		\If{$h = m$ or $V(\hat{v}) = \lambda^\emptyset$}
+		\State $m \gets \min\{ \hat{\Omega}(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\State $h \gets \max\{ \hat{\Omega}(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\If{$h = m$ or $V = \lambda^\emptyset$}
 		\If{$h$ is even or $V = \lambda^\emptyset$}
 		\State \Return $(V,\lambda^\emptyset)$
 		\Else
@@ -150,113 +115,110 @@ We can modify the recursive algorithm to work with the function-wise representat
 
 We have modified the attractor definition to work with the function-wise representation.
 \begin{definition}
-		\label{def_Uattr}Given unified VPG $G = (V, V_0,V_1,E,\Omega)$, represented function-wise, and a non-empty set $U \subseteq V$ we define $\alpha\textit{-FAttr}(G,U)$ such that
+		\label{def_Uattr}Given unified VPG $G = (V, \hat{V}_0,\hat{V}_1,E,\hat{\Omega})$, represented function-wise, and a non-empty set $U \subseteq V$ we define $\alpha\textit{-FAttr}(G,U)$ such that
 	\[U_0 = U \]
 	For $i \geq 0$:
 	\[
 	U_{i+1}(\hat{v}) = U_i(\hat{v}) \cup \begin{cases}
-\bigcup_{\hat{v}'} (V(\hat{v}) \cap E(\hat{v},\hat{v}') \cap U_i(\hat{v}')) & \text{if } V_{\alpha}(\hat{v}) \neq \emptyset \\
-V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}')) \cup U_i(\hat{v}') \cup (\mathfrak{C}\backslash V(\hat{v}')) & \text{if } V_{\overline{\alpha}}(\hat{v}) \neq \emptyset \\
+\bigcup_{\hat{v}'} (V(\hat{v}) \cap E(\hat{v},\hat{v}') \cap U_i(\hat{v}')) & \text{if } \hat{v} \in \hat{V_{\alpha}}\\
+V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}')) \cup U_i(\hat{v}') & \text{if }\hat{v} \in  \hat{V_{\overline{\alpha}}} \\
 	\end{cases}
 	\]
 	Finally:
-	\[\alpha\textit{-FAttr}(G,U) = U_k \]
-	such that for $k$ we have
-	\[U_k = U_{k+1} \]
+	\[\alpha\textit{-FAttr}(G,U) = \bigcup_{i \geq 0} U_i \]
 \end{definition}
 We will now prove that this new attractor definition gives a result equal to the original definition.
 \begin{lemma}
 	\label{lem_attr_equal}
-	Given unified VPG $G = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise attractor $\alpha\textit{-FAttr}(G,\mathcal{U})$ is equivalent to the set-wise attractor $\alpha\textit{-Attr}(G,\mathcal{U})$ for any $\alpha \in \{0,1\}$.
+	Given unified VPG $G = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise attractor $\alpha\textit{-FAttr}(G,\mathcal{U})$ is equivalent to the set-wise attractor $\alpha\textit{-Attr}(G,\mathcal{U})$ for any $\alpha \in \{0,1\}$.
 	\begin{proof}
-		Let $V,V_0,V_1,E,U$ be the set-wise representation and $V^\lambda,V_0^\lambda,V_1^\lambda,E^\lambda,U^\lambda$ be the function-wise representation of $\mathcal{V},\mathcal{V}_0,\mathcal{V}_1,\mathcal{E},\mathcal{U}$ respectively.
+		Let $V,E,U$ be the set-wise representation and $V^\lambda,E^\lambda,U^\lambda$ be the function-wise representation of $\mathcal{V},\mathcal{E},\mathcal{U}$ respectively.
 		
 		The following properties hold by definition:
-		\[ (c,\hat{v}) \in X \iff c \in X^\lambda(\hat{v})\text{ for all } X\in \{V,V_0,V_1,U\}\]
+		\[ (c,\hat{v}) \in X \iff c \in X^\lambda(\hat{v})\text{ for } X\in \{V,U\}\]
 		\[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in E^\lambda(\hat{v},\hat{v}') \]
 		
 		Since the attractors are inductively defined and $U_0 =_\lambda U^\lambda_0$ (because $U =_\lambda U^\lambda$) we have to prove that for some $i \geq 0$, with $U_i =_\lambda U^\lambda_i$,  we have $U_{i+1} =_\lambda U^\lambda_{i+1}$. We have $U_{i+1} =_\lambda U^\lambda_{i+1}$ iff:
 		\[ (c,\hat{v}) \in U_{i+1} \iff c \in U^\lambda_{i+1}(\hat{v}) \]
 		Let $(c,\hat{v}) \in V$, we consider 4 cases.
 		\begin{itemize}
-			\item Case: $(c, \hat{v}) \in V_{\alpha}$ and $(c,\hat{v}) \in U_{i+1}$:\\
+			\item Case: $\hat{v} \in \hat{V}_{\alpha}$ and $(c,\hat{v}) \in U_{i+1}$:\\
 			To prove: $c \in U^\lambda_{i+1}(\hat{v})$.
 			
 			If $(c,\hat{v}) \in U_i$ then $c \in U^\lambda_i(\hat{v})$ and therefore $c \in U^\lambda_{i+1}(\hat{v})$. Consider $(c,\hat{v}) \notin U_i$, we have $c \notin U^\lambda_i(\hat{v})$.
 			
 			
-			It follows immediately that $c \in V^\lambda_{\alpha}(\hat{v})$ therefore $V^\lambda_{\alpha}(\hat{v}) \neq \emptyset$ so we get
+			Because $\hat{v} \in \hat{V}_{\alpha}$ we get
 			\[ U^\lambda_{i+1} =\bigcup_{\hat{v}'} (V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap U^\lambda_i(\hat{v}')) \]
 			
 			There exists an $(c',\hat{v}') \in V$ such that $(c',\hat{v}') \in U_i$ and $((c,\hat{v}),(c',\hat{v}')) \in E$. Because edges don't cross configurations we can conclude that $c' = c$. Due to equivalence we have $c \in V^\lambda(\hat{v})$, $c \in U^\lambda_i(\hat{v}')$ and $c \in E^\lambda(\hat{v},\hat{v}')$. If we fill this in in the above formula we can conclude that $c \in U^\lambda_{i+1}(\hat{v})$.
-			\item Case: $(c, \hat{v}) \in V_{\alpha}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
+			\item Case: $\hat{v} \in \hat{V}_{\alpha}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
 			To prove: $c \notin U^\lambda_{i+1}(\hat{v})$.
 			
 			
 			First we observe that $(c,\hat{v}) \notin U_i$ and therefore $c \notin U^\lambda_i(\hat{v})$.
 			
-			It follows immediately that $c \in V^\lambda_{\alpha}(\hat{v})$ therefore $V^\lambda_{\alpha}(\hat{v}) \neq \emptyset$ so we get
+			Because $\hat{v} \in \hat{V}_{\alpha}$ we get
 			\[ U^\lambda_{i+1} =\bigcup_{\hat{v}'} (V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap U^\lambda_i(\hat{v}')) \]
 			
 			Assume $c \in U^\lambda_{i+1}(\hat{v})$. There must exist a $\hat{v}'$ such that $c \in V^\lambda(\hat{v})$, $c \in E^\lambda(\hat{v},\hat{v}')$ and $c \in U^\lambda_i(\hat{v}')$. Due to equivalence we have a vertex $(c,\hat{v}) \in V$, $((c,\hat{v}),(c,\hat{v}')) \in E$ and $(c,\hat{v}') \in U_i$. In which case $(c,\hat{v})$ would be attracted and would be in $U_{i+1}$ which is a contradiction.
-			\item Case: $(c, \hat{v}) \in V_{\overline{\alpha}}$ and $(c,\hat{v}) \in U_{i+1}$:\\
+			\item Case: $\hat{v} \in \hat{V}_{\overline{\alpha}}$ and $(c,\hat{v}) \in U_{i+1}$:\\
 			To prove: $c \in U^\lambda_{i+1}(\hat{v})$.
 			
 			If $(c,\hat{v}) \in U_i$ then $c \in U^\lambda_i(\hat{v})$ and therefore $c \in U^\lambda_{i+1}(\hat{v})$. Consider $(c,\hat{v}) \notin U_i$, we have $c \notin U^\lambda_i(\hat{v})$.
 			
-			It follows immediately that $c \in V^\lambda_{\overline{\alpha}}(\hat{v})$ therefore $V^\lambda_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ so we get
-			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \cup (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
+			Because $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we get
+			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \]
 			
 			Assume $c \notin U^\lambda_{i+1}(\hat{v})$. Because $c \in V^\lambda(\hat{v})$ there must exist an $\hat{v}$ such that
-			\[ c \notin ((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \text{ and } c \notin U^\lambda_i(\hat{v}') \text{ and } c \notin (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
+			\[ c \notin ((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \text{ and } c \notin U^\lambda_i(\hat{v}') \]
 			which is equal to
-			\[ c \in E^\lambda(\hat{v},\hat{v}') \text{ and } c \notin U^\lambda_i(\hat{v}') \text{ and } c \in V^\lambda(\hat{v}') \]
-			By equivalence we have $((c,\hat{v}),(c,\hat{v}')) \in E$, $(c,\hat{v}') \notin U_i$ and $(c,\hat{v}') \in V$. Which means that $(c,\hat{v})$ will not be attracted and $(c,\hat{v}) \notin U_{i+1}$ which is a contradiction.
-			\item Case: $(c, \hat{v}) \in V_{\overline{\alpha}}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
+			\[ c \in E^\lambda(\hat{v},\hat{v}') \text{ and } c \notin U^\lambda_i(\hat{v}') \]
+			By equivalence we have $((c,\hat{v}),(c,\hat{v}')) \in E$ and $(c,\hat{v}') \notin U_i$. Which means that $(c,\hat{v})$ will not be attracted and $(c,\hat{v}) \notin U_{i+1}$ which is a contradiction.
+			\item Case: $\hat{v} \in \hat{V}_{\overline{\alpha}}$ and $(c,\hat{v}) \notin U_{i+1}$:\\
 			To prove: $c \notin U^\lambda_{i+1}(\hat{v})$.
 			
 			First we observe that $(c,\hat{v}) \notin U_i$ and therefore $c \notin U^\lambda_i(\hat{v})$.
 			
-			It follows immediately that $c \in V^\lambda_{\overline{\alpha}}(\hat{v})$ therefore $V^\lambda_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ so we get
-			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \cup (\mathfrak{C}\backslash V^\lambda(\hat{v}')) \]
+			Because $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we get
+			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \]
 			
 			Since unified VPGs are total in all configurations (lemma \ref{lem_UVPG_total}) we have at least one outgoing edge for $(c,\hat{v})$. Since $(c,\hat{v})$ is not attracted there must exist a $(c,\hat{v}') \in V$ such that 
 			\[ ((c,\hat{v}),(c,\hat{v}')) \in E  \text{ and } (c,\hat{v}') \notin U_i \]
 			By equivalence we have 
-			\[ c \in V^\lambda(\hat{v}')  \text{ and } c \in E^\lambda(\hat{v},\hat{v}')  \text{ and } c \notin U^\lambda_i(\hat{v}') \]
+			\[ c \in E^\lambda(\hat{v},\hat{v}')  \text{ and } c \notin U^\lambda_i(\hat{v}') \]
 			Which is equal to
-			\[ c \notin (\mathfrak{C} \backslash V^\lambda(\hat{v}'))  \text{ and } c \notin (\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}'))  \text{ and } c \notin U^\lambda_i(\hat{v}') \]
+			\[ c \notin (\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}'))  \text{ and } c \notin U^\lambda_i(\hat{v}') \]
 			From which we conclude
-			\[ c \notin ((\mathfrak{C} \backslash V^\lambda(\hat{v}')) \cup c \notin (\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup c \notin U^\lambda_i(\hat{v}')) \]
+			\[ c \notin ((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}'))) \]
 			Therefore we have $c \notin U^\lambda_{i+1}(\hat{v})$.
 		\end{itemize}
 	\end{proof}
 \end{lemma}
 
-We also modified the subgame definition to work with the function-wise representation. Note that this subgame definition is similar to the relaxed subgame definition (\ref{def_relaxed_subgame}) and not to the original subgame definition (\ref{def_org_subgame}).
+We also modified the subgame definition to work with the function-wise representation.
 \begin{definition}
 	\label{def_Usubgame}
-	For unified VPG $G = (V,V_0,V_1,E,\Omega)$, represented function-wise, and set $X \subseteq V$ we define the subgame $G \backslash X = (V',V_0',V_1',E,\Omega)$ such that:
+	For unified VPG $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$, represented function-wise, and set $X \subseteq V$ we define the subgame $G \backslash X = (V',\hat{V}_0,\hat{V}_1,E',\hat{\Omega})$ such that:
 	\begin{itemize}
-		\item $V'(\hat{v}) = V(\hat{v}) \backslash X(\hat{v})$,
-		\item $V_0'(\hat{v}) = V'(\hat{v}) \cap V_0(\hat{v})$ and
-		\item $V_1'(\hat{v}) = V'(\hat{v}) \cap V_1(\hat{v})$.
+		\item $V'(\hat{v}) = V(\hat{v}) \backslash X(\hat{v})$
+		\item $E'(\hat{v},\hat{v}') = E(\hat{v},\hat{v}') \backslash (X(\hat{v}) \cup X(\hat{v}'))$
 	\end{itemize}
 \end{definition}
-We will now prove that this new subgame definition gives a result equal to the relaxed subgame definition.
+We will now prove that this new subgame definition gives a result equal to the original subgame definition.
 \begin{lemma}
 	\label{lem_subgame_eq}
-	Given unified VPG $G = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise subgame $G \backslash \mathcal{U}$ is equal to the relaxed set-wise subgame $G \backslash \mathcal{U}$.
+	Given unified VPG $G = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise subgame $G \backslash \mathcal{U}$ is equal to the set-wise subgame $G \backslash \mathcal{U}$.
 	\begin{proof}
-		Follows immediately from the subgame definitions (\ref{def_relaxed_subgame}, \ref{def_Usubgame}) and the equivalence relation between function-wise and set-wise games.
+		Follows immediately from the subgame definitions (\ref{def_org_subgame}, \ref{def_Usubgame}) and the equivalence relation between function-wise and set-wise games.
 	\end{proof}
 \end{lemma}
 
 Next we prove the correctness of the algorithm by showing that the winning sets of the function-wise algorithm are equal to the winning sets of the set-wise algorithm.
 \begin{theorem}
-	Given unified VPG $\mathcal{G} = (\mathcal{V},\mathcal{V}_0,\mathcal{V}_1, \mathcal{E}, \Omega)$ the winning sets resulting from \textsc{recursiveUVPG($\mathcal{G}$)} ran over the function-wise representation of $\mathcal{G}$ is equal to the winning sets resulting from \textsc{RecursivePG($\mathcal{G}$)} ran over the set-wise representation of $\mathcal{G}$.
+	Given unified VPG $\mathcal{G} = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ the winning sets resulting from \textsc{recursiveUVPG($\mathcal{G}$)} ran over the function-wise representation of $\mathcal{G}$ is equal to the winning sets resulting from \textsc{RecursivePG($\mathcal{G}$)} ran over the set-wise representation of $\mathcal{G}$.
 	\begin{proof}
-		Let $G = (V,V_0,V_1,E,\Omega)$ be the set-wise representation of $\mathcal{G}$ and $G^\lambda = (V^\lambda, V^\lambda_0, V^\lambda_1, E^\lambda, \Omega)$ be the function-wise representation of $\mathcal{G}$.
+		Let $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ be the set-wise representation of $\mathcal{G}$ and $G^\lambda = (V^\lambda, \hat{V}_0, \hat{V}_1, E^\lambda, \hat{\Omega})$ be the function-wise representation of $\mathcal{G}$.
 		
 		Proof by induction on $\mathcal{G}$.
 		
@@ -264,7 +226,7 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 		
 		\textsc{recursiveUVPG($G^\lambda$)} returns $\lambda^\emptyset$ and \textsc{RecursivePG($G$)} returns $\emptyset$, these two results are equal therefore the theorem holds in this case.
 		
-		\textbf{Base} $\min\{\Omega(v)\ |\ v \in \mathcal{V}\} = \max\{\Omega(v)\ |\ v \in \mathcal{V}\}$.
+		\textbf{Base} $\min\{\hat{\Omega}(v)\ |\ v \in \mathcal{V}\} = \max\{\hat{\Omega}(v)\ |\ v \in \mathcal{V}\}$.
 		
 		\textsc{recursiveUVPG($G^\lambda$)} returns $\lambda^\emptyset$ and \textsc{RecursivePG($G$)} returns $\emptyset$, these two results are equal therefore the theorem holds in this case.
 		
@@ -290,12 +252,12 @@ Next we present an algorithm to calculate the function-wise attractor, the pseud
 		\State $\hat{v}' \gets Q.pop()$
 		\For{$E(\hat{v},\hat{v}') \neq \emptyset$}
 			\If{$A(\hat{v}) = V(\hat{v})$} \State \textbf{continue} \EndIf
-			\If{$V_\alpha(\hat{v}) \neq \emptyset$}
+			\If{$\hat{v} \in \hat{V}_\alpha$}
 				\State $a \gets V(\hat{v}) \cap E(\hat{v},\hat{v}') \cap A(\hat{v}')$
 			\Else
 				\State $a \gets V(\hat{v})$
 				\For{$E(\hat{v},\hat{v}'') \neq \emptyset$}
-					\State $a \gets a \cap (\mathfrak{C}\backslash E(\hat{v},\hat{v}'') \cup A(\hat{v}'') \cup \mathfrak{C} \backslash V(\hat{v}''))$
+					\State $a \gets a \cap (\mathfrak{C}\backslash E(\hat{v},\hat{v}'') \cup A(\hat{v}''))$
 				\EndFor
 			\EndIf
 			\If{$a = \emptyset$} \State \textbf{continue} \EndIf
@@ -309,9 +271,9 @@ Next we present an algorithm to calculate the function-wise attractor, the pseud
 \begin{lemma}
 \label{lem_attr_requires_E}
 Vertex $\hat{v}$ with configuration $c$, with $c \in V(\hat{v})$, can only be attracted if there is a vertex $\hat{v}'$ such that $c \in E(\hat{v}, \hat{v}')$ and $c \in U_i(\hat{v}')$.
-\begin{proof}
-	We first observe that if $V_\alpha(\hat{v}) \neq \emptyset$ then this property follows immediately from definition \ref{def_Uattr}. If $V_{\overline{\alpha}}(\hat{v}) \neq \emptyset$ we note that parity games are total and therefore also total for every configuration (lemma \ref{lem_UVPG_total}), therefore vertex $\hat{v}$ has an outgoing edge to $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w})$.
-\end{proof}
+	\begin{proof}
+		We first observe that if $\hat{v} \in \hat{V}_\alpha$ then this property follows immediately from definition \ref{def_Uattr}. If $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we note that parity games are total and therefore also total for every configuration (lemma \ref{lem_UVPG_total}), therefore vertex $\hat{v}$ has an outgoing edge to $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w})$.
+	\end{proof}
 \end{lemma}
 \begin{theorem}
 Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}(G,U)$.
@@ -350,17 +312,52 @@ Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\
 
 
 \subsection{Running time}
-We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ product based, family based with a set-wise representation and family based with a function-wise representation. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
+We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ product based and family based the different type  of representations. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
-As stated before the product based approach using the original algorithm gives a running time of $O(c * e * n^d)$. We can also apply the original algorithm to a unified VPG (represented set-wise) for a family based approach, in this case we get a parity game with $c*n$ vertices and $O(c*e)$ edges. which gives a running time $O(c*e*(nc)^d)$. However this running time can be improved because unified PGs are $c$ disconnected graphs.
+\subsubsection{Product based}
+As stated before the product based approach using the original algorithm gives a running time of $O(c * e * n^d)$. We can also apply the original algorithm to a unified VPG (represented set-wise) for a family based approach, in this case we get a parity game with $c*n$ vertices and $O(c*e)$ edges. which gives a running time $O(c*e*(nc)^d)$. However this running time can be improved because by using the property that unified PGs are $c$ disconnected graphs. In the next few section we analyse the running time of the family based algorithms.
 
-The algorithm has two recursions, the first recursion lowers the number of distinct priorities by 1. The second recursion removes at least one edge, however the game is comprised of disjoint projection. Consider game $G_{|c}$, if $(G\backslash U)_{|c}$ contains a vertex that is won by player $\overline{\alpha}$ then this vertex is removed in the second recursion step. If there is no vertex won by player $\overline{\alpha}$ then the game is won in its entirety and the only vertices won by player $\overline{\alpha}$ are in different projections. We can conclude that for every $c$ the second recursion either removes a vertex or $(G\backslash U)_{|c}$ is entirely won by player $\alpha$. Let $\overline{n}$ denote be the maximum number of vertices that are won by player $\overline{\alpha}$ in game $(G\backslash U)_{|c}$. Since every projection has at most $n$ vertices the value for $\overline{n}$ can be at most $n$. Furthermore since $\overline{n}$ depends on $U$, which depends on the maximum priority, the value $\overline{n}$ gets reset when the top priority is removed in the first recursion. We can now write down the recursion:
+\subsubsection{Family based}
+We introduced three types of family based algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominant, so we need to do three things: analyse the running time of its base cases, analyse the running time of the attractor set and analyse the recursion.
+
+\textit{Base cases.} In the base cases we need to do two things: find the highest and lowest priority and check if there are no more vertices in the game. For the set-wise variant we find the highest and lowest priorites by iteration all vertices which takes $O(c*n)$, checking if there are no more vertices is done in $O(n)$. For the function wise algorithms we can find the highest and lowest priority in $O(n)$ and checking if there are no vertices is also done in $O(n)$ since we have to check $V(\hat{v}) = \emptyset$ for every $\hat{n}$. Note that in a symbolic representation we can check if a set is empty in $O(1)$.
+
+\textit{Attractor sets.} We first explore the running time of the attractor calculations. For the set-wise family based approach we can use the attractor calculation from the original algorithm with has a running time complexity of $O(e)$, so for a unified VPG having $c*e$ edges we have $O(c*e)$.
+
+The function-wise variants use a different attractor algorithm. First we consider the variant where sets of configurations are represented explicitly.
+
+Consider algorithm \ref{alg_fattr_alg}. A vertex will be added to the queue when this vertex is attracted for some configuration, this can only happen $c*n$ times, once for every vertex configuration combination. 
+
+The first for loop considers all the incoming edges of a vertex. When we consider all vertices the for loop will have considered all edges, since we consider every vertex at most $c$ times the for loop will run at most $c*e$ times in total.
+
+The second for loop considers all outgoing edges of a vertex. The vertices that are considered are the vertices that have an edge going to the vertex being considered by the while loop. Since the while loop considers $c*n$ vertices the second for loop runs in total at most $c * n * e$ times. The loop itself performs set operations on the set of configurations which can be done in $O(c)$. This gives a total running time for the attractor set of $O(n*c^2*e)$.
+
+For the symbolic representation set operations can be done in $O(c^2)$ so we get a running time complexity of $O(n*c^3*e)$.
+
+This gives the following running time complexities\\
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline 
+		& Base & Attractor set \\ 
+		\hline 
+		Set-wise & $O(c*n)$ & $O(c*e)$  \\ 
+		\hline 
+		Function-wise explicit & $O(n)$ &  $O(n*c^2*e)$ \\ 
+		\hline 
+		Function-wise symbolic & $O(n)$ &  $O(n* c^3*e)$ \\ 
+		\hline 
+	\end{tabular} 
+\end{center}
+
+\textit{Recursion}. The three algorithms behave the same way with regards to their recursion, so we analyse the running time of the set-wise variant and can derive the running time complexity of the others using the result.
+
+The algorithm has two recursions, the first recursion lowers the number of distinct priorities by 1. The second recursion removes at least one edge, however the game is comprised of disjoint projections which we can use in the analyses. Consider game $G$ and set $A$ as specified by the algorithm. Now consider the projection of $G$ to an arbitrary configuration, $G_{|c}$. If $(G\backslash A)_{|c}$ contains a vertex that is won by player $\overline{\alpha}$ then this vertex is removed in the second recursion step. If there is no vertex won by player $\overline{\alpha}$ then the game is won in its entirety and the only vertices won by player $\overline{\alpha}$ are in different projections. We can conclude that for every $c$ the second recursion either removes a vertex or $(G\backslash A)_{|c}$ is entirely won by player $\alpha$. Let $\overline{n}$ denote be the maximum number of vertices that are won by player $\overline{\alpha}$ in game $(G\backslash A)_{|c}$. Since every projection has at most $n$ vertices the value for $\overline{n}$ can be at most $n$. Furthermore since $\overline{n}$ depends on $A$, which depends on the maximum priority, the value $\overline{n}$ gets reset when the top priority is removed in the first recursion. We can now write down the recursion of the algorithm:
 \[ T(d,\overline{n}) \leq T(d-1,n) + T(d, \overline{n} - 1) + O(ce) \]
-When $\overline{n} = 0$ we will get $W_{\overline{\alpha}}$ as a result of the first recursion. In such a case there will be only 1 recursion.
+When $\overline{n} = 0$ we will get $W_{\overline{\alpha}} = \emptyset$ as a result of the first recursion. In such a case there will be only 1 recursion.
 \[ T(d,0) \leq T(d-1,n) + O(ce) \]
 Finally we have the base case where there is 1 priority:
 \[ T(1, \overline{n}) \leq O(cn) \]
-We expand the second recursion to get
+Expanding the second recursion gives
 \begin{align*}
 T(d) &\leq (n+1)T(d-1) + (n+1)O(ce)\\
 T(1) &\leq O(cn)
@@ -384,51 +381,7 @@ Using lemma \ref{lem_md_ineq} we get
 \begin{align*}
 T(d) &\leq (n+d)^dO(ce)
 \end{align*}
-This gives a running time complexity of $O(c*e*(n+d)^d) = O(c*e*n^d)$.
-
-
-
-Next we analyse the running time of the algorithm using a function-wise representation. First we consider the variant where sets of configurations are represented explicitly. We first analyse the running time of the attractor set. 
-
-A vertex will be added to the queue when this vertex is attracted for some configuration, this can only happen $c*n$ times, once for every vertex configuration combination. 
-
-The first for loop considers all the incoming edges of a vertex. When we consider all vertices the for loop will have considered all edges, since we consider every vertex at most $c$ times the for loop will run at most $c*e$ times in total.
-
-The second for loop considers all outgoing edges of a vertex. The vertices that are considered are the vertices that have an edge going to the vertex being considered by the while loop. Since the while loop considers $c*n$ vertices the second for loop runs in total at most $c * n * e$ times. The loop itself performs set operations on the set of configurations which can be done in $O(c)$. This gives a total running time for the attractor set of $O(n*c^2*e)$.
-
-We will now analyse the recursion of the function-wise algorithm, first we define $m = cn$ representing the total number of configuration vertex combinations. The first subgame created in the algorithm decreases $d$ by one, the second subgame decreases the $m$ by one. This gives the following recursion:
-\begin{align*}
-T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(n*c^2*e)\\
-T(m,1) &= O(m)\\
-T(0,d) &= O(m)
-\end{align*}
-From which we get 
-\begin{align*}
-T(m,d) &\leq T(m, d-1) + T(m-1, d) + O(n*c^2*e)\\
-&\leq m*T(m, d-1) + m*O(n*c^2*e) + O(m)\\
-&\leq m*T(m, d-1) + (m+1)O(n*c^2*e)\\
-T(m,1) &= O(m)
-\end{align*}
-We will now prove that $T(m,d) \leq (m+d)^dO(n*c^2*e)$ by induction on $d$.
-
-\textbf{Base} $d = 1$: $T(m,1) = O(m) \leq O(n*c^2*e)$.
-
-\textbf{step} 
-\begin{align*}
-T(m,d) &\leq m*T(m,d-1) + (m+1)O(c^2 + n^3)\\
-&\leq m*(m+d-1)^{d-1}O(n*c^2*e) + (m+1)O(n*c^2*e)
-\end{align*}
-Since $d > 1$ we have $m \leq m+d-1$
-\begin{align*}
-T(m,d) &\leq (m+d-1)^{d}O(n*c^2*e) + (m+1)O(n*c^2*e)\\
-& = ((m+d-1)^d + m + 1)O(n*c^2*e)
-\end{align*}
-We have $(m+d-1)^d + m + 1 \leq (m+d)^d$ (using lemma \ref{lem_md_ineq}), we find:\\
-\[ T(m,d) \leq (m+d)^dO(n*c^2*e) \]
-
-We conclude that the running time for the explicit function-wise algorithm is $O((cn+d)^dn*c^2*e) = O(c^2*n*e*(cn)^d)$.
-
-For the symbolic function-wise algorithm we can follow the same line of reasoning however the attractor set runs requires $O(c^2)$ to perform its set operations which gives a running time for the attractor set of $O(n* c^3*e)$ and a total running time of $O(c^3*n*e*(cn)^d)$.
+This gives a running time complexity of $O(c*e*(n+d)^d) = O(c*e*n^d)$. Note that the base running time is subsumed in the recursion by the running time of the attractor set. Since the running time of the attractor set is higher that the running time of the base cases for all three variants of algorithms we can simply fill in the attractor running time to get $O(n*c^2*e*n^d)$ for the function-wise explicit algorithm and $O(n*c^3*e*n^d)$ for the function-wise symbolic algorithm.
 
 The different algorithms, including their running times, are repeated in the diagram below:\\
 \begin{center}
@@ -436,10 +389,10 @@ The different algorithms, including their running times, are repeated in the dia
 	[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}
 		[Product based\\$O(c*e*n^d)$ ]
 		[Family based
-			[Set-wise\\$O(c*e*(cn)^d)$ ]
+			[Set-wise\\$O(c*e*n^d)$ ]
 			[Function-wise
-				[Explicit\\$O(c^2 * n * e * (cn)^d)$ ]
-				[Symbolic\\$O(c^3 * n * e * (cn)^d)$ ]
+				[Explicit\\$O(n * c^2 * e * n^d)$ ]
+				[Symbolic\\$O(n * c^3 * e * n^d)$ ]
 			]
 		]
 	]
