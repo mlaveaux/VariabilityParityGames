@@ -1,3 +1,9 @@
+echo "Time with set-wise"
+./time.sh $1 /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkSetWise/ > $1/logs/time_set_wise.log
+echo "Attr with set-wise"
+./attrtime.sh $1 /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkSetWise/ > $1/logs/attrtime_set_wise.log
+
+
 echo "Time with bdd"
 ./time.sh $1 /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkBDD/ > $1/logs/time_bdd.log
 echo "Attr with bdd"
@@ -13,3 +19,7 @@ echo "Time with explicit"
 echo "Attr with explicit"
 ./attrtime.sh $1 /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkExplicit/ > $1/logs/attrtime_explicit.log
 
+echo "Time with set-wise"
+./time.sh $1 /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkSetWise/ > $1/logs/time_explicit.log
+echo "Attr with explicit"
+./attrtime.sh $1 /home/sjef/AfstudeerRepo/implementation/testsuite/algs/ZlnkSetWise/ > $1/logs/attrtime_explicit.log

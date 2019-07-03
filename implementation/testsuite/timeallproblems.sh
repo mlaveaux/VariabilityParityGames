@@ -1,3 +1,3 @@
 time ./timeall.sh minepump
 time ./timeall.sh randomgames
-time ./timeall.sh elevator
+#time ./timeall.sh elevator
