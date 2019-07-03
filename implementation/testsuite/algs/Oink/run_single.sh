@@ -1,1 +1,1 @@
-oink --uzlk `dirname $1`/sSVPG$2|sed 's/solving/Solving/'
+oink --uzlk --workers -1  `dirname $1`/sSVPG$2|sed 's/solving/Solving/'
