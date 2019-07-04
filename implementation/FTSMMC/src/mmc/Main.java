@@ -13,14 +13,12 @@ import mmc.modal.ParseException;
 import mmc.models.Lts;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 public class Main {
@@ -53,7 +51,8 @@ public class Main {
                         Integer.parseInt(args[4]),
                         Integer.parseInt(args[5]),
                         Float.parseFloat(args[6]),
-                        args[7]
+                        args[7].charAt(0),
+                        args[8]
                 );
                 break;
             default:
@@ -62,7 +61,7 @@ public class Main {
         }
     }
 
-    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda, String directory){
+    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda, char typeofrandom, String directory){
         String[] features = new String[c];
         for(int i = 0;i<c;i++){
             features[i] = String.valueOf(i);
@@ -91,7 +90,10 @@ public class Main {
                 if(targeted[t])
                     continue;
                 targeted[t] = true;
-                e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations(lambda);
+                if(typeofrandom == 'F')
+                    e.configurations = FeatureDiagram.PrimaryFD.getFeaturedRandomConfigurations(lambda);
+                else
+                    e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations(lambda);
                 conf = FeatureDiagram.PrimaryFD.or(conf, e.configurations);
                 vertices[i].addEdge(e);
             }

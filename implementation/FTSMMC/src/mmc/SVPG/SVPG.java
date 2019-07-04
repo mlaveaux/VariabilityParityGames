@@ -181,6 +181,7 @@ public class SVPG {
         s = s.trim().replace('\n','+');
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         s = s.replace("TRUE",trueLiteral);
+        s = s.replace("FALSE","F");
         return s;
     }
 }
