@@ -1,4 +1,4 @@
-for p in minepump randomgames
+for p in minepump elevator randomgames
 do 
 	cd $p
 	for g in game*
