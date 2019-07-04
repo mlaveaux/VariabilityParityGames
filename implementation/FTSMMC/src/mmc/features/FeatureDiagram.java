@@ -67,7 +67,7 @@ public class FeatureDiagram extends BDD {
         return -1;
     }
 
-    public int getRandomConfigurations(float lambda){
+    public int getFeaturedRandomConfigurations(float lambda){
         int result = this.FD;
         Random r = new Random();
         for(int i = 0;i<featureVariables.length;i++){
@@ -84,10 +84,11 @@ public class FeatureDiagram extends BDD {
         return result;
     }
 
-    public int getRandomConfigurations(){
+    public int getRandomConfigurations(float portion){
         int result = super.getZero();
         Random r = new Random();
         int nrofconfs = 1+r.nextInt((1 << this.num_vars)-1);
+        nrofconfs = (int)((float)nrofconfs * portion);
         for(int i = 0;i<nrofconfs;i++){
             int conf = r.nextInt(1 << this.num_vars);
             int confbdd = super.getOne();
