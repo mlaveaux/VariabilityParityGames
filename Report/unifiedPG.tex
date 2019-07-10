@@ -33,7 +33,7 @@ it holds that
 	\end{proof}
 \end{theorem}
 
-\subsubsection{Representing unified parity games}
+\subsection{Representing unified parity games}
 Unified PGs have a specific structure because they are the union of PGs that have the same vertices with the same owner and priority. Because they have the same priority we don't actually need to create a new function that is the unification of all the projections, we can simply use the original priority assignment function because the following relation holds:
 \[ \Omega(c,\hat{v}) = \hat{\Omega}(\hat{v}) \]
 Similarly we can use the original partition sets $\hat{V}_0$ and $\hat{V}_1$ instead of having the new partition $V_0$ and $V_1$ because the following relations holds:
@@ -47,7 +47,7 @@ We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\m
 \[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
 We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
 
-\subsubsection{Projections and totality}
+\subsection{Projections and totality}
 A unified PG can be projected back to one of the games from which it is the union.
 \begin{definition}
 	The projection of unified PG $G = (V,\hat{V}_0, \hat{V}_1,E,\hat{\Omega})$ to configuration $c$, denoted as $G_{|c}$, is the parity game $(V',\hat{V}_0,\hat{V}_1,E',\hat{\Omega})$ such that $V' = \{ \hat{v}\ |\ (c,\hat{v}) \in V \}$ and $E' = \{ (\hat{v},\hat{w})\ |\ ((c,\hat{v}),(c,\hat{w})) \in E \} $.

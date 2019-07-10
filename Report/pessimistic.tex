@@ -1,13 +1,144 @@
-Given a VPG with configurations $\mathfrak{C}$ we can try to determine sets $P_0,P_1$ such that the vertices in set $P_\alpha$ are won by player $\alpha \in \{0,1\}$ for any configuration in $\mathfrak{C}$. We can do so by creating a \textit{pessimistic} VPG; a pessimistic PG is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the PG allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
+Given a VPG with configurations $\mathfrak{C}$ we can try to determine sets $P_0,P_1$ such that the vertices in set $P_\alpha$ are won by player $\alpha \in \{0,1\}$ for any configuration in $\mathfrak{C}$. We can do so by creating a \textit{pessimistic} PG; a pessimistic PG is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the PG allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
 \begin{definition}
 	\label{def_pess_game}
-	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we can create pessimistic VPG $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$. We have	
+	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we can create pessimistic PG $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$. We have	
 	\[ G_{\triangleright\alpha} = \{V,V_0,V_1,E',\Omega \} \]
 	such that
 	\[ E' = \{ (v,w) \in E\ |\ v \in V_{\overline{\alpha}} \vee \theta(v,w) = \mathfrak{C} \} \]
 \end{definition}
 
-When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_0,W_1$, for which we have $W_\alpha = P_\alpha$ as shown in the following theorem.
+
+Note that pessimistic parity games are not necessarily total. A play in a PG that is not total might result in a finite path, in such a case the player that can't make a move looses the play.
+
+When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_0,W_1$, every vertex in $W_\alpha$ is winning for player $\alpha$ in $G$ played for any configuration, as shown in the following theorem.
 \begin{theorem}
-	Given VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ and configuration $c \in \mathfrak{C}$ with winning sets $W_0^c, W_1^c$ we have for any $\alpha \in \{0,1\}$ it holds that $P_\alpha \subseteq W_\alpha^c$ where $P_0,P_1$ are the the winning sets of game $G_{\triangleright\alpha}$.
+	\label{the_pess_is_winning_for_all_conf}
+	Given:
+	\begin{itemize}
+		\item VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$,
+		\item configuration $c \in \mathfrak{C}$,
+		\item winning sets $W_0^c, W_1^c$ for game $G$,
+		\item player $\alpha \in \{0,1\}$ and
+		\item pessimistic PG $G_{\triangleright\alpha}$ with winning sets $P_0$ and $P_1$
+	\end{itemize}
+we have $P_\alpha \subseteq W_\alpha^c$.
+	\begin{proof}
+		Player $\alpha$ has a strategy in game $G_{\triangleright\alpha}$ such that vertices in $P_\alpha$ are won. We will show that this strategy can also be applied to game $G_{|c}$ to win the same or more vertices.
+		
+		First we observe that any edge that is taken by player $\alpha$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
+		
+		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but can't be taken in $G_{|c}$, in such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ can't win a vertex in $G_{\triangleright\alpha}$ then he/she can't win that vertex in $G_{|c}$.
+		
+		We can conclude that applying the strategy from game $G_{\triangleright\alpha}$ in game $G_{|c}$ for player $\alpha$ wins the same or more vertices.
+	\end{proof}
+\end{theorem}
+
+\subsection{Configuration partitioning}
+\begin{definition}
+	Given VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ and non-empty set $\mathfrak{X} \subseteq \mathfrak{C}$ we define the subgame $G \cap \mathfrak{X} = (V,V_0,V_1,E',\Omega,\mathfrak{C}', \theta')$ such that
+	\begin{itemize}
+		\item $\mathfrak{C}' =\mathfrak{C} \cap \mathfrak{X}$,
+		\item $\theta'(e) = \theta(e) \cap \mathfrak{C}'$ and
+		\item $E' = \{ e \in E\ |\ \theta'(e) \neq \emptyset \}$.
+	\end{itemize}
+\end{definition}
+VPGs are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality.
+
+Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
+
+Finally the subset operator is associative, meaning $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
+
+Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winning for player $\alpha$ in pessimistic subgames of $G$, as shown in the following lemma.
+\begin{lemma}
+	\label{lem_pessimistic_subgames}
+	Given:
+	\begin{itemize}
+		\item VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$,
+		\item $P_0$ being the winning set of game $G_{\triangleright0}$ for player $0$,
+		\item $P_1$ being the winning set of game $G_{\triangleright1}$ for player $1$,
+		\item non-empty set $\mathfrak{X} \subseteq \mathfrak{C}$,
+		\item player $\alpha \in \{0,1\}$ and
+		\item winning sets $Q_0,Q_1$ for game $(G \cap \mathfrak{X})_{\triangleright\alpha}$
+	\end{itemize}
+	we have
+	\[ P_0 \subseteq Q_0 \]
+	\[ P_1 \subseteq Q_1 \]
+	\begin{proof}
+	
+		Let edge $(v,w)$ be an edge in game $G_{\triangleright\alpha}$ with $v \in V_\alpha$. Edge $(v,w)$ admits all configuration in $\mathfrak{C}$ so it also admits all configuration in $\mathfrak{C} \cap \mathfrak{X}$, therefore we can conclude that edge $(v,w)$ is also an edge of game $(G\cap \mathfrak{X})_{\triangleright\alpha}$.
+		
+		Let edge $(v,w)$ be an edge in game $(G \cap \mathfrak{X})_{\triangleright\alpha}$ with $v \in V_{\overline{\alpha}}$. The edge admits some configuration in $\mathfrak{C} \cap \mathfrak{X}$, this configuration is also in $\mathfrak{C}$ so we can conclude that edge $(v,w)$ is also an edge of game $G_{\triangleright\alpha}$.
+		
+		We have concluded that game $(G \cap \mathfrak{X})_{\triangleright\alpha}$ has the same or more edges for player $\alpha$ as game $G_{\triangleright\alpha}$ and the same or less edges for player $\overline{\alpha}$. Therefore we can conclude that any vertex won by player $\alpha$ in $G_{\triangleright\alpha}$ is also won by $\alpha$ in game $(G \cap \mathfrak{X})_{\triangleright\alpha}$, ie. $P_\alpha \subseteq Q_\alpha$.
+		
+		
+		Let $v \in P_{\overline{\alpha}}$, using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\overline{\alpha}$ in $G_{|c}$ for any $c \in \mathfrak{C}$. Because projections of subgames are the same as projections of the original game we can conclude that $v$ is winning for player $\overline{\alpha}$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
+		
+		Assume $v \notin Q_{\overline{\alpha}}$ then $v \in Q_{\alpha}$ and using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\alpha$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$. This is a contradiction so we can conclude $v \in Q_{\overline{\alpha}}$ and therefore $P_{\overline{\alpha}} \subseteq Q_{\overline{\alpha}}$.
+	\end{proof}
+\end{lemma}
+
+\subsection{Multi-branching recursive algorithm}
+Using pessimistic games we can create an algorithm that solves the entire VPG incrementally. First we try to find $P_0$ and $P_1$ for all the configurations, next we partition the configuration set in two sets and try to improve $P_0$ and $P_1$ for these sets. We continue to do this until we have configuration sets of size $1$ and we simply solve the projection.
+
+The pseudo code is presented in algorithm \ref{alg_MBR}, the algorithm relies on a \textsc{Solve} algorithm that solves a parity game. The \textsc{Solve} algorithm is some algorithm that solves parity games and can use the parameters $P_0$ and $P_1$ to more efficiently solve the parity game. The pessimistic parity games are not necessarily total so the \textsc{Solve} algorithm must be able to solve non-total games.
+\begin{algorithm}
+	\caption{$\textsc{MBR}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_MBR}
+	\begin{algorithmic}[1]
+		\If{$|\mathfrak{C}| = 1$}
+			\State $\{c\} \gets \mathfrak{C}$
+			\State $(W'_0,W'_1) \gets \textsc{Solve}(G_{|c}, P_0,P_1)$
+			\State \Return $(\mathfrak{C} \times W'_0, \mathfrak{C} \times W'_1)$
+		\EndIf
+		\State $(P'_0,-) \gets \textsc{Solve}(G_{\triangleright0}, P_0, P_1)$
+		\State $(-,P'_1) \gets \textsc{Solve}(G_{\triangleright1}, P_0, P_1)$
+		\If{$P'_0 \cup P'_1 = V$}
+			\State \Return $(\mathfrak{C} \times P'_0, \mathfrak{C} \times P'_1)$
+		\EndIf
+		\State $\mathfrak{C}^a, \mathfrak{C}^b \gets $ partition $\mathfrak{C}$ in non-empty parts
+		\State $(W_0^a, W_1^a) \gets \textsc{MBR}(G \cap \mathfrak{C}^a, P'_0,P'_1)$
+		\State $(W_0^b, W_1^b) \gets \textsc{MBR}(G \cap \mathfrak{C}^b, P'_0,P'_1)$
+		\State $W_0 \gets W_0^a \cup W_0^b$
+		\State $W_1 \gets W_1^a \cup W_1^b$
+		\State \Return $(W_0,W_1)$
+	\end{algorithmic}
+\end{algorithm}
+
+A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$ and $P_1$ are in fact vertices that are won by player $0$ and $1$ respectively. We prove that this is the case in the \textsc{MBR} algorithm.
+\begin{theorem}
+Given VPG $\hat{G}$. For every $\textsc{Solve}(G,P_0,P_1)$ that is invoked during $\textsc{MBR}(\hat{G},\emptyset,\emptyset)$ we have winning sets $W_0,W_1$ for game $G$ for which the following holds:
+\[ P_0 \subseteq  W_0 \]
+\[ P_1 \subseteq  W_1 \]
+	\begin{proof}
+		When $P_0 = \emptyset$ and $P_1 = \emptyset$ the theorem holds trivially. So we will start the analyses after the first recursion. 
+		
+		After the first recursion the game is $\hat{G} \cap \mathfrak{X}$ with $\mathfrak{X}$ being either $\mathfrak{C}^a$ or $\mathfrak{C}^b$. The set $P_0$ is the winning set for player $0$ for game $\hat{G}_{\triangleright0}$ and the set $P_1$ is the winning set for player $1$ for game $\hat{G}_{\triangleright1}$. In the next recursion the game is $\hat{G} \cap \mathfrak{X} \cap \mathfrak{X}'$ with $P_0$ being the winning set for player $0$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright0}$ and $P_1$ being the winning set for player $1$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright1}$. After the first recursion the game is always of the form  $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1}) \cap \mathfrak{X}^k$. Furthermore $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$.
+		
+		Next we inspect the three places \textsc{Solve} is invoked:
+		\begin{enumerate}
+			\item Consider the case where there is only one configuration in $\mathfrak{C}$ (line 1-5). Because $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ the vertices in $P_0$ are won by player $0$ in game $G_{|c}$ for all $c \in \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1}$ (using theorem \ref{the_pess_is_winning_for_all_conf}). This includes the one element in $\mathfrak{C}$. So we can conclude $P_0 \subseteq W_0$ where $W_0$ is the winning set for player $0$ in game $G_{|c}$ where $\{c\} = \mathfrak{C}$.
+			
+			Similarly for player $1$ we can conclude $P_1 \subseteq W_1$ and the theorem holds in this case.
+			\item On line $6$ the game $G_{\triangleright0}$ is solved with $P_0$ and $P_1$. Because $G = \hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1} \cap \mathfrak{X}^k$ and $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$ we can apply lemma \ref{lem_pessimistic_subgames} to conclude that the theorem holds in this case.
+			\item On line $7$ we apply the same reasoning and lemma to conclude that the theorem holds in this case.
+		\end{enumerate}
+	\end{proof}
+\end{theorem}
+
+Next we prove the correctness of the algorithm, assuming the correctness of the \textsc{Solve} algorithm.
+\begin{theorem}
+	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ and $(W_0,W_1) = \textsc{MBR}(\hat{G},\emptyset,\emptyset)$. For every configuration $c \in \mathfrak{C}$ and winning sets $\hat{W}_0^c, \hat{W}_1^c$ for game $\hat{G}$ player for $c$ it holds that:
+	\[ (c,v) \in W_0 \iff v \in \hat{W}_0^c \]
+	\[ (c,v) \in W_1 \iff v \in \hat{W}_1^c \]
+	\begin{proof}
+		We will prove the theorem by applying induction on $\mathfrak{C}$.
+		
+		\textbf{Base} $|\mathfrak{C}| = 1$, when there is only one configuration, being $c$, then the algorithm solves game $G_{|c}$. The product of the winning sets and $\{c\}$ is returned, so the theorem holds.
+		
+		\textbf{Step} Consider $P_0'$ and $P_1'$ as calculated in the algorithm (line 6-7). By theorem \ref{the_pess_is_winning_for_all_conf} all vertices in $P_0'$ are won by player $0$ in game $G_{|c}$ for any $c \in \mathfrak{C}$, similarly for $P_1'$ and player $1$.
+		
+		If $P_0' \cup P_1' = V$ then the algorithm returns $(\mathfrak{C} \times P_0',\mathfrak{C} \times P_1')$. In which case the theorem holds because there are no configuration vertex combinations that are not in either winning set and theorem \ref{the_pess_is_winning_for_all_conf} proves the correctness.
+		
+		If $P_0' \cup P_1' \neq V$ then we have winning sets $(W_0^a, W_1^a)$ for which the theorem holds (by induction) for game $G \cap \mathfrak{C}^a$ and $(W_0^b, W_1^b)$ for which the theorem holds (by induction) for game $G \cap \mathfrak{C}^b$. The algorithm returns $(W_0^a \cup W_0^b, W_1^a \cup W_1^b)$. Since $\mathfrak{C}^a \cup \mathfrak{C}^b = \mathfrak{C}$ all vertex configuration combinations are in the winning sets and the correctness follows from induction.
+	\end{proof}
 \end{theorem}
