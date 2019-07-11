@@ -8,10 +8,12 @@ do
 	c=$(((RANDOM%4)+1))
 	lambda=`seq 0 .01 1 | shuf | head -n1|sed 's/,/./'`
 
-	rm -f game${i}/*
-	rmdir game${i} 2> /dev/null
-	mkdir game${i}
+	rm -f gameF${i}/*
+	rm -f gameC${i}/*
+	mkdir gameF${i}
+	mkdir gameC${i}
 
 	echo "Create game with $N nodes, maxprio: $P, lowest out degree: $l, subhighest out degree: $h, 2^$c confs and lambda: $lambda in `pwd`/game$i"
-	java -jar ../housekeeping.jar randomgame $N $P $l $h $c $lambda `pwd`/game$i	
+	java -jar ../housekeeping.jar randomgame $N $P $l $h $c $lambda F `pwd`/gameF$i
+        java -jar ../housekeeping.jar randomgame $N $P $l $h $c $lambda C `pwd`/gameC$i
 done
