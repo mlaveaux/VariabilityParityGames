@@ -87,14 +87,23 @@ public class Main {
                 Edge e = new Edge();
                 int t = r.nextInt(n);
                 e.target = vertices[t];
-                if(targeted[t])
+                if(targeted[t]) {
+                    j--;
                     continue;
+                }
                 targeted[t] = true;
                 if(typeofrandom == 'F')
                     e.configurations = FeatureDiagram.PrimaryFD.getFeaturedRandomConfigurations(lambda);
                 else
                     e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations(lambda);
+                if(e.configurations == FeatureDiagram.PrimaryFD.getZero())
+                    continue;
                 conf = FeatureDiagram.PrimaryFD.or(conf, e.configurations);
+                if(j == m - 1)
+                {
+                    e.configurations = FeatureDiagram.PrimaryFD.or(e.configurations, FeatureDiagram.PrimaryFD.not(conf));
+                    e.configurations = FeatureDiagram.PrimaryFD.and(FeatureDiagram.PrimaryFD.FD, e.configurations);
+                }
                 vertices[i].addEdge(e);
             }
         }
