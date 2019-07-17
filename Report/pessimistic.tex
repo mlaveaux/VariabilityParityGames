@@ -25,7 +25,7 @@ we have $P_\alpha \subseteq W_\alpha^c$.
 	\begin{proof}
 		Player $\alpha$ has a strategy in game $G_{\triangleright\alpha}$ such that vertices in $P_\alpha$ are won. We will show that this strategy can also be applied to game $G_{|c}$ to win the same or more vertices.
 		
-		First we observe that any edge that is taken by player $\alpha$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
+		First we observe that any edge that is taken by player $\alpha$ in game $G_{\triangleright\alpha}$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
 		
 		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but can't be taken in $G_{|c}$, in such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ can't win a vertex in $G_{\triangleright\alpha}$ then he/she can't win that vertex in $G_{|c}$.
 		
@@ -127,6 +127,7 @@ Given VPG $\hat{G}$. For every $\textsc{Solve}(G,P_0,P_1)$ that is invoked durin
 
 Next we prove the correctness of the algorithm, assuming the correctness of the \textsc{Solve} algorithm.
 \begin{theorem}
+	%TODO hat notatie
 	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ and $(W_0,W_1) = \textsc{MBR}(\hat{G},\emptyset,\emptyset)$. For every configuration $c \in \mathfrak{C}$ and winning sets $\hat{W}_0^c, \hat{W}_1^c$ for game $\hat{G}$ player for $c$ it holds that:
 	\[ (c,v) \in W_0 \iff v \in \hat{W}_0^c \]
 	\[ (c,v) \in W_1 \iff v \in \hat{W}_1^c \]
