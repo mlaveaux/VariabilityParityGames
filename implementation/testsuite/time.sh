@@ -1,7 +1,8 @@
 PROBLEM=$1
 ALGDIR=$2
 cd $PROBLEM
-for g in game_phi1PGs
+#for g in game_phi*PGs
+for g in game*
 do
         cd $g
         $ALGDIR/run.sh SVPG > ../logs/${g}.log

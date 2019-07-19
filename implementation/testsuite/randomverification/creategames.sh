@@ -1,7 +1,7 @@
 #!/bin/bash
-for i in `seq 101 200`
+for i in `seq 201 250`
 do
-	N=$(((RANDOM%100)+10))
+	N=$(((RANDOM%1000)+10))
 	P=$(((RANDOM%10)+1))
 	l=1
 	h=$(((RANDOM%($N/10))+1))
