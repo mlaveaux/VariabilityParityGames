@@ -1,8 +1,8 @@
 PROBLEM=$1
 ALGDIR=$2
 cd $PROBLEM
-#for g in game*
-for g in game_phi3PGs
+for g in game*
+#for g in game_phi3PGs
 do
         cd $g
 	echo -n "$g: "
