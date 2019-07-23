@@ -1,8 +1,9 @@
-ALGDIR=$1
+CMD=$1
+ARGS=$2
 for g in game*
 do
-	cd $g
-        $ALGDIR/run_local.sh SVPG > ../logs/${g}.log
+        cd $g
+        $CMD SVPG $ARGS l > ../logs/${g}.log
 	echo "Start $g"
 	for cc in sSVPG*
 	do
