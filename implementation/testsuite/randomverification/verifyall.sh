@@ -15,6 +15,6 @@ echo "Verify FPIte assisted"
 echo "Verify FPIte local"
 ./verify_local.sh VPGSolver_bdd "F" | grep -v Start
 echo "Verify Zlnk Bdd Explicit"
-./verify,sh VPGSolver_explicit | grep -v Start
+./verify.sh VPGSolver_explicit | grep -v Start
 echo "Verify PG parsing"
-./verify_PG.sh VPGSolver_bdd_single "F"
+./verify_PG.sh VPGSolver_bdd_single "F"|grep -v Start
