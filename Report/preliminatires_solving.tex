@@ -32,3 +32,67 @@ Boolean functions can efficiently be represented in BDDs, for a comprehensive tr
 For VPGs originating from an FTS the configuration sets are already boolean functions over the features. The formula's guarding the edges in the VPG will generally have relatively simple boolean functions, therefore they are specifically appropriate to represent as BDDs.
 
 A set operation over two explicit sets can be performed in $O(n)$ where $n$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(n^2)$). However if the BDDs are small then the set size can still be large but the set operations can be performed very quickly. This is a trade-off between worst case running time complexity and average actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however its worse case running time complexity will be worse.
+
+\subsection{Fixed-point preliminaries}
+\subsubsection{Lattices}
+The following definition regarding ordering and lattices are taken from \cite{birkhoff1940lattice}.
+\begin{definition}
+	A partial order is a binary relation $x \leq y$ on set $S$ where for all $x,y,z \in S$ we have:
+	\begin{itemize}
+		\item $x \leq x$. (Reflexive)
+		\item If $x \leq y$ and $y \leq x$, then $x=y$. (Antisymmetric)
+		\item If $x \leq y$ and $y \leq z$, then $x \leq z$. (Transitive)
+	\end{itemize}
+\end{definition}
+
+\begin{definition}
+	A partially ordered set is a set $S$ and a partial order $\leq$ for that set, we denote a partially ordered set by $\langle S, \leq \rangle$.
+\end{definition}
+
+\begin{definition}
+	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. An upper bound to $X$ is an element $a \in P$ such that $x \leq a$ for every $x\in X$. A least upper bound to $X$ is an upper bound $a \in P$ such that $a' \leq a$ for every upper bound $a' \in P$ to $X$.  
+	
+	The term least upper bound is synonymous with the term supremum.
+\end{definition}
+\begin{definition}
+	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. A lower bound to $X$ is an element $a \in P$ such that $a \leq x$ for every $x\in X$. A greatest lower bound to $X$ is a lower bound $a \in P$ such that $a \leq a'$ for every lower bound $a' \in P$ to $X$. 
+	
+	The term greatest lower bound is synonymous with the term infimum.
+\end{definition}
+
+\begin{definition}
+	A lattice is a partially ordered set where any two of its elements have a supremum and an infimum.
+\end{definition}
+
+\begin{definition}
+	A complete lattice is a partially ordered set in which every subset has a supremum and an infimum.
+\end{definition}
+
+\begin{definition}
+	A function $f : D \rightarrow D'$ is monotonic, also called order preserving, if for all $x \in D$ and $y \in D$ it holds that if $x \leq y$ then $f(x) \leq f(y)$.
+\end{definition}
+\subsubsection{Fixed-points}
+\begin{definition}
+	Given function $f : D \rightarrow D$ the value $x \in D$ is a fixed point for $f$ if and only if $f(x) = x$.
+\end{definition}
+\begin{definition}
+	Given function $f : D \rightarrow D$ the value $x \in D$ is the least fixed point for $f$ if and only if $x$ is a fixed point for $f$ and every other fixed point for $f$ is greater or equal to $x$.
+\end{definition}
+\begin{definition}
+	Given function $f : D \rightarrow D$ the value $x \in D$ is the greatest fixed point for $f$ if and only if $x$ is a fixed point for $f$ and every other fixed point for $f$ is less or equal to $x$.
+\end{definition}
+The Knaster-Tarski theorem states that least and greatest fixed points exist for some domain and function given that a few conditions hold.
+The theorem, as written down by Tarski \cite{tarski1955}, states:
+\begin{theorem}[Knaster-Tarski\cite{tarski1955}]
+	\label{the_knaster_tarski}
+	Let
+	\begin{itemize}
+		\item $\langle A, \leq \rangle$ be a complete lattice,
+		\item $f$ be an increasing function on $A$ to $A$,
+		\item $P$ be a the set of all fixpoints of f.
+	\end{itemize}
+	Then the set $P$ is not empty and the system $\langle P, \leq \rangle$ is a complete lattice; in particular we have 
+	\[ \sup P = \sup \{ x\ |\ f(x) \geq x \} \in P \]
+	and
+	\[ \inf P = \inf \{ x\ |\ f(x) \leq x \} \in P \]
+\end{theorem}
