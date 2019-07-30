@@ -7,7 +7,7 @@ do
 		T=F
 	fi
 	N=$(((RANDOM%1000)+10))
-	P=$(((RANDOM%100)+1))
+	P=$(((RANDOM%10)+1))
 	l=1
 	h=$(((RANDOM%($N/4))+1))
 	c=$(((RANDOM%8)+1))
