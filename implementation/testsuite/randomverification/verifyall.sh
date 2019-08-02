@@ -20,3 +20,7 @@ echo "Verify Zlnk Bdd Explicit"
 ./verify.sh VPGSolver_explicit | grep -v Start
 echo "Verify PG parsing"
 ./verify_PG.sh VPGSolver_bdd_single "F"|grep -v Start
+echo "Verify compressed"
+./verify.sh VPGSolver_bdd v| grep -v Start
+echo "Verify compressed single FPIte"
+./verify.sh VPGSolver_bdd F v|grep -v Start
