@@ -1,15 +1,22 @@
 PROBLEM=$1
-ALGDIR=$2
-name=`basename $ALGDIR`
+CMD=$2
+DIR=$3
+
 cd $PROBLEM
-mkdir measured$name
 for g in game*
 do
         cd $g
-	echo $g
-       	$ALGDIR/measure.sh SVPG > ../logs/${g}_measured$name.log
-	cat ../logs/${g}_measured$name.log|grep Attracted|awk '{ print $2 }' > ../measured$name/$g
-	ls sSVPG*|wc -l > ../measured$name/${g}_confs
+	mkdir -p $DIR/$g/
+        $CMD SVPG m$DIR/$g/ F > ../logs/${g}.log
+	echo -n "$g: "
+	S=`cat ../logs/${g}.log|grep "Assisted leaf"|awk '{ print $6 }'|tr '\n' '+'`
+	S=`echo ${S}0|bc`
+	echo -n $S,
+	echo -n `cat ../logs/${g}.log|grep "Assisted leaf"|awk 'BEGIN {total=0}
+{total+=$3}
+END {printf("%.2f\n",total/NR)}'`","
+	echo -n `head -n2 SVPG |tail -n1|awk '{print $2}'|sed 's/;//'`,
+	cat ../logs/${g}.log|grep Solved|grep games|awk '{ print $2}'
         cd ..
 done
 cd ..
