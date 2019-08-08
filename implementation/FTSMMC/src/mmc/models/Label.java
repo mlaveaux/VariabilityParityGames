@@ -2,13 +2,14 @@ package mmc.models;
 
 import mmc.features.BDDParser;
 import mmc.features.FeatureDiagram;
+import net.sf.javabdd.BDD;
 
 import java.util.Objects;
 
 public class Label {
     private final String text;
 
-    private int featureExpression;
+    private BDD featureExpression;
 
     public Label(String text){
         this(text, true);
@@ -18,7 +19,7 @@ public class Label {
         if(!parseFE || s == -1)
         {
             this.text = text;
-            this.featureExpression = 1;
+            this.featureExpression = FeatureDiagram.PrimaryFD.factory.one();
         } else {
             int e = text.lastIndexOf(')');
             this.text = text.substring(0, s);
@@ -34,7 +35,7 @@ public class Label {
         return this.text;
     }
 
-    public int getFeatureExpression(){
+    public BDD getFeatureExpression(){
         return this.featureExpression;
     }
     @Override
@@ -42,7 +43,7 @@ public class Label {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Label label1 = (Label) o;
-        return Objects.equals(this.text, label1.text) && FeatureDiagram.PrimaryFD.and(this.featureExpression, label1.featureExpression) > 0;
+        return Objects.equals(this.text, label1.text) && !this.featureExpression.and(label1.featureExpression).isZero();
     }
 
     @Override
@@ -56,8 +57,8 @@ public class Label {
         return this.text;
     }
 
-    public boolean satisfies(int product)
+    public boolean satisfies(BDD product)
     {
-        return FeatureDiagram.PrimaryFD.and(product, featureExpression) > 0;
+        return !product.and(featureExpression).isZero();
     }
 }

@@ -3,6 +3,7 @@ package mmc.modal.visitors;
 import mmc.SVPG.Edge;
 import mmc.SVPG.SVPG;
 import mmc.SVPG.Vertex;
+import mmc.features.FeatureDiagram;
 import mmc.modal.formulas.*;
 import mmc.models.Label;
 import mmc.models.Lts;
@@ -117,11 +118,11 @@ public class CreateSVPG extends RecursiveVisitor {
         Vertex tvr = sVPG.findVertex(currentState, formula.getRight());
         Edge el = new Edge();
         el.target = tvl;
-        el.configurations = 1;
+        el.configurations = FeatureDiagram.PrimaryFD.factory.one();
 
         Edge er = new Edge();
         er.target = tvr;
-        er.configurations = 1;
+        er.configurations = FeatureDiagram.PrimaryFD.factory.one();
 
         v.addEdge(el);
         v.addEdge(er);
@@ -138,11 +139,11 @@ public class CreateSVPG extends RecursiveVisitor {
         Vertex tvr = sVPG.findVertex(currentState, formula.getRight());
         Edge el = new Edge();
         el.target = tvl;
-        el.configurations = 1;
+        el.configurations = FeatureDiagram.PrimaryFD.factory.one();
 
         Edge er = new Edge();
         er.target = tvr;
-        er.configurations = 1;
+        er.configurations = FeatureDiagram.PrimaryFD.factory.one();
 
         v.addEdge(el);
         v.addEdge(er);
@@ -161,7 +162,7 @@ public class CreateSVPG extends RecursiveVisitor {
         Vertex tv = sVPG.findVertex(currentState, formula.getFormula());
         Edge e = new Edge();
         e.target = tv;
-        e.configurations = 1;
+        e.configurations = FeatureDiagram.PrimaryFD.factory.one();
 
         v.addEdge(e);
     }
@@ -179,7 +180,7 @@ public class CreateSVPG extends RecursiveVisitor {
         Vertex tv = sVPG.findVertex(currentState, formula.getFormula());
         Edge e = new Edge();
         e.target = tv;
-        e.configurations = 1;
+        e.configurations = FeatureDiagram.PrimaryFD.factory.one();
 
         v.addEdge(e);
     }
@@ -202,7 +203,7 @@ public class CreateSVPG extends RecursiveVisitor {
             vt = sVPG.findVertex(currentState, originFormula);
         }
         Edge e = new Edge();
-        e.configurations = 1;
+        e.configurations = FeatureDiagram.PrimaryFD.factory.one();
         e.target = vt;
         v.addEdge(e);
     }
