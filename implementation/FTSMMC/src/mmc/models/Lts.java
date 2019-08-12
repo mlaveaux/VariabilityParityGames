@@ -1,5 +1,7 @@
 package mmc.models;
 
+import net.sf.javabdd.BDD;
+
 import java.util.*;
 
 public class Lts {
@@ -69,7 +71,7 @@ public class Lts {
             '}';
     }
 
-    public String projectToAlberant(int product)
+    public String projectToAlberant(BDD product)
     {
         StringBuilder sb = new StringBuilder();
         for(State s : this.states)

@@ -1,16 +1,18 @@
 package mmc.features;
 
+import net.sf.javabdd.BDD;
+
 public class BDDParser {
-    public static int parseBDD(String BDD, FeatureDiagram fe) throws Exception {
+    public static BDD parseBDD(String BDD, FeatureDiagram fe) throws Exception {
         BDDParser a  = new BDDParser(BDD,0);
-        a.parse();
+        a.parse(fe);
         return a.generateFE(fe);
     }
     private BDDParser left;
     private BDDParser right;
     private String variable;
     private boolean leaf = false;
-    private int leafvalue;
+    private BDD leafvalue;
 
     private String BDDstr;
     private int posorg;
@@ -23,25 +25,25 @@ public class BDDParser {
         this.pos = pos;
     }
 
-    protected int parse() throws Exception {
+    protected int parse(FeatureDiagram fe) throws Exception {
         skipSpaces();
         if(textIs("tt"))
         {
             this.leaf = true;
-            this.leafvalue = 1;
+            this.leafvalue = fe.factory.one();
         } else if(textIs("ff"))
         {
             this.leaf = true;
-            this.leafvalue = 0;
+            this.leafvalue = fe.factory.zero();
         } else if(textIs("node(")) {
             this.variable = textUntil(',');
             left = new BDDParser(BDDstr, pos);
-            pos += left.parse();
+            pos += left.parse(fe);
             skipSpaces();
             if(!textIs(","))
                 throw new Exception("Expected ',' at " + String.valueOf(pos));
             right = new BDDParser(BDDstr, pos);
-            pos += right.parse();
+            pos += right.parse(fe);
             if(!textIs(")"))
                 throw new Exception("Expected ')' at " + String.valueOf(pos));
         } else {
@@ -74,14 +76,11 @@ public class BDDParser {
             pos++;
     }
 
-    private int generateFE(FeatureDiagram fe)
+    private BDD generateFE(FeatureDiagram fe)
     {
         if(this.leaf)
             return this.leafvalue;
-        int var = fe.getVariable(this.variable);
-        return fe.or(
-            fe.and(var, this.left.generateFE(fe)),
-                fe.and(fe.not(var), this.right.generateFE(fe))
-        );
+        BDD var = fe.getVariable(this.variable);
+        return var.and(this.left.generateFE(fe)).or(var.not().and(this.right.generateFE(fe)));
     }
 }

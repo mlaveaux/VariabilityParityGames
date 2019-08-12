@@ -1,6 +1,8 @@
 package mmc.SVPG;
 
+import net.sf.javabdd.BDD;
+
 public class Edge {
-    public int configurations;
+    public BDD configurations;
     public Vertex target;
 }

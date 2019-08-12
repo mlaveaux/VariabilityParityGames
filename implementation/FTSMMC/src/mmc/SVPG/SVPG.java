@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import mmc.features.FeatureDiagram;
 import mmc.modal.formulas.Formula;
 import mmc.models.State;
+import net.sf.javabdd.BDD;
 
 import javax.management.Query;
 import java.awt.*;
@@ -82,7 +83,7 @@ public class SVPG {
         l0.prio = 1;
 
         Edge e0 = new Edge();
-        e0.configurations = 1;
+        e0.configurations = FeatureDiagram.PrimaryFD.factory.one();
         e0.target = l0;
         l0.addEdge(e0);
 
@@ -91,27 +92,29 @@ public class SVPG {
         l1.prio = 0;
 
         Edge e1 = new Edge();
-        e1.configurations = 1;
+        e1.configurations = FeatureDiagram.PrimaryFD.factory.one();
         e1.target = l1;
         l1.addEdge(e1);
 
         for(int i = 0;i<n;i++)
         {
             Vertex v = this.vertices[i];
-            int edgeDisjunction = 0;
+            BDD edgeDisjunction = FeatureDiagram.PrimaryFD.factory.zero();
             for(Edge e : v.edges)
-                edgeDisjunction = FeatureDiagram.PrimaryFD.or(edgeDisjunction, e.configurations);
-            if(edgeDisjunction != 1){
+                edgeDisjunction.orWith(e.configurations.id());
+            if(!edgeDisjunction.isOne()){
+//                System.err.println("This happens: " + String.valueOf(i));
                 Edge sinkEdge = new Edge();
                 sinkEdge.target = (v.owner == 0)?l0:l1;
-                sinkEdge.configurations = FeatureDiagram.PrimaryFD.not(edgeDisjunction);
+                sinkEdge.configurations = edgeDisjunction.id().not();
+                sinkEdge.configurations.andWith(FeatureDiagram.PrimaryFD.FD.id());
                 v.addEdge(sinkEdge);
                 sinkEdge = null;
             }
         }
     }
 
-    public String projectToPG(int product)
+    public String projectToPG(BDD product)
     {
         Map<Vertex, Integer> Index = new HashMap<>();
         for(int i = 0;i<n;i++)
@@ -128,7 +131,7 @@ public class SVPG {
             sb.append(String.format("%d %d %d ",Index.get(v), v.prio, v.owner));
             List<String> targets = new ArrayList<>();
             for(Edge e : v.edges){
-                if(FeatureDiagram.PrimaryFD.and(e.configurations, product) > 0)
+                if(!e.configurations.and(product).isZero())
                     targets.add(String.valueOf(Index.get(e.target)));
             }
 
@@ -159,8 +162,16 @@ public class SVPG {
             Vertex v = this.vertices[i];
             sb.append(String.format("%d %d %d ",Index.get(v), v.prio, v.owner));
             List<String> targets = new ArrayList<>();
+            BDD conf = FeatureDiagram.PrimaryFD.factory.zero();
             for(Edge e : v.edges){
-                    targets.add(String.valueOf(Index.get(e.target)) + "|" + bddIntToString(e.configurations,boolLiteral));
+                targets.add(String.valueOf(Index.get(e.target)) + "|" + bddIntToString(e.configurations.id(),boolLiteral));
+                conf.orWith(e.configurations.id());
+            }
+            if(!conf.isOne()) {
+                System.err.println("Incomplete: " + String.valueOf(i));
+                for(Edge e : v.edges){
+                    bddIntToString(e.configurations,boolLiteral);
+                }
             }
 
             sb.append(String.join(",", targets));
@@ -169,12 +180,25 @@ public class SVPG {
         return sb.toString().trim();
     }
 
-    private String bddIntToString(int bdd, String trueLiteral) throws UnsupportedEncodingException {
+    private String bddIntToString(BDD bdd, String trueLiteral) throws UnsupportedEncodingException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        FeatureDiagram.PrimaryFD.printSet(bdd);
+        List l = bdd.allsat();
+        String sep = "";
+        for(Object o : l){
+            System.out.print(sep);
+            byte[] b = (byte[])o;
+            for(int i = 0;i<FeatureDiagram.PrimaryFD.varCount();i++){
+                if(b[i] == -1)
+                    System.out.print('-');
+                else
+                    System.out.print(b[i]);
+            }
+            sep = "+";
+        }
+//        FeatureDiagram.PrimaryFD.printSet(bdd);
         ps.flush();
         byte[] products = baos.toByteArray();
         String s = new String(products, "UTF-8");
