@@ -11,6 +11,7 @@ import mmc.modal.formulas.Formula;
 import mmc.modal.ModalParser;
 import mmc.modal.ParseException;
 import mmc.models.Lts;
+import net.sf.javabdd.BDD;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -80,7 +81,7 @@ public class Main {
         }
         for(int i = 0;i<n;i++){
             int m = r.nextInt(h-l+1) + l;
-            int conf = FeatureDiagram.PrimaryFD.getZero();
+            BDD conf = FeatureDiagram.PrimaryFD.factory.zero();
             boolean[] targeted = new boolean[n];
             Arrays.fill(targeted, false);
             for(int j = 0;j<m;j++){
@@ -96,32 +97,34 @@ public class Main {
                     e.configurations = FeatureDiagram.PrimaryFD.getFeaturedRandomConfigurations(lambda);
                 else
                     e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations(lambda);
-                if(e.configurations == FeatureDiagram.PrimaryFD.getZero())
+                if(e.configurations.isZero()) {
+                    j--;
                     continue;
-                conf = FeatureDiagram.PrimaryFD.or(conf, e.configurations);
+                }
+                conf.orWith(e.configurations.id());
                 if(j == m - 1)
                 {
-                    e.configurations = FeatureDiagram.PrimaryFD.or(e.configurations, FeatureDiagram.PrimaryFD.not(conf));
-                    e.configurations = FeatureDiagram.PrimaryFD.and(FeatureDiagram.PrimaryFD.FD, e.configurations);
+                    e.configurations.orWith(conf.id().not().id());
+                    e.configurations.andWith(FeatureDiagram.PrimaryFD.FD.id());
                 }
                 vertices[i].addEdge(e);
             }
         }
         SVPG s = new SVPG(vertices);
         s.makeInfinite();
-        for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
-        {
-            int product = FeatureDiagram.PrimaryFD.products.get(i);
-            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
-            String proj = s.projectToPG(product);
-            try {
-                Files.write(Paths.get(directory, "sSVPG"+productString),
-                        proj.getBytes(Charset.forName("UTF-8")),
-                        StandardOpenOption.CREATE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
+//        {
+//            int product = FeatureDiagram.PrimaryFD.products.get(i);
+//            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
+//            String proj = s.projectToPG(product);
+//            try {
+//                Files.write(Paths.get(directory, "sSVPG"+productString),
+//                        proj.getBytes(Charset.forName("UTF-8")),
+//                        StandardOpenOption.CREATE);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
         try {
             Files.write(Paths.get(directory, "SVPG"),
                     s.toSVPG().getBytes(Charset.forName("UTF-8")),
@@ -141,7 +144,7 @@ public class Main {
         svpg.makeInfinite();
         for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
         {
-            int product = FeatureDiagram.PrimaryFD.products.get(i);
+            BDD product = FeatureDiagram.PrimaryFD.products.get(i);
             String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
             String proj = svpg.projectToPG(product);
             ArrayList<String> a = new ArrayList<String>();
@@ -168,7 +171,7 @@ public class Main {
     {
         for(int i = 0;i< FeatureDiagram.PrimaryFD.products.size();i++)
         {
-            int product = FeatureDiagram.PrimaryFD.products.get(i);
+            BDD product = FeatureDiagram.PrimaryFD.products.get(i);
             String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
 
             String proj = fts.projectToAlberant(product);

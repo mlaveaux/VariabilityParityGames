@@ -1,5 +1,7 @@
 package mmc.models;
 
+import net.sf.javabdd.BDD;
+
 import java.util.*;
 
 public class State {
@@ -70,7 +72,7 @@ public class State {
             //", transitions=" + this.simpleTransitions +
             '}';
     }
-    public void projectToAlberant(int product, StringBuilder sb)
+    public void projectToAlberant(BDD product, StringBuilder sb)
     {
         for(Label l : getTransitionLabels())
         {

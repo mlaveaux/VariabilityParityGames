@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jdd-108" level="application" />
+    <orderEntry type="library" name="javabdd-1.0b2" level="project" />
   </component>
 </module>
