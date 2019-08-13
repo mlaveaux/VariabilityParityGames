@@ -1,5 +1,6 @@
 package mmc;
 
+import mmc.SVPG.ConfMaker;
 import mmc.SVPG.Edge;
 import mmc.SVPG.SVPG;
 import mmc.SVPG.Vertex;
@@ -12,6 +13,8 @@ import mmc.modal.ModalParser;
 import mmc.modal.ParseException;
 import mmc.models.Lts;
 import net.sf.javabdd.BDD;
+import org.apache.commons.math3.distribution.BetaDistribution;
+import org.apache.commons.math3.special.Beta;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -52,7 +55,7 @@ public class Main {
                         Integer.parseInt(args[4]),
                         Integer.parseInt(args[5]),
                         Float.parseFloat(args[6]),
-                        args[7].charAt(0),
+                        args[7],
                         args[8]
                 );
                 break;
@@ -62,13 +65,15 @@ public class Main {
         }
     }
 
-    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda, char typeofrandom, String directory){
+    private static void randomSVPG(int n, int p, int l, int h, int c, float lambda, String typeofrandom, String directory){
         String[] features = new String[c];
         for(int i = 0;i<c;i++){
             features[i] = String.valueOf(i);
         }
+        ConfMaker cm = null;
         try {
             FeatureDiagram.PrimaryFD = FeatureDiagram.FeatureDiagramFromBDD(features,"tt");
+            cm = ConfMaker.getConfMaker(typeofrandom, lambda);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,10 +98,7 @@ public class Main {
                     continue;
                 }
                 targeted[t] = true;
-                if(typeofrandom == 'F')
-                    e.configurations = FeatureDiagram.PrimaryFD.getFeaturedRandomConfigurations(lambda);
-                else
-                    e.configurations = FeatureDiagram.PrimaryFD.getRandomConfigurations(lambda);
+                e.configurations = cm.getSet();
                 if(e.configurations.isZero()) {
                     j--;
                     continue;
