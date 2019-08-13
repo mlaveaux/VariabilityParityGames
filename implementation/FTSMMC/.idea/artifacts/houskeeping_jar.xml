@@ -8,6 +8,7 @@
       <element id="module-output" name="FTSMMC" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../javabdd-1.0b2.jar" path-in-jar="/" />
       <element id="library" level="application" name="jdd-108" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/commons-math3-3.6.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
