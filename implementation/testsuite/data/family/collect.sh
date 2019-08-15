@@ -1,5 +1,7 @@
 for p in randomscalegames
 do
+	echo Family zlnk explicit $p
+	./time.sh $p VPGSolver_explicit > `pwd`/data/family/${p}_zlnk_explicit.data
         echo Family zlnk $p
         ./time.sh $p VPGSolver_bdd > `pwd`/data/family/${p}_zlnk.data
 	echo Family MBR $p
