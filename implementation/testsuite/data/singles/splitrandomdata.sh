@@ -1,5 +1,12 @@
-for alg in zlnk MBR zlnk_explicit
+for e in FF FC BC
 do
-	cat randomgames_${alg}.data|grep gameC > randomgamesC_${alg}.data
-	cat randomgames_${alg}.data|grep gameF > randomgamesF_${alg}.data
+	rm ${e}_randomgames*.data
+done
+for f in *randomgames*.data
+do
+	FILE=${f%.data}
+	for e in FF FC BC
+	do
+		cat $FILE.data|grep game$e > ${e}_${FILE}.data
+	done
 done
