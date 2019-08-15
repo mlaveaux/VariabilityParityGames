@@ -1,9 +1,9 @@
 
 Using pessimistic games we can create an algorithm that solves the entire VPG incrementally. First we try to find $P_0$ and $P_1$ for all the configurations, next we partition the configuration set in two sets and try to improve $P_0$ and $P_1$ for these sets. We continue to do this until we have configuration sets of size $1$ and we simply solve the projection.
 
-The pseudo code is presented in algorithm \ref{alg_MBR}, the algorithm relies on a \textsc{Solve} algorithm that solves a parity game. The \textsc{Solve} algorithm is some algorithm that solves parity games and can use the parameters $P_0$ and $P_1$ to more efficiently solve the parity game. The pessimistic parity games are not necessarily total so the \textsc{Solve} algorithm must be able to solve non-total games.
+The pseudo code is presented in algorithm \ref{alg_IncPreSolve}, the algorithm relies on a \textsc{Solve} algorithm that solves a parity game. The \textsc{Solve} algorithm is some algorithm that solves parity games and can use the parameters $P_0$ and $P_1$ to more efficiently solve the parity game. The pessimistic parity games are not necessarily total so the \textsc{Solve} algorithm must be able to solve non-total games. When solving a parity game for which we have $P_0$ and $P_1$ we say that vertices in $P_0$ and $P_1$ are \textit{pre-solved}. 
 \begin{algorithm}
-	\caption{$\textsc{MBR}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_MBR}
+	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
 	\begin{algorithmic}[1]
 		\If{$|\mathfrak{C}| = 1$}
 		\State $\{c\} \gets \mathfrak{C}$
@@ -16,17 +16,17 @@ The pseudo code is presented in algorithm \ref{alg_MBR}, the algorithm relies on
 		\State \Return $(\mathfrak{C} \times P'_0, \mathfrak{C} \times P'_1)$
 		\EndIf
 		\State $\mathfrak{C}^a, \mathfrak{C}^b \gets $ partition $\mathfrak{C}$ in non-empty parts
-		\State $(W_0^a, W_1^a) \gets \textsc{MBR}(G \cap \mathfrak{C}^a, P'_0,P'_1)$
-		\State $(W_0^b, W_1^b) \gets \textsc{MBR}(G \cap \mathfrak{C}^b, P'_0,P'_1)$
+		\State $(W_0^a, W_1^a) \gets \textsc{IncPreSolve}(G \cap \mathfrak{C}^a, P'_0,P'_1)$
+		\State $(W_0^b, W_1^b) \gets \textsc{IncPreSolve}(G \cap \mathfrak{C}^b, P'_0,P'_1)$
 		\State $W_0 \gets W_0^a \cup W_0^b$
 		\State $W_1 \gets W_1^a \cup W_1^b$
 		\State \Return $(W_0,W_1)$
 	\end{algorithmic}
 \end{algorithm}
 
-A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$ and $P_1$ are in fact vertices that are won by player $0$ and $1$ respectively. We prove that this is the case in the \textsc{MBR} algorithm.
+A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$ and $P_1$ are in fact vertices that are won by player $0$ and $1$ respectively. We prove that this is the case in the \textsc{IncPreSolve} algorithm.
 \begin{theorem}
-	Given VPG $\hat{G}$. For every $\textsc{Solve}(G,P_0,P_1)$ that is invoked during $\textsc{MBR}(\hat{G},\emptyset,\emptyset)$ we have winning sets $W_0,W_1$ for game $G$ for which the following holds:
+	Given VPG $\hat{G}$. For every $\textsc{Solve}(G,P_0,P_1)$ that is invoked during $\textsc{IncPreSolve}(\hat{G},\emptyset,\emptyset)$ we have winning sets $W_0,W_1$ for game $G$ for which the following holds:
 	\[ P_0 \subseteq  W_0 \]
 	\[ P_1 \subseteq  W_1 \]
 	\begin{proof}
@@ -48,7 +48,7 @@ A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$
 Next we prove the correctness of the algorithm, assuming the correctness of the \textsc{Solve} algorithm.
 \begin{theorem}
 	%TODO hat notatie
-	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ and $(W_0,W_1) = \textsc{MBR}(\hat{G},\emptyset,\emptyset)$. For every configuration $c \in \mathfrak{C}$ and winning sets $\hat{W}_0^c, \hat{W}_1^c$ for game $\hat{G}$ player for $c$ it holds that:
+	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ and $(W_0,W_1) = \textsc{IncPreSolve}(\hat{G},\emptyset,\emptyset)$. For every configuration $c \in \mathfrak{C}$ and winning sets $\hat{W}_0^c, \hat{W}_1^c$ for game $\hat{G}$ player for $c$ it holds that:
 	\[ (c,v) \in W_0 \iff v \in \hat{W}_0^c \]
 	\[ (c,v) \in W_1 \iff v \in \hat{W}_1^c \]
 	\begin{proof}
@@ -89,7 +89,7 @@ where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \supseteq \nu X.f(X)$. So picking 
 Clearly the formula $F_0(Z_{d-1},\dots,Z_0)$ is monotonic in any $Z_j$, so we can calculate $Z_{d-1}$ by approximating every $Z_j$ starting at $V$ for $\nu Z_j$ and starting at $\emptyset$ for $\mu Z_j$.
 
 
-\subsubsection{Fixed-point approximation assistance algorithm}
+\subsubsection{Pre-solved games}
 Let $G$ be a PG and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point approximate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
 \[ P_0 \subseteq W_0 \subseteq V\backslash P_1\]
 We can use this restriction to efficiently approximate $S(G)$. If no bounds are know and we would approximate fixed-point formula $\nu Z_{d-1}\dots$ then we would start at $Z_{d-1}^0 = V$ which is the largest value possible, however given the bounds we can start our approximations of greatest fixed-point variables at $V\backslash P_1$ and start our approximations of least fixed-point variables at $P_0$. The following lemma's and theorems prove this.
@@ -154,7 +154,7 @@ We can now take the fixed-point algorithm presented in \cite{FPITE} and modify i
 						\State $\textsc{Init}(i-1)$
 					\EndWhile
 				\Until{$i = d-1 \wedge Z_{d-1} = Z_{d-1}'$}
-				\State \Return $Z_{d-1}$
+				\State \Return $(Z_{d-1},V\backslash Z_{d-1})$
 			\EndFunction
 		\end{algorithmic}\bigskip\bigskip
 		\begin{algorithmic}[1]
@@ -175,11 +175,11 @@ We can now take the fixed-point algorithm presented in \cite{FPITE} and modify i
 	\end{multicols}
 \end{algorithm}
 
-This algorithm is appropriate to use as a \textsc{Solve} algorithm in the \textsc{MBR} since it solves parity games that are not necessarily total and uses $P_0$ and $P_1$.
+This algorithm is appropriate to use as a \textsc{Solve} algorithm in the \textsc{IncPreSolve} since it solves parity games that are not necessarily total and uses $P_0$ and $P_1$.
 
 \subsection{Running time}
 We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ product based and family based. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$ (\cite{FPITE}). We can use this algorithm to solve $G$ product based, ie. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 
-Next we consider the \textsc{MBR} algorithm for a family based approach, observe that in the worst case we have to split the set of configurations all the way down to individual configurations. We can consider the recursion as a tree where the leafs are individual configurations and at every internal node the set of configuration is split in two. Since in the worst case there are $c$ leaves, there are at most $c-1$ internal nodes. At every internal node the algorithm solves two games and at every leaf the algorithm solves 1 game, so we get $c + 2c - 2 = O(c)$ games that are being solved by \textsc{MBR}. In the worst case there are no similarities between the configuration in $G$ and at every iteration $P_0$ and $P_1$ are empty. In this case the \textsc{FPIte} algorithm behaves the same as the original algorithm and has a time complexity of $O(e*n^d)$, this gives an overall time complexity of $O(c*e*n^d)$ which is equal to a product based approach.
+Next we consider the \textsc{IncPreSolve} algorithm for a family based approach, observe that in the worst case we have to split the set of configurations all the way down to individual configurations. We can consider the recursion as a tree where the leafs are individual configurations and at every internal node the set of configurations is split in two. Since in the worst case there are $c$ leaves, there are at most $c-1$ internal nodes. At every internal node the algorithm solves two games and at every leaf the algorithm solves 1 game, so we get $c + 2c - 2 = O(c)$ games that are being solved by \textsc{IncPreSolve}. In the worst case there are no similarities between the configuration in $G$ and at every iteration $P_0$ and $P_1$ are empty. In this case the \textsc{FPIte} algorithm behaves the same as the original algorithm and has a time complexity of $O(e*n^d)$, this gives an overall time complexity of $O(c*e*n^d)$ which is equal to a product based approach.

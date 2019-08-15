@@ -1,0 +1,106 @@
+In this section the experimental results are presented. The 5 categories of problems are ran against the following algorithms:
+\begin{enumerate}
+	\item Zielonka's recursive algorithm, product based
+	\item Fixed-point iteration, product based
+	\item Fixed-point iteration, local product based
+	\item Zielonka's recursive algorithm, family based with explicit configuration representation
+	\item Zielonka's recursive algorithm, family based with symbolic configuration representation
+	\item Incremental pre-solve algorithm
+	\item Incremental pre-solve algorithm, local
+\end{enumerate}
+
+The results presented is the time it took to solve the games, parsing times and projection (for product based approaches) are excluded. So the product based results are the sum of the solve times of the projections, parsing and projecting are not included in the result.
+
+We use the Zielonka's product based algorithm as the algorithm to compare the family based approaches against. This is the most widely used algorithm and in most cases outperforms the fixed-point iteration algorithm.
+
+The exact times can be found in appendix \ref{appendix:resultsexact}, in this section the results are visualized and presented to be easily interpreted. In some cases the results in a graph are normalized meaning that the running times are divided by the running times of the first algorithm in the graph. Specifically for the random games the running times vary a lot so normalizing is required to properly visualize the results.
+\subsection{Zielonka's family based}
+We compare the running times of the Zielonka's family based approaches with the Zielonka's product based approach. First we look at the model verification games.
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+	\caption{Running time of Zielonka's algorithms on the minepump problem}
+	\label{fig:minepumpzlnks}
+\end{figure}%
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/elevator/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+	\caption{Running time of Zielonka's algorithms on the elevator problem}
+	\label{fig:elevatorzlnks}
+\end{figure}%
+We can see that the performance of the explicit variant varies a lot between games. The symbolic variant greatly outperforms the product based approach for every problem.
+
+Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized and the y-axis is cut off at 10.
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{"results/FF_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\caption{Running time of Zielonka's algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized and the y-axis is cut off at 10}
+\label{fig:elevatorzlnks}
+\end{figure}%
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{"results/FC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\caption{Running time of Zielonka's algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized and the y-axis is cut off at 10}
+\label{fig:elevatorzlnks}
+\end{figure}%
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{"results/BC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\caption{Running time of Zielonka's algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized and the y-axis is cut off at 10}
+\label{fig:elevatorzlnks}
+\end{figure}%
+For type 1 games we see that when $\lambda$ gets bigger the family based symbolic approach starts winning from the product based approach. There are a few exceptions to this, games 80, 82 and 86, all three of these games have only 4 features. As we will see later the less features there are in a game the worse the family based approaches perform.
+
+For type 2 the explicit variant performs very similar to the type 1 games, however the symbolic approach performs much worse. This is due to the unstructured nature of the configuration sets which negatively influences bdd performance but has no effect on the explicit set operation. We also see the explicit algorithm outperforming the symbolic algorithm in some cases.
+
+For type 3 games the product based approach performs generally better than the family based approaches unless $\lambda$ becomes very high.
+
+Next we inspect how the algorithms scale in terms of number of features
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{"results/randomscalegames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\caption{Running time of Zielonka's algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized and the y-axis is cut off at 10}
+\label{fig:elevatorzlnks}
+\end{figure}%
+We can clearly conclude that as the number of features increases the family based symbolic approach performs better compared to the product based approach.
+
+Overall we can conclude that the explicit algorithm performs somewhat arbitrary, however the symbolic algorithm performs really well for model checking problems and random games that have similar properties. Also we can conclude that the algorithms scales well in terms of number of features.
+
+
+\subsection{Incremental pre-solve algorithm}
+We compare the running times of the incremental pre-solve approaches with the Zielonka's product based approach. First we look at the model verification games.
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/minepump/Zlnk product based_Incremental pre-solve_Incremental pre-solve local_"}
+	\caption{Running time of Zielonka's algorithms on the minepump problem}
+	\label{fig:minepumpzlnks}
+\end{figure}%
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/elevator/Zlnk product based_Incremental pre-solve_Incremental pre-solve local_"}
+	\caption{Running time of the incremental pre-solve algorithms on the elevator problem}
+	\label{fig:elevatorzlnks}
+\end{figure}%
+The performance of the incremental pre-solve algorithm is generally worse that the product based approach, we do see however that the local variant is better in some cases.
+
+Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized and the y-axis is cut off at 10.
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Zlnk product based_Incremental pre-solve_Incremental pre-solve local_"}
+	\caption{Running time of the incremental pre-solve algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized and the y-axis is cut off at 10}
+	\label{fig:elevatorzlnks}
+\end{figure}%
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Zlnk product based_Incremental pre-solve_Incremental pre-solve local_"}
+	\caption{Running time of incremental pre-solve algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized and the y-axis is cut off at 10}
+	\label{fig:elevatorzlnks}
+\end{figure}%
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Zlnk product based_Incremental pre-solve_Incremental pre-solve local_"}
+	\caption{Running time of incremental pre-solve algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized and the y-axis is cut off at 10}
+	\label{fig:elevatorzlnks}
+\end{figure}%
+For type 1 games we see that when $\lambda$ gets bigger the family based approaches start performing better, specifically the local variant.
+
+For type 2 the family based local approach still performs quite well when $\lambda$ gets bigger. For type 3 games the product based approach outperforms the family based approaches.
+
+Next we inspect how the algorithms scales in terms of number of features
+\begin{figure}[H]
+	\includegraphics[width=1\linewidth]{"results/randomscalegames/Zlnk product based_Incremental pre-solve_Incremental pre-solve local_"}
+	\caption{Running time of incremental pre-solve algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized and the y-axis is cut off at 10}
+	\label{fig:elevatorzlnks}
+\end{figure}%
+The number of features seems to have little effect on the performance of the family based approaches.
+
+Overall we can see that the local variant performs significantly better, specifically for random games. The local approach seems to be hit or miss where in some cases it finds vertex $0$ quickly without traversing the tree but in other cases it has little effect compared to the global variant. Model verification problems generally have a vertex $0$ that depends on a large part of the game and are therefore not very suitable to be solved locally. (TODO cite oid)

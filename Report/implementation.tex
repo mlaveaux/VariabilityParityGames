@@ -1,0 +1,22 @@
+The algorithms are implemented in C++ version 14. 
+\subsection{BDDs}
+BuDDy\footnote{\label{note1}https://sourceforge.net/projects/buddy/} as a BDD library. Cache is reset after parsing.
+\subsection{Recursive algorithm}
+Three variants of the recursive algorithm are implemented:
+\begin{itemize}
+	\item The original algorithm that solves parity games.
+	\item The functions-wise variant using explicit configuration representation.
+	\item The function-wise variant using symbolic configuration representation.
+\end{itemize}
+\subsection{Incremental pre-solve algorithm}
+\subsubsection{Fixed-point iteration algorithm}
+The fixed-point iteration algorithm is implemented to be applied to parity games or to be used by the assistance finding algorithm where it will start the fixed-point variables at some value passed on by the assistance finding algorithm.
+
+Fixed-point variables are bitvectors representing a subset of vertices.
+Applied the three optimizations described in \cite{FPITE}:
+\begin{itemize}
+	\item For fixed-point variable $Z_i$ its value is only ever used to check if a vertex with priority $i$ is in $Z_i$. So instead of storing all vertices in $Z_i$ we only have to store the vertices that have priority $i$. We can store all fixed-point variables in a single bitvector, named $Z$, of size $n$.
+	\item The algorithm only reinitializes a certain range of fixed-point variables. So the diamond and box operations can use the previous result and only reconsider vertices that have an edge to a vertex that has a priority for which its fixed-point variable is reset.
+	\item The algorithm updates variables $Z_0$ to $Z_m$ and reinitializes $Z_0$ to $Z_{m-1}$, however if $Z_m$ is a least fixed-point variable then $Z_m$ has just increased and due to monotonicity the other least fixed-point formula's, ie. $Z_{m-2},Z_{m-4},\dots$, will also increase so there is no need to reset them. Similarly for greatest fixed-point variables. So we only to reset half of the variables instead of all of them.
+\end{itemize}
+Finally the vertices in the game are reordered such that they are ordered by parity first and secondly by priority. Using the above optimizations the algorithm needs to reset variables $Z_{m}, Z_{m-2},\dots$, these variables are stored in a single bitvector $Z$. By reordering the variables to be sorted by parity and priority these vertices that need to be reset are always consecutively stored in $Z$, so resetting this sequence can be done by a memory copy instead of iterating all the different vertices. Note that when the algorithm is used by the assistance finding algorithm the variables are not reset to simply $\emptyset$ and $V$ but are reset to two specific bitvectors that are given by the assistance finding algorithm. These bitvectors have the same order and resetting can be done by copying a part of them into $Z$.
