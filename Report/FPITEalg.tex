@@ -1,7 +1,7 @@
 
 Using pessimistic games we can create an algorithm that solves the entire VPG incrementally. First we try to find $P_0$ and $P_1$ for all the configurations, next we partition the configuration set in two sets and try to improve $P_0$ and $P_1$ for these sets. We continue to do this until we have configuration sets of size $1$ and we simply solve the projection.
 
-The pseudo code is presented in algorithm \ref{alg_IncPreSolve}, the algorithm relies on a \textsc{Solve} algorithm that solves a parity game. The \textsc{Solve} algorithm is some algorithm that solves parity games and can use the parameters $P_0$ and $P_1$ to more efficiently solve the parity game. The pessimistic parity games are not necessarily total so the \textsc{Solve} algorithm must be able to solve non-total games. When solving a parity game for which we have $P_0$ and $P_1$ we say that vertices in $P_0$ and $P_1$ are \textit{pre-solved}. 
+The pseudo code is presented in algorithm \ref{alg_IncPreSolve}, the algorithm relies on a \textsc{Solve} algorithm that solves a parity game. The \textsc{Solve} algorithm is some algorithm that solves parity games and can use the parameters $P_0$ and $P_1$ to more efficiently do so. The pessimistic parity games are not necessarily total so the \textsc{Solve} algorithm must be able to solve non-total games. When solving a parity game for which we have $P_0$ and $P_1$ we say that vertices in $P_0$ and $P_1$ are \textit{pre-solved}. 
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
 	\begin{algorithmic}[1]
@@ -32,7 +32,7 @@ A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$
 	\begin{proof}
 		When $P_0 = \emptyset$ and $P_1 = \emptyset$ the theorem holds trivially. So we will start the analyses after the first recursion. 
 		
-		After the first recursion the game is $\hat{G} \cap \mathfrak{X}$ with $\mathfrak{X}$ being either $\mathfrak{C}^a$ or $\mathfrak{C}^b$. The set $P_0$ is the winning set for player $0$ for game $\hat{G}_{\triangleright0}$ and the set $P_1$ is the winning set for player $1$ for game $\hat{G}_{\triangleright1}$. In the next recursion the game is $\hat{G} \cap \mathfrak{X} \cap \mathfrak{X}'$ with $P_0$ being the winning set for player $0$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright0}$ and $P_1$ being the winning set for player $1$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright1}$. After the first recursion the game is always of the form  $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1}) \cap \mathfrak{X}^k$. Furthermore $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$.
+		After the first recursion the game is $\hat{G} \cap \mathfrak{X}$ with $\mathfrak{X}$ being either $\mathfrak{C}^a$ or $\mathfrak{C}^b$. The set $P_0$ is the winning set for player $0$ for game $\hat{G}_{\triangleright0}$ and the set $P_1$ is the winning set for player $1$ for game $\hat{G}_{\triangleright1}$. In the next recursion the game is $\hat{G} \cap \mathfrak{X} \cap \mathfrak{X}'$ with $P_0$ being the winning set for player $0$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright0}$ and $P_1$ being the winning set for player $1$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright1}$. In general, after the $k$th recursion, with $k > 0$, the game is of the form  $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1}) \cap \mathfrak{X}^k$. Furthermore $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$.
 		
 		Next we inspect the three places \textsc{Solve} is invoked:
 		\begin{enumerate}
@@ -183,3 +183,18 @@ We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\math
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$ (\cite{FPITE}). We can use this algorithm to solve $G$ product based, ie. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 
 Next we consider the \textsc{IncPreSolve} algorithm for a family based approach, observe that in the worst case we have to split the set of configurations all the way down to individual configurations. We can consider the recursion as a tree where the leafs are individual configurations and at every internal node the set of configurations is split in two. Since in the worst case there are $c$ leaves, there are at most $c-1$ internal nodes. At every internal node the algorithm solves two games and at every leaf the algorithm solves 1 game, so we get $c + 2c - 2 = O(c)$ games that are being solved by \textsc{IncPreSolve}. In the worst case there are no similarities between the configuration in $G$ and at every iteration $P_0$ and $P_1$ are empty. In this case the \textsc{FPIte} algorithm behaves the same as the original algorithm and has a time complexity of $O(e*n^d)$, this gives an overall time complexity of $O(c*e*n^d)$ which is equal to a product based approach.
+
+\subsection{Local variant}
+When solving a VPG for model checking purposes we don't actually need to solve the entire game, due to the way the VPGs are build there is a certain vertex, say $v_0$, such that iff player $0$ wins it then the $\mu$-calculus formula holds for the FTS. So finding out for which configurations $v_0$ is won by player $0$ is sufficient, this is called \textit{locally} solving a VPG. Solving the entire VPG is called \textit{globally} solving the VPG. Similarly we can solve a PG locally, ie. only determining the winner for $v_0$, or solve it globally, ie. solve all vertices.
+
+The incremental pre-solve algorithm is particularly appropriate for local solving because if we find $v_0$ in either $P_0$ or $P_1$ we are done, this can potentially reduce the depth of the recursion of the algorithm and therefore reduce the number of pessimistic games we solve.
+
+Furthermore when there is only one configuration the incremental pre-solve algorithm solves the corresponding parity game. When taking a local approach it is sufficient to solve this PG locally. Note that the pessimistic games still should be solved globally to find as much assistance as possible for further recursions.
+
+We can modify the fixed-point approximation algorithm to solve a game locally by distinguishing two cases:
+\begin{enumerate}
+	\item If $d-1$ is even then the outermost fixed-point variable is a greatest fixed-point variable. When at some point $v_0 \notin Z_{d-1}$ then we know $0$ is never won by player $1$ and we are done.
+	\item If $d-1$ is odd then the outermost fixed-point variable is a least fixed-point variable. When at some poin $v_0 \in Z_{d-1}$ then we know $0$ is won by player $0$ and we are done.
+\end{enumerate}
+
+We can also use the local fixed-point approximation algorithm for a product based approach.
