@@ -187,14 +187,14 @@ Next we consider the \textsc{IncPreSolve} algorithm for a family based approach,
 \subsection{Local variant}
 When solving a VPG for model checking purposes we don't actually need to solve the entire game, due to the way the VPGs are build there is a certain vertex, say $v_0$, such that iff player $0$ wins it then the $\mu$-calculus formula holds for the FTS. So finding out for which configurations $v_0$ is won by player $0$ is sufficient, this is called \textit{locally} solving a VPG. Solving the entire VPG is called \textit{globally} solving the VPG. Similarly we can solve a PG locally, ie. only determining the winner for $v_0$, or solve it globally, ie. solve all vertices.
 
-The incremental pre-solve algorithm is particularly appropriate for local solving because if we find $v_0$ in either $P_0$ or $P_1$ we are done, this can potentially reduce the depth of the recursion of the algorithm and therefore reduce the number of pessimistic games we solve.
+The incremental pre-solve algorithm is particularly appropriate for local solving because if we find $v_0$ in either $P_0$ or $P_1$ we are done, this can potentially reduce the depth of the recursion of the algorithm and therefore reduce the number of (pessimistic) games we solve.
 
 Furthermore when there is only one configuration the incremental pre-solve algorithm solves the corresponding parity game. When taking a local approach it is sufficient to solve this PG locally. Note that the pessimistic games still should be solved globally to find as much assistance as possible for further recursions.
 
 We can modify the fixed-point approximation algorithm to solve a game locally by distinguishing two cases:
 \begin{enumerate}
 	\item If $d-1$ is even then the outermost fixed-point variable is a greatest fixed-point variable. When at some point $v_0 \notin Z_{d-1}$ then we know $0$ is never won by player $1$ and we are done.
-	\item If $d-1$ is odd then the outermost fixed-point variable is a least fixed-point variable. When at some poin $v_0 \in Z_{d-1}$ then we know $0$ is won by player $0$ and we are done.
+	\item If $d-1$ is odd then the outermost fixed-point variable is a least fixed-point variable. When at some point $v_0 \in Z_{d-1}$ then we know $0$ is won by player $0$ and we are done.
 \end{enumerate}
 
 We can also use the local fixed-point approximation algorithm for a product based approach.

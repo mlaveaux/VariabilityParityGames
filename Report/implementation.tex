@@ -1,13 +1,11 @@
-The algorithms are implemented in C++ version 14 and uses BuDDy\footnote{\label{note1}https://sourceforge.net/projects/buddy/} as a BDD library. The complete source is hosted on github\footnote{\label{note2}https://github.com/SjefvanLoo/VariabilityParityGames/tree/master/implementation/VPGSolver}.
+The algorithms are implemented in C++ version 14 and use BuDDy\footnote{\label{note1}https://sourceforge.net/projects/buddy/} as a BDD library. The complete source is hosted on github\footnote{\label{note2}https://github.com/SjefvanLoo/VariabilityParityGames/tree/master/implementation/VPGSolver}.
 
 The implementation is split in three phases: parsing, solving and solution printing. The solving part contains the implementation of the algorithm presented. The parsing and solution printing parts are implemented trivially and hardly optimized, their running times are not considered in the experimental evaluation.
 
-The parsing phase of the algorithm creates BDDs from the input file, in doing so parts of the BDD cache gets filled. After parsing the BDD cache is cleared to make sure that the work done in the solving phase corresponds with the algorithm presented and no work to assist it has been done prior to this phase.
+The parsing phase of the algorithm creates BDDs from the input file, in doing so parts of the BDD cache gets filled. After parsing the BDD cache is cleared to make sure that the work done in the solving phase corresponds with the algorithms presented and no work to assist it has been done prior to this phase.
 
 \subsection{Game representation}
-The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations (either explicitly or implicit). Sets of vertices are represented using bit-vectors.
-
-For product based algorithms the edges are not mapped to sets of configurations.
+The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge (either explicitly or implicit). For product based algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
 
 Note that only the representation of the games used during the algorithm is relevant, since we don't evaluate the parsing phase it is not relevant how we store the games in files.
 \subsection{Product based algorithms}
@@ -32,6 +30,6 @@ Four family based algorithms are implemented:
 	\item Incremental pre-solve algorithm, global variant.
 	\item Incremental pre-solve algorithm, local variant.
 \end{itemize}
-
+The incremental pre-solve algorithms use the fixed-point iteration algorithm as described above to solve the (pessimistic) PGs.
 \subsection{Random verification}
-In order to prevent implementation mistakes we generated 200 VPGs, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved by the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
+In order to prevent implementation mistakes 200 VPGs are randomly created, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved by the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
