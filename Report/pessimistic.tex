@@ -32,7 +32,27 @@ we have $P_\alpha \subseteq W_\alpha^c$.
 		We can conclude that applying the strategy from game $G_{\triangleright\alpha}$ in game $G_{|c}$ for player $\alpha$ wins the same or more vertices.
 	\end{proof}
 \end{theorem}
-
+Figure \ref{fig:VPG2PPGs} shows an example VPG with corresponding pessimistic games, after solving the pessimistic games we find $P_0 = \{v_2\}$ and $P_1 = \{v_0\}$.
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/PPG/VPG}
+		\caption{VPG $G$ consisting of 2 configurations}
+	\end{subfigure}\\
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/PPG/P0}
+		\caption{Pessimistic game $G_{\triangleright0}$}
+	\end{subfigure}\\
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/PPG/P1}
+		\caption{Pessimistic game $G_{\triangleright1}$}
+	\end{subfigure}
+	\caption{A VPG with its corresponding pessimistic games}
+	\label{fig:VPG2PPGs}
+\end{figure}
 \subsection{Configuration partitioning}
 We can create a sub-VPG from a VPG by only considering a part of the configurations from the original VPG.
 \begin{definition}
