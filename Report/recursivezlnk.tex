@@ -1,4 +1,94 @@
-Next we will consider Zielonka's recursive algorithm \cite{ZIELONKA1998135} which is a parity game solving algorithm that we can use to solve unified PGs. The algorithm reasons about sets of states for which certain properties hold, this makes the algorithm particularly appropriate to use on unified PGs because we can represent sets of states in unified PGs as functions that map to sets of configurations which we can represent either explicitly or symbolically. This gives rise to 4 algorithms using the recursive algorithm as its basis, we depict them in the following diagram:
+We can use Zielonka's recursive algorithm to solve VPGs, to do so we will first consider a method of creating a parity game from a VPG, called \textit{unification}.
+\subsection{Unified parity games}
+We can create a PG from a VPG by taking all the projections of the VPG, which are PGs, and combining them into one PG by taking the union of them. We call the resulting PG the \textit{unification} of the VPG. A parity game that is the result of a unification is called a \textit{unified PG}, also any total subgame of it will be called a unified PG. A unified PG always has a VPG from which it originated.
+\begin{definition}
+	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$ we define the unification of $\hat{G}$, denoted as $\hat{G}_{\downarrow}$, as
+	\[  \hat{G}_{\downarrow} = \biguplus_{c\in \mathfrak{C}}\hat{G}_{|c} \]
+	where the union of two PGs is defined as
+	\[ (V,V_0,V_1,E,\Omega) \uplus (V',V_0',V_1',E',\Omega') = (V \uplus V', V_0 \uplus V_0', V_1 \uplus V_1', E \uplus E', \Omega \uplus \Omega') \]
+\end{definition}
+We will use the hat decoration ($\hat{G},\hat{V},\hat{E},\hat{\Omega},\hat{W}$) when referring to a VPG and use no hat decoration when referring to a PG.
+
+Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in a unification as a pair consisting of a vertex and a configuration, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in a unification similarly, so $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that edges don't cross configurations so for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$. Figure \ref{fig:VPG2UPG} shows an example of a unification.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/UPG/VPG}
+		\caption{VPG consisting of 2 configurations}
+	\end{subfigure}\\
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/UPG/UPG}
+		\caption{Unified PG, created from unifying the two projections}
+	\end{subfigure}
+	\caption{A VPG with its corresponding unified PG}
+	\label{fig:VPG2UPG}
+\end{figure}
+
+If we solve the PG that is the unification of a VPG we have solved the VPG, as shown in the next theorem.
+\begin{theorem}
+	\label{theA_solve_UVPG_is_solve_VPG}
+	Given 
+	\begin{itemize}
+		\item VPG $\hat{G} =  (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$,
+		\item some configuration $c \in \mathfrak{C}$,
+		\item winning sets $\hat{W}^c_0$ and $\hat{W}^c_1$ for game $\hat{G}$ and
+		\item winning sets $W_0$ and $W_1$ for game $\hat{G}_{\downarrow}$
+	\end{itemize}
+	it holds that
+	\[(c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\}  \]
+	\begin{proof}
+		The bi-implication is equal to  the following to implications.
+		\[ (c,\hat{v}) \in W_\alpha \implies \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\} \]
+		and
+		\[ (c,\hat{v}) \notin W_\alpha\implies \hat{v} \notin \hat{W}^c_\alpha \text{, for }\alpha \in \{0,1\}  \]
+		
+		Since the winning sets partition the game we have $\hat{v} \notin \hat{W}^c_\alpha \implies \hat{v} \in \hat{W}^c_{\overline{\alpha}}$ (similar for set $W$). Therefore it is sufficient to prove only the first implication.
+		
+		Let $(c,\hat{v}) \in W_\alpha$, player $\alpha$ has a strategy to win game $\hat{G}_{\downarrow}$ from vertex $(c,\hat{v})$. Since $\hat{G}_{\downarrow}$ is the union of all the projections of $\hat{G}$ we can apply the same strategy to game $\hat{G}_{|c}$ to win vertex $\hat{v}$ as player $\alpha$. Because we can win $\hat{v}$ in the projection of $\hat{G}$ to $c$ we have $\hat{v} \in \hat{W}^c_\alpha$.
+	\end{proof}
+\end{theorem}
+
+\subsubsection{Projections and totality}
+A unified PG can be projected back to one of the games from which it is the union.
+\begin{definition}
+	The projection of unified PG $G = (V,V_0, V_1,E,{\Omega})$ to configuration $c$, denoted as $G_{|c}$, is the parity game $(V',{V}_0,{V}_1,E',{\Omega})$ such that $V' = \{ {v}\ |\ (c,{v}) \in V \}$ and $E' = \{ ({v},{w})\ |\ ((c,{v}),(c,{w})) \in E \} $.
+\end{definition}
+
+One of the properties of a PG is its totality; a game is total if every vertex has at least 1 outgoing vertex. VPGs are also total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$, at least 1 outgoing vertex admitting $c$. Because VPGs are total their unifications are also total. Since edges in a unified PG don't cross configurations we can conclude that a unified PG is total iff every projection is total.
+
+\subsection{Solving unified PGs}
+We can solve a unified PG using the Zielonka's recursive algorithm. The algorithm revolves around the attractor operation and the creation of subgames. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
+\[ \{(c_1,v_0),(c_2,v_0)\}\]
+attracting these for player $0$ gives the set 
+\begin{align*}
+\{(c_1,v_0),&(c_2,v_0),\\
+(c_1,v_1),&(c_2,v_1),\\
+ &(c_2,v_2)\}
+\end{align*}
+The algorithm tries to attract all vertices starting from $v_0$ with any configuration, in this case $v_1$ can be attracted for all configurations, $v_2$ can only be attracted for $c_2$. When edge guards are permissive, ie. they admit many configurations, then there is a good change that vertices can be attracted for multiple configurations at the same time during the algorithm. This is the idea for the family based recursive VPG algorithm we represent next, we will use the recursive algorithm to solve unified parity games such that it tries to attract multiple configurations simultaneously.
+
+\subsection{Representing unified parity games}
+In order to create an algorithm based around attracting multiple configurations we need to take a look at how unified parity games can be represented.
+
+
+Unified PGs have a specific structure because they are the union of PGs that have the same vertices with the same owner and priority. Because they have the same priority we don't actually need to create a new function that is the unification of all the projections, we can simply use the original priority assignment function because the following relation holds:
+\[ \Omega(c,\hat{v}) = \hat{\Omega}(\hat{v}) \]
+Similarly we can use the original partition sets $\hat{V}_0$ and $\hat{V}_1$ instead of having the new partition $V_0$ and $V_1$ because the following relations holds:
+\[ (c,\hat{v}) \in V_0 \iff \hat{v}\in \hat{V}_0 \]
+\[ (c,\hat{v}) \in V_1 \iff \hat{v}\in \hat{V}_1 \]
+So instead of considering unified PG $(V,V_0,V_1,E,\Omega)$ we will consider $(V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$. 
+
+Next we consider how we represent vertices and edges in a unified PG. A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$. The set $X$ and function $f$ are equivalent, denoted by the operator $=_\lambda$, iff the following relation holds:
+\[ (c,\hat{v}) \in X \iff c \in f(\hat{v}) \]
+We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\mathfrak{C}$. The set $E$ and function $f$ are equivalent, denoted by the operator $=_\lambda$, iff the following relation holds:
+\[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
+We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
+
+\subsection{Algorithms}
+Using the recursive algorithm as a basis we can solve a VPG product based, alternatively we can solve it family based using a set-wise presentation or a function-wise presentation. For the function-wise presentation we can either use an explicit or a symbolic representation of sets of configurations. The following diagram shows the different algorithms:
 \begin{center}
 	\begin{forest}
 		[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}
@@ -14,72 +104,8 @@ Next we will consider Zielonka's recursive algorithm \cite{ZIELONKA1998135} whic
 	\end{forest}
 \end{center}
 
-
-\subsection{Original Zielonka's recursive algorithm}
-First we consider the original Zielonka's recursive algorithm, created from the constructive proof given in \cite{ZIELONKA1998135}, which solves total PGs. Pseudo code is presented in algorithm \ref{alg_zlnk_org}.
-\begin{algorithm}
-	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
-	\label{alg_zlnk_org}
-	\begin{algorithmic}[1]
-		\State $m \gets \min\{ \Omega(v)\ |\ v \in V\}$
-		\State $h \gets\max\{ \Omega(v)\ |\ v \in V\}$
-		\If{$h = m$ or $V = \emptyset$}
-		\If{$h$ is even or $V = \emptyset$}
-		\State \Return $(V,\emptyset)$
-		\Else
-		\State \Return $(\emptyset, V)$
-		\EndIf
-		\EndIf
-		\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
-		\State $U \gets \{v \in V\ |\ \Omega(v) = h\}$
-		\State $A \gets \alpha\textit{-Attr}(G, U)$
-		\State $(W_0', W_1') \gets \textsc{RecursivePG}(G \backslash A)$
-		\If{$W_{\overline{\alpha}}' =\emptyset$}
-		\State $W_\alpha \gets A \cup W_\alpha'$
-		\State $W_{\overline{\alpha}} \gets \emptyset$
-		\Else
-		\State $B \gets \overline{\alpha}\textit{-Attr}(G,W_{\overline{\alpha}}')$
-		\State $(W_0'', W_1'') \gets \textsc{RecursivePG}(G \backslash B)$
-		\State $W_\alpha \gets W_\alpha''$
-		\State $W_{\overline{\alpha}} \gets W_{\overline{\alpha}}'' \cup B$
-		\EndIf
-		\State \Return $(W_0, W_1)$
-	\end{algorithmic}
-\end{algorithm}
-
-An exhaustive explanation of the algorithm can be found in \cite{ZIELONKA1998135}, we do introduce the definitions used in the algorithm. First we introduce the notion of an attractor set. An attractor set is a set of vertices $A \subseteq V$ calculated for player $\alpha$ given set $U \subseteq V$ where player $\alpha$ has a strategy to force the play starting in any vertex in $A \backslash U$ to a vertex in $U$.
-
-
-\begin{definition}\cite{ZIELONKA1998135}
-	\label{def_attr}Given parity game $G = (V,V_0,V_1,E,\Omega)$ and a non-empty set $U \subseteq V$ we define $\alpha\textit{-Attr}(G,U)$ such that
-	\[U_0 = U \]
-	For $i \geq 0$:
-	\begin{align*}
-	U_{i+1} = U_i\cup
-	&\{v \in V_\alpha\ |\ \exists v' \in V : v' \in U_i \wedge (v,v') \in E \}\\
-	\cup &\{v \in V_{\overline{\alpha}}\ |\ \forall v' \in V :(v,v') \in E \implies v' \in U_i \}
-	\end{align*}
-	Finally:
-	\[\alpha\textit{-Attr}(G,U) = \bigcup_{i \geq 0} U_i \]
-\end{definition}
-
-Next we present the definition of a subgame, where a PG and a set of vertices which are removed from the game are given.
-
-\begin{definition}\cite{ZIELONKA1998135}
-\label{def_org_subgame}
-Given a parity game $G = (V,V_0,V_1, E,\Omega)$ and $U \subseteq V$ we define the subgame $G \backslash U$ to be the game $(V', V_0', V_1', E', \Omega)$ with:
-\begin{itemize}
-	\item $V' = V \backslash U$,
-	\item $V_0' = V_0 \cap V'$,
-	\item $V_1' = V_1 \cap V'$ and
-	\item $E' = E \cap (V' \times V')$.
-\end{itemize}
-\end{definition}
-
-Note that a subgame is not necessarily total, however the recursive algorithm always creates subgames that are total (shown in \cite{ZIELONKA1998135}).
-
 \subsection{Recursive algorithm using a function-wise representation}
-We can modify the recursive algorithm to work with the function-wise representation of vertices and edges introduced in section \ref{sec_unified_pg}. Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}.
+We can modify the recursive algorithm to work with the function-wise representation of vertices and edges. Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}.
 \begin{algorithm}
 	\caption{$\textsc{recursiveUVPG}(\textit{PG } G = (\\
 		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
