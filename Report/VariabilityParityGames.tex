@@ -11,7 +11,7 @@ A variability parity game (VPG) is a tuple $(V,V_0, V_1, E, \Omega, \mathfrak{C}
 	\item $E \subseteq V \times V$ is the edge relation; we assume that $E$ is total, i.e. for all $v\in V$ there is some $w \in V$ such that $(v,w) \in E$,
 	\item $\Omega :  V \rightarrow \mathbb{N}$ is a priority assignment,
 	\item $\mathfrak{C}$ is a non-empty finite set of configurations,
-	\item $\theta : E \rightarrow \mathcal{P}(\mathfrak{C})\ \backslash\ \{0\}$ is the configuration mapping, satisfying for all $v \in V$, $\bigcup\{\theta(v,w)\ |\ (v,w) \in E\} = \mathfrak{C}$.
+	\item $\theta : E \rightarrow \mathcal{P}(\mathfrak{C})\ \backslash\ \emptyset$ is the configuration mapping, satisfying for all $v \in V$, $\bigcup\{\theta(v,w)\ |\ (v,w) \in E\} = \mathfrak{C}$.
 \end{itemize}
 \end{definition}
 A VPG is played similarly to a PG, however the game is played for a specific configuration $c \in \mathfrak{C}$. Player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Furthermore VPGs don't have deadlocks, therefore every play results in an infinite path.
