@@ -68,7 +68,7 @@ attracting these for player $0$ gives the set
 (c_1,v_1),&(c_2,v_1),\\
  &(c_2,v_2)\}
 \end{align*}
-The algorithm tries to attract all vertices starting from $v_0$ with any configuration, in this case $v_1$ can be attracted for all configurations, $v_2$ can only be attracted for $c_2$. When edge guards are permissive, ie. they admit many configurations, then there is a good change that vertices can be attracted for multiple configurations at the same time during the algorithm. This is the idea for the family based recursive VPG algorithm we represent next, we will use the recursive algorithm to solve unified parity games such that it tries to attract multiple configurations simultaneously.
+The algorithm tries to attract all vertices starting from $v_0$ with any configuration, in this case $v_1$ can be attracted for all configurations, $v_2$ can only be attracted for $c_2$. When edge guards are permissive, ie. they admit many configurations, then there is a good change that vertices can be attracted for multiple configurations at the same time during the algorithm. This is the idea for the collective recursive VPG algorithm we represent next, we will use the recursive algorithm to solve unified parity games such that it tries to attract multiple configurations simultaneously.
 
 \subsection{Representing unified parity games}
 In order to create an algorithm based around attracting multiple configurations we need to take a look at how unified parity games can be represented.
@@ -88,12 +88,12 @@ We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\m
 We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
 
 \subsection{Algorithms}
-Using the recursive algorithm as a basis we can solve a VPG product based, alternatively we can solve it family based using a set-wise presentation or a function-wise presentation. For the function-wise presentation we can either use an explicit or a symbolic representation of sets of configurations. The following diagram shows the different algorithms:
+Using the recursive algorithm as a basis we can solve a VPG independently, alternatively we can solve it collectively using a set-wise presentation or a function-wise presentation. For the function-wise presentation we can either use an explicit or a symbolic representation of sets of configurations. The following diagram shows the different algorithms:
 \begin{center}
 	\begin{forest}
 		[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}
-		[Product based]
-		[Family based
+		[Independent]
+		[Collective
 		[Set-wise]
 		[Function-wise
 		[Explicit]
@@ -353,15 +353,15 @@ Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\
 
 
 \subsection{Running time}
-We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ product based and family based using the different types of representations. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
+We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
-The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified PG (represented set-wise) for a family based approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a running time $O(c*e*(c*n)^d)$. However this running time can be improved by using the property that a unified PG consists of $c$ disconnected graphs as we shown next.
+The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified PG (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a running time $O(c*e*(c*n)^d)$. However this running time can be improved by using the property that a unified PG consists of $c$ disconnected graphs as we shown next.
 
-We have introduced three types of family based algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominant, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
+We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominant, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
 
 \textit{Base cases.} In the base cases the algorithm needs to do two things: find the highest and lowest priority and check if there are no more vertices in the game. For the set-wise variant we find the highest and lowest priorities by iterating all vertices, which takes $O(c*n)$. Checking if there are no more vertices is done in $O(1)$. For the function wise algorithms we can find the highest and lowest priority in $O(n)$ and checking if there are no vertices is also done in $O(n)$ since we have to check $V(\hat{v}) = \emptyset$ for every $\hat{v}$. Note that in a symbolic representation using BDDs we can check if a set is empty in $O(1)$ because the decision diagram contains a single node.
 
-\textit{Attractor sets.} For the set-wise family based approach we can use the attractor calculation from the original algorithm which has a time complexity of $O(e)$, so for a unified PG having $c*e$ edges we have $O(c*e)$.
+\textit{Attractor sets.} For the set-wise collective approach we can use the attractor calculation from the original algorithm which has a time complexity of $O(e)$, so for a unified PG having $c*e$ edges we have $O(c*e)$.
 
 The function-wise variants use a different attractor algorithm. First we consider the variant where sets of configurations are represented explicitly.
 
@@ -426,8 +426,8 @@ The different algorithms, including their time complexities, are repeated in the
 \begin{center}
 	\begin{forest}
 	[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}
-		[Product based\\$O(c*e*n^d)$ ]
-		[Family based
+		[Independent\\$O(c*e*n^d)$ ]
+		[Collective
 			[Set-wise\\$O(c*e*n^d)$ ]
 			[Function-wise
 				[Explicit\\$O(n * c^2 * e * n^d)$ ]
@@ -448,4 +448,4 @@ The number of vertices in the queue during attracting is at most $c*n$, however 
 
 The time complexity of set operations is $O(c)$ when using an explicit representation and $O(c^2)$ when using a symbolic one. However, as shown in \cite{BDD_running_time}, a breadth-depth first implementation of BDDs keeps a table of already computed results. This allows us to get already calculated results in sublinear time. In total there are $2^c$ possible sets and therefore $2^{2c}$ possible set combinations and $O(2^c)$ possible set operations that can be computed. However when solving a VPG originating from an FTS there will most likely be a relatively small number of different edge guards, in which case the number of unique sets considered in the algorithm will be small and we can often retrieve a set calculation from the computed table.
 
-We can see that even though the running time of the family based symbolic algorithm is the worse, its actual running time might be good when we are able to attract multiple configurations at the same time and have a small number of different edge guards.
+We can see that even though the running time of the collective symbolic algorithm is the worse, its actual running time might be good when we are able to attract multiple configurations at the same time and have a small number of different edge guards.
