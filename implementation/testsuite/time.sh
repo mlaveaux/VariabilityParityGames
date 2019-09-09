@@ -3,7 +3,7 @@ CMD=$2
 ARGS=$3
 
 cd $PROBLEM
-for g in game*
+for g in gameFF*
 do
         cd $g
         $CMD SVPG $ARGS > ../logs/${g}.log
