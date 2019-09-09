@@ -61,8 +61,9 @@ Next we present the definition of a subgame, where a PG and a set of vertices wh
 \end{definition}
 
 Note that a subgame is not necessarily total, however the recursive algorithm always creates subgames that are total (shown in \cite{ZIELONKA1998135}).
-\pagebreak
+
 \subsubsection{Zielonka's recursive algorithm local}
+\label{sec:zlnk_org_local}
 We can modify Zielonka's algorithm to solve parity games locally. We use the property that vertices won by player $\overline{\alpha}$ in game $G \backslash A$ are also won by player $\overline{\alpha}$. We use this property to, in some cases, not go into the second recursion because we already found the vertex. We extend the algorithm with two parameters, $v_0$ and $\Delta$. Vertex $v_0$ represents the vertex that we try to solve and is used unmodified in recursive calls. Parameter $\Delta \subseteq \{0,1\}$ contains a set of players for which we try to find vertex $v_0$, if we find $v_0$ to be won by a player that is in $\Delta$ we are done. However if we find vertex $v_0$ to be won by a player that is not in $\Delta$ we need to solve the entire game. The algorithm can make use of this to tell a recursive call it needs to find the vertex to be won by player $\overline{\alpha}$ in the subgame because then this vertex is also won by player $\overline{\alpha}$ in the game itself. If the vertex is not won by $\overline{\alpha}$ the entire game needs to be solved because the winning sets are required in the second recursion. Pseudo code for the algorithm is provided in algorithm \ref{alg_zlnk_local}.
 \begin{algorithm}
 	\caption{$\textsc{RecursivePGLocal}(\textit{PG } G = (V,V_0,V_1, E, \Omega),v_0,\Delta)$}
@@ -184,20 +185,20 @@ To understand the formula we consider sub-formula $\nu Z_0. F_0(Z_{d-1},\dots,Z_
 
 As shown in \cite{WALUKIEWICZ2002311}, solving $S(G)$ gives the winning set for player $0$ in game $G$. A concrete algorithm is introduced in \cite{FPITE}, note that this algorithm can solve finite games. We will extend this algorithm such that it calculates $S(G)$ in an efficient manner by using $P_0$ and $P_1$ where it is known beforehand that vertices in $P_0$ are won by player 0 and vertices in $P_1$ are won by player 1. 
 
-\subsubsection{Fixed-point approximation}
-As shown in \cite{Emerson:1986:MCP:900378} we can calculate fixed-point $\mu X.f(X)$ when $f$ is monotonic in $X$ by approximating $X$.
+\subsubsection{Fixed-point iteration}
+As shown in \cite{Emerson:1986:MCP:900378} we can calculate fixed-point $\mu X.f(X)$ when $f$ is monotonic in $X$ by iterating $X$.
 \[ \mu X.f(X) = \bigcup_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \subseteq \mu X.f(X)$. So picking the smallest value possible for $X_0$ will always correctly calculate $\mu X. f(X)$.
 
-Similarly we can calculate fixed-point $\nu X.f(X)$ when $f$ is monotonic in $X$ by approximating $X$.
+Similarly we can calculate fixed-point $\nu X.f(X)$ when $f$ is monotonic in $X$ by iterating $X$.
 \[ \nu X.f(X) = \bigcap_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \supseteq \nu X.f(X)$. So picking the largest value possible for $X_0$ will always correctly calculate $\nu X. f(X)$.
 
-Clearly the formula $F_0(Z_{d-1},\dots,Z_0)$ is monotonic in any $Z_j$, so we can calculate $Z_{d-1}$ by approximating every $Z_j$ starting at $V$ for $\nu Z_j$ and starting at $\emptyset$ for $\mu Z_j$.
+Clearly the formula $F_0(Z_{d-1},\dots,Z_0)$ is monotonic in any $Z_j$, so we can calculate $Z_{d-1}$ by iterating every $Z_j$ starting at $V$ for $\nu Z_j$ and starting at $\emptyset$ for $\mu Z_j$.
 
-An algorithm to perform the approximation is presented in \cite{FPITE} and shown in algorithm \ref{alg_FPITEorg}.
+An algorithm to perform the iteration is presented in \cite{FPITE} and shown in algorithm \ref{alg_FPITEorg}.
 \begin{algorithm}
-	\caption{Fixed-point approximation}
+	\caption{Fixed-point iteration}
 	\label{alg_FPITEorg}
 	\begin{multicols}{2}
 		\begin{algorithmic}[1]
@@ -236,3 +237,10 @@ An algorithm to perform the approximation is presented in \cite{FPITE} and shown
 		\end{algorithmic}
 	\end{multicols}
 \end{algorithm}
+
+\subsubsection{Fixed-point iteration local}
+We can modify the fixed-point iteration algorithm to solve a game locally by distinguishing two cases:
+\begin{enumerate}
+	\item If $d-1$ is even then the outermost fixed-point variable is a greatest fixed-point variable. When at some point $v_0 \notin Z_{d-1}$ then we know $0$ is never won by player $1$ and we are done.
+	\item If $d-1$ is odd then the outermost fixed-point variable is a least fixed-point variable. When at some point $v_0 \in Z_{d-1}$ then we know $0$ is won by player $0$ and we are done.
+\end{enumerate}
