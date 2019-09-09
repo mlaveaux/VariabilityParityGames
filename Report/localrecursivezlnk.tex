@@ -1,0 +1,56 @@
+We can modify the recursive algorithm for VPGs into a local variant. In section \ref{sec:zlnk_org_local} we have seen a local variant of the Zielonka's recursive algorithm for PGs.
+
+\begin{algorithm}
+	\caption{$\textsc{RecursiveUVPGLocal}(\textit{PG } G = (\\
+		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
+		\hat{V}_0 \subseteq \hat{V},\\
+		\hat{V}_1 \subseteq \hat{V},\\
+		E : \hat{E} \rightarrow 2^\mathfrak{C},\\
+		\hat{\Omega} : \hat{V}\rightarrow \mathbb{N},\\
+		v_0 \in \hat{V},\\
+		\Delta))$}\label{alg_zlnk_UVPG_local}
+	\begin{algorithmic}[1]
+		\State $m \gets \min\{ \hat{\Omega}(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\State $h \gets \max\{ \hat{\Omega}(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\If{$h = m$ or $V = \lambda^\emptyset$}
+		\If{$h$ is even or $V = \lambda^\emptyset$}
+		\State \Return $(V,\lambda^\emptyset)$
+		\Else
+		\State \Return $(\lambda^\emptyset, V)$
+		\EndIf
+		\EndIf
+		\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
+		\State $U \gets \lambda^\emptyset$, $U(\hat{v}) \gets V(\hat{v})$ for all $\hat{v}$ with $\hat{\Omega}(\hat{v}) = h$
+		\State $A \gets \alpha\textit{-FAttr}(G, U)$
+		\If{$\overline{\alpha} \in \Delta$}
+		\State $(W_0', W_1') \gets \textsc{RecursiveUVPGLocal}(G \backslash A,v_0, \{\overline{\alpha}\})$
+		\Else
+		\State $(W_0', W_1') \gets \textsc{RecursiveUVPGLocal}(G \backslash A,v_0, \emptyset)$
+		\EndIf
+		\If{$W_{\overline{\alpha}}' =\lambda^\emptyset$}
+		\State $W_\alpha \gets A \cup W_\alpha'$
+		\State $W_{\overline{\alpha}} \gets \lambda^\emptyset$
+		\Else
+		\State $(W'''_0, W'''_1) \gets (\lambda^\emptyset, \lambda^\emptyset)$
+		\If{$\overline{\alpha} \in \Delta$}
+		\State $W'''_0(\hat{v}) \gets W'_0(\hat{v}) \cap W'_{\overline{\alpha}}(v_0)$ for all $\hat{v} \in \hat{V}$
+		\State $W'''_1(\hat{v}) \gets W'_1(\hat{v}) \cap W'_{\overline{\alpha}}(v_0)$ for all $\hat{v} \in \hat{V}$
+		\State $G \gets G \cap (\mathfrak{C} \backslash W'_{\overline{\alpha}}(v_0))$
+		\State $W'_0(\hat{v}) \gets W'_0(\hat{v}) \backslash W'_{\overline{\alpha}}(v_0)$ for all $\hat{v} \in \hat{V}$
+		\State $W'_1(\hat{v}) \gets W'_1(\hat{v}) \backslash W'_{\overline{\alpha}}(v_0)$ for all $\hat{v} \in \hat{V}$
+		\EndIf
+		\State $B \gets \overline{\alpha}\textit{-FAttr}(G,W_{\overline{\alpha}}')$
+		\If{$\overline{\alpha} \in \Delta$}
+		\State $W'''_0(\hat{v}) \gets W'_0(\hat{v}) \cap B(v_0)$ for all $\hat{v} \in \hat{V}$
+		\State $W'''_1(\hat{v}) \gets W'_1(\hat{v}) \cap B(v_0)$ for all $\hat{v} \in \hat{V}$
+		\State $G \gets G \cap (\mathfrak{C} \backslash B(v_0))$
+		\State $W'_0(\hat{v}) \gets W'_0(\hat{v}) \backslash B(v_0)$ for all $\hat{v} \in \hat{V}$
+		\State $W'_1(\hat{v}) \gets W'_1(\hat{v}) \backslash B(v_0)$ for all $\hat{v} \in \hat{V}$
+		\EndIf
+		\State $(W_0'', W_1'') \gets \textsc{RecursiveUVPGLocal}(G \backslash B)$
+		\State $W_\alpha \gets W_\alpha'' \cup W'''_{\alpha}$
+		\State $W_{\overline{\alpha}} \gets W_{\overline{\alpha}}'' \cup B \cup W'''_{\overline{\alpha}}$
+		\EndIf
+		\State \Return $(W_0, W_1)$
+	\end{algorithmic}
+\end{algorithm}
