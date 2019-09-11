@@ -1,4 +1,4 @@
-We can use Zielonka's recursive algorithm to solve VPGs, to do so we will first consider a method of creating a parity game from a VPG, called \textit{unification}.
+We can use the original Zielonka's recursive algorithm to solve VPGs, to do so we will first consider a method of creating a parity game from a VPG, called \textit{unification}.
 \subsection{Unified parity games}
 We can create a PG from a VPG by taking all the projections of the VPG, which are PGs, and combining them into one PG by taking the union of them. We call the resulting PG the \textit{unification} of the VPG. A parity game that is the result of a unification is called a \textit{unified PG}, also any total subgame of it will be called a unified PG. A unified PG always has a VPG from which it originated.
 \begin{definition}
@@ -60,7 +60,7 @@ A unified PG can be projected back to one of the games from which it is the unio
 One of the properties of a PG is its totality; a game is total if every vertex has at least 1 outgoing vertex. VPGs are also total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$, at least 1 outgoing vertex admitting $c$. Because VPGs are total their unifications are also total. Since edges in a unified PG don't cross configurations we can conclude that a unified PG is total iff every projection is total.
 
 \subsection{Solving unified PGs}
-We can solve a unified PG using the Zielonka's recursive algorithm. The algorithm revolves around the attractor operation and the creation of subgames. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
+We can solve a unified PG using Zielonka's recursive algorithm. The algorithm revolves around the attractor operation. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
 \[ \{(c_1,v_0),(c_2,v_0)\}\]
 attracting these for player $0$ gives the set 
 \begin{align*}
@@ -68,7 +68,7 @@ attracting these for player $0$ gives the set
 (c_1,v_1),&(c_2,v_1),\\
  &(c_2,v_2)\}
 \end{align*}
-The algorithm tries to attract all vertices starting from $v_0$ with any configuration, in this case $v_1$ can be attracted for all configurations, $v_2$ can only be attracted for $c_2$. When edge guards are permissive, ie. they admit many configurations, then there is a good change that vertices can be attracted for multiple configurations at the same time during the algorithm. This is the idea for the collective recursive VPG algorithm we represent next, we will use the recursive algorithm to solve unified parity games such that it tries to attract multiple configurations simultaneously.
+The algorithm tries to attract all vertices starting from $v_0$ with any configuration, in this case $v_1$ can be attracted for all configurations, $v_2$ can only be attracted for $c_2$. When edge guards are permissive, ie. they admit many configurations, then there is a good change that vertices can be attracted for multiple configurations at the same time during the algorithm. This is the idea for the collective recursive VPG algorithm we present next, we will modify the recursive algorithm to solve unified parity games such that it tries to attract multiple configurations simultaneously.
 
 \subsection{Representing unified parity games}
 In order to create an algorithm based around attracting multiple configurations we need to take a look at how unified parity games can be represented.
@@ -88,7 +88,7 @@ We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\m
 We write $\lambda^\emptyset$ to denote the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
 
 \subsection{Algorithms}
-Using the recursive algorithm as a basis we can solve a VPG independently, alternatively we can solve it collectively using a set-wise presentation or a function-wise presentation. For the function-wise presentation we can either use an explicit or a symbolic representation of sets of configurations. The following diagram shows the different algorithms:
+Using the recursive algorithm as a basis we can solve a VPG independently, alternatively we can solve it collectively using a set-wise presentation or a function-wise presentation. For the function-wise presentation we are working with functions mapping vertices and edges to sets of configurations. These sets of configurations can either be represented explicitly or symbolically. The following diagram shows the different algorithms:
 \begin{center}
 	\begin{forest}
 		[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}
@@ -103,9 +103,15 @@ Using the recursive algorithm as a basis we can solve a VPG independently, alter
 		]
 	\end{forest}
 \end{center}
+The independent approach uses the original algorithm, the collective set-wise approach also uses the original algorithm applied on a unified PG. The function-wise representation required modifications to the algorithm, as we try to attract multiple configurations at the same time. As we will see, this modified algorithm relies heavily on set operations over sets of configurations. As discussed in section \ref{sec:symrepconfs} sets of configurations might be particularly appropriate to represent symbolically. We hypothesize that when  this is the case and the game has a lot of commonalities then we can attract multiple configurations at the same time which can be done quickly as the symbolic set operations perform well.
+
+\subsubsection{A note on symbolically solving games}
+The function-wise algorithm has two variants: an explicit and a symbolic variant. In the explicit variant everything is represented explicitly. In the symbolic variant the sets of configurations are represented symbolically, however the graph is still represented explicitly so the algorithm is partially symbolic and partially explicit. Alternatively an algorithm could completely work symbolically by representing both the graph and the sets of configurations symbolically.
+
+Solving parity games symbolically has been studied in \cite{BDDSolvingPG}. The obstacle is that representing graphs with a large number of nodes makes the corresponding BDDs very complex and performance decreases rapidly. As to not repeat work done in \cite{BDDSolvingPG} we only consider algorithms where we represent the graph explicitly. 
 
 \subsection{Recursive algorithm using a function-wise representation}
-We can modify the recursive algorithm to work with the function-wise representation of vertices and edges. Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}.
+We can modify the recursive algorithm to work with the function-wise representation of vertices and edges. The algorithm behaves the same, only operations are modified to work with the different representation.  Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}. Note that for this pseudo code no distinction is made whether the sets of configurations are represented explicitly or symbolically.
 \begin{algorithm}
 	\caption{$\textsc{RecursiveUVPG}(\textit{PG } G = (\\
 		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
@@ -233,7 +239,7 @@ We also introduce a modified subgame definition to work with the function-wise r
 		\item $E'(\hat{v},\hat{v}') = E(\hat{v},\hat{v}') \cap V'(\hat{v}) \cap V'(\hat{v}')$
 	\end{itemize}
 \end{definition}
-We will now prove that this new subgame definition gives a result equal to the original subgame definition. Note that when using the original subgame definition for unified PGs we can omit the modification to the partition because, as we have seen, we can use the partitioning from the VPG in the representation of unified PGs.
+We prove that this new subgame definition gives a result equal to the original subgame definition. Note that when using the original subgame definition for unified PGs we can omit the modification to the partition because, as we have seen, we can use the partitioning from the VPG in the representation of unified PGs.
 \begin{lemma}
 	\label{lem_subgame_eq}
 	Given unified PG $G = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ and set $\mathcal{U} \subseteq \mathcal{V}$ the subgame $G \backslash \mathcal{U} = (\mathcal{V}',\hat{V}_0,\hat{V}_1,\mathcal{E}',\hat{\Omega})$ represented set-wise is equal to the subgame represented function-wise.
@@ -279,7 +285,7 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 	\end{proof}
 \end{theorem}
 
-We have seen in theorem \ref{theA_solve_UVPG_is_solve_VPG} that solving a unified PG solves the VPG, furthermore the algorithm \textsc{RecursiveUVPG} correctly solves a unified PG therefore we can now conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.
+Theorem \ref{theA_solve_UVPG_is_solve_VPG} shows that solving a unified PG solves the VPG, furthermore the algorithm \textsc{RecursiveUVPG} correctly solves a unified PG therefore we can conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.
 
 \subsubsection{Function-wise attractor set}
 Next we present an algorithm to calculate the function-wise attractor, the pseudo code is presented in algorithm \ref{alg_fattr_alg}. The algorithm considers vertices that are in the attracted set for some configuration, for every such vertex the algorithm tries to attract vertices that are connected by an incoming edge. If a vertex is attracted for some configuration then the incoming edges of that vertex will also be considered. We prove the correctness of the algorithm in the following lemma and theorem.
@@ -438,14 +444,13 @@ The different algorithms, including their time complexities, are repeated in the
 	\end{forest}
 \end{center}
 
-The function wise time complexities consist of three parts:
-\begin{itemize}
-	\item the number of edges in the queue during the attractor calculation,
-	\item the time complexity of set operations on subsets of $\mathfrak{C}$ and
-	\item the number of recursions.
-\end{itemize}
-The number of vertices in the queue during attracting is at most $c*n$, however this number will only be large if we attract a very small number of configurations at a per time we evaluate an edge. Most likely we will be able to attract many configurations at the same time, especially when the VPG originates from an FTS there is a good change that many edges admit most or all configurations in $\mathfrak{C}$. So when there are many similarities in behaviour between the different configurations in the FTS we will have a low number of vertices in the queue.
+\subsubsection{Running time in practice}
+Earlier we hypothesized that the symbolic function-wise algorithm could have the best performance of the 4 algorithms, however it has the worse case running time complexity. Our hypothesis was based on the notion that VPGs most likely have a lot of commonalities and that sets of configurations in the VPG can be represented efficiently symbolically. Next we argue why the worse case running time complexity might not represent the running time in practice.
+
+We dissect the running time of the function-wise algorithms. The running time complexities of the collective algorithms consist of two parts: the time complexity of the attractor set times $n^d$. The function-wise attractor set time complexity also consists of two parts: the maximum number of vertices in the queue ($c*n$) times the time complexity for set operations ($O(c)$ for the explicit variant, $O(c^2)$ for the symbolic variant).
+
+The number of vertices in the queue during attracting is at most $c*n$, however this number will only be large if we attract a very small number of configurations per time we evaluate an edge. As argued earlier we can most likely attract multiple configurations at the same time. This will decrease the number of vertices in the queue.
 
 The time complexity of set operations is $O(c)$ when using an explicit representation and $O(c^2)$ when using a symbolic one. However, as shown in \cite{BDD_running_time}, a breadth-depth first implementation of BDDs keeps a table of already computed results. This allows us to get already calculated results in sublinear time. In total there are $2^c$ possible sets and therefore $2^{2c}$ possible set combinations and $O(2^c)$ possible set operations that can be computed. However when solving a VPG originating from an FTS there will most likely be a relatively small number of different edge guards, in which case the number of unique sets considered in the algorithm will be small and we can often retrieve a set calculation from the computed table.
 
-We can see that even though the running time of the collective symbolic algorithm is the worse, its actual running time might be good when we are able to attract multiple configurations at the same time and have a small number of different edge guards.
+We can see that even though the running time of the collective symbolic algorithm is the worse, its practical running time might be good when we are able to attract multiple configurations at the same time and have a small number of different edge guards.

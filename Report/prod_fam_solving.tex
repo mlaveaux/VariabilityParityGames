@@ -7,4 +7,4 @@ Parity games can be solved \textit{globally} or \textit{locally}; globally solvi
 
 Similarly VPGs can be solved globally or locally where locally solving a VPG means determining for which configurations a certain vertex is won by player $0$ and for which configurations the vertex is won by player $1$.
 
-When talking about solving a (V)PG we talk about globally solving it unless explicitly specified.
+Most parity game algorithms are concerned with global solving, when talking about solving a (V)PG we talk about globally solving it unless noted otherwise. For VPGs we consider a global and a local variant for every collective algorithm we are going to consider. When solving a VPG globally we might encounter significant differences in parts of the game or intermediate results between configurations that we don't encounter when solving it locally because we can terminate earlier. Therefore we hypothesize that the increase in performance between globally-collectively solving VPGs and locally-collectively solving VPGs is greater than the increase performance between globally-independently solving VPGs and locally-independently solving VPGs.
