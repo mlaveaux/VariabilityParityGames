@@ -1,4 +1,4 @@
-Next we explore an algorithm where we try to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we say such a vertex is pre-solved. The algorithm tries to recursively the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, furthermore we want to find these sets in a clever such that the algorithm doesn't spend time finding vertices that are already pre-solved. Furthermore when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
+Next we explore an algorithm where we try to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, furthermore we want to find these sets in an efficient manner such that the algorithm doesn't spend time finding vertices that are already pre-solved. Furthermore when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
 
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
@@ -21,7 +21,7 @@ Next we explore an algorithm where we try to solve the game for all configuratio
 		\State \Return $(W_0,W_1)$
 	\end{algorithmic}
 \end{algorithm}
-The subgames created are based on creating a subgame based on a set of configurations, we define the subgame operator as follows:
+The subgames created are based on a set of configurations, we define the subgame operator as follows:
 \begin{definition}
 	Given VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ and non-empty set $\mathfrak{X} \subseteq \mathfrak{C}$ we define the subgame $G \cap \mathfrak{X} = (V,V_0,V_1,E',\Omega,\mathfrak{C}', \theta')$ such that
 	\begin{itemize}
@@ -30,9 +30,7 @@ The subgames created are based on creating a subgame based on a set of configura
 		\item $E' = \{ e \in E\ |\ \theta'(e) \neq \emptyset \}$.
 	\end{itemize}
 \end{definition}
-VPGs are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality.
-
-Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
+VPGs are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality. Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
 
 Finally the subgame operator is associative, meaning $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
 
@@ -123,7 +121,7 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 	\end{proof}
 \end{lemma}
 \subsection{Algorithm}
-In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, specifically we want to solve a parity game that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is 1 configuration left we need a similar algorithm. In algorithm \ref{alg_FPITE} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we will show the correctness of the algorithm, later we will explore an appropriate \textsc{Solve} algorithm.
+In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, specifically we want to solve a parity game that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is 1 configuration left we need a similar algorithm. In algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we will show the correctness of the algorithm, later we will explore an appropriate \textsc{Solve} algorithm.
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
 	\begin{algorithmic}[1]
@@ -190,9 +188,9 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 We can use the fixed-point iteration algorithm to solve parity games using pre-solved vertices. First recall the fixed-point formula to calculate $W_0$:
 \[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(Z_{d-1},\dots,Z_0) \]
 
-Let $G$ be a PG and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point approximate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
+Let $G$ be a PG and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point iterate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
 \[ P_0 \subseteq W_0 \subseteq V\backslash P_1\]
-We can use this restriction to efficiently approximate $S(G)$. If no bounds are know we would approximate fixed-point formula $\nu Z_{d-1}\dots$ by starting at $Z_{d-1}^0 = V$ which is the largest value possible, however given the bounds we can start our approximations of greatest fixed-point variables at $V\backslash P_1$ and start our approximations of least fixed-point variables at $P_0$. The following lemma's and theorems prove this.
+We can use this restriction to efficiently iterate $S(G)$. If no bounds are know we would iterate fixed-point formula $\nu Z_{d-1}\dots$ by starting at $Z_{d-1}^0 = V$ which is the largest value possible, however given the bounds we can start our iterations of greatest fixed-point variables at $V\backslash P_1$ and start our iterations of least fixed-point variables at $P_0$. The following lemma's and theorems prove this.
 \begin{lemma}
 	\label{lem_fixpoint_bounds_nu}
 	Given
@@ -201,10 +199,10 @@ We can use this restriction to efficiently approximate $S(G)$. If no bounds are 
 		\item monotonic function $f : 2^A \rightarrow 2^A$ and
 		\item $R^\bot \subseteq A$ and $R^\top \subseteq A$ such that $R^\bot \subseteq \nu X. f(X) \subseteq R^\top$
 	\end{itemize}
-	we approximate $X$ by starting with $X^0 = R^\top$. For any $i \geq 0$ it holds that
+	we iterate $X$ by starting with $X^0 = R^\top$. For any $i \geq 0$ it holds that
 	\[ R^\bot \subseteq f(X^i) \subseteq R^\top \]
 	\begin{proof}
-		Assume $R^\bot \supset f(X^i)$. By fixed-point approximation we have $\nu X.f(X) = \cap_{j\geq0} X^j$, so we find $R^\bot \supset \nu X.f(x)$ which is a contradiction so $R^\bot \subseteq f(X^i)$.
+		Assume $R^\bot \supset f(X^i)$. By fixed-point iteration we have $\nu X.f(X) = \cap_{j\geq0} X^j$, so we find $R^\bot \supset \nu X.f(x)$ which is a contradiction so $R^\bot \subseteq f(X^i)$.
 		
 		Assume $f(X^i) \supset R^\top$. Because of monotonicity we find $X^i \subseteq R^\top$ and therefore $f(X^i) \supset R^\top \supseteq X^i$. Using the Knaster-Tarski theorem (\ref{the_knaster_tarski}) we can conclude that the greatest fixed-point of $f(X)$ is larger than $f(X^i)$, so we find $\nu X.f(X) \supset R^\top$ which is a contradiction so $f(X^i) \subseteq R^\top$.
 	\end{proof}
@@ -218,17 +216,17 @@ We can use this restriction to efficiently approximate $S(G)$. If no bounds are 
 		\item monotonic function $f : 2^A \rightarrow 2^A$ and
 		\item $R^\bot \subseteq A$ and $R^\top \subseteq A$ such that $R^\bot \subseteq \mu X. f(X) \subseteq R^\top$
 	\end{itemize}
-	we approximate $X$ by starting with $X^0 = R^\bot$. For any $i \geq 0$ it holds that
+	we iterate $X$ by starting with $X^0 = R^\bot$. For any $i \geq 0$ it holds that
 	\[ R^\bot \subseteq f(X^i) \subseteq R^\top \]
 \end{lemma}
 
 \begin{theorem}
 	\label{the_FPITE_starting}
-	Given PG $G = (V,V_0,V_1,E,\Omega)$ with $P_0$ and $P_1$ such that vertices  in $P_0$ are won by player $0$ in game $G$ and vertices in $P_1$ are won by player $1$ in game $G$ we can approximate the fixed-point variables by starting at $P_0$ for least fixed-points and starting at $V \backslash P_1$ for greatest fixed-points.
+	Given PG $G = (V,V_0,V_1,E,\Omega)$ with $P_0$ and $P_1$ such that vertices  in $P_0$ are won by player $0$ in game $G$ and vertices in $P_1$ are won by player $1$ in game $G$ we can iterate the fixed-point variables by starting at $P_0$ for least fixed-points and starting at $V \backslash P_1$ for greatest fixed-points.
 	\begin{proof}
-		Let $f(Z_{d-1}) = \mu Z_{d-2}\dots\nu Z_0.F_0(Z_{d-1},\dots,Z_0)$. Because $\nu Z_{d-1}.f(Z_{d-1})$ calculates $W_0$ we know $P_0 \subseteq \nu Z_{d-1}.f(Z_{d-1}) \subseteq V \backslash P_1$ so we can start the fixed-point approximation at $Z_{d-1}^0 = V\backslash P_1$. Using lemma \ref{lem_fixpoint_bounds_nu} we find for any $i \geq 0$ we have $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$.
+		Let $f(Z_{d-1}) = \mu Z_{d-2}\dots\nu Z_0.F_0(Z_{d-1},\dots,Z_0)$. Because $\nu Z_{d-1}.f(Z_{d-1})$ calculates $W_0$ we know $P_0 \subseteq \nu Z_{d-1}.f(Z_{d-1}) \subseteq V \backslash P_1$ so we can start the fixed-point iteration at $Z_{d-1}^0 = V\backslash P_1$. Using lemma \ref{lem_fixpoint_bounds_nu} we find for any $i \geq 0$ we have $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$.
 		
-		Let $g(Z_{d-2}) = \nu Z_{d-3} \dots \nu Z_0. F_0(Z_{d-1}^i,Z_{d-2},\dots,Z_0)$. We found $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$, therefore we have $P_0 \subseteq \mu Z_{d-2}.g(Z_{d-2})\subseteq V \backslash P_1$ so we can start the fixed-point approximation at $Z_{d-2}^0 = P_0$. Using lemma \ref{lem_fixpoint_bounds_mu} we find that for any $j \geq 0$ we have $P_0 \subseteq g(Z_{d-2}^j) \subseteq V\backslash P_1$.
+		Let $g(Z_{d-2}) = \nu Z_{d-3} \dots \nu Z_0. F_0(Z_{d-1}^i,Z_{d-2},\dots,Z_0)$. We found $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$, therefore we have $P_0 \subseteq \mu Z_{d-2}.g(Z_{d-2})\subseteq V \backslash P_1$ so we can start the fixed-point iteration at $Z_{d-2}^0 = P_0$. Using lemma \ref{lem_fixpoint_bounds_mu} we find that for any $j \geq 0$ we have $P_0 \subseteq g(Z_{d-2}^j) \subseteq V\backslash P_1$.
 		
 		We can repeat this logic up until $Z_0$ to conclude that the theorem holds.
 	\end{proof}
@@ -283,10 +281,3 @@ We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\math
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$ (\cite{FPITE}). We can use this algorithm to solve $G$ independently, ie. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 
 Next we consider the \textsc{IncPreSolve} algorithm for a collective approach, observe that in the worst case we have to split the set of configurations all the way down to individual configurations. We can consider the recursion as a tree where the leafs are individual configurations and at every internal node the set of configurations is split in two. Since in the worst case there are $c$ leaves, there are at most $c-1$ internal nodes. At every internal node the algorithm solves two games and at every leaf the algorithm solves 1 game, so we get $c + 2c - 2 = O(c)$ games that are being solved by \textsc{IncPreSolve}. In the worst case there are no similarities between the configuration in $G$ and at every iteration $P_0$ and $P_1$ are empty. In this case the \textsc{FPIte} algorithm behaves the same as the original algorithm and has a time complexity of $O(e*n^d)$, this gives an overall time complexity of $O(c*e*n^d)$ which is equal to an independent solving approach.
-
-\subsection{Local variant}
-When solving a VPG for model checking purposes we don't actually need to solve the entire game, due to the way the VPGs are build there is a certain vertex, say $v_0$, such that iff player $0$ wins it then the $\mu$-calculus formula holds for the FTS. So finding out for which configurations $v_0$ is won by player $0$ is sufficient, this is called \textit{locally} solving a VPG. Solving the entire VPG is called \textit{globally} solving the VPG. Similarly we can solve a PG locally, ie. only determining the winner for $v_0$, or solve it globally, ie. solve all vertices.
-
-The incremental pre-solve algorithm is particularly appropriate for local solving because if we find $v_0$ in either $P_0$ or $P_1$ we are done, this can potentially reduce the depth of the recursion of the algorithm and therefore reduce the number of (pessimistic) games we solve.
-
-Furthermore when there is only one configuration the incremental pre-solve algorithm solves the corresponding parity game. When taking a local approach it is sufficient to solve this PG locally. Note that the pessimistic games still should be solved globally to find as much assistance as possible for further recursions.

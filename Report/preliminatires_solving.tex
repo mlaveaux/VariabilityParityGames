@@ -29,9 +29,10 @@ The function $F$ defines set $S'$ in the following way: $S' = \{x_2x_1x_0\ |\ F(
 
 Boolean functions can efficiently be represented in BDDs, for a comprehensive treatment of BDDs we refer to \cite{BDD_book,Handbook_BDD_Chapter}. We will note here that given $x$ boolean variables and two boolean functions encoded as BDDs we can perform binary operations $\vee,\wedge$ on them in $O(2^{2x})=O(n^2)$ where $n = 2^x$ is the maximum set size that can be represented by $x$ variables \cite{BDD_running_time,Handbook_BDD_Chapter}. The running time specifically depends on the size of the decision diagrams, in general if the boolean functions are simple then the size of the decision diagram is also small and operations can be performed quickly.
 \subsubsection{Symbolically representing sets of configurations}
+\label{sec:symrepconfs}
 For VPGs originating from an FTS the configuration sets are already boolean functions over the features. The formula's guarding the edges in the VPG will generally have relatively simple boolean functions, therefore they are specifically appropriate to represent as BDDs.
 
-A set operation over two explicit sets can be performed in $O(n)$ where $n$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(n^2)$). However if the BDDs are small then the set size can still be large but the set operations can be performed very quickly. This is a trade-off between worst case running time complexity and average actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however its worse case running time complexity will be worse.
+A set operation over two explicit sets can be performed in $O(n)$ where $n$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(n^2)$). However if the BDDs are small then the set size can still be large but the set operations can be performed very quickly. This is a trade-off between worst case running time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however its worse case running time complexity will be worse.
 
 \subsection{Fixed-point preliminaries}
 \subsubsection{Lattices}
@@ -89,7 +90,7 @@ The theorem, as written down by Tarski \cite{tarski1955}, states:
 	\begin{itemize}
 		\item $\langle A, \leq \rangle$ be a complete lattice,
 		\item $f$ be an increasing function on $A$ to $A$,
-		\item $P$ be a the set of all fixpoints of f.
+		\item $P$ be the set of all fixpoints of f.
 	\end{itemize}
 	Then the set $P$ is not empty and the system $\langle P, \leq \rangle$ is a complete lattice; in particular we have 
 	\[ \sup P = \sup \{ x\ |\ f(x) \geq x \} \in P \]
