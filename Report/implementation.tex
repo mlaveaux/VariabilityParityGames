@@ -1,11 +1,11 @@
 The algorithms are implemented in C++ version 14 and use BuDDy\footnote{\label{note1}https://sourceforge.net/projects/buddy/} as a BDD library. The complete source is hosted on github\footnote{\label{note2}https://github.com/SjefvanLoo/VariabilityParityGames/tree/master/implementation/VPGSolver}.
 
-The implementation is split in three phases: parsing, solving and solution printing. The solving part contains the implementation of the algorithm presented. The parsing and solution printing parts are implemented trivially and hardly optimized, their running times are not considered in the experimental evaluation.
+The implementation is split in three phases: parsing, solving and solution printing. The solving part contains the implementations of the algorithms presented. The parsing and solution printing parts are implemented trivially and hardly optimized, their running times are not considered in the experimental evaluation.
 
 The parsing phase of the algorithm creates BDDs from the input file, in doing so parts of the BDD cache gets filled. After parsing the BDD cache is cleared to make sure that the work done in the solving phase corresponds with the algorithms presented and no work to assist it has been done prior to this phase.
 
 \subsection{Game representation}
-The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge (either explicitly or implicit). For product based algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
+The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge (either explicitly or symbolically). For product based algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
 
 Note that only the representation of the games used during the algorithm is relevant, since we don't evaluate the parsing phase it is not relevant how the games are stored in a file.
 \subsection{Product based algorithms}
@@ -21,7 +21,9 @@ A few optimizations are applied to the fixed-point iteration algorithm. The foll
 	\item The algorithm only reinitializes a certain range of fixed-point variables. So the diamond and box operations can use the previous result and only reconsider vertices that have an edge to a vertex that has a priority for which its fixed-point variable is reset.
 	\item The algorithm updates variables $Z_0$ to $Z_m$ and reinitializes $Z_0$ to $Z_{m-1}$, however if $Z_m$ is a least fixed-point variable then $Z_m$ has just increased and due to monotonicity the other least fixed-point formula's, ie. $Z_{m-2},Z_{m-4},\dots$, will also increase so there is no need to reset them. Similarly for greatest fixed-point variables. So we only to reset half of the variables instead of all of them.
 \end{itemize}
-Finally the vertices in the game are reordered such that they are sorted by parity first and secondly by priority. Using the above optimizations the algorithm needs to reset variables $Z_{m}, Z_{m-2},\dots$, these variables are stored in a single bit-vector $Z$. By reordering the variables to be sorted by parity and priority these vertices that need to be reset are always consecutively stored in $Z$, so resetting this sequence can be done by a memory copy instead of iterating all the different vertices. Note that when the algorithm is used by the pre-solve algorithm the variables are not reset to simply $\emptyset$ and $V$ but are reset to two specific bit-vectors that are given by the pre-solve algorithm. These bit-vectors have the same order and resetting can be done by copying a part of them into $Z$.
+Finally the vertices in the game are reordered such that they are sorted by parity first and by priority second. Using the above optimizations the algorithm needs to reset variables $Z_{m}, Z_{m-2},\dots$, these variables are stored in a single bit-vector $Z$. By reordering the variables to be sorted by parity and priority these vertices that need to be reset are always consecutively stored in $Z$, so resetting this sequence can be done by a memory copy instead of iterating all the different vertices. Note that when the algorithm is used by the pre-solve algorithm the variables are not reset to simply $\emptyset$ and $V$ but are reset to two specific bit-vectors that are given by the pre-solve algorithm. These bit-vectors have the same order and resetting can be done by copying a part of them into $Z$.
+
+The advantage of using a memory copy as opposed to iteration all the different vertices is due to the fact that a bit vector uses integers to store its boolean values. A 32-bit integer can store 32 boolean values. Iterating and writing every boolean value individually causes the integer to be written 32 times. However with a memory copy we can simply copy the entire integer value and the integer is only written once.
 \subsection{Family based algorithms}
 Four family based algorithms are implemented:
 \begin{itemize}
@@ -32,4 +34,4 @@ Four family based algorithms are implemented:
 \end{itemize}
 The incremental pre-solve algorithms use the fixed-point iteration algorithm as described above to solve the (pessimistic) PGs.
 \subsection{Random verification}
-In order to prevent implementation mistakes 200 VPGs are created randomly, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved by the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
+In order to prevent implementation mistakes 200 VPGs are created randomly, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved using the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
