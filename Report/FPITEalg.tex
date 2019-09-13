@@ -1,4 +1,4 @@
-Next we explore an algorithm where we try to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, furthermore we want to find these sets in an efficient manner such that the algorithm doesn't spend time finding vertices that are already pre-solved. Furthermore when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
+Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, furthermore we want to find these sets in an efficient manner such that the algorithm doesn't spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
 
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
@@ -121,7 +121,7 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 	\end{proof}
 \end{lemma}
 \subsection{Algorithm}
-In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, specifically we want to solve a parity game that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is 1 configuration left we need a similar algorithm. In algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we will show the correctness of the algorithm, later we will explore an appropriate \textsc{Solve} algorithm.
+In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, specifically we want to solve a parity game that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is 1 configuration left we need a similar algorithm. In algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we show the correctness of the \textsc{IncPreSolve} algorithm, later we explore an appropriate \textsc{Solve} algorithm.
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
 	\begin{algorithmic}[1]
@@ -185,7 +185,7 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 \end{theorem}
 
 \subsection{A parity game algorithm using pre-solved vertices}
-We can use the fixed-point iteration algorithm to solve parity games using pre-solved vertices. First recall the fixed-point formula to calculate $W_0$:
+The fixed-point iteration algorithm can be used to solve parity games using pre-solved vertices. First recall the fixed-point formula to calculate $W_0$:
 \[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(Z_{d-1},\dots,Z_0) \]
 
 Let $G$ be a PG and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point iterate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
@@ -276,7 +276,7 @@ We take the fixed-point algorithm presented in \cite{FPITE} and modify it by sta
 This algorithm is appropriate to use as a \textsc{Solve} algorithm in \textsc{IncPreSolve} since it solves parity games that are not necessarily total and uses $P_0$ and $P_1$.
 
 \subsection{Running time}
-We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
+We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. Let $n$ denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$ (\cite{FPITE}). We can use this algorithm to solve $G$ independently, ie. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 
