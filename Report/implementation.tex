@@ -7,7 +7,7 @@ The parsing phase of the algorithm creates BDDs from the input file, in doing so
 \subsection{Game representation}
 The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge (either explicitly or implicit). For product based algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
 
-Note that only the representation of the games used during the algorithm is relevant, since we don't evaluate the parsing phase it is not relevant how we store the games in files.
+Note that only the representation of the games used during the algorithm is relevant, since we don't evaluate the parsing phase it is not relevant how the games are stored in a file.
 \subsection{Product based algorithms}
 Three product based algorithms are implemented, ie. algorithms that solve parity games:
 \begin{itemize}
@@ -32,4 +32,4 @@ Four family based algorithms are implemented:
 \end{itemize}
 The incremental pre-solve algorithms use the fixed-point iteration algorithm as described above to solve the (pessimistic) PGs.
 \subsection{Random verification}
-In order to prevent implementation mistakes 200 VPGs are randomly created, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved by the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
+In order to prevent implementation mistakes 200 VPGs are created randomly, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved by the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.

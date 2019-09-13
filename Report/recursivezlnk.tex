@@ -60,7 +60,7 @@ A unified PG can be projected back to one of the games from which it is the unio
 One of the properties of a PG is its totality; a game is total if every vertex has at least 1 outgoing vertex. VPGs are also total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$, at least 1 outgoing vertex admitting $c$. Because VPGs are total their unifications are also total. Since edges in a unified PG don't cross configurations we can conclude that a unified PG is total iff every projection is total.
 
 \subsection{Solving unified PGs}
-We can solve a unified PG using Zielonka's recursive algorithm. The algorithm revolves around the attractor operation. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
+We can solve a unified PG using Zielonka's recursive algorithm, since it is a total parity game. The algorithm revolves around the attractor operation. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
 \[ \{(c_1,v_0),(c_2,v_0)\}\]
 attracting these for player $0$ gives the set 
 \begin{align*}
@@ -103,7 +103,15 @@ Using the recursive algorithm as a basis we can solve a VPG independently, alter
 		]
 	\end{forest}
 \end{center}
-The independent approach uses the original algorithm, the collective set-wise approach also uses the original algorithm applied on a unified PG. The function-wise representation required modifications to the algorithm, as we try to attract multiple configurations at the same time. As we will see, this modified algorithm relies heavily on set operations over sets of configurations. As discussed in section \ref{sec:symrepconfs} sets of configurations might be particularly appropriate to represent symbolically. We hypothesize that when  this is the case and the game has a lot of commonalities then we can attract multiple configurations at the same time which can be done quickly as the symbolic set operations perform well.
+The independent approach uses the original algorithm, the collective set-wise approach also uses the original algorithm applied on a unified PG. The function-wise representation required modifications to the algorithm, as we try to attract multiple configurations at the same time. As we will see, this modified algorithm relies heavily on set operations over sets of configurations. 
+
+\subsubsection{Symbolically representing sets of configurations}
+\label{sec:symrepconfs}
+For VPGs originating from an FTS the configuration sets are already boolean functions over the features. The formula's guarding the edges in the VPG will generally have relatively simple boolean functions, therefore they are specifically appropriate to represent as BDDs.
+
+A set operation over two explicit sets can be performed in $O(n)$ where $n$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(n^2)$). However if the BDDs are small then the set size can still be large but the set operations can be performed very quickly. This is a trade-off between worst case running time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however its worse case running time complexity will be worse.
+
+We hypothesize that since the collective function-wise symbolic recursive algorithm relies heavily on set operations over sets of configurations this algorithm will perform well.
 
 \subsubsection{A note on symbolically solving games}
 The function-wise algorithm has two variants: an explicit and a symbolic variant. In the explicit variant everything is represented explicitly. In the symbolic variant the sets of configurations are represented symbolically, however the graph is still represented explicitly so the algorithm is partially symbolic and partially explicit. Alternatively an algorithm could completely work symbolically by representing both the graph and the sets of configurations symbolically.
@@ -113,7 +121,7 @@ Solving parity games symbolically has been studied in \cite{BDDSolvingPG}. The o
 \subsection{Recursive algorithm using a function-wise representation}
 We can modify the recursive algorithm to work with the function-wise representation of vertices and edges. The algorithm behaves the same, only operations are modified to work with the different representation.  Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}. Note that for this pseudo code no distinction is made whether the sets of configurations are represented explicitly or symbolically.
 \begin{algorithm}
-	\caption{$\textsc{RecursiveUVPG}(\textit{PG } G = (\\
+	\caption{$\textsc{RecursiveUPG}(\textit{PG } G = (\\
 		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
 		\hat{V}_0 \subseteq \hat{V},\\
 		\hat{V}_1 \subseteq \hat{V},\\
@@ -132,13 +140,13 @@ We can modify the recursive algorithm to work with the function-wise representat
 		\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
 		\State $U \gets \lambda^\emptyset$, $U(\hat{v}) \gets V(\hat{v})$ for all $\hat{v}$ with $\hat{\Omega}(\hat{v}) = h$
 		\State $A \gets \alpha\textit{-FAttr}(G, U)$
-		\State $(W_0', W_1') \gets \textsc{RecursiveUVPG}(G \backslash A)$
+		\State $(W_0', W_1') \gets \textsc{RecursiveUPG}(G \backslash A)$
 		\If{$W_{\overline{\alpha}}' =\lambda^\emptyset$}
 		\State $W_\alpha \gets A \cup W_\alpha'$
 		\State $W_{\overline{\alpha}} \gets \lambda^\emptyset$
 		\Else
 		\State $B \gets \overline{\alpha}\textit{-FAttr}(G,W_{\overline{\alpha}}')$
-		\State $(W_0'', W_1'') \gets \textsc{RecursiveUVPG}(G \backslash B)$
+		\State $(W_0'', W_1'') \gets \textsc{RecursiveUPG}(G \backslash B)$
 		\State $W_\alpha \gets W_\alpha''$
 		\State $W_{\overline{\alpha}} \gets W_{\overline{\alpha}}'' \cup B$
 		\EndIf
@@ -160,7 +168,7 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 	Finally:
 	\[\alpha\textit{-FAttr}(G,U) = \bigcup_{i \geq 0} U_i \]
 \end{definition}
-We will now prove that the function-wise attractor definition gives a result equal to the original definition.
+We now prove that the function-wise attractor definition gives a result equal to the original definition.
 \begin{lemma}
 	\label{lem_attr_equal}
 	Given unified PG $G = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ and set $\mathcal{U} \subseteq \mathcal{V}$ the function-wise attractor $\alpha\textit{-FAttr}(G,\mathcal{U})$ is equivalent to the set-wise attractor $\alpha\textit{-Attr}(G,\mathcal{U})$ for any $\alpha \in \{0,1\}$.
@@ -264,18 +272,18 @@ We prove that this new subgame definition gives a result equal to the original s
 
 Next we prove the correctness of the algorithm by showing that the winning sets of the function-wise algorithm are equal to the winning sets of the set-wise algorithm.
 \begin{theorem}
-	Given unified PG $\mathcal{G} = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ the winning sets resulting from \textsc{RecursiveUVPG($\mathcal{G}$)} ran over the function-wise representation of $\mathcal{G}$ is equal to the winning sets resulting from \textsc{RecursivePG($\mathcal{G}$)} ran over the set-wise representation of $\mathcal{G}$.
+	Given unified PG $\mathcal{G} = (\mathcal{V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$ the winning sets resulting from \textsc{RecursiveUPG($\mathcal{G}$)} ran over the function-wise representation of $\mathcal{G}$ is equal to the winning sets resulting from \textsc{RecursivePG($\mathcal{G}$)} ran over the set-wise representation of $\mathcal{G}$.
 	\begin{proof}
 		Let $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ be the set-wise representation of $\mathcal{G}$ and $G^\lambda = (V^\lambda, \hat{V}_0, \hat{V}_1, E^\lambda, \hat{\Omega})$ be the function-wise representation of $\mathcal{G}$.
 		
 		Proof by induction on $\mathcal{G}$.
 		
-		\textbf{Base} When there are no vertices or only one priority \textsc{RecursiveUVPG($G^\lambda$)} returns $\lambda^\emptyset$ and \textsc{RecursivePG($G$)} returns $\emptyset$, these two results are equal therefore the theorem holds in this case.
+		\textbf{Base} When there are no vertices or only one priority \textsc{RecursiveUPG($G^\lambda$)} returns $\lambda^\emptyset$ and \textsc{RecursivePG($G$)} returns $\emptyset$, these two results are equal therefore the theorem holds in this case.
 		
 		\textbf{Step}
 		Player $\alpha$ gets the same value in both algorithms since the highest priority is equal for both algorithms.
 		
-		Let $U = \{(c,\hat{v}) \in V\ |\ \hat{\Omega}(\hat{v}) = h \}$ (as calculated by \textsc{RecursivePG}) and $U^\lambda(\hat{v}) = V^\lambda(\hat{v})$ for all $\hat{v}$ with $\hat{\Omega}(\hat{v}) = h$ (as calculated by \textsc{RecursiveUVPG}). We will show that $U =_\lambda U^\lambda$.
+		Let $U = \{(c,\hat{v}) \in V\ |\ \hat{\Omega}(\hat{v}) = h \}$ (as calculated by \textsc{RecursivePG}) and $U^\lambda(\hat{v}) = V^\lambda(\hat{v})$ for all $\hat{v}$ with $\hat{\Omega}(\hat{v}) = h$ (as calculated by \textsc{RecursiveUPG}). We will show that $U =_\lambda U^\lambda$.
 		
 		Let $(c,\hat{v}) \in U$ then $\hat{\Omega}(\hat{v}) = h$, therefore $U^\lambda(\hat{v}) = V^\lambda(\hat{v})$. Since $U \subseteq V$ we have $(c,\hat{v}) \in V$ and because the equality between $V$ and $V^\lambda$ we get $c \in V^\lambda(\hat{v})$ and $c \in U^\lambda(\hat{V})$.
 		
@@ -285,7 +293,7 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 	\end{proof}
 \end{theorem}
 
-Theorem \ref{theA_solve_UVPG_is_solve_VPG} shows that solving a unified PG solves the VPG, furthermore the algorithm \textsc{RecursiveUVPG} correctly solves a unified PG therefore we can conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUVPG}(G_{\downarrow})$.
+Theorem \ref{theA_solve_UVPG_is_solve_VPG} shows that solving a unified PG solves the VPG, furthermore the algorithm \textsc{RecursiveUPG} correctly solves a unified PG therefore we can conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUPG}(G_{\downarrow})$.
 
 \subsubsection{Function-wise attractor set}
 Next we present an algorithm to calculate the function-wise attractor, the pseudo code is presented in algorithm \ref{alg_fattr_alg}. The algorithm considers vertices that are in the attracted set for some configuration, for every such vertex the algorithm tries to attract vertices that are connected by an incoming edge. If a vertex is attracted for some configuration then the incoming edges of that vertex will also be considered. We prove the correctness of the algorithm in the following lemma and theorem.
@@ -359,9 +367,9 @@ Set $A$ calculated by $\textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\
 
 
 \subsection{Running time}
-We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations. We will use $n$ to denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
+We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations. Let $n$ denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
-The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified PG (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a running time $O(c*e*(c*n)^d)$. However this running time can be improved by using the property that a unified PG consists of $c$ disconnected graphs as we shown next.
+The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified PG (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a running time $O(c*e*(c*n)^d)$. However this running time can be improved by using the property that a unified PG consists of $c$ disconnected graphs as we show next.
 
 We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominant, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
 
