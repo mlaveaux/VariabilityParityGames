@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190821164434" modified="D:20190904143916"/>
+<info created="D:20190821164434" modified="D:20190917161403"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -255,7 +255,7 @@ h
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
 <text layer="alpha" matrix="1 0 0 1 48 48" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">2</text>
-<text matrix="1 0 0 1 40 -32" transformations="translations" pos="64 800" stroke="black" type="label" width="14.5" height="7.415" depth="2.58" halign="right" valign="center" size="LARGE" style="math">v_0
+<text matrix="1 0 0 1 40 -32" transformations="translations" pos="64 800" stroke="black" type="label" width="14.5" height="11.959" depth="2.58" halign="right" valign="center" size="LARGE" style="math">\hat{v}_0
 </text>
 <path matrix="1 0 0 1 48 -16" stroke="black">
 64 800 m
@@ -280,8 +280,8 @@ h
 h
 </path>
 <text matrix="1 0 0 1 48 -16" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
-<text matrix="1 0 0 1 40 -96" transformations="translations" pos="64 800" stroke="black" type="label" width="14.5" height="7.415" depth="2.58" halign="right" valign="center" size="LARGE" style="math"> v_2</text>
-<text matrix="1 0 0 1 180 -76" transformations="translations" pos="64 800" stroke="black" type="label" width="14.5" height="7.415" depth="2.58" valign="center" size="LARGE" style="math">v_3</text>
+<text matrix="1 0 0 1 40 -96" transformations="translations" pos="64 800" stroke="black" type="label" width="14.5" height="11.959" depth="2.58" halign="right" valign="center" size="LARGE" style="math">\hat{v}_2</text>
+<text matrix="1 0 0 1 180 -76" transformations="translations" pos="64 800" stroke="black" type="label" width="14.5" height="11.959" depth="2.58" valign="center" size="LARGE" style="math">\hat{v}_3</text>
 <path stroke="black" arrow="normal/normal">
 150.628 704 m
 201.373 704 l
@@ -309,5 +309,12 @@ h
 <text matrix="1 0 0 1 48 -32" transformations="translations" pos="112 736" stroke="black" type="label" width="29.592" height="6.726" depth="2.24" valign="bottom" size="small" style="math">\{c_1,c_2\}</text>
 <text matrix="1 0 0 1 72 -64" transformations="translations" pos="112 736" stroke="black" type="label" width="17.356" height="6.726" depth="2.24" halign="right" valign="bottom" size="small" style="math">\{c_2\}</text>
 <text matrix="1 0 0 1 72 16" transformations="translations" pos="112 736" stroke="black" type="label" width="17.356" height="6.726" depth="2.24" halign="center" valign="bottom" size="small" style="math">\{c_1\}</text>
+<path stroke="black" arrow="normal/normal">
+120 784 m
+120 796 l
+136 796 l
+136 784 l
+</path>
+<text matrix="1 0 0 1 32 64" transformations="translations" pos="112 736" stroke="black" type="label" width="17.356" height="6.726" depth="2.24" halign="right" valign="baseline" size="small" style="math">\{c_1\}</text>
 </page>
 </ipe>

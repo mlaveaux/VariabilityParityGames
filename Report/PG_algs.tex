@@ -1,4 +1,10 @@
-As argued before we want to inspect local solving strategies for VPGs, we can locally solve a VPG independently by using local parity game algorithms. The two parity game algorithms introduced in the preliminaries (Zielonka's recursive algorithm and the fixed-point iteration algorithm) can be turned into local variants to solve VPGs locally and independently.
+Parity games can be solved \textit{globally} or \textit{locally}; globally solving a parity game means that for every vertex in the game it is determined who the winner is. Locally solving a parity game means that for a specific vertex in the game it is determined who the winner is. For some applications of parity games, including model checking, there is a specific vertex that needs to be solved to solve the model checking problem so locally solving the parity game is sufficient for solving the original problem.
+
+Similarly VPGs can be solved globally or locally where locally solving a VPG means determining for which configurations a certain vertex is won by player $0$ and for which configurations the vertex is won by player $1$.
+
+Most parity game algorithms are concerned with global solving, when talking about solving a (V)PG we talk about globally solving it unless stated otherwise. For VPGs we consider a global and a local variant for every collective algorithm we are going to consider. When solving a VPG globally we might encounter significant differences in parts of the game or intermediate results between configurations that we don't encounter when solving it locally because we can terminate earlier. Therefore we hypothesize that the increase in performance between globally-collectively solving VPGs and locally-collectively solving VPGs is greater than the increase performance between globally-independently solving VPGs and locally-independently solving VPGs.
+
+The two parity game algorithms introduced in the preliminaries (Zielonka's recursive algorithm and the fixed-point iteration algorithm) can be turned into local variants to solve VPGs locally and independently.
 
 \subsection{Zielonka's recursive algorithm local}
 \label{sec:zlnk_org_local}
@@ -53,16 +59,16 @@ To make Zielonka's recursive algorithm a local algorithm, we use the property th
 		\item $W_0 = Q_0$ and $W_1 = Q_1$.
 	\end{enumerate}
 \begin{proof}
-	To prove the correctness we compare the behaviour of \textsc{RecursivePGLocal} with the behaviour of the original algorithm \textsc{RecursivePG} for which we know that it is correct.
+	To prove the correctness we compare the behaviour of \textsc{RecursivePGLocal} with the behaviour of the original algorithm \textsc{RecursivePG}, which we know solves a parity game globally. Note that solving $G$ globally is equal to statement (II).
 	
 	Prove by induction on $G$:
 	
 	\textbf{Base: } When there are no vertices in $V$ or there is only one priority then the local algorithm behaves the same as the original algorithm so statement (II) holds.
 	
 	
-	\textbf{Step: } We start by distinguishing two cases, first we assume that $v_0 \notin V$. Vertex $v_0$ is also not in any subgame of $G$. In the first recursion we know by induction that either or both of the statements are true for $G\backslash A$, since $v_0$ is not in game $G\backslash A$ only statement (II) can be true. So the first recursion returns the same result as the original algorithm would. The if statements guarding the second recursion are always false because $v_0 \notin B$ and $v_0 \notin W'_{\overline{\alpha}}$ and similarly as with game $G\backslash A$ the vertex $v_0$ is not in $G\backslash B$. So the second recursion also returns the same values as the original algorithm would. We can conclude that when $v_0 \notin V$ the local algorithm behaves the same as the original and therefore statement (II) holds.
+	\textbf{Step: } We start by distinguishing two cases, first assume that $v_0 \notin V$. Vertex $v_0$ is also not in any subgame of $G$. In the first recursion we know by induction that either or both of the statements are true for $G\backslash A$, since $v_0$ is not in game $G\backslash A$ only statement (II) can be true. So the first recursion returns the same result as the original algorithm would. The if statements guarding the second recursion are always false because $v_0 \notin B$ and $v_0 \notin W'_{\overline{\alpha}}$ and similarly as with game $G\backslash A$ the vertex $v_0$ is not in $G\backslash B$. So the second recursion also returns the same values as the original algorithm would. We can conclude that when $v_0 \notin V$ the local algorithm behaves the same as the original and therefore statement (II) holds.
 	
-	Now consider $v_0 \in V$. Again we distinguish two cases, starting with $\overline{\alpha} \notin \Delta$. In the first recursive call we get $\Delta = \emptyset$, by induction either or both statements hold for $G\backslash A$, however with $\Delta = \emptyset$ statement (II) must be true. Therefore the first recursive call behaves the same as the original algorithm. The if statements guarding the second recursion are always false since $\overline{\alpha} \notin \Delta$ so the second recursive call is always performed. Up until this second recursive call the local algorithm behaves the same as the original algorithm. From the correctness of the original algorithm we can conclude that vertices won by some player in game $G\backslash B$ are also won by that player in game $G$. This holds true in the local algorithm since it has behaved identical up to this point. By induction we know either or both statements are true, if statement (II) is true for $G\backslash B$ then the algorithm behaves the same as the original and statement (II) is also true for game $G$. If statement (I) is true for $G \backslash B$ and $v_0$ is won by player $\beta$ in $G\backslash B$ then we know $v_0$ is also won by player $\beta$ in game $G$ and thus statement (I) holds for $G$.
+	Now consider $v_0 \in V$. Again we distinguish two cases, starting with $\overline{\alpha} \notin \Delta$. In the first recursive call we get $\Delta = \emptyset$, by induction either or both statements hold for $G\backslash A$, however with $\Delta = \emptyset$ statement (II) must be true. Therefore the first recursive call behaves the same as the original algorithm. If $W'_{\overline{\alpha}} = \emptyset$ then the parity game is solved and statement (II) holds for game $G$. If $W'_{\overline{\alpha}} \neq \emptyset$ then the if statements guarding the second recursion are always false since $\overline{\alpha} \notin \Delta$ so the second recursive call is always performed. Up until this second recursive call the local algorithm behaves the same as the original algorithm. From the correctness of the original algorithm we can conclude that vertices won by some player in game $G\backslash B$ are also won by that player in game $G$. This holds true for the local algorithm in this case since it has behaved identical up to this point. By induction we know either or both statements are true, if statement (II) is true for $G\backslash B$ then the algorithm behaves the same as the original and statement (II) is also true for game $G$. If statement (I) is true for $G \backslash B$ and $v_0$ is won by player $\beta$ in $G\backslash B$ then we know $v_0$ is also won by player $\beta$ in game $G$ and thus statement (I) holds for $G$.
 	
 	Next consider $\overline{\alpha} \in \Delta$ (and $v_0 \in V$). The first recursive call is made with $\Delta = \{\overline{\alpha}\}$. If $W'_{\overline{\alpha}} = \emptyset$ then statement (II) must be true for game $G\backslash A$ and the algorithm behaves the same as the original in which case statement (II) is true for $G$. If $W'_{\overline{\alpha}} \neq \emptyset$ then we consider $v_0$ being in $W'_{\overline{\alpha}}$, by induction we can conclude that $v_0$ is indeed won by player $\overline{\alpha}$ in game $G\backslash A$. Furthermore from the correctness of the original algorithm we can conclude that any vertex won by player $\overline{\alpha}$ in game $G\backslash A$ is also won by player $\overline{\alpha}$ in game $G$. So returning winning sets $\emptyset$ and $W'_{\overline{\alpha}}$ make statement (I) true for game $G$.
 	
@@ -74,13 +80,13 @@ To make Zielonka's recursive algorithm a local algorithm, we use the property th
 
 Calling $\textsc{RecursivePGLocal}(G, v_0, \{0,1\})$ with $v_0$ in $G$ either solves the full game (statement (II)) or correctly puts $v_0$ in either winning set (statement (I)). In both cases $v_0$ is in the correct winning set and the game is solved locally.
 
-The algorithm uses the property that vertices won by player $\overline{\alpha}$ in a subgame during the algorithm are also won by player $\overline{\alpha}$ in the game itself. However this property only goes one recursion deep, meaning that during the solving of a game there can be a subsubgame where a vertex is won by player $\overline{\alpha}$ however in the original game we try to solve this vertex is won by player $\alpha$. For this reason the local algorithm can't simply claim to be done when $v_0$ is won by $\overline{\alpha}$, but we need to pass down a value for $\Delta$.
+A simpler version of the algorithm is where there is no $\Delta$ variable and the algorithm simply terminates when $v_0$ is found to be won for player $\overline{\alpha}$. After all, vertices won by player $\overline{\alpha}$ in the subgame are also won by player $\overline{\alpha}$ in the game itself. However this idea is flawed because this property only extends one recursion deep. So during some recursion it is possible that the algorithm finds a vertex to be won by player $\overline{\alpha}$ for the subgame $G\backslash A$ and therefore also for game $G$, however game $G$ might be a subgame itself of some game $H$. The vertex found to be won by player $\overline{\alpha}$ in $G\backslash A$ and $G$ might not be won by player $\overline{\alpha}$ in game $H$.
 
 We disprove the following conjecture to show that there indeed can be a vertex that is won by player $\overline{\alpha}$ at some point but be won by player $\alpha$ in a higher recursion level.
 \begin{conjecture}[Disproven]
 	For any $\textsc{RecursivePG}(G')$ that is invoked during $\textsc{RecursivePG}(G)$ it holds that any vertex $v \in W'_{\overline{\alpha}}$ is won by player $\overline{\alpha}$ in game $G$.
 \end{conjecture}
-We disprove this conjecture using the following counter example $G$:\\
+We disprove this conjecture using the following counterexample $G$:\\
 \begin{center}
 	\includegraphics[scale=0.4]{counterexampleBconjecture}\\
 \end{center}
@@ -111,6 +117,8 @@ $W'_1 = W'_\alpha = \{v_1\}$\\
 $B = V$\\
 $W_0 = V$
 \end{tabular}
+
+An algorithm that simply stops when $v_0$ is found to be won for player $\overline{\alpha}$ requires the above conjecture to be true, since this isn't the case such an algorithm is flawed. This problem is solved by using the $\Delta$ variable to get the \textsc{RecursivePGLocal} algorithm.
 \subsection{Fixed-point iteration local}
 The fixed-point iteration algorithm can be modified to locally solve a game for vertex $v_0$ by distinguishing two cases:
 \begin{enumerate}
