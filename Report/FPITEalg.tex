@@ -1,4 +1,4 @@
-Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, furthermore we want to find these sets in an efficient manner such that the algorithm doesn't spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
+Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, we want to find these sets in an efficient manner such that the algorithm doesn't spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
 
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
@@ -32,15 +32,15 @@ The subgames created are based on a set of configurations, we define the subgame
 \end{definition}
 VPGs are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality. Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
 
-Finally the subgame operator is associative, meaning $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
+Finally a subsubgame of two configuration sets is the same as the subgame of the intersection of these configuration sets, ie. $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
 
 \subsection{Finding $P_0$ and $P_1$}
 We can find $P_0$ and $P_1$ by using \textit{pessimistic} parity games; a pessimistic PG is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the PG allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
 \begin{definition}
 	\label{def_pess_game}
-	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we can create pessimistic PG $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$. We have	
+	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we define pessimistic PG $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$, such that
 	\[ G_{\triangleright\alpha} = \{V,V_0,V_1,E',\Omega \} \]
-	such that
+	with
 	\[ E' = \{ (v,w) \in E\ |\ v \in V_{\overline{\alpha}} \vee \theta(v,w) = \mathfrak{C} \} \]
 \end{definition}
 
@@ -60,7 +60,7 @@ When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_
 	\end{itemize}
 	we have $P_\alpha \subseteq W_\alpha^c$.
 	\begin{proof}
-		Player $\alpha$ has a strategy in game $G_{\triangleright\alpha}$ such that vertices in $P_\alpha$ are won. We will show that this strategy can also be applied to game $G_{|c}$ to win the same or more vertices.
+		Player $\alpha$ has a strategy in game $G_{\triangleright\alpha}$ such that vertices in $P_\alpha$ are won. We show that this strategy can also be applied to game $G_{|c}$ to win the same or more vertices.
 		
 		First we observe that any edge that is taken by player $\alpha$ in game $G_{\triangleright\alpha}$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
 		
@@ -115,9 +115,7 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 		We have concluded that game $(G \cap \mathfrak{X})_{\triangleright\alpha}$ has the same or more edges for player $\alpha$ as game $G_{\triangleright\alpha}$ and the same or less edges for player $\overline{\alpha}$. Therefore we can conclude that any vertex won by player $\alpha$ in $G_{\triangleright\alpha}$ is also won by $\alpha$ in game $(G \cap \mathfrak{X})_{\triangleright\alpha}$, ie. $P_\alpha \subseteq Q_\alpha$.
 		
 		
-		Let $v \in P_{\overline{\alpha}}$, using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\overline{\alpha}$ in $G_{|c}$ for any $c \in \mathfrak{C}$. Because projections of subgames are the same as projections of the original game we can conclude that $v$ is winning for player $\overline{\alpha}$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
-		
-		Assume $v \notin Q_{\overline{\alpha}}$ then $v \in Q_{\alpha}$ and using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\alpha$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$. This is a contradiction so we can conclude $v \in Q_{\overline{\alpha}}$ and therefore $P_{\overline{\alpha}} \subseteq Q_{\overline{\alpha}}$.
+		Let $v \in P_{\overline{\alpha}}$, using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\overline{\alpha}$ in $G_{|c}$ for any $c \in \mathfrak{C}$. Because projections of subgames are the same as projections of the original game we can conclude that $v$ is winning for player $\overline{\alpha}$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.	Assume $v \notin Q_{\overline{\alpha}}$ then $v \in Q_{\alpha}$ and using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\alpha$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$. This is a contradiction so we can conclude $v \in Q_{\overline{\alpha}}$ and therefore $P_{\overline{\alpha}} \subseteq Q_{\overline{\alpha}}$.
 	\end{proof}
 \end{lemma}
 \subsection{Algorithm}
@@ -172,7 +170,7 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 	\[ (c,v) \in W_0 \iff v \in \hat{W}_0^c \]
 	\[ (c,v) \in W_1 \iff v \in \hat{W}_1^c \]
 	\begin{proof}
-		We will prove the theorem by applying induction on $\mathfrak{C}$.
+		We prove the theorem by applying induction on $\mathfrak{C}$.
 		
 		\textbf{Base} $|\mathfrak{C}| = 1$, when there is only one configuration, being $c$, then the algorithm solves game $G_{|c}$. The product of the winning sets and $\{c\}$ is returned, so the theorem holds.
 		
@@ -190,7 +188,7 @@ The fixed-point iteration algorithm can be used to solve parity games using pre-
 
 Let $G$ be a PG and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point iterate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
 \[ P_0 \subseteq W_0 \subseteq V\backslash P_1\]
-We can use this restriction to efficiently iterate $S(G)$. If no bounds are know we would iterate fixed-point formula $\nu Z_{d-1}\dots$ by starting at $Z_{d-1}^0 = V$ which is the largest value possible, however given the bounds we can start our iterations of greatest fixed-point variables at $V\backslash P_1$ and start our iterations of least fixed-point variables at $P_0$. The following lemma's and theorems prove this.
+This restriction can be used to efficiently iterate $S(G)$. If no bounds are know we would iterate fixed-point formula $\nu Z_{d-1}\dots$ by starting at $Z_{d-1}^0 = V$ which is the largest value possible, however given the bounds we can start our iterations of greatest fixed-point variables at $V\backslash P_1$ and start our iterations of least fixed-point variables at $P_0$. The following lemma's and theorems prove this.
 \begin{lemma}
 	\label{lem_fixpoint_bounds_nu}
 	Given
@@ -276,8 +274,8 @@ We take the fixed-point algorithm presented in \cite{FPITE} and modify it by sta
 This algorithm is appropriate to use as a \textsc{Solve} algorithm in \textsc{IncPreSolve} since it solves parity games that are not necessarily total and uses $P_0$ and $P_1$.
 
 \subsection{Running time}
-We will consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. Let $n$ denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
+We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. Let $n$ denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
 
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$ (\cite{FPITE}). We can use this algorithm to solve $G$ independently, ie. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 
-Next we consider the \textsc{IncPreSolve} algorithm for a collective approach, observe that in the worst case we have to split the set of configurations all the way down to individual configurations. We can consider the recursion as a tree where the leafs are individual configurations and at every internal node the set of configurations is split in two. Since in the worst case there are $c$ leaves, there are at most $c-1$ internal nodes. At every internal node the algorithm solves two games and at every leaf the algorithm solves 1 game, so we get $c + 2c - 2 = O(c)$ games that are being solved by \textsc{IncPreSolve}. In the worst case there are no similarities between the configuration in $G$ and at every iteration $P_0$ and $P_1$ are empty. In this case the \textsc{FPIte} algorithm behaves the same as the original algorithm and has a time complexity of $O(e*n^d)$, this gives an overall time complexity of $O(c*e*n^d)$ which is equal to an independent solving approach.
+Next consider the \textsc{IncPreSolve} algorithm for a collective approach, observe that in the worst case we have to split the set of configurations all the way down to individual configurations. We can consider the recursion as a tree where the leafs are individual configurations and at every internal node the set of configurations is split in two. Since in the worst case there are $c$ leaves, there are at most $c-1$ internal nodes. At every internal node the algorithm solves two games and at every leaf the algorithm solves 1 game, so we get $c + 2c - 2 = O(c)$ games that are being solved by \textsc{IncPreSolve}. In the worst case there are no similarities between the configuration in $G$ and at every iteration $P_0$ and $P_1$ are empty. In this case the \textsc{FPIte} algorithm behaves the same as the original algorithm and has a time complexity of $O(e*n^d)$, this gives an overall time complexity of $O(c*e*n^d)$ which is equal to an independent solving approach.

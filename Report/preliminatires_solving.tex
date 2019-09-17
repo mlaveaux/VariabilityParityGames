@@ -1,4 +1,5 @@
-\subsection{Set representation}
+First a few preliminary concept are introduced, specifically: existing parity game algorithms, symbolically representing sets and fixed-point theory.
+\subsection{Symbolically representing sets}
 A set can straightforwardly be represented by a collection containing all the elements that are in the set. We call this an \textit{explicit} representation of a set. We can also represent sets \textit{symbolically} in which case the set of elements is represented by some sort of formula. A typical way to represent a set symbolically is through a boolean formula encoded in a \textit{binary decision diagram} \cite{BDD_book,Handbook_BDD_Chapter}. For example the set $S = \{0,1,2,4,5,7 \}$ can be expressed by boolean formula:
 \[ F(x_2,x_1,x_0) = (x_2 \vee \neg x_1 \vee \neg x_0) \wedge (\neg x_2 \vee \neg x_1 \vee x_0) \]
 where $x_0,x_1$ and $x_2$ are boolean variables. The formula gives the following truth table:\\
@@ -29,7 +30,7 @@ The function $F$ defines set $S'$ in the following way: $S' = \{x_2x_1x_0\ |\ F(
 
 Boolean functions can efficiently be represented in BDDs, for a comprehensive treatment of BDDs we refer to \cite{BDD_book,Handbook_BDD_Chapter}. We will note here that given $x$ boolean variables and two boolean functions encoded as BDDs we can perform binary operations $\vee,\wedge$ on them in $O(2^{2x})=O(n^2)$ where $n = 2^x$ is the maximum set size that can be represented by $x$ variables \cite{BDD_running_time,Handbook_BDD_Chapter}. The running time specifically depends on the size of the decision diagrams, in general if the boolean functions are simple then the size of the decision diagram is also small and operations can be performed quickly.
 
-\subsection{Fixed-point preliminaries} 
+\subsection{Fixed-point theory} 
 A fixed-point of a function is an element in the domain of that function such that the function maps to itself for that element. Fixed-point theory goes hand in hand with lattice theory which we introduce first.
 \subsubsection{Lattices}
 We introduce definitions for ordering and lattices taken from \cite{birkhoff1940lattice}.
@@ -47,12 +48,12 @@ We introduce definitions for ordering and lattices taken from \cite{birkhoff1940
 \end{definition}
 
 \begin{definition}
-	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. An upper bound to $X$ is an element $a \in P$ such that $x \leq a$ for every $x\in X$. A least upper bound to $X$ is an upper bound $a \in P$ such that $a' \leq a$ for every upper bound $a' \in P$ to $X$.  
+	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. An upper bound to $X$ is an element $a \in P$ such that $x \leq a$ for every $x\in X$. A least upper bound to $X$ is an upper bound $a \in P$ such every other upper bound is larger or equal to $a$.
 	
 	The term least upper bound is synonymous with the term supremum.
 \end{definition}
 \begin{definition}
-	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. A lower bound to $X$ is an element $a \in P$ such that $a \leq x$ for every $x\in X$. A greatest lower bound to $X$ is a lower bound $a \in P$ such that $a \leq a'$ for every lower bound $a' \in P$ to $X$. 
+	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. A lower bound to $X$ is an element $a \in P$ such that $a \leq x$ for every $x\in X$. A greatest lower bound to $X$ is a lower bound $a \in P$ such that every other lower bound is smaller or equal to $a$.
 	
 	The term greatest lower bound is synonymous with the term infimum.
 \end{definition}
@@ -95,7 +96,7 @@ The theorem, as written down by Tarski \cite{tarski1955}, states:
 	\[ \inf P = \inf \{ x\ |\ f(x) \leq x \} \in P \]
 \end{theorem}
 \subsection{Parity game algorithms}
-We inspect two existing parity game algorithms which are used in the collective VPG algorithms. First Zielonka's recursive algorithm which is well studied and generally considered to be the best performing parity game algorithm. We also inspect the fixed-point iteration algorithm which tends to perform well for model-checking problems with a low number of distinct priorities.
+We inspect two existing parity game algorithms which are used in the collective VPG algorithms. First Zielonka's recursive algorithm which is well studied and generally considered to be one of the best performing parity game algorithm \cite{BDDSolvingPG,Oink}. We also inspect the fixed-point iteration algorithm which tends to perform well for model-checking problems with a low number of distinct priorities \cite{BDDSolvingPG}.
 
 \subsubsection{Zielonka's recursive algorithm}
 First we consider Zielonka's recursive algorithm, created from the constructive proof given in \cite{ZIELONKA1998135}, which solves total PGs. Pseudo code is presented in algorithm \ref{alg_zlnk_org}.
@@ -135,7 +136,6 @@ A complete explanation of the algorithm can be found in \cite{ZIELONKA1998135}, 
 
 An attractor set is a set of vertices $A \subseteq V$ calculated for player $\alpha$ given set $U \subseteq V$ where player $\alpha$ has a strategy to force the play starting in any vertex in $A \backslash U$ to a vertex in $U$.
 
-
 \begin{definition}\cite{ZIELONKA1998135}
 	\label{def_attr}Given parity game $G = (V,V_0,V_1,E,\Omega)$ and a non-empty set $U \subseteq V$ we define $\alpha\textit{-Attr}(G,U)$ such that
 	\[U_0 = U \]
@@ -149,7 +149,29 @@ An attractor set is a set of vertices $A \subseteq V$ calculated for player $\al
 	\[\alpha\textit{-Attr}(G,U) = \bigcup_{i \geq 0} U_i \]
 \end{definition}
 
-The algorithm creates subgames, where a set of vertices is removed from a parity game to create a new parity game.
+\begin{figure}
+	\centering
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/Attr/Attr0}
+		\caption{Set $U = U_0$}
+	\end{subfigure}\\
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/Attr/Attr1}
+		\caption{Set $U_1$}
+	\end{subfigure}\\
+	\begin{subfigure}{1\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{Examples/Attr/Attr2}
+		\caption{Set $U_2 = 0\textit{-Attr}(G,U)$}
+	\end{subfigure}
+	\caption{Game $G$ showing the attractor calculation for $0\textit{-Attr}(G,U)$}
+	\label{fig:AttrCalcExample}
+\end{figure}
+Figure \ref{fig:AttrCalcExample} shows an example parity game in which an attractor set is calculated for player $0$. For set $U_2$ no more vertices can be attracted so we found the complete attractor set.
+
+The algorithm also creates subgames, where a set of vertices is removed from a parity game to create a new parity game.
 
 \begin{definition}\cite{ZIELONKA1998135}
 	\label{def_org_subgame}
@@ -173,7 +195,7 @@ with
 \[ F_0(Z_{d-1},\dots,Z_0) = \{ v \in V_0\ |\ \exists_{w\in V} (v,w) \in E \wedge Z_{\Omega(w)} \} \cup \{ v \in V_1\ |\ \forall_{w\in V} (v,w) \in E \implies Z_{\Omega(w)} \} \]
 where $Z_i \subseteq V$. The formula $\nu X. f(X)$ solves the greatest fixed-point of $X$ in $f$, similarly $\mu X.f(X)$ solves the least fixed-point of $X$ in $f$.
 
-To understand the formula we consider sub-formula $\nu Z_0. F_0(Z_{d-1},\dots,Z_0)$. This formula holds for vertices from which player $0$ can either force the play into a node with priority $i > 0$ for which $Z_i$ holds or the player can stay in vertices with priority $0$ indefinitely. The formula $\mu Z_0. F_0(Z_{d-1},\dots,Z_0)$ holds for vertices from which player $0$ can force the play into a node with priority $i > 0$ for which $Z_i$ holds in finitely many steps. For an extensive treatment we refer to \cite{WALUKIEWICZ2002311}.
+To understand the formula we consider sub-formula $\nu Z_0. F_0(Z_{d-1},\dots,Z_0)$. This formula holds for vertices from which player $0$ can either force the play into a node with priority $i > 0$ for which $Z_i$ holds or the player can stay in vertices with priority $0$ indefinitely. The formula $\mu Z_0. F_0(Z_{d-1},\dots,Z_0)$ holds for vertices from which player $0$ can force the play into a node with priority $i > 0$, for which $Z_i$ holds in finitely many steps. By alternating fixed-points the formula allows infinitely many stays in even vertices and finitely many stays in odd vertices. For an extensive treatment we refer to \cite{WALUKIEWICZ2002311}.
 
 We further inspect formula $S$. Given game $G$, consider the following subformula's:
 \[ S^{d-1}(Z_{d-1}) = \mu Z_{d-2}.S^{d-2}(Z_{d-2})\]
