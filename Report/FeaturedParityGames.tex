@@ -28,7 +28,7 @@ The projection from FPG $G = (V,V_0, V_1, E, \Omega, N, P, \gamma)$ to a product
 Playing FPG $G$ for a specific product $p\in P$ is the same as playing the PG $G_{|p}$. Any path that is valid in $G$ for $p$ is also valid in $G_{|p}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|p}$ and $W_\alpha^p$ for $G$ are identical. Since parity games are positionally determined so are FPGs. Similarly, since finite parity games are decidable, so are finite FPGs.
 
 We say that an FPG is solved when the winning sets for every valid product in the FPG are determined.
-\subsection{Creating featured parity games}
+\subsubsection{Creating featured parity games}
 An FPG can be created from an FTS in combination with a model $\mu$-calculus formula. We translate an FTS to an FPG by first creating a PG from the transition system as if there were no transition guards, next we apply the same guards to the FPG as are present in the FTS for edges that originate from transitions. The features and valid products in the FPG are identical to those in the FTS.
 \begin{definition}
 	\label{def_FTS2FPG}
@@ -101,7 +101,7 @@ W_1^{\{f,g\}} = \{\}
 In the next section we will show how the winning sets relate to the model verification question.
 
 
-\subsection{FTS verification using FPG}
+\subsubsection{FTS verification using featured parity games}
 We can create an FPG from an FTS and project it to a product, resulting in a PG, this is shown in the following diagram:\\
 \begin{tikzpicture}
 \matrix (m) [matrix of math nodes,row sep=4em,column sep=4em,minimum width=2em]

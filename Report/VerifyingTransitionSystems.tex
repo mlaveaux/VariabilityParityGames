@@ -50,7 +50,7 @@ Given closed formula $\varphi$, LTS $M = (S, Act, trans, s_0)$ and $s \in S$ iff
 
 Again consider the coffee machine example (figure \ref{fig:coffeemachinebasiceurolts}) and formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ (taken from \cite{FamBasedModelCheckingWithMCRL2}) which states that action \textit{std} must occur infinitely often over all runs. Obviously this holds for the coffee machine, therefore we have $C \models \varphi$.
 
-\subsection{Featured transition systems}
+\subsubsection{Featured transition systems}
 A \textit{featured transition system} (FTS) extends the LTS definition to express variability. It does so by introducing \textit{features} and \textit{products} into the definition. Features are options that can be enabled or disabled for the system. A product is a feature assignments, ie. a set of features that is enabled for that product. Not all products are valid, some features might be mutually exclusive while others features might always be required. To express the relation between features one can use feature diagrams as explained in \cite{Classen2013FeaturedTS}. Feature diagrams offer a nice way of expressing which feature assignments are valid, however for simplicity we will represent the collection of valid products simply with a set of feature assignments. Finally FTSs guard every transition with a boolean expression over the set of features.
 \begin{definition}
 	\label{def_fts}\cite{Classen2013FeaturedTS} A featured transition system (FTS) is a tuple $M = (S, Act, trans, s_0, N, P, \gamma)$, where:
@@ -96,7 +96,7 @@ The coffee machine example can be projected to its two products, which results i
 	\caption{Projections of the coffee machine FTS}
 	\label{fig:cofeemachineftsproj}
 \end{figure}
-\subsection{FTS verification question}
+\subsubsection{FTS verification question}
 When verifiying an FTS against a model $\mu$-calculus formula $\varphi$, we are trying to answer the question: For which products in the FTS does its projection satisfy $\varphi$? Formally, given FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ and modal $\mu$-calculus formula $\varphi$ we want to find $P_s \subseteq P$ such that:
 \begin{itemize}
 	\item for every $p \in P_s$ we have $M_{|p} \models \varphi$ and

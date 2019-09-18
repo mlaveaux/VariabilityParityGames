@@ -6,7 +6,7 @@ Most parity game algorithms are concerned with global solving, when talking abou
 
 The two parity game algorithms introduced in the preliminaries (Zielonka's recursive algorithm and the fixed-point iteration algorithm) can be turned into local variants to solve VPGs locally and independently.
 
-\subsection{Zielonka's recursive algorithm local}
+\subsubsection{Zielonka's recursive algorithm local}
 \label{sec:zlnk_org_local}
 To make Zielonka's recursive algorithm a local algorithm, we use the property that vertices won by player $\overline{\alpha}$ in game $G \backslash A$ are also won by player $\overline{\alpha}$ in game $G$. We use this property to, in some cases, not go into the second recursion because we already found the vertex. We extend the algorithm with two parameters, $v_0$ and $\Delta$. Vertex $v_0$ represents the vertex that we try to solve. Parameter $\Delta \subseteq \{0,1\}$ contains a set of players for which we try to find vertex $v_0$, if we find $v_0$ to be won by a player that is in $\Delta$ we are done for that recursion. However if we find vertex $v_0$ to be won by a player that is not in $\Delta$ we need to solve the entire game. The algorithm can make use of this to tell a recursive call it needs to find the vertex to be won by player $\overline{\alpha}$ in the subgame because then this vertex is also won by player $\overline{\alpha}$ in the game itself. If the vertex is not won by $\overline{\alpha}$ the entire game needs to be solved because the winning sets are required in the second recursion. Pseudo code for the algorithm is provided in algorithm \ref{alg_zlnk_local}.
 \begin{algorithm}
@@ -119,7 +119,7 @@ $W_0 = V$
 \end{tabular}
 
 An algorithm that simply stops when $v_0$ is found to be won for player $\overline{\alpha}$ requires the above conjecture to be true, since this isn't the case such an algorithm is flawed. This problem is solved by using the $\Delta$ variable to get the \textsc{RecursivePGLocal} algorithm.
-\subsection{Fixed-point iteration local}
+\subsubsection{Fixed-point iteration local}
 The fixed-point iteration algorithm can be modified to locally solve a game for vertex $v_0$ by distinguishing two cases:
 \begin{enumerate}
 	\item If $d-1$ is even then the outermost fixed-point variable is a greatest fixed-point variable. When at some point $v_0 \notin Z_{d-1}$ then we know $v_0$ is never won by player $0$ and we are done.

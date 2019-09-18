@@ -24,7 +24,7 @@ Solving a VPG means determining winning sets for every configuration in the VPG.
 \end{definition}
 
 Playing VPG $G$ for a specific configuration $c \in \mathfrak{C}$ is the same as playing the PG $G_{|c}$. Any path that is valid in $G$ for $c$ is also valid in $G_{|c}$ and vice versa. Therefore the strategies are also interchangeable, furthermore the winning sets $W_\alpha$ for $G_{|c}$ and $W_\alpha^c$ for $G$ are identical. Since parity games are positionally determined so are VPGs. Similarly, since finite parity games are decidable, so are finite VPGs.
-\subsection{Creating variability parity games}
+\subsubsection{Creating variability parity games}
 We will define a translation from an FPG to a VPG. To do so we use the set of valid products as the set of configurations. Furthermore we make the FPG deadlock free, this is done by creating two losing vertices $l_0$ and $l_1$ such that player $\alpha$ loses when the token is in vertex $l_\alpha$. Any vertex that can't move for a configuration will get an edge that is admissible for that configuration towards one of the losing vertices.
 \begin{definition}
 	\label{def_FPG2VPG}
@@ -50,7 +50,7 @@ Again considering our previous working example we can translate the FPG shown in
 	\label{fig:exvevpg}
 \end{figure}
 
-\subsection{FTS verification using VPG}
+\subsubsection{FTS verification using variability parity games}
 We have shown in theorem \ref{the_FPG_ver_FTS} that we can use an FPG to verify an FTS. Next we will show that a winning set in the FPG $M$ is the subset of the winning set in the VPG $\textit{FPG2VPG}(M)$.
 \begin{theorem}
 	\label{the_FPG_sub_VPG}
