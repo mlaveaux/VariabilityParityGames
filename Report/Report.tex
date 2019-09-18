@@ -33,13 +33,23 @@
 \begin{document}
 
 \maketitle
+\begin{abstract}
+	abstract
+\end{abstract}
 
+\newpage
 \tableofcontents
 
-\part{Verifying featured transition systems}
-\label{part:verifying}
+\pagebreak
 \section{Introduction}
 \input{introduction}
+
+\section{Related work}
+\input{relatedwork}
+
+\pagebreak
+\part{Verifying featured transition systems}
+\label{part:verifying}
 
 \section{Verifying transition systems}
 \input{VerifyingTransitionSystems}
@@ -52,6 +62,7 @@
 
 \section{Variability parity games}
 \input{VariabilityParityGames}
+
 \pagebreak
 \part{Solving variability parity games}
 \input{prod_fam_solving}
@@ -76,7 +87,6 @@
 
 \pagebreak
 \part{Experimental evaluation}
-\section{Introduction}
 \input{experimental_evaluation_intro}
 
 \section{Implementation}
@@ -87,6 +97,10 @@
 
 \section{Results}
 \input{results}
+
+\pagebreak
+\section{Conclusion}
+\input{conclusion}
 
 \pagebreak
 \begin{appendices}
