@@ -149,7 +149,7 @@ The independent approach uses the original algorithm, the collective set-wise ap
 \label{sec:symrepconfs}
 For VPGs originating from an FTS the configuration sets are boolean functions over the features. The formula's guarding the edges in the VPG will generally have relatively simple boolean functions, therefore they are specifically appropriate to represent as BDDs.
 
-A set operation over two explicit sets can be performed in $O(n)$ where $n$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(n^2)$). However if the BDDs are small then the set size can still be large but the set operations are performed very quickly. This is a trade-off between worst case running time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however its worse case running time complexity will be worse.
+A set operation over two explicit sets can be performed in $O(n)$ where $n$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(n^2)$). However if the BDDs are small then the set size can still be large but the set operations are performed very quickly. This is a trade-off between worst-case time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however its worst-case time complexity will be worse.
 
 We hypothesize that since the collective function-wise symbolic recursive algorithm relies heavily on set operations over sets of configurations this algorithm will perform well when solving VPGs originating from FTSs.
 
@@ -412,9 +412,9 @@ Set $A = \textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}
 
 
 \subsubsection{Running time}
-We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations. Let $n$ denote the number of vertices, $e$ the number of edges, $c$ the number of configurations and $d$ the number of distinct priorities.
+We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations.
 
-The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified PG (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a running time $O(c*e*(c*n)^d)$. However this running time can be improved by using the property that a unified PG consists of $c$ disconnected graphs as we show next.
+The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified PG (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a time complexity of $O(c*e*(c*n)^d)$. However, as we show next, this running time can be improved by using the property that a unified PG consists of $c$ disconnected graphs.
 
 We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominant compared to the other operations performed, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
 
@@ -501,7 +501,7 @@ The different algorithms, including their time complexities, are repeated in the
 \end{center}
 
 \paragraph{Running time in practice}
-Earlier we hypothesized that the symbolic function-wise algorithm could have the best performance of the 4 algorithms, however it has the worse case running time complexity. Our hypothesis is based on the notion that VPGs most likely have a lot of commonalities and that sets of configurations in the VPG can be represented efficiently symbolically. Next we argue why the worse case running time complexity might not represent the running time in practice.
+Earlier we hypothesized that the symbolic function-wise algorithm could have the best performance of the 4 algorithms, however it has the worst time complexity. Our hypothesis is based on the notion that VPGs most likely have a lot of commonalities and that sets of configurations in the VPG can be represented efficiently symbolically. Next we argue why the worst-case time complexity might not represent the running time in practice.
 
 We dissect the running time of the function-wise algorithms. The running time complexities of the collective algorithms consist of two parts: the time complexity of the attractor set times $n^d$. The function-wise attractor set time complexity consists of three parts: the number of edges times the maximum number of vertices in the queue ($c*n$) times the time complexity for set operations ($O(c)$ for the explicit variant, $O(c^2)$ for the symbolic variant).
 

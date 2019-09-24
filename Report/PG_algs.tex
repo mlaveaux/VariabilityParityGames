@@ -78,9 +78,19 @@ To make Zielonka's recursive algorithm a local algorithm, we use the property th
 \end{proof}
 \end{theorem}
 
+\begin{theorem}
+	Given total parity game $G = (V,V_0,V_1,E,\Omega)$, vertex $v_0$ (which is not necessarily in $V$) and $\Delta \subseteq \{0,1\}$. We have for sets $(W_0,W_1) = \textsc{RecursivePGLocal}(G,v_0,\Delta)$ that 
+	$W_0 \cap W_1 = \emptyset$.
+	\begin{proof}
+		Proof by induction where we prove $W_0 \cap W_1 = \emptyset$ and also $W_0 \cup W_1 \subseteq V$.
+		TOOD
+	\end{proof}
+\end{theorem}
 Calling $\textsc{RecursivePGLocal}(G, v_0, \{0,1\})$ with $v_0$ in $G$ either solves the full game (statement (II)) or correctly puts $v_0$ in either winning set (statement (I)). In both cases $v_0$ is in the correct winning set and the game is solved locally.
 
-A simpler version of the algorithm is where there is no $\Delta$ variable and the algorithm simply terminates when $v_0$ is found to be won for player $\overline{\alpha}$. After all, vertices won by player $\overline{\alpha}$ in the subgame are also won by player $\overline{\alpha}$ in the game itself. However this idea is flawed because this property only extends one recursion deep. So during some recursion it is possible that the algorithm finds a vertex to be won by player $\overline{\alpha}$ for the subgame $G\backslash A$ and therefore also for game $G$, however game $G$ might be a subgame itself of some game $H$. The vertex found to be won by player $\overline{\alpha}$ in $G\backslash A$ and $G$ might not be won by player $\overline{\alpha}$ in game $H$.
+The time complexity of the local variant is the same as the original algorithm: $O(e*n^d)$. If vertex $v_0$ is not winning for a player in $\Delta$ than the algorithm behaves the same as the original so its worst-case complexity is the same.
+
+\paragraph{A simpler idea} A simpler version of the algorithm is where there is no $\Delta$ variable and the algorithm simply terminates when $v_0$ is found to be won for player $\overline{\alpha}$. After all, vertices won by player $\overline{\alpha}$ in the subgame are also won by player $\overline{\alpha}$ in the game itself. However this idea is flawed because this property only extends one recursion deep. So during some recursion it is possible that the algorithm finds a vertex to be won by player $\overline{\alpha}$ for the subgame $G\backslash A$ and therefore also for game $G$, however game $G$ might be a subgame itself of some game $H$. The vertex found to be won by player $\overline{\alpha}$ in $G\backslash A$ and $G$ might not be won by player $\overline{\alpha}$ in game $H$.
 
 We disprove the following conjecture to show that there indeed can be a vertex that is won by player $\overline{\alpha}$ at some point but be won by player $\alpha$ in a higher recursion level.
 \begin{conjecture}[Disproven]
@@ -125,3 +135,5 @@ The fixed-point iteration algorithm can be modified to locally solve a game for 
 	\item If $d-1$ is even then the outermost fixed-point variable is a greatest fixed-point variable. When at some point $v_0 \notin Z_{d-1}$ then we know $v_0$ is never won by player $0$ and we are done.
 	\item If $d-1$ is odd then the outermost fixed-point variable is a least fixed-point variable. When at some point $v_0 \in Z_{d-1}$ then we know $v_0$ is won by player $0$ and we are done.
 \end{enumerate}
+
+If vertex $v_0$ is won by player 0 in the first case or won by player 1 in the second case then the algorithm never terminates early. So in the worst-case the local algorithm behaves the same as the global algorithm, therefore we have an identical time complexity, ie. $O(e*n^d)$.
