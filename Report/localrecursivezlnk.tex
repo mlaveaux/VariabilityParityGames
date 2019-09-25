@@ -4,12 +4,12 @@ When solving a VPG we have vertex $\hat{v}_0$, we try to find for every configur
 
 When we locally solve a parity game using the recursive algorithm we can sometimes not go into the second recursion because we already found the $\hat{v}_0$, however when locally solving a unified PG we might find $\hat{v}_0$ for some configuration but not for all. So when we find $\hat{v}_0$ to be won by player $\overline{\alpha} \in \Delta$ for configurations $C \subseteq \mathfrak{C}$ then we remove all vertices with configurations $C$ from the game, ie. we remove vertices $C \times \hat{V}$. For the remaining vertices we do go into the second recursion. Pseudo code is presented in algorithm \ref{alg_zlnk_collective_local}, we introduce function $\textsc{LocalConfs}$ which find the configurations for which we have found the local solution.
 
-The algorithm uses definitions to reason about projections of games and sets to configuration(s). Previously we introduced a simple projection of a unified PG to a configuration which was possible because vertices in a unified PG consist of pairs of configurations and origin vertices. We define a similar projection for sets of vertices.
+The algorithm uses definitions to reason about projections of games and sets to configuration(s). Previously we introduced a simple projection definition that projects a unified PG to a configuration. This is possible because vertices in a unified PG consist of pairs of configurations and origin vertices. We define a similar projection for sets of vertices consisting of pairs of configurations and origin vertices.
 \begin{definition}
 	Given set $X \subseteq (\mathfrak{C} \times \hat{V})$ we define the projection of $X$ to $c \in \mathfrak{C}$, denoted by $X_{|c}$, as
 	\[ X_{|c} = \{ \hat{v}\ |\ (c,\hat{v}) \in X \}\]
 \end{definition}
-We also need to be able to reason about projections not only to a single vertex but to a group of vertices for which we introduce the following two definitions.
+Furthermore we need to be able to reason about projections not only to a single vertex but to a group of vertices for which we introduce the following two definitions.
 \begin{definition}
 	Given set $X \subseteq (\mathfrak{C} \times \hat{V})$ we define the projection of $X$ to $C \subseteq \mathfrak{C}$, denoted by $X_{||C}$, as
 	\[ X_{||C} = X \cap (C \times \hat{V}) \]
@@ -77,16 +77,10 @@ Given set $X \subseteq (\mathfrak{C} \times \hat{V})$ we define the complementar
 		\end{algorithmic}
 	\end{multicols}
 \end{algorithm}
-\begin{lemma}
-	\label{lem_overlinealphawinner}
-	In \textsc{RecursivePG} any vertex won by player $\overline{\alpha}$ in game $G\backslash A$ is also won by $\overline{\alpha}$ in game $G$.
-	\begin{proof}
-		We simply observe the behaviour of the algorithm and note that the algorithm returns $B$ as winning for player $\overline{\alpha}$, since $W'_{\overline{\alpha}} \subseteq B$ by definition of the attractor set we find that any vertex in $W'_{\overline{\alpha}}$ is in $W_{\overline{\alpha}}$. The correctness of \textsc{RecursivePG} follows from \cite{ZIELONKA1998135}, therefore the lemma holds.
-	\end{proof}
-\end{lemma}
-In order to prove the correctness we repeat parts of the original proof given in \cite{ZIELONKA1998135}. We first introduce a few auxiliary definitions and lemma's from \cite{ZIELONKA1998135}.
 
-Consider total PG $(V,V_0,V_1,E,\Omega)$ in the next few definition and lemma's.
+In order to prove the correctness of the algorithm we repeat parts of the original proof given in \cite{ZIELONKA1998135}. We first introduce a few auxiliary definitions and lemma's from \cite{ZIELONKA1998135}.
+
+Consider total PG $(V,V_0,V_1,E,\Omega)$ in the next definition and lemma's.
 \begin{definition}\cite{ZIELONKA1998135}
 Set $X \subseteq V$ is an $\alpha$-trap in $G$ if and only if player $\overline{\alpha}$ can keep the play inside $X$.
 \end{definition}
@@ -98,37 +92,40 @@ Set $X \subseteq V$ is an $\alpha$-trap in $G$ if and only if player $\overline{
 	\label{lem_attr_trap_is_trap}\cite{ZIELONKA1998135}
 	Let $X \subseteq V$ be an $\alpha$-trap in $G$. Then $\overline{\alpha}\textit{-Attr}(G,X)$ is also an $\alpha$-trap in $G$.
 \end{lemma}
-Finally we observe that a winning set $W_\alpha$ of PG $G$ is an $\overline{\alpha}$-trap in $G$, since if $\overline{\alpha}$ could play to $W_{\overline{\alpha}}$ from a vertex $v \in W_\alpha$ then he/she would do so and $v$ would be winning for $\overline{\alpha}$.
+Finally we observe that a winning set $W_\alpha$ of PG $G$ is an $\overline{\alpha}$-trap in $G$, since if $\overline{\alpha}$ could play to $W_{\overline{\alpha}}$ from a vertex $v \in W_\alpha$ then $v$ would be winning for $\overline{\alpha}$.
 
-First we prove the completeness of the algorithm by showing that the winning sets are mutually exclusive.
+We prove the correctness of the algorithm by first showing that the winning sets are mutually exclusive. Next we prove that vertex $(c,\hat{v}_0)$ is in the correct winning set for every configuration.
+
+The following theorem shows that the winning sets are mutually exclusive.
 \begin{theorem}Given:
 	\begin{itemize}
 		\item VPG $\hat{G} = (\hat{V}, \hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$,
-		\item origin vertex $\hat{v}_0$,
+		\item origin vertex $\hat{v}_0 \in \hat{V}$,
 		\item total unified PG $G = (V, \hat{V}_0, \hat{V}_1,E,\hat{\Omega})$ that is a subgame of, or equal to, unified PG $\hat{G}_{\downarrow}$,
 		\item a set of players $\Delta \subseteq \{0,1\}$ and
 		\item winning sets $(W_0,W_1) = \textsc{RecursiveUPGLocal}(G,\hat{v}_0,\Delta)$
 	\end{itemize}
-	we have $W_0\cap W_1 = \emptyset$ and $W_0 \cup W_1 \subseteq V$.
+	we have $W_0\cap W_1 = \emptyset$.
 	\begin{proof}
-		Proof by induction on $G$.
+		Proof by induction on $G$, with induction hypothesis:
+		\[ W_0\cap W_1 = \emptyset\text{ and }W_0 \cup W_1 \subseteq V \]
 		
-		\textbf{Base}: If there is only one priority or there are no vertices than one of the winning sets is empty and the other is equal to $V$ so the theorem holds.
+		\textbf{Base}: If there is only one priority or there are no vertices than one of the winning sets is empty and the other is equal to $V$ so the IH holds.
 		
-		\textbf{Step}: In the first recursion step we find by induction that $W'_0$ and $W'_1$ are mutually exclusive and that $W'_0 \cup W'_1 \subseteq V\backslash A$. We find that $W'_0 \cup W'_1 \cup A \subseteq V$. If $W'_{\overline{\alpha}} = \emptyset$ then we return $A\cup W'_{\overline{\alpha}}$ and $\emptyset$ as winning sets in which case the theorem holds.
+		\textbf{Step}: In the first recursion step we find by induction that $W'_0$ and $W'_1$ are mutually exclusive and that $W'_0 \cup W'_1 \subseteq V\backslash A$. We find that $W'_0 \cup W'_1 \cup A \subseteq V$. If $W'_{\overline{\alpha}} = \emptyset$ then we return $A\cup W'_{\overline{\alpha}}$ and $\emptyset$ as winning sets in which case the IH holds.
 		
-		If $W'_{\overline{\alpha}} \neq \emptyset$ then we find a value for $C_W$. If $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$ then $W'_{\overline{\alpha}}$ only contains vertices with a configuration that is in $C_W$. Winning set $W_\alpha$ gets vertices only with a configuration that is not in $C_W$ therefore the two are mutually exclusive. Furthermore since $W'_0 \cup W'_1 \cup A \subseteq V$ we find $W_{\overline{\alpha}} \cup W_\alpha \subseteq V$ and the theorem holds in this case.
+		If $W'_{\overline{\alpha}} \neq \emptyset$ then we find a value for $C_W$. If $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$ then $W'_{\overline{\alpha}}$ only contains vertices with a configuration that is in $C_W$. Winning set $W_\alpha$ gets vertices only with a configuration that is not in $C_W$ therefore the two are mutually exclusive. Furthermore since $W'_0 \cup W'_1 \cup A \subseteq V$ we find $W_{\overline{\alpha}} \cup W_\alpha \subseteq V$ and the IH holds in this case.
 		
-		If $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ then we find a value for $B$. Since $B$ is the attractor set of $(W'_{\overline{\alpha}})_{|\backslash C_W}$ and edges don't cross configurations the set $B$ contains no vertices with a configuration that is in $C_W$. Clearly $B \subseteq V$. The recursion step gives $W''_0$ and $W''_1$ which are mutually and have $W''_0 \cup W''_1 \subseteq G\backslash B \backslash V_{||C_W\cup C_B}$ by induction. The algorithm returns these winning sets with $B$ and $(W'_{\overline{\alpha}})_{||C_W}$. Both $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ don't share any vertices with each other nor with the winning sets $W''_0$ and $W''_1$. Moreover all $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ are subsets of $V$ so we can conclude that the theorem holds.
+		If $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ then we find a value for $B$. Since $B$ is the attractor set of $(W'_{\overline{\alpha}})_{|\backslash C_W}$ and edges don't cross configurations the set $B$ contains no vertices with a configuration that is in $C_W$. Clearly $B \subseteq V$. The recursion step gives $W''_0$ and $W''_1$ which are mutually and have $W''_0 \cup W''_1 \subseteq G\backslash B \backslash V_{||C_W\cup C_B}$ by induction. The algorithm returns these winning sets with $B$ and $(W'_{\overline{\alpha}})_{||C_W}$. Both $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ don't share any vertices with each other nor with the winning sets $W''_0$ and $W''_1$. Moreover all $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ are subsets of $V$ so we can conclude that the IH holds.
 	\end{proof}
 \end{theorem}
 
-Next we prove the soundness of the algorithm by showing that vertices $\{c\} \times \hat{v}_0$ end up in the correct winning set.
+The next theorem proves that vertex $(c,\hat{v}_0)$ is in the correct winning set for every configuration $c \in \mathfrak{C}$.
 \begin{theorem}
 	Given:
 	\begin{itemize}
 		\item VPG $\hat{G} = (\hat{V}, \hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$,
-		\item origin vertex $\hat{v}_0$,
+		\item origin vertex $\hat{v}_0 \in \hat{V}$,
 		\item total unified PG $G = (V, \hat{V}_0, \hat{V}_1,E,\hat{\Omega})$ that is a subgame of, or equal to, unified PG $\hat{G}_{\downarrow}$,
 		\item configuration $c\in \mathfrak{C}$,
 		\item winning sets $Q_0$ and $Q_1$ for game $G_{|c}$,
@@ -149,7 +146,7 @@ either or both of the following statements hold:
 	
 	\textbf{Base}: If $G$ has only one priority or no vertices then \textsc{RecursiveUPGLocal} behaves the same as the original algorithm so statement (II) holds.
 
-	\textbf{Step}: The algorithm makes a number of case distinction. In order to prove the correctness we inspect all the different paths through the algorithm. We use a Fitch notation to keep an overview of the different case distinctions and improve readability.\\
+	\textbf{Step}: The algorithm makes a number of case distinction. In order to prove the correctness we inspect all the different paths through the algorithm. We use a Fitch-like notation to keep an overview of the different case distinctions and improve readability.\\
 	\begin{longtable}{|p{15.2cm}}
 		Case $G_{|c}$ is empty.\\
 		\hline
@@ -182,7 +179,7 @@ either or both of the following statements hold:
 					Again we find that $c \notin C_B$. Set $V \backslash A$ is an $\alpha$-trap in $G$ (using lemma \ref{lem_attr_is_trap}), therefore $(V \backslash A)_{|c}$ is an $\alpha$-trap in $G_{|c}$. Set $(W'_{\overline{\alpha}})_{|c}$ is an $\alpha$-trap in $(G\backslash A)_{|c}$ (because it is a winning set). We can conclude that $(W'_{\overline{\alpha}})_{|c}$ is an $\alpha$-trap in $G_{|c}$. Using lemma \ref{lem_attr_trap_is_trap} we find that $B_{|c}$ is an $\alpha$-trap in $G_{|c}$, meaning that player $\overline{\alpha}$ can keep the play in $B_{|c}$, moreover player $\overline{\alpha}$ can play towards $(W'_{\overline{\alpha}})_{|c}$ where this player wins. We can conclude that any vertex in $B_{|c}$ is won by player $\overline{\alpha}$ and there are no edges that go from a vertex owned by player $\overline{\alpha}$ in $V_{|c} \backslash B_{|c}$ to $B_{|c}$. There might be such an edge owned by player $\alpha$, however if player $\alpha$ chooses plays along such an edge play ends up in $B_{|c}$ and player $\overline{\alpha}$ wins. Therefore we can simply solve game $G_{|c} \backslash B_{|c}$, the winning sets in this subgame are also winning in game $G_{|c}$.\\\\			
 					The subgame created projected to $c$ is $G_{|c} \backslash B_{|c}$, since $\hat{v}_0$ is not in $G_{|c}$ it is also not in $G_{|c} \backslash B_{|c}$. By induction we find that statement (II) holds for $G_{|c} \backslash B_{|c}$ with sets $W''_0,W''_1$. The algorithm returns $(W''_\alpha)_{|c}$ for player $\alpha$ and $(W''_{\overline{\alpha}})_{|c} \cup B_{|c}$ for player $\overline{\alpha}$, this correctly solves game $G_{|c}$ therefore statement (II) holds.
 				\end{tabular}
-			\end{tabular}the correctness we inspect all the different paths through the algorithm. We use a 
+			\end{tabular}
 		\end{tabular}\\
 		\begin{tabular}{|p{15cm}}
 			Case $(c,\hat{v}_0) \in V$\\
@@ -218,7 +215,7 @@ either or both of the following statements hold:
 			\begin{tabular}{|p{14.8cm}}
 				Case $\overline{\alpha} \in \Delta$\\
 				\hline
-				The first recursion is called with $\Delta = \{\overline{\alpha}\}$. By induction we find that either or both statements hold for game $G\backslash A$, configuration $c$ and sets $(W'_0, W'_1)$.
+				The first recursion is called with $\Delta = \{\overline{\alpha}\}$. By induction we find that either or both statements hold for game $G\backslash A$, configuration $c$ and sets $(W'_0, W'_1)$.\\
 				\begin{tabular}{|p{14.6cm}}
 					Case $W'_{\overline{\alpha}} = \emptyset$\\
 					\hline
@@ -239,7 +236,7 @@ either or both of the following statements hold:
 						\begin{tabular}{|p{14.2cm}}
 							Case $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$\\
 							\hline
-							Again statement (II) must hold and we find that game $(G \backslash A)_{|c}$ is entirely won by player $\alpha$ and therefore game $G_{|c}$ is entirely won by player $\alpha$ so returning all vertices with configuration $c$ to be winning for player $\alpha$ makes statement (II) true.
+							We find that game $(G \backslash A)_{|c}$ is entirely won by player $\alpha$ and therefore game $G_{|c}$ is entirely won by player $\alpha$ so returning all vertices with configuration $c$ to be winning for player $\alpha$ makes statement (II) true.
 						\end{tabular}
 						\begin{tabular}{|p{14.2cm}}
 							Case $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$\\
@@ -266,3 +263,29 @@ either or both of the following statements hold:
 \end{theorem}
 
 Using these two theorems we can conclude that $\textsc{RecursiveUPGLocal}(\hat{G}_{\downarrow},\hat{v}_0,\{0,1\})$ correctly locally solves VPG $\hat{G}$ for vertex $\hat{v}_0$.
+
+The pseudo code presented for the algorithm uses a set-wise representation of unified PGs. As we have seen previously in the \textsc{RecursiveUPG} algorithm we can modify the recursive algorithm to use a function-wise representation with a function-wise attractor set calculation. The \textsc{RecursiveUPGLocal} algorithm can be transformed in the same way. The \textsc{RecursiveUPGLocal} algorithm introduces defintions for projections to sets of configurations as well as the \textsc{LocalConfs} subroutine, we introduce function-wise variants for these definitions and subroutine.
+\begin{definition}
+	Given function $X : \hat{V} \rightarrow 2^\mathfrak{C}$ we define the projection of $X$ to $C \subseteq \mathfrak{C}$, denoted by $X_{||C}$, as
+	\[ X_{||C}(\hat{v}) = X(\hat{v}) \cap C \]
+\end{definition}
+\begin{definition}
+	Given function $X : \hat{V} \rightarrow 2^\mathfrak{C}$ we define the complementary projection of $X$ to $C \subseteq \mathfrak{C}$, denoted by $X_{|\backslash C}$, as
+	\[ X_{||C}(\hat{v}) = X(\hat{v}) \backslash C \]
+\end{definition}
+Algorithm \ref{alg_flobalconfs} shows a function wise implementation of the \textsc{LocalConfs} subroutine. It is trivial to see that this algorithm and the projection definitions are equal under the $=_\lambda$ operator to their set-wise counterparts.
+\begin{algorithm}
+	\caption{Function-wise \textsc{LocalConfs} subroutine}
+	\label{alg_flobalconfs}
+	\begin{algorithmic}[1]
+		\Function{FLocalConfs}{$X : \hat{V} \rightarrow 2^\mathfrak{C}$}
+		\If{$\overline{\alpha} \in \Delta$}
+		\State \Return $X(\hat{v}_0)$
+		\Else
+		\State \Return $\emptyset$
+		\EndIf
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+We can solve a VPG locally using this local recursive algorithm for unified parity games. We can either represent the PGs set-wise or we can present them function-wise in which case we can represent the sets of configurations explicit or symbolic. In all three cases the time complexity is identical to their global counterparts because in the worst case the vertex we are searching for is never won by player $\overline{\alpha}$ at any recursion level so we still have to solve the game globally. Furthermore the added projection operations are subsumed in time complexity by the attractor set calculation so the time complexity argumentation presented for the global variants is also valid for the local variants. 

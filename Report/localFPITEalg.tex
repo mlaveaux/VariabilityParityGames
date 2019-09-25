@@ -1,4 +1,4 @@
-The incremental pre-solve algorithm is particularly appropriate for local solving because if we find $v_0$ in either $P_0$ or $P_1$ we are done, this can potentially reduce the recursion depth of the algorithm and therefore reduce the number of (pessimistic) games solved.
+The incremental pre-solve algorithm is particularly appropriate for local solving because if we find ${v}_0$ in  $P_\alpha$ then we know that ${v}_0$ is won by player $\alpha$ for every configuration, therefore we are done for that particular recursion. This can potentially reduce the recursion depth of the algorithm and therefore reduce the number of (pessimistic) games solved.
 
 Furthermore when there is only one configuration the incremental pre-solve algorithm solves the corresponding parity game. When taking a local approach it is sufficient to solve this PG locally. Note that the pessimistic games still must be solved globally to find as much assistance as possible for further recursions.
 

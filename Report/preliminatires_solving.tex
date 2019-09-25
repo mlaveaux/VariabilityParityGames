@@ -1,5 +1,5 @@
 First a few preliminary concept relevant to solving (V)PGs are introduced, specifically: existing parity game algorithms, symbolically representing sets and fixed-point theory.
-\subsubsection{Symbolically representing sets}
+\subsection{Symbolically representing sets}
 A set can straightforwardly be represented by a collection containing all the elements that are in the set. We call this an \textit{explicit} representation of a set. We can also represent sets \textit{symbolically} in which case the set of elements is represented by some sort of formula. A typical way to represent a set symbolically is through a boolean formula encoded in a \textit{binary decision diagram} \cite{BDD_book,Handbook_BDD_Chapter}. For example the set $S = \{0,1,2,4,5,7 \}$ can be expressed by boolean formula:
 \[ F(x_2,x_1,x_0) = (x_2 \vee \neg x_1 \vee \neg x_0) \wedge (\neg x_2 \vee \neg x_1 \vee x_0) \]
 where $x_0,x_1$ and $x_2$ are boolean variables. The formula gives the following truth table:\\
@@ -30,9 +30,9 @@ The function $F$ defines set $S'$ in the following way: $S' = \{x_2x_1x_0\ |\ F(
 
 Boolean functions can efficiently be represented in BDDs, for a comprehensive treatment of BDDs we refer to \cite{BDD_book,Handbook_BDD_Chapter}. We will note here that given $x$ boolean variables and two boolean functions encoded as BDDs we can perform binary operations $\vee,\wedge$ on them in $O(2^{2x})=O(m^2)$ where $m = 2^x$ is the maximum set size that can be represented by $x$ variables \cite{BDD_running_time,Handbook_BDD_Chapter}. The running time specifically depends on the size of the decision diagrams, in general if the boolean functions are simple then the size of the decision diagram is also small and operations can be performed quickly.
 
-\subsubsection{Fixed-point theory} 
+\subsection{Fixed-point theory} 
 A fixed-point of a function is an element in the domain of that function such that the function maps to itself for that element. Fixed-point theory goes hand in hand with lattice theory which we introduce first.
-\paragraph{Lattices}
+\subsubsection{Lattices}
 We introduce definitions for ordering and lattices taken from \cite{birkhoff1940lattice}.
 \begin{definition}
 	A partial order is a binary relation $x \leq y$ on set $S$ where for all $x,y,z \in S$ we have:
@@ -69,7 +69,7 @@ We introduce definitions for ordering and lattices taken from \cite{birkhoff1940
 \begin{definition}
 	A function $f : D \rightarrow D'$ is monotonic, also called order preserving, if for all $x \in D$ and $y \in D$ it holds that if $x \leq y$ then $f(x) \leq f(y)$.
 \end{definition}
-\paragraph{Fixed-points}
+\subsubsection{Fixed-points}
 Fixed-points are formally defined as follows:
 \begin{definition}
 	Given function $f : D \rightarrow D$ the value $x \in D$ is a fixed point for $f$ if and only if $f(x) = x$.
@@ -95,10 +95,10 @@ The theorem, as written down by Tarski \cite{tarski1955}, states:
 	and
 	\[ \inf P = \inf \{ x\ |\ f(x) \leq x \} \in P \]
 \end{theorem}
-\subsubsection{Parity game algorithms}
+\subsection{Parity game algorithms}
 We inspect two existing parity game algorithms which are used in the collective VPG algorithms. First Zielonka's recursive algorithm which is well studied and generally considered to be one of the best performing parity game algorithm \cite{Oink,SolvingPGInPractice}. We also inspect the fixed-point iteration algorithm which tends to perform well for model-checking problems with a low number of distinct priorities \cite{BDDSolvingPG}.
 
-\paragraph{Zielonka's recursive algorithm}
+\subsubsection{Zielonka's recursive algorithm}
 First we consider Zielonka's recursive algorithm, created from the constructive proof given in \cite{ZIELONKA1998135}, which solves total PGs. Pseudo code is presented in algorithm \ref{alg_zlnk_org}. Zielonka's recursive algorithm has a worst-case time complexity of $O(e*n^d)$.
 \begin{algorithm}
 	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
@@ -186,7 +186,7 @@ The algorithm also creates subgames, where a set of vertices is removed from a p
 
 Note that a subgame is not necessarily total, however the recursive algorithm always creates subgames that are total (shown in \cite{ZIELONKA1998135}).
 
-\paragraph{Fixed-point iteration algorithm}
+\subsubsection{Fixed-point iteration algorithm}
 Parity games can be solved by solving an alternating fixed-point formula, as shown in \cite{WALUKIEWICZ2002311}. We will consider PG $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
 
 Consider the following formula
@@ -261,3 +261,8 @@ An algorithm to perform the iteration is presented in \cite{FPITE} and shown in 
 		\end{algorithmic}
 	\end{multicols}
 \end{algorithm}
+
+\subsection{Locally solving parity games}
+Parity games can be solved \textit{globally} or \textit{locally}; globally solving a parity game means that for every vertex in the game it is determined who the winner is. Locally solving a parity game means that for a specific vertex in the game it is determined who the winner is. For some applications of parity games, including model checking, there is a specific vertex that needs to be solved to solve the model checking problem so locally solving the parity game is sufficient for solving the original problem.
+
+Most parity game algorithms are concerned with global solving, when talking about solving a PG we talk about globally solving it unless stated otherwise. 
