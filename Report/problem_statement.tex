@@ -1,0 +1,51 @@
+A \textit{featured transition system} (FTS) extends the LTS definition to express variability. It does so by introducing \textit{features} and \textit{products} into the definition. Features are options that can be enabled or disabled for the system. A product is a feature assignments, ie. a set of features that is enabled for that product. Not all products are valid, some features might be mutually exclusive while others features might always be required. To express the relation between features one can use feature diagrams as explained in \cite{Classen2013FeaturedTS}. Feature diagrams offer a nice way of expressing which feature assignments are valid, however for simplicity we will represent the collection of valid products simply with a set of feature assignments. Finally FTSs guard every transition with a boolean expression over the set of features.
+\begin{definition}
+	\label{def_fts}\cite{Classen2013FeaturedTS} A featured transition system (FTS) is a tuple $M = (S, Act, trans, s_0, N, P, \gamma)$, where:
+	\begin{itemize}
+		\item $S, Act, trans, s_0$ are defined as in an LTS,
+		\item $N$ is a non-empty set of features,
+		\item $P \subseteq \mathcal{P}(N)$ is a non-empty set of products, ie. feature assignments, that are valid,
+		\item $\gamma : trans \rightarrow \mathbb{B}(N)$ is a total function, labelling each transition with a boolean expression over the features. A product $p \in \mathcal{P}(N)$ satisfying the boolean expression of transition $t$ is denoted by $p \models \gamma(t)$. The boolean expression that is satisfied by any feature assignment is denoted by $\top$, ie $p \models \top$ for any $p$.
+		
+		A transition $s \xrightarrow a s'$ and $\gamma(s,a,s') = f$ is denoted by $s \xrightarrow {a | f} s'$. 
+	\end{itemize}
+\end{definition}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{Examples/CoffeeMachine/FTS}
+\caption[Coffee machine LTS]{Coffee machine FTS $C$}
+\label{fig:coffeemachinefts}
+\end{figure}
+
+Consider the example in figure \ref{fig:coffeemachinefts} (directly taken from \cite{FamBasedModelCheckingWithMCRL2}) which shows an FTS for a coffee machine. For this example we have two features $N = \{\$, \officialeuro\}$ and two valid products $P = \{\{\$\},\{\officialeuro\}\}$.
+
+An FTS expresses the behaviour of multiple products, we can derive the behaviour of a single product by simply removing all the transitions from the FTS for which the product doesn't satisfy the feature expression guarding the transition. We call this a \textit{projection}.
+
+\begin{definition}
+	\label{def_fts_proj}\cite{Classen2013FeaturedTS}
+	The projection of an FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ to a product $p \in P$, noted $M_{|p}$, is the LTS $M'=(S,Act,trans', s_0)$, where $trans' = \{t \in trans\ |\ p \models \gamma(t)\}$.
+\end{definition}
+The coffee machine example can be projected to its two products, which results in the LTSs in figure \ref{fig:cofeemachineftsproj}.
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{Examples/CoffeeMachine/FTSProjDollar}
+		\caption[$C_{|\{\$\}}$]{$C$ projected to the dollar product: $C_{|\{\$\}}$}
+		\label{fig:coffeemachineftsprojdollar}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{Examples/CoffeeMachine/FTSProjEuro}
+		\caption[$C_{|\{\$\}}$]{$C$ projected to the euro product: $C_{|\{\officialeuro\}}$}
+		\label{fig:coffeemachineftsprojeuro}
+	\end{subfigure}
+	\caption{Projections of the coffee machine FTS}
+	\label{fig:cofeemachineftsproj}
+\end{figure}
+When verifiying an FTS against a model $\mu$-calculus formula $\varphi$, we are trying to answer the question: For which products in the FTS does its projection satisfy $\varphi$? Formally, given FTS $M = (S, Act, trans, s_0, N, P, \gamma)$ and modal $\mu$-calculus formula $\varphi$ we want to find $P_s \subseteq P$ such that:
+\begin{itemize}
+	\item for every $p \in P_s$ we have $M_{|p} \models \varphi$ and
+	\item for every $p \in P \backslash P_s$ we have $M_{|p} \not\models \varphi$.
+\end{itemize}
+Furthermore a counterexample for every $p \in P \backslash P_s$ is preferred.
