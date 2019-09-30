@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190514104043" modified="D:20190930145607"/>
+<info created="D:20190930114123" modified="D:20190930115053"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,50 +254,81 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" stroke="black">
-16 0 0 16 192 704 e
+<path layer="alpha" matrix="1 0 0 1 0 -32" stroke="black">
+22.6274 0 0 22.6274 192 768 e
 </path>
-<path matrix="1 0 0 1 64 0" stroke="black">
-16 0 0 16 256 704 e
+<path stroke="black">
+22.6274 0 0 22.6274 128 640 e
 </path>
-<text transformations="translations" pos="192 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_1</text>
-<text matrix="1 0 0 1 64 0" transformations="translations" pos="256 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_2</text>
+<path stroke="black">
+22.6274 0 0 22.6274 256 640 e
+</path>
+<path stroke="black">
+22.6274 0 0 22.6274 128 544 e
+</path>
+<path stroke="black">
+112 464 m
+112 432 l
+144 432 l
+144 464 l
+h
+</path>
+<path stroke="black">
+240 464 m
+240 432 l
+272 432 l
+272 464 l
+h
+</path>
+<text transformations="translations" pos="192 736" stroke="black" type="label" width="19.019" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">x_2</text>
+<text transformations="translations" pos="128 640" stroke="black" type="label" width="19.019" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">x_1</text>
+<text transformations="translations" pos="256 640" stroke="black" type="label" width="19.019" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">x_1</text>
+<text transformations="translations" pos="128 544" stroke="black" type="label" width="19.019" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">x_0</text>
+<text transformations="translations" pos="128 448" stroke="black" type="label" width="9.476" height="13.319" depth="0" halign="center" valign="center" size="huge">1</text>
+<text transformations="translations" pos="256 448" stroke="black" type="label" width="9.476" height="13.319" depth="0" halign="center" valign="center" size="huge">0</text>
+<path stroke="blue" pen="fat" arrow="normal/normal">
+179.449 717.173 m
+140.551 658.827 l
+</path>
+<path stroke="red" pen="fat" arrow="normal/normal">
+204.551 717.173 m
+243.449 658.827 l
+</path>
+<path stroke="blue" pen="fat" arrow="normal/normal">
+128 617.373 m
+128 566.627 l
+</path>
 <path stroke="black" arrow="normal/normal">
-208 704 m
-304 704 l
-</path>
-<path stroke="black" rarrow="normal/normal">
-203.314 715.314 m
-91.913 0 0 -91.913 256 640 308.686 715.314 a
+141.309 621.7 m
+256 464 l
 </path>
 <path stroke="black" arrow="normal/normal">
-160 736 m
-180.686 715.314 l
+237.898 626.424 m
+146.102 557.576 l
 </path>
-<text matrix="1 0 0 1 16 4" transformations="translations" pos="240 704" stroke="black" type="label" width="41.755" height="10.756" depth="3.59" halign="center" valign="baseline" size="Large">ins $|\ \top$</text>
-<text matrix="1 0 0 1 -8 0" transformations="translations" pos="256 736" stroke="black" type="label" width="27.475" height="10.756" depth="3.59" halign="center" valign="baseline" size="Large">std $|$</text>
-<path matrix="1 0 0 1 192 0" stroke="black">
-16 0 0 16 256 704 e
+<path stroke="red" pen="fat" arrow="normal/normal">
+242.691 621.7 m
+128 464 l
 </path>
-<text matrix="1 0 0 1 192 0" transformations="translations" pos="256 704" stroke="black" type="label" width="17.052" height="8.896" depth="3.1" halign="center" valign="center" size="huge" style="math">s_3</text>
 <path stroke="black" arrow="normal/normal">
-336 704 m
-432 704 l
+128 521.373 m
+128 464 l
 </path>
-<text matrix="1 0 0 1 144 4" transformations="translations" pos="240 704" stroke="black" type="label" width="37.62" height="10.756" depth="3.59" halign="center" valign="baseline" size="Large">ins $|\ \$$</text>
+<text matrix="1 0 0 1 0 -16" transformations="translations" pos="160 704" stroke="black" type="label" width="9.476" height="13.319" depth="0" halign="right" valign="baseline" size="huge">0</text>
+<text transformations="translations" pos="224 688" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">1</text>
+<text matrix="1 0 0 1 -16 0" transformations="translations" pos="128 592" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">1</text>
+<text transformations="translations" pos="160 608" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">0</text>
+<text transformations="translations" pos="208 608" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">0</text>
+<text matrix="1 0 0 1 -16 -16" transformations="translations" pos="240 592" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">1</text>
+<text transformations="translations" pos="112 496" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">0</text>
+<path stroke="blue" pen="fat" arrow="normal/normal">
+147.188 532.007 m
+256 464 l
+</path>
+<text matrix="1 0 0 1 64 -112" transformations="translations" pos="128 592" stroke="black" type="label" width="9.476" height="13.319" depth="0" valign="baseline" size="huge">1</text>
 <path stroke="black" arrow="normal/normal">
-436.686 692.686 m
-336.212 0 0 -336.212 320 1008 203.314 692.686 a
-</path>
-<text matrix="1 0 0 1 0 12" transformations="translations" pos="320 656" stroke="black" type="label" width="43.238" height="10.756" depth="3.59" halign="center" valign="top" size="Large">xxl $|\ \top$</text>
-<path matrix="0.422009 0 0 0.422009 223.809 443.229" stroke="black" pen="heavier">
-120 712 m
-11.3137 0 0 11.3137 112 704 120 696 a
-96 708 m
-112 708 l
-112 708 l
-112 700 m
-96 700 l
+192 784 m
+192 758.627 l
 </path>
 </page>
 </ipe>
