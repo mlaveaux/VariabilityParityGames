@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20190627133456"/>
+<info created="D:20190513152140" modified="D:20191001171915"/>
 <preamble>\usepackage{amsfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -255,203 +255,215 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="1 0 0 1 64 0" stroke="black">
+<path layer="alpha" matrix="1 0 0 1 168 0" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 64 0" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
-<path matrix="0.707107 -0.707107 0.707107 0.707107 -466.94 222.197" stroke="black">
+<text matrix="1 0 0 1 168 0" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
+<path matrix="0.707107 -0.707107 0.707107 0.707107 -362.94 222.197" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 64 0" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<text matrix="1 0 0 1 48 -16" transformations="translations" pos="64 800" stroke="black" type="label" width="51.823" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, \mu X.\phi)</text>
-<text matrix="1 0 0 1 48 -80" transformations="translations" pos="64 800" stroke="black" type="label" width="110.433" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, [a](\mu X.\phi) \vee \langle b \rangle \top)</text>
-<path matrix="1 0 0 1 64 -128" stroke="black">
+<text matrix="1 0 0 1 168 0" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<text matrix="1 0 0 1 160 -16" transformations="translations" pos="64 800" stroke="black" type="label" width="51.823" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, \mu X.\phi)</text>
+<text matrix="1 0 0 1 160 -80" transformations="translations" pos="64 800" stroke="black" type="label" width="110.433" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, [a](\mu X.\phi) \vee \langle b \rangle \top)</text>
+<path matrix="1 0 0 1 168 -128" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 64 -128" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<text matrix="1 0 0 1 48 -144" transformations="translations" pos="64 800" stroke="black" type="label" width="73.576" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, [a](\mu X.\phi))</text>
-<path matrix="0.707107 -0.707107 0.707107 0.707107 -466.94 94.197" stroke="black">
-64 800 m
-64 768 l
-96 768 l
-96 800 l
-h
-</path>
-<text matrix="1 0 0 1 64 -128" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<text matrix="1 0 0 1 48 -208" transformations="translations" pos="64 800" stroke="black" type="label" width="48.169" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, \langle b \rangle \top)</text>
-<path matrix="1 0 0 1 64 -256" stroke="black">
-64 800 m
-64 768 l
-96 768 l
-96 800 l
-h
-</path>
-<text matrix="1 0 0 1 64 -256" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<text matrix="1 0 0 1 48 -272" transformations="translations" pos="64 800" stroke="black" type="label" width="33.894" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, \top)</text>
-<path stroke="black" arrow="normal/normal">
+<text matrix="1 0 0 1 168 -128" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<text matrix="1 0 0 1 160 -144" transformations="translations" pos="64 800" stroke="black" type="label" width="73.576" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, [a](\mu X.\phi))</text>
+<text matrix="1 0 0 1 0 -32" transformations="translations" pos="64 800" stroke="black" type="label" width="48.169" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, \langle b \rangle \top)</text>
+<text matrix="1 0 0 1 0 -136" transformations="translations" pos="64 800" stroke="black" type="label" width="33.894" height="8.965" depth="2.99" halign="right" valign="center" size="large" style="math">(s_1, \top)</text>
+<path matrix="1 0 0 1 104 0" stroke="black" arrow="normal/normal">
 144 768 m
 144 742.627 l
 </path>
-<path stroke="black" arrow="normal/normal">
+<path matrix="1 0 0 1 104 0" stroke="black" arrow="normal/normal">
 144 697.373 m
 144 672 l
 </path>
-<text matrix="1 0 0 1 192 -16" transformations="translations" pos="64 800" stroke="black" type="label" width="51.823" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, \mu X.\phi)</text>
-<text matrix="1 0 0 1 192 -80" transformations="translations" pos="64 800" stroke="black" type="label" width="110.433" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, [a](\mu X.\phi) \vee \langle b \rangle \top)</text>
-<text matrix="1 0 0 1 192 -144" transformations="translations" pos="64 800" stroke="black" type="label" width="73.576" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, [a](\mu X.\phi))</text>
-<text matrix="1 0 0 1 192 -208" transformations="translations" pos="64 800" stroke="black" type="label" width="48.169" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, \langle b \rangle \top)</text>
-<text matrix="1 0 0 1 192 -272" transformations="translations" pos="64 800" stroke="black" type="label" width="33.894" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, \top)</text>
-<path matrix="1 0 0 1 144 0" stroke="black">
+<text matrix="1 0 0 1 304 -16" transformations="translations" pos="64 800" stroke="black" type="label" width="51.823" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, \mu X.\phi)</text>
+<text matrix="1 0 0 1 304 -80" transformations="translations" pos="64 800" stroke="black" type="label" width="110.433" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, [a](\mu X.\phi) \vee \langle b \rangle \top)</text>
+<text matrix="1 0 0 1 304 -144" transformations="translations" pos="64 800" stroke="black" type="label" width="73.576" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, [a](\mu X.\phi))</text>
+<text matrix="1 0 0 1 464 -32" transformations="translations" pos="64 800" stroke="black" type="label" width="48.169" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, \langle b \rangle \top)</text>
+<text matrix="1 0 0 1 464 -80" transformations="translations" pos="64 800" stroke="black" type="label" width="33.894" height="8.965" depth="2.99" valign="center" size="large" style="math">(s_2, \top)</text>
+<path matrix="1 0 0 1 256 0" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 144 0" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
-<path matrix="0.707107 -0.707107 0.707107 0.707107 -386.94 222.197" stroke="black">
+<text matrix="1 0 0 1 256 0" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
+<path matrix="0.707107 -0.707107 0.707107 0.707107 -274.94 222.197" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 144 0" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<path matrix="1 0 0 1 144 -128" stroke="black">
+<text matrix="1 0 0 1 256 0" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path matrix="1 0 0 1 256 -128" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 144 -128" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<path matrix="0.707107 -0.707107 0.707107 0.707107 -386.94 94.197" stroke="black">
-64 800 m
-64 768 l
-96 768 l
-96 800 l
-h
-</path>
-<text matrix="1 0 0 1 144 -128" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<path matrix="1 0 0 1 144 -256" stroke="black">
-64 800 m
-64 768 l
-96 768 l
-96 800 l
-h
-</path>
-<text matrix="1 0 0 1 144 -256" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<path matrix="1 0 0 1 80 0" stroke="black" arrow="normal/normal">
+<text matrix="1 0 0 1 256 -128" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path matrix="1 0 0 1 192 0" stroke="black" arrow="normal/normal">
 144 768 m
 144 742.627 l
 </path>
-<path matrix="1 0 0 1 80 0" stroke="black" arrow="normal/normal">
+<path matrix="1 0 0 1 192 0" stroke="black" arrow="normal/normal">
 144 697.373 m
 144 672 l
 </path>
-<text matrix="1 0 0 1 8 72" transformations="translations" pos="144 624" stroke="black" type="label" width="17.356" height="6.726" depth="2.24" valign="baseline" size="small" style="math">\{c_1\}</text>
-<path matrix="1 0 0 1 0 64" stroke="black" arrow="normal/normal">
-224 505.373 m
-224 480 l
-</path>
-<text transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 80 0" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 -8 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 -32 -128" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 112 -128" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 32 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" halign="right" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 48 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 80 -192" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 80 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<path matrix="0.707107 -0.707107 0.707107 0.707107 -585.568 46.1967" stroke="black">
+<text matrix="0.993701 0.112063 -0.112063 0.993701 183.179 58.1495" transformations="translations" pos="144 624" stroke="black" type="label" width="29.592" height="6.726" depth="2.24" valign="baseline" size="small" style="math">\{c_1,c_2\}</text>
+<text matrix="1 0 0 1 104 0" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 192 0" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 96 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 144 -104" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" halign="right" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 160 -80" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 264 0" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 192 -64" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 -60 -4" transformations="translations" pos="144 752" stroke="black" type="label" width="36.74" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_0,c_1\}</text>
+<text matrix="1 0 0 1 -10.6283 -78.628" transformations="translations" pos="64 800" stroke="black" type="label" width="8.219" height="8.305" depth="1.79" halign="right" valign="center" size="large" style="math">l_0</text>
+<text matrix="1 0 0 1 476 -146.628" transformations="translations" pos="64 800" stroke="black" type="label" width="8.219" height="8.305" depth="1.79" halign="right" valign="center" size="large" style="math">l_1</text>
+<text matrix="1 0 0 1 328 -100" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 144 -124" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 -136 -52" transformations="translations" pos="144 752" stroke="black" type="label" width="21.725" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_2\}</text>
+<text matrix="1 0 0 1 -42.628 -56" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 356 -68" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 112 0" transformations="translations" pos="184 808" stroke="black" type="label" width="99.402" height="10.756" depth="3.59" halign="center" valign="baseline" size="Large" style="math">\phi = [a]X \vee \langle b \rangle \top</text>
+<path matrix="0.707107 -0.707107 0.707107 0.707107 -530.94 286.197" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 -54.6279 -176" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
-<path matrix="1 0 0 1 -22.6279 63.9997" stroke="black" arrow="normal/normal">
-36 469.373 m
-36 448 l
-60 448 l
-60 469.372 l
-</path>
-<text matrix="1 0 0 1 -100 -196" transformations="translations" pos="144 752" stroke="black" type="label" width="36.74" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_0,c_1\}</text>
-<path matrix="1 0 0 1 104 -304" stroke="black">
+<text matrix="1 0 0 1 0 64" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path matrix="0.707107 -0.707107 0.707107 0.707107 -530.94 222.197" stroke="black">
 64 800 m
 64 768 l
 96 768 l
 96 800 l
 h
 </path>
-<text matrix="1 0 0 1 104 -304" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
-<text matrix="1 0 0 1 -50.6283 -238.628" transformations="translations" pos="64 800" stroke="black" type="label" width="8.219" height="8.305" depth="1.79" halign="right" valign="center" size="large" style="math">l_0</text>
-<text matrix="1 0 0 1 99.9996 -330.628" transformations="translations" pos="64 800" stroke="black" type="label" width="8.219" height="8.305" depth="1.79" halign="right" valign="center" size="large" style="math">l_1</text>
-<path matrix="1 0 0 1 0 64" stroke="black" arrow="normal/normal">
-144 448 m
-168 416 l
-</path>
-<path matrix="1 0 0 1 0 64" stroke="black" arrow="normal/normal">
-224 448 m
-200 416 l
-</path>
-<text matrix="1 0 0 1 8 -252" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 64 -252" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<path matrix="1 0 0 1 0 64" stroke="black" arrow="normal/normal">
-176 400 m
-176 384 l
-192 384 l
-192 400 l
-</path>
-<path matrix="1 0 0 1 0 64" stroke="black" arrow="normal/normal">
-144 505.373 m
-144 480 l
-</path>
-<text matrix="1 0 0 1 0 -196" transformations="translations" pos="144 752" stroke="black" type="label" width="21.725" height="8.965" depth="2.99" valign="baseline" size="large" style="math">\{c_2\}</text>
-<text matrix="1 0 0 1 -122.628 -248" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 36 -316" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
 <path stroke="black" arrow="normal/normal">
-160 656 m
-208 784 l
+80.0004 761.373 m
+80.0004 742.628 l
 </path>
 <path stroke="black" arrow="normal/normal">
-208 656 m
-160 784 l
+96 713.372 m
+96 688 l
+64 688 l
+64 713.373 l
+</path>
+<path matrix="1 0 0 1 0 -128" stroke="black">
+64 800 m
+64 768 l
+96 768 l
+96 800 l
+h
+</path>
+<text matrix="1 0 0 1 0 -128" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path stroke="black" arrow="normal/normal">
+57.373 784 m
+8 784 l
+8 656 l
+64 656 l
+</path>
+<text matrix="1 0 0 1 5.372 8" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<path matrix="0.707107 -0.707107 0.707107 0.707107 -98.94 286.197" stroke="black">
+64 800 m
+64 768 l
+96 768 l
+96 800 l
+h
+</path>
+<text matrix="1 0 0 1 432 64" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path stroke="black" arrow="normal/normal">
+352.594 726.034 m
+495.407 777.966 l
+</path>
+<path matrix="1 0 0 1 432 -64" stroke="black">
+64 800 m
+64 768 l
+96 768 l
+96 800 l
+h
+</path>
+<text matrix="1 0 0 1 432 -64" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path matrix="1 0 0 1 432 -128" stroke="black">
+64 800 m
+64 768 l
+96 768 l
+96 800 l
+h
+</path>
+<text matrix="1 0 0 1 432 -128" transformations="translations" pos="80 784" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">0</text>
+<path stroke="black" arrow="normal/normal">
+512 761.373 m
+512 736 l
 </path>
 <path stroke="black" arrow="normal/normal">
-160 672 m
-176 720 l
-160 768 l
+512 704 m
+512 672 l
 </path>
 <path stroke="black" arrow="normal/normal">
-246.628 720 m
-256 720 l
-256 592 l
-246.628 592 l
+496 664 m
+480 664 l
+480 648 l
+496 648 l
 </path>
 <path stroke="black" arrow="normal/normal">
-121.373 720 m
-112 720 l
-112 592 l
-121.373 592 l
+80 640 m
+80 624 l
+512 624 l
+512 640 l
 </path>
-<text transformations="translations" pos="184 808" stroke="black" type="label" width="99.402" height="10.756" depth="3.59" halign="center" valign="baseline" size="Large" style="math">\phi = [a]X \vee \langle b \rangle \top</text>
+<text matrix="1 0 0 1 144 -124" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
+<text matrix="1 0 0 1 356 -4" transformations="translations" pos="144 752" stroke="black" type="label" width="7.323" height="8.266" depth="0" valign="baseline" size="large" style="math">\mathfrak{C}</text>
 <path stroke="black" arrow="normal/normal">
-144 569.373 m
-48 544 l
+264 672 m
+288 688 l
+288 752 l
+264 768 l
+</path>
+<path stroke="black" arrow="normal/normal">
+264 648 m
+296 672 l
+296 768 l
+320 784 l
+</path>
+<path stroke="black" arrow="normal/normal">
+320 648 m
+304 672 l
+304 760 l
+264 784 l
+</path>
+<path stroke="black" arrow="normal/normal">
+320 648 m
+304 672 l
+304 760 l
+264 784 l
+</path>
+<path stroke="black" arrow="normal/normal">
+231.615 726.242 m
+96.3855 777.758 l
 </path>
 </page>
 </ipe>
