@@ -1,7 +1,5 @@
  - Priority compression in implementatie sectie
  - Hypotheses in sectie II herhalen in sectie III
  - Hoe splitsen we set C in incpresolve?
- - Local alg, aantonen v_0 niet in de andere winning set zit
  - Local: incomplete but correct winning sets
-
- - Running time complexity local variants
+ - Complexity class parity games

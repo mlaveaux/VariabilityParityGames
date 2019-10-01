@@ -73,7 +73,7 @@ Behaviour can be modelled as a \textit{labelled transition system} (LTS). An LTS
 	A labelled transition system (LTS) is a tuple $M = (S, Act, trans, s_0)$, where:
 	\begin{itemize}
 		\item $S$ is a finite set of states,
-		\item $Act$ a set finite of actions,
+		\item $Act$ a finite set of actions,
 		\item $trans \subseteq S \times Act \times S$ is the transition relation with $(s,a,s') \in trans$ denoted by $s \xrightarrow a s'$,
 		\item $s_0 \in S$ is the initial state.
 	\end{itemize}
@@ -81,7 +81,7 @@ Behaviour can be modelled as a \textit{labelled transition system} (LTS). An LTS
 
 An LTS is usually depicted as a graph where the vertices represent the states, the edges represent the transitions, edges are labelled with actions and an edge with no origin vertex indicates the initial state. Such a representation is depicted in the example below.
 \begin{example}[\cite{FamBasedModelCheckingWithMCRL2}]
-	We consider the behaviour of a coffee machine that accepts a coin after which it serves a standard coffee. This can be repeated infinitely often. 
+	Consider the behaviour of a coffee machine that accepts a coin after which it serves a standard coffee, this can be repeated infinitely often. 
 	
 	The behaviour can be modelled as an LTS that has two states: in the initial state it is ready to accept a coin and in the second state it is ready to serve a standard coffee. We introduce two actions: \textit{ins}, which represents a coin being inserted, and \textit{std}, which represents a standard coffee being served. We get the following LTS which is also depicted in Figure \ref{fig:coffeemachinebasiceurolts}.
 	\[ (\{s_1,s_2\},\{std,ins\},\{(s_1,ins,s_2),(s_2,std,s_1)\},s_1)\]
@@ -93,7 +93,7 @@ An LTS is usually depicted as a graph where the vertices represent the states, t
 	\end{figure}
 \end{example}
 
-LTSs might be non-deterministic, meaning that if from a state there might be multiple transitions that can be taken, moreover multiple transitions with the same action can be taken. This is depicted in the example below.
+LTSs might be non-deterministic, meaning that from a state there might be multiple transitions that can be taken, moreover multiple transitions with the same action can be taken. This is depicted in the example below.
 
 \begin{example}
 	We extend the coffee machine example where at some point the coffee machine can be empty and needs a fill before the system is ready to receive a coin again. This LTS is depicted in Figure \ref{fig:coffeemachineundeterministic}. When the \textit{std} transition is taken from state $s_2$ it is non-determined in which states the system ends.
@@ -117,9 +117,9 @@ We define the syntax of the modal $\mu$-calculus below. Note that the syntax is 
 \end{definition}
 The modal $\mu$-calculus contains boolean constants $\top$ and $\bot$, propositional operators $\vee$ and $\wedge$, modal operators $\langle \, \rangle$ and $[ \, ]$ and fixpoint operators $\mu$ and $\nu$. 
 
-A variable $X \in \mathcal{X}$ \textit{occurs free} in formula $\phi$ if and only if $X$ occurs in $\phi$ where $X$ is not a sub-formula of $\mu X.\phi'$ or $\nu X.\phi'$ in $\phi$. A formula is \textit{closed} if and only if there are no variables that occur free.
+A variable $X \in \mathcal{X}$ \textit{occurs free} in formula $\phi$ if and only if $X$ occurs in $\phi$ such that $X$ is not a sub-formula of $\mu X.\phi'$ or $\nu X.\phi'$ in $\phi$. A formula is \textit{closed} if and only if there are no variables that occurs free.
 
-A formula can be interpreted in the context of an LTS, such an interpretation results in a set of states in which the formula holds. Given formula $\varphi$ we define the interpretation of $\varphi$ as $\llbracket \varphi \rrbracket ^\eta  \subseteq S$ where $\eta : \mathcal{X}\rightarrow 2^S$ maps variables to a value. We can assign $S' \subseteq S$ to variable $X$ in $\eta$ by writing $\eta[X:=S']$, ie. $(\eta[X:=S'])(X) = S'$.
+A formula can be interpreted in the context of an LTS, such an interpretation results in a set of states in which the formula holds. Given formula $\varphi$ we define the interpretation of $\varphi$ as $\llbracket \varphi \rrbracket ^\eta  \subseteq S$ where $\eta : \mathcal{X}\rightarrow 2^S$ maps a variable to a set of states. We can assign $S' \subseteq S$ to variable $X$ in $\eta$ by writing $\eta[X:=S']$, ie. $(\eta[X:=S'])(X) = S'$.
 \begin{definition}
 	\label{def_mu_sem} For LTS $(S, Act, trans, s_0)$ we inductively define the interpretation of a modal $\mu$-calculus formula $\varphi$, notation
 	$\llbracket \varphi \rrbracket^\eta$, where $\eta : \mathcal{X} \rightarrow \mathcal{P}(S)$ is a variable valuation, as a set of states
@@ -129,19 +129,19 @@ A formula can be interpreted in the context of an LTS, such an interpretation re
 	&\llbracket {\bot} \rrbracket^\eta &&= \emptyset\\
 	&\llbracket \varphi_1 \wedge \varphi_2 \rrbracket^\eta &&= \llbracket \varphi_1 \rrbracket^\eta \cap \llbracket \varphi_2 \rrbracket^\eta \\
 	&\llbracket \varphi_1 \vee \varphi_2 \rrbracket^\eta &&= \llbracket \varphi_1 \rrbracket^\eta \cup \llbracket \varphi_2 \rrbracket^\eta\\
-	&\llbracket \langle a \rangle \varphi \rrbracket^\eta &&= \{s \in S|\exists_{s' \in S} s \xrightarrow {a} s' \wedge s' \in \llbracket \varphi \rrbracket^\eta\}\\
-	&\llbracket [ a ] \varphi \rrbracket^\eta &&= \{s \in S|\forall_{s' \in S} s \xrightarrow {a} s' \implies s' \in \llbracket \varphi \rrbracket^\eta\}\\
+	&\llbracket \langle a \rangle \varphi \rrbracket^\eta &&= \{s \in S|\exists_{s' \in S}\ s \xrightarrow {a} s' \wedge s' \in \llbracket \varphi \rrbracket^\eta\}\\
+	&\llbracket [ a ] \varphi \rrbracket^\eta &&= \{s \in S|\forall_{s' \in S}\ s \xrightarrow {a} s' \implies s' \in \llbracket \varphi \rrbracket^\eta\}\\
 	&\llbracket \mu X. \varphi \rrbracket^\eta &&= \bigcap\{f \subseteq S | f \supseteq \llbracket \varphi \rrbracket^{\eta[X:=f]}\}\\
 	&\llbracket \nu X. \varphi \rrbracket^\eta &&= \bigcup\{f \subseteq S | f \subseteq \llbracket \varphi \rrbracket^{\eta[X:=f]}\}\\
 	&\llbracket X \rrbracket^\eta &&= \eta(X)
 	\end{align*}
 \end{definition}
-Since there are no negations in the syntax we find that every modal $\mu$-calculus formula is monotone, ie. if we have for $U \subseteq S$ and $U' \subseteq S$ that $U \subseteq U'$ holds then $\llbracket \varphi \rrbracket^{\eta[X:=U]} \subseteq \llbracket \varphi \rrbracket^{\eta[X:=U']}$ holds for any variable $X \in \mathcal{X}$. Using the Knaster-Tarski theorem (theorem \ref{the_knaster_tarski}) we find that the least and greatest fixed-points always exist.
+Since there are no negations in the syntax we find that every modal $\mu$-calculus formula is monotone, ie. if we have for $U \subseteq S$ and $U' \subseteq S$ that $U \subseteq U'$ holds then $\llbracket \varphi \rrbracket^{\eta[X:=U]} \subseteq \llbracket \varphi \rrbracket^{\eta[X:=U']}$ holds for any variable $X \in \mathcal{X}$. Using the Knaster-Tarski theorem (Theorem \ref{the_knaster_tarski}) we find that the least and greatest fixed-points always exist.
 
-Given closed formula $\varphi$, LTS $M = (S, Act, trans, s_0)$ and $s \in S$ we say that $M$ satisfies formula $\varphi$ in state $s$ if and only if $s \in \llbracket \varphi \rrbracket^\eta$, we write $(M,s) \models \varphi$. If and only if $M$ satisfies $\varphi$ in the initial state do we say that $M$ satisfies formula $\varphi$ and write $M \models \varphi$. 
+Given closed formula $\varphi$, LTS $M = (S, Act, trans, s_0)$ and $s \in S$ we say that $M$ satisfies formula $\varphi$ in state $s$, and write $(M,s) \models \varphi$, if and only if $s \in \llbracket \varphi \rrbracket^\eta$. If and only if $M$ satisfies $\varphi$ in the initial state do we say that $M$ satisfies formula $\varphi$ and write $M \models \varphi$. 
 
 \begin{example}[\cite{FamBasedModelCheckingWithMCRL2}]
-	Consider the coffee machine example we seen earlier in Figure \ref{fig:coffeemachinebasiceurolts} and formula $\varphi = \nu X. \mu Y([inst]Y \wedge [std]X)$ which states that action \textit{std} must occur infinitely often over all runs. Obviously this holds for the coffee machine, therefore we have $C \models \varphi$.
+	Consider the coffee machine example from Figure \ref{fig:coffeemachinebasiceurolts} and formula $\varphi = \nu X. \mu Y([inst]Y \wedge [std]X)$ which states that action \textit{std} must occur infinitely often over all infinite runs. Obviously this holds for the coffee machine, therefore we have $C \models \varphi$.
 \end{example}
 
 \subsection{Parity games}
@@ -158,7 +158,7 @@ A \textit{parity game} is a game played by two players: player 0 (also called pl
 Parity games are usually represented as a graph where vertices owned by player 0 are shown as diamonds and vertices owned by player 1 are shown as boxes, furthermore the priorities are depicted as numbers inside the vertices. Such a representation is shown in the example below.
 
 \begin{example}
-	Figure \ref{fig:simplepgpg} shows the following parity game:
+	Figure \ref{fig:simplepgpg} shows the parity game:
 	\[ V_0 = \{v_1,v_4,v_5\},V_1 = \{v_2,v_3\}, V = V_0 \cup V_1\]
 	\[ E = \{(v_1,v_2),(v_2,v_1),(v_1,v_3),(v_2,v_4),(v_3,v_4),(v_3,v_5),(v_4,v_4)\}\] 
 	\[ \Omega = \{v_1 \mapsto 2, v_2 \mapsto 3, v_3 \mapsto 0, v_4 \mapsto 0, v_5 \mapsto 1 \}\]
@@ -170,13 +170,15 @@ Parity games are usually represented as a graph where vertices owned by player 0
 	\end{figure}
 \end{example}
 
-A parity game can be played for a vertex $v \in V$. We start by placing a token on vertex $v$, the player that owns vertex $v$ can choose to move the token along an edge to a vertex $w \in V$ such that $(v,w) \in E$. Again the player that owns vertex $w$ can choose where to move the token next. This is repeated either infinitely often or until a player cannot make a move, ie. the token is on a vertex with no outgoing edges. Playing in this manner gives a sequence of vertices, called a \textit{path}, starting at vertex $v$. For path $\pi$ we write $\pi_i$ to denote $i^\text{th}$ vertex in path $\pi$. Every path is associated with a winner (either player 0 or 1). If a player $\alpha$ cannot move at some point we get a finite path and player $\overline{\alpha}$ wins the path. If we get an infinite path $\pi$ then the winner is determined by the parity of the highest priority that occurs infinitely often in the path. Formally we determine the highest priority occurring infinitely often by the following formula.
+A parity game can be played for a vertex $v \in V$. We start by placing a token on vertex $v$, the player that owns vertex $v$ can choose to move the token along an edge to a vertex $w \in V$ such that $(v,w) \in E$. Again the player that owns vertex $w$ can choose where to move the token next. This is repeated either infinitely often or until a player cannot make a move, ie. the token is on a vertex with no outgoing edges. Playing in this manner gives a sequence of vertices, called a \textit{path}, starting from vertex $v$. For path $\pi$ we write $\pi_i$ to denote $i^\text{th}$ vertex in path $\pi$. Every path is associated with a winner (either player 0 or 1). If a player $\alpha$ cannot move at some point we get a finite path and player $\overline{\alpha}$ wins the path. If we get an infinite path $\pi$ then the winner is determined by the parity of the highest priority that occurs infinitely often in the path. Formally we determine the highest priority occurring infinitely often by the following formula.
 \[ \max\{ p \ |\ \forall_j \exists_i j < i \wedge p = \Omega(\pi_i) \}\] 
 If the highest priority is odd then player $1$ wins the path, if it is even player $0$ wins the path.
 
+A path is \textit{valid} if and only if for every $i > 0$ such that $\pi_i$ exists we have $(\pi_{i-1},\pi_i) \in E$.
+
 
 \begin{example}
-	Again consider the example in Figure \ref{fig:simplepgpg}. If we play the game for vertex $v_1$ we start by placing a token on $v_1$. Consider the following exemplary paths where $(w_1{\dots}w_n)^\omega$ indicates an infinite repetition of vertices $w_1{\dots}w_n$.
+	Again consider the example in Figure \ref{fig:simplepgpg}. If we play the game for vertex $v_1$ we start by placing a token on $v_1$. Consider the following exemplary paths where $(w_1{\dots}w_m)^\omega$ indicates an infinite repetition of vertices $w_1{\dots}w_m$.
 	\begin{itemize}
 		\item $\pi = v_1v_3v_5$ is won by player $1$ since player $0$ cannot move at $v_5$.
 		\item $\pi = (v_1v_2)^\omega$ is won by player $1$ since the highest priority occurring infinitely often is 3.
@@ -184,19 +186,19 @@ If the highest priority is odd then player $1$ wins the path, if it is even play
 	\end{itemize}
 \end{example}
 
-The moves that the players make are determined by their \textit{strategies}. A strategy $\sigma_\alpha$ determines for a vertex in $V_\alpha$ where the token goes next. We can define a strategy for player $\alpha$ as a partial function $\sigma_\alpha : V^*V_\alpha \rightarrow V$ that maps a series of vertices ending with a vertex owned by player $\alpha$ to the next vertex. A path $\pi$ \textit{conforms to} strategy $\sigma_\alpha$ if for every $i$ such that $\pi_i$ exists and $\pi_{i-1} \in V_\alpha$ we have $\pi_i = \sigma_\alpha(\pi_0\pi_1\dots\pi_{i-1})$.
+The moves that the players make are determined by their \textit{strategies}. A strategy $\sigma_\alpha$ determines for a vertex in $V_\alpha$ where the token goes next. We can define a strategy for player $\alpha$ as a partial function $\sigma_\alpha : V^*V_\alpha \rightarrow V$ that maps a series of vertices ending with a vertex owned by player $\alpha$ to the next vertex such that for any $\sigma_\alpha(w_0\dots w_m) = w$ we have $(w_m,w) \in E$. A path $\pi$ \textit{conforms to} strategy $\sigma_\alpha$ if for every $i > 0$ such that $\pi_i$ exists and $\pi_{i-1} \in V_\alpha$ we have $\pi_i = \sigma_\alpha(\pi_0\pi_1\dots\pi_{i-1})$.
 
-A strategy is \textit{winning} for player $\alpha$ from vertex $v$ if and only if $\alpha$ is the winner of every path starting in $v$ that conforms to $\sigma_\alpha$. If such a strategy exists for player $\alpha$ from vertex $v$ we say that vertex $v$ is winning for player $\alpha$.
+A strategy is \textit{winning} for player $\alpha$ from vertex $v$ if and only if $\alpha$ is the winner of every valid path starting in $v$ that conforms to $\sigma_\alpha$. If such a strategy exists for player $\alpha$ from vertex $v$ we say that vertex $v$ is winning for player $\alpha$.
 
 \begin{example}
-	In the parity game seen in Figure \ref{fig:simplepgpg} vertex $v_1$ is winning for player 1. Player 1 has a strategy that plays every vertex sequence ending in $v_2$ to $v_1$ and plays every vertex sequence ending in $v_3$ to $v_5$. Regardless of the strategy for player 0 the path will either end up in $v_5$ or will pass $v_2$ infinitely often. In the former case player 1 wins the path because player 0 can't move at $v_5$. In the latter case the highest priority occurring infinitely often is 3.
+	In the parity game seen in Figure \ref{fig:simplepgpg} vertex $v_1$ is winning for player 1. Player 1 has a strategy that plays every vertex sequence ending in $v_2$ to $v_1$ and plays every vertex sequence ending in $v_3$ to $v_5$. Regardless of the strategy for player 0 the path will either end up in $v_5$ or will pass $v_2$ infinitely often. In the former case player 1 wins the path because player 0 can not move at $v_5$. In the latter case the highest priority occurring infinitely often is 3.
 \end{example}
 
-Parity games are known to be positionally determined \cite{Bradfield2018}, meaning that every vertex in a parity game is winning for one of the two players. Also every player has a \textit{positional strategy} that is winning from each of his/her winning positions. A positional strategy is a strategy that only takes the current vertex into account to determine the next vertex, it does not look at already visited vertices. Therefore we can consider a strategy for player $\alpha$ as a complete functions $\sigma_\alpha : V_\alpha \rightarrow V$. Finally it is decidable for each of the vertices in a parity who the winner is \cite{Bradfield2018}.
+Parity games are known to be positionally determined \cite{Bradfield2018}, meaning that every vertex in a parity game is winning for one of the two players. Also every player has a \textit{positional strategy} that is winning starting from each of his/her winning vertices. A positional strategy is a strategy that only takes the current vertex into account to determine the next vertex, it does not look at already visited vertices. Therefore we can consider a strategy for player $\alpha$ as a complete functions $\sigma_\alpha : V_\alpha \rightarrow V$. Finally it is decidable for each of the vertices in a parity who the winner is \cite{Bradfield2018}.
 
 A parity game is \textit{solved} if the vertices are partitioned in two sets, namely $W_0$ and $W_1$, such that every vertex in $W_0$ is winning for player 0 and every vertex in $W_1$ is winning for player 1. We call these sets the \textit{winning sets} of a parity game.
 
-Finally parity games are considered \textit{total} if and only if every vertex has at least one outgoing edge. Playing a total parity game always results in an infinite path. We can make a non-total parity game total by adding two sink vertices: $l_0$ and $l_1$. Each sink vertex has only one outgoing edge, namely to itself. Vertex $l_0$ has priority 1 and vertex $l_1$ has priority 0. Clearly if the token ends up in $l_\alpha$ then player $\alpha$ looses the game because with only one outgoing edge we only get a single priority that occurs infinitely often, namely priority $\overline{\alpha}$. For every vertex $v \in V_\alpha$ that does not have an outgoing edge we create an edge from $v$ to $l_\alpha$. In the original game player $\alpha$ lost when the token was in vertex $v$ because he/she couldn't move any more. In the total game player $\alpha$ can only play to $l_\alpha$ from $v$ where he/she still looses. So using this method vertices in the total game have the same winner as they had in the original game (except for $l_0$ and $l_1$ which did not exist in the original game). In general we try to only work with total games because no distinction is required between finite paths and infinite paths when reasoning about them, however we will encounter some scenario's where non-total games are still considered.
+Finally parity games are considered \textit{total} if and only if every vertex has at least one outgoing edge. Playing a total parity game always results in an infinite path. We can make a non-total parity game total by adding two sink vertices: $l_0$ and $l_1$. Each sink vertex has only one outgoing edge, namely to itself. Vertex $l_0$ has priority 1 and vertex $l_1$ has priority 0. Clearly if the token ends up in $l_\alpha$ then player $\alpha$ looses the game because with only one outgoing edge we only get a single priority that occurs infinitely often, namely priority $\overline{\alpha}$. For every vertex $v \in V_\alpha$ that does not have an outgoing edge we create an edge from $v$ to $l_\alpha$. In the original game player $\alpha$ lost when the token was in vertex $v$ because he/she could not move any more. In the total game player $\alpha$ can only play to $l_\alpha$ from $v$ where he/she still looses. So using this method vertices in the total game have the same winner as they had in the original game (except for $l_0$ and $l_1$ which did not exist in the original game). In general we try to only work with total games because no distinction is required between finite paths and infinite paths when reasoning about them, however we will encounter some scenario's where non-total games are still considered.
 
 \subsubsection{Relation between parity games and model checking}
 Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a parity game. This is done by translating an LTS in combination with a formula to a parity game, the solution of the parity game provides the information needed to conclude if the model satisfies the formula. This relation is depicted in figure \ref{fig:ltsverificationusingpg}. 
@@ -209,7 +211,7 @@ Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a p
 
 We consider a method of creating parity games from an LTS and a modal $\mu$-calculus formula such that there is a special vertex $w$ in the parity game that indicates if the LTS satisfies the formula; if and only if $w$ is won by player 0 is the formula satisfied.
 
-First we introduce the notion of unfolding. A fixpoint formula $\mu X . \varphi$ can be unfolded resulting in formula $\varphi$ where every occurrence of $X$ is replaced by $\mu X . \varphi$, denoted by $\varphi [ X:= \mu X . \varphi]$. Interpreting a fixpoint formula is results in the same set as interpreting its unfolding as shown in \cite{Bradfield2018}; ie. $[\![\mu X . \varphi]\!]^\eta = [\![\varphi[X:=\mu X . \varphi]]\!]^\eta$. The same holds for the fixpoint operator $\nu$.
+First we introduce the notion of unfolding. A fixpoint formula $\mu X . \varphi$ can be unfolded, resulting in formula $\varphi$ where every occurrence of $X$ is replaced by $\mu X . \varphi$, denoted by $\varphi [ X:= \mu X . \varphi]$. Interpreting a fixpoint formula results in the same set as interpreting its unfolding as shown in \cite{Bradfield2018}; i.e. $[\![\mu X . \varphi]\!]^\eta = [\![\varphi[X:=\mu X . \varphi]]\!]^\eta$. The same holds for the fixpoint operator $\nu$.
 
 Next we define the Fischer-Ladner closure for a closed $\mu$-calculus formula 
 \cite{STREETT1989249,FISCHER1979194}. The Fischer-Ladner closure of $\varphi$ is the set $\textit{FL}(\varphi)$ of closed formulas containing at least $\varphi$. Furthermore for every formula $\psi$ in $\textit{FL}(\varphi)$ it holds that for every direct subformula $\psi'$ of $\psi$ there is a formula in $\textit{FL}(\varphi)$ that is equivalent to $\psi'$.
@@ -233,28 +235,28 @@ We also define the alternation depth of a formula.
 	The dependency order on bound variables of $\varphi$	is the smallest partial order such that $X \leq_\varphi Y$ if $X$ occurs free in $\sigma Y. \psi$ . The alternation depth of a $\mu$-variable X in formula $\varphi $ is the maximal length of a chain $X_1 \leq_\varphi  \dots \leq_\varphi X_n$ where $X = X_1$, variables $X_1, X_3, \dots$ are $\mu$-variables and variables $X_2, X_4, \dots$ are $\nu$-variables. The alternation depth of a $\nu$-variable is defined similarly. The alternation depth of formula $\varphi$, denoted $adepth(\varphi)$, is the maximum of the alternation depths of the variables bound in $\varphi$, or zero if there are no fixpoints.
 \end{definition}
 \begin{example}
-	Consider the formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ which states that for an LTS with $Act = \{ ins, std\}$ the action \textit{std} must occur infinitely often over all runs. Since $X$ occurs free in $\mu Y. ([ins] Y \wedge [std]X)$ we have $adepth(Y) = 1$ and $adepth(X) = 2$.
+	Consider the formula $\varphi = \nu X. \mu Y. ([ins]Y \wedge [std] X)$ which states that for an LTS with $Act = \{ ins, std\}$ the action \textit{std} must occur infinitely often over all infinite runs. Since $X$ occurs free in $\mu Y. ([ins] Y \wedge [std]X)$ we have $adepth(Y) = 1$ and $adepth(X) = 2$.
 \end{example}
-As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the same alternation depth as its unfolding $\psi[X:=\mu X. \psi]$. Similarly for the greatest fixpoint. We can now define the transformation from an LTS and a formula to a parity game.
+As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the same alternation depth as its unfolding $\psi[X:=\mu X. \psi]$. Similarly for the greatest fixpoint. 
+
+Next we define the transformation from an LTS and a formula to a parity game.
 \begin{definition}[\cite{Bradfield2018}]
 	\label{def_LTS2PG}
-	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and closed formula $\varphi$ to a total parity game $(V, V_0, V_1, E, \Omega)$.
+	LTS2PG($M, \varphi$) converts LTS $M = (S, Act, trans, s_0)$ and closed formula $\varphi$ to a parity game $(V, V_0, V_1, E, \Omega)$.
 	
-	Vertices are created for every state with every formula in the Fischer-Ladner closure of $\varphi$. Also sink vertices $l_0$ and $l_1$ are added where player $\alpha$ looses when the token ends up in $l_\alpha$. We define the set of vertices:
-	\[ V = (S \times \textit{FL}(\varphi)) \cup \{l_0,l_1\} \]
+	Vertices in the parity game are presented as pairs of states and sub-formulas. A vertex is created for every state with every formula in the Fischer-Ladner closure of $\varphi$. We define the set of vertices:
+	\[ V = S \times \textit{FL}(\varphi) \]
 	
 	Vertices have the following owner and successors:\\
 	\begin{center}
 		\begin{tabular}{l|l|l}
 			Vertex & Owner & Successor(s) \\\hline
-			$l_0$ & 1 & $l_0$\\
-			$l_1$ & 1 & $l_1$\\
-			$(s,\bot)$ & 0     & $l_0$         \\
-			$(s,\top)$ & 1     & $l_1$         \\
+			$(s,\bot)$ & 0     &        \\
+			$(s,\top)$ & 1     &       \\
 			$(s,\psi_1 \vee \psi_2)$ & 0       & $(s,\psi_1)$ and $(s,\psi_2)$ \\
 			$(s,\psi_1 \wedge \psi_2)$ & 1       & $(s,\psi_1)$ and $(s,\psi_2)$ \\
-			$(s, \langle a \rangle \psi)$ & 0 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$ or $l_0$ if no such $s'$ exists \\
-			$(s, [ a ] \psi)$ & 1 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$ or $l_1$ if no such $s'$ exists \\
+			$(s, \langle a \rangle \psi)$ & 0 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$ \\
+			$(s, [ a ] \psi)$ & 1 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$\\
 			$(s, \mu X. \psi)$ & 1 & $(s, \psi[X:= \mu X. \psi])$ \\
 			$(s, \nu X. \psi)$ & 1 & $(s, \psi[X:= \nu X. \psi])$ 
 		\end{tabular}
@@ -265,7 +267,6 @@ As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the sam
 	Finally we have $\Omega(v) = \begin{cases}
 	2 \lfloor adepth(X) / 2 \rfloor & \text{if } v = (s,\nu X. \psi)\\
 	2 \lfloor adepth(X) / 2 \rfloor + 1 & \text{if } v = (s,\mu X. \psi)\\
-	1 & \text{if } v = l_0\\
 	0 & \text{otherwise}
 	\end{cases}$
 \end{definition}
@@ -278,9 +279,9 @@ As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the sam
 		\label{fig:exverltsprojempty}
 	\end{figure}
 
-	The resulting parity game is depicted in figure \ref{fig:exverpg}. Let $V$ denote the set of vertices of this parity game. There are two vertices with more than one outgoing edge. From vertex $(s_1, [a](\mu X.\phi) \vee \langle b \rangle \top)$ player 0 does not want to play to $(s_1, \langle b \rangle \top)$ because play will end up in $l_0$. From vertex $(s_2, [a](\mu X.\phi)  \vee \langle b \rangle \top)$ player 0 can play to $(s_2, \langle b \rangle \top)$ to bring the play in $l_1$. We get the following winning sets:
+	The resulting parity game is depicted in figure \ref{fig:exverpg}. Let $V$ denote the set of vertices of this parity game. There are two vertices with more than one outgoing edge. From vertex $(s_1, [a](\mu X.\phi) \vee \langle b \rangle \top)$ player 0 does not want to play to $(s_1, \langle b \rangle \top)$ because he/she will not be able to make another move and looses the path. From vertex $(s_2, [a](\mu X.\phi)  \vee \langle b \rangle \top)$ player 0 can play to $(s_2, \langle b \rangle \top)$ to bring the play in $(s_2,\top)$ to win the path. We get the following winning sets:
 	\begin{align*}
-	W_1 &= \{ l_0, (s_1, \langle b \rangle \top )\}\\
+	W_1 &= \{ (s_1, \langle b \rangle \top )\}\\
 	W_0 &= V \backslash W_1
 	\end{align*}
 	With the strategies $\sigma_0$ for player $0$ and $\sigma_1$ for player $1$ being (vertices with one outgoing edge are omitted):
@@ -301,12 +302,11 @@ As shown in \cite{Bradfield2018} it holds that formula $\mu X. \psi$ has the sam
 
 Parity games created in this manner relate back to the model verification question; state $s$ in LTS $M$ satisfies $\varphi$ if and only if player $0$ wins vertex $(s, \varphi)$. This is formally stated in the following theorem which is proven in \cite{Bradfield2018}.
 \begin{theorem}[\cite{Bradfield2018}]
-	\label{the_LTS_PG_REL}Given LTS $M = (S, Act, trans, s_0)$, modal $\mu$-calculus formula $\varphi$ and state $s \in S$ it holds that $(M, s) \models \varphi$ iff $s \in W_0$ for the game $LTS2PG(M, \varphi)$.
+	\label{the_LTS_PG_REL}Given LTS $M = (S, Act, trans, s_0)$, modal $\mu$-calculus formula $\varphi$ and state $s \in S$ it holds that $(M, s) \models \varphi$ if and only if $(s,\varphi) \in W_0$ for the game $LTS2PG(M, \varphi)$.
 \end{theorem}
-Note that the definition in \cite{Bradfield2018} creates non-total games and doesn't use sink vertices $l_0$ and $l_1$, however as argued before using sink vertices to make a game total preserves the winner of anyy vertex in the original game.
 
 \subsubsection{Globally and locally solving parity games}
-Parity games can be solved \textit{globally} or \textit{locally}; globally solving a parity game means that for every vertex in the game it is determined who the winner is. Locally solving a parity game means that for a specific vertex in the game it is determined who the winner is. For some applications of parity games, including model checking, there is a specific vertex that needs to be solved to solve the original problem Locally solving the parity game is sufficient in such cases to solve the original problem.
+Parity games can be solved \textit{globally} or \textit{locally}; globally solving a parity game means that for every vertex in the game it is determined who the winner is. Locally solving a parity game means that for a specific vertex in the game it is determined who the winner is. For some applications of parity games, including model checking, there is a specific vertex that needs to be solved to solve the original problem. Locally solving the parity game is sufficient in such cases to solve the original problem.
 
 Most parity game algorithms (including the two considered next) are concerned with globally solving, when talking about solving a parity game we talk about globally solving it unless stated otherwise. 
 
@@ -314,7 +314,7 @@ Most parity game algorithms (including the two considered next) are concerned wi
 Various algorithms for solving parity games are known, we introduce two of them. First Zielonka's recursive algorithm which is well studied and generally considered to be one of the best performing parity game algorithms in practice \cite{Oink,SolvingPGInPractice}. We also inspect the fixed-point iteration algorithm which tends to perform well for model-checking problems with a low number of distinct priorities \cite{BDDSolvingPG}.
 
 \paragraph{Zielonka's recursive algorithm}
-First we consider Zielonka's recursive algorithm \cite{ZIELONKA1998135,MCNAUGHTON1993149}, which solves total PGs. Pseudo code is presented in algorithm \ref{alg_zlnk_org}. Zielonka's recursive algorithm has a worst-case time complexity of $O(e*n^d)$.
+First we consider Zielonka's recursive algorithm \cite{ZIELONKA1998135,MCNAUGHTON1993149}, which solves total parity games. Pseudo code is presented in algorithm \ref{alg_zlnk_org}. Zielonka's recursive algorithm has a worst-case time complexity of $O(e*n^d)$ where $e$ is the number of edges, $n$ the number of vertices and $d$ the number of distinct priorities.
 \begin{algorithm}
 	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
 	\label{alg_zlnk_org}
@@ -345,11 +345,11 @@ First we consider Zielonka's recursive algorithm \cite{ZIELONKA1998135,MCNAUGHTO
 	\end{algorithmic}
 \end{algorithm}
 
-The algorithm works for solving $G$ by taking the set of vertices with the highest priority and choosing player $\alpha$ such that $\alpha$ has the same parity as the highest priority. Next the algorithm finds set $A$ such that player $\alpha$ can force the play to one of these high priority vertices. Next this set of vertices is removed from $G$ and the resulting subgame $G'$ is solved recursively. 
+The algorithm solves $G$ by taking the set of vertices with the highest priority and choosing player $\alpha$ such that $\alpha$ has the same parity as the highest priority. Next the algorithm finds set $A$ such that player $\alpha$ can force the play to one of these high priority vertices. Next this set of vertices is removed from $G$ and the resulting subgame $G'$ is solved recursively. 
 
-If $G'$ is entirely won by player $\alpha$ then we distinguish three cases for any path played in $G$. Either the path eventually stays in $G'$, $A$ is infinitely often visited or the path eventually stays in $A$. In the first case player $\alpha$ wins because game $G'$ was entirely won by player $\alpha$. In the second and third case player $\alpha$ can play to the highest priority from $A$. The highest priority, which has parity $\alpha$, is visited infinite often and player $\alpha$ wins.
+If $G'$ is entirely won by player $\alpha$ then we distinguish three cases for any path played in $G$. Either the path eventually stays in $G'$, $A$ is infinitely often visited or the path eventually stays in $A$. In the first case player $\alpha$ wins because game $G'$ was entirely won by player $\alpha$. In the second and third case player $\alpha$ can play to the highest priority from $A$. The highest priority, which has parity $\alpha$, is visited infinitely often and player $\alpha$ wins.
 
-If $G'$ is not entirely won by player $\alpha$ we consider winning sets $W'_0$ and $W'_1$. Vertices in set $W'_{\overline{\alpha}}$ are won by player $\overline{\alpha}$ in $G'$ but are also won by player $\overline{\alpha}$ in $G$. The algorithm tries to find all the vertices in $G$ such that player $\overline{\alpha}$ can force the play to a vertex in $W'_{\overline{\alpha}}$ and therefore winning the game. We now have a set of vertices that are definitely won by player $\overline{\alpha}$ in game $G$. In the rest of the game player $\alpha$ can keep the play from $W'_{\overline{\alpha}}$ so the algorithm solves the rest of the game recursively to find the complete winning sets for game $G$.
+If $G'$ is not entirely won by player $\alpha$ we consider winning sets $W'_0$ and $W'_1$ of subgame $G'$. Vertices in set $W'_{\overline{\alpha}}$ are won by player $\overline{\alpha}$ in $G'$ but are also won by player $\overline{\alpha}$ in $G$. The algorithm tries to find all the vertices in $G$ such that player $\overline{\alpha}$ can force the play to a vertex in $W'_{\overline{\alpha}}$ and therefore winning the game. We now have a set of vertices that are definitely won by player $\overline{\alpha}$ in game $G$. In the rest of the game player $\alpha$ can keep the play from $W'_{\overline{\alpha}}$ so the algorithm solves the rest of the game recursively to find the complete winning sets for game $G$.
 
 A complete explanation of the algorithm can be found in \cite{ZIELONKA1998135}, we do introduce definitions for the attractor set and for subgames. 
 
@@ -388,7 +388,9 @@ An attractor set is a set of vertices $A \subseteq V$ calculated for player $\al
 	\caption{Game $G$ showing the attractor calculation for $0\textit{-Attr}(G,U)$}
 	\label{fig:AttrCalcExample}
 \end{figure}
-Figure \ref{fig:AttrCalcExample} shows an example parity game in which an attractor set is calculated for player $0$. For set $U_2$ no more vertices can be attracted so we found the complete attractor set.
+\begin{example}
+	Figure \ref{fig:AttrCalcExample} shows an example parity game in which an attractor set is calculated for player $0$. For set $U_2$ no more vertices can be attracted so we found the complete attractor set.
+\end{example}
 
 The algorithm also creates subgames, where a set of vertices is removed from a parity game to create a new parity game.
 
@@ -406,40 +408,38 @@ The algorithm also creates subgames, where a set of vertices is removed from a p
 Note that a subgame is not necessarily total, however the recursive algorithm always creates subgames that are total (shown in \cite{ZIELONKA1998135}).
 
 \paragraph{Fixed-point iteration algorithm}
-Parity games can be solved by solving an alternating fixed-point formula, as shown in \cite{WALUKIEWICZ2002311}. Consider PG $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
+Parity games can be solved by solving an alternating fixed-point formula \cite{WALUKIEWICZ2002311}. Consider PG $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
 
 Consider the following formula
 \[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(Z_{d-1},\dots,Z_0) \]
 with
 \[ F_0(Z_{d-1},\dots,Z_0) = \{ v \in V_0\ |\ \exists_{w\in V} (v,w) \in E \wedge Z_{\Omega(w)} \} \cup \{ v \in V_1\ |\ \forall_{w\in V} (v,w) \in E \implies Z_{\Omega(w)} \} \]
-where $Z_i \subseteq V$. The formula $\nu X. f(X)$ solves the greatest fixed-point of $X$ in $f$, similarly $\mu X.f(X)$ solves the least fixed-point of $X$ in $f$.
+where $Z_i \subseteq V$. The formula $\nu X. f(X)$ solves the greatest fixed-point of $X$ in $f$, similarly $\mu X.f(X)$ solves the least fixed-point of $X$ in $f$. As shown in \cite{WALUKIEWICZ2002311} formula $S(G)$ is calculates the set of vertices winning for player 0 in parity game $G$.
 
 To understand the formula we consider sub-formula $\nu Z_0. F_0(Z_{d-1},\dots,Z_0)$. This formula holds for vertices from which player $0$ can either force the play into a node with priority $i > 0$ for which $Z_i$ holds or the player can stay in vertices with priority $0$ indefinitely. The formula $\mu Z_0. F_0(Z_{d-1},\dots,Z_0)$ holds for vertices from which player $0$ can force the play into a node with priority $i > 0$, for which $Z_i$ holds in finitely many steps. By alternating fixed-points the formula allows infinitely many consecutive stays in even vertices and finitely many consecutive stays in odd vertices. For an extensive treatment we refer to \cite{WALUKIEWICZ2002311}.
 
-We further inspect formula $S$. Given game $G$, consider the following subformula's:
+We further inspect formula $S$. Given game $G$, consider the following sub-formulas:
 \[ S^{d-1}(Z_{d-1}) = \mu Z_{d-2}.S^{d-2}(Z_{d-2})\]
 \[ S^{d-2}(Z_{d-2}) = \nu Z_{d-3}.S^{d-3}(Z_{d-3})\]
 \begin{center}
 	\dots
 \end{center}
 \[ S^{0}(Z_0) = F_0(Z_{d-1},\dots,Z_0)\]
-The fixed-point variables are all elements of $2^V$, therefore we have for every subformula the following type:
+The fixed-point variables are all elements of $2^V$, therefore we have for every sub-formula the following type:
 \[ S^i(Z_i) : 2^V \rightarrow 2^V \]
-Furthermore, since $V$ is finite, the partially ordered set $\langle 2^V, \subseteq \rangle$ is a complete lattice; for every subset $X \subseteq 2^V$ we have infimum $\bigcap_{x \in X} x$ and supremum $\bigcup_{x \in X} x$.
+Furthermore, since $V$ is finite, the partially ordered set $\langle 2^V, \subseteq \rangle$ is a complete lattice; for every subset $X \subseteq 2^V$ we have infimum $\bigcap_{x \in X} x$ and supremum $\bigcup_{x \in X} x$. Finally every sub-formula $S^i(Z_i)$ is monotonic, ie. if $S^i(Z_i) \geq S^i(Z_i')$ then $Z_i \geq Z_i'$.
 
-Finally every subformula is $S^i(Z_i)$ is monotonic, ie. if $S^i(Z_i) \geq S^i(Z_i')$ then $Z_i \geq Z_i'$.
-
-Fixed-point formula's can be solved by fixed-point iteration. As shown in \cite{Emerson:1986:MCP:900378} we can calculate $\mu X.f(X)$, where $f$ is monotonic in $X$ and $X \in 2^V$, by iterating $X$:
+Fixed-point formula's can be solved by \textit{fixed-point iteration}. As shown in \cite{Emerson:1986:MCP:900378} we can calculate $\mu X.f(X)$, where $f$ is monotonic in $X$ and $X \in 2^V$, by iterating $X$:
 \[ \mu X.f(X) = \bigcup_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \subseteq \mu X.f(X)$. So picking the smallest value possible for $X_0$ will always correctly calculate $\mu X. f(X)$.
 
-Similarly we can calculate fixed-point $\nu X.f(X)$ when $f$ is monotonic in $X$ by iterating $X$.
+Similarly we can calculate fixed-point $\nu X.f(X)$ when $f$ is monotonic in $X$ by iterating $X$:
 \[ \nu X.f(X) = \bigcap_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \supseteq \nu X.f(X)$. So picking the largest value possible for $X_0$ will always correctly calculate $\nu X. f(X)$.
 
 Since every subformula is monotonic and maps from a value in $2^V$ to another value in $2^V$ we can apply fixed-point iteration to solve the subformula's, we choose initial values $\emptyset$ for least fixed-point variables and $V$ for greatest fixed-point variables.
 
-An algorithm to perform the iteration is presented in \cite{FPITE} and shown in algorithm \ref{alg_FPITEorg}. This algorithm has a worst-case time complexity of $O(e * n ^d)$.
+An algorithm to perform the iteration is presented in \cite{FPITE} and shown in algorithm \ref{alg_FPITEorg}. This algorithm has a worst-case time complexity of $O(e * n ^d)$ where $e$ is the number of edges, $n$ the number of vertices and $d$ the number of distinct priorities.
 \begin{algorithm}
 	\caption{Fixed-point iteration}
 	\label{alg_FPITEorg}
@@ -486,7 +486,7 @@ A set can straightforwardly be represented by a collection containing all the el
 
 \begin{example}
 	\label{ex_boolform}
-	The set $S = \{0,1,2,4,5,6 \}$ can be expressed by boolean formula:
+	The set $S = \{ 2,4,6,7 \}$ can be expressed by boolean formula:
 	\[ F(x_2,x_1,x_0) = (\neg x_2 \wedge x_1 \wedge \neg x_0) \vee (x_2 \wedge (x_1 \vee \neg x_0)) \]
 	where $x_0,x_1$ and $x_2$ are boolean variables. The formula gives the following truth table:\\
 	\begin{center}
@@ -512,19 +512,19 @@ A set can straightforwardly be represented by a collection containing all the el
 			\hline
 		\end{tabular} 
 	\end{center}
-	The function $F$ defines set $S'$ in the following way: $S' = \{x_2x_1x_0\ |\ F(x_2,x_1,x_0) = 1 \}$. As we can see set $S'$ the same numbers as $S$ but represented binary.
+	The function $F$ defines set $S'$ in the following way: $S' = \{x_2x_1x_0\ |\ F(x_2,x_1,x_0) = 1 \}$. As we can see set $S'$ contains the same numbers as $S$ but represented binary.
 \end{example}
 We can perform set operations on sets represented as boolean functions by performing logical operations on the functions. For example, given boolean formula's $f$ and $g$ representing sets $V$ and $W$ the formula $f \wedge g$ represents set $V \cap W$.
 
-Given a set $S$ with arbitrary elements we can represent subsets $S' \subseteq S$ as boolean formula's by assigning a number to every element in $S$ and create a boolean formula that maps boolean variables to true if and only if they represent a number such that the element associated with this number in $S$ is also in $S'$.
+Given a set $S$ with arbitrary elements we can represent subsets $S' \subseteq S$ as boolean formula's by assigning a number to every element in $S$ and creating a boolean formula that maps boolean variables to true if and only if they represent a number such that the element associated with this number in $S$ is also in $S'$.
 
 \subsubsection{Binary decision diagrams}
 A boolean function can efficiently be represented as a binary decision diagram (BDD), for a comprehensive treatment of BDDs we refer to \cite{BDD_book,Handbook_BDD_Chapter}.
 
-BDDs represent boolean formula's as a graph where a directed graph every vertices represent boolean formula's that have two outgoing edges labelled 0 and 1. Furthermore the graph contains special vertices $0$ and $1$ that have no outgoing edges. We decide if a boolean variable assignment satisfies the formula by starting in the initial vertex of the graph and following a path until we get to either vertex 0 or 1. Since every vertex represents a boolean formula we can create a path from the initial vertex by choosing edge 0 at a vertex if the boolean variable represented by that vertex is false in the variable assignment and choosing edge 1 if is true. Eventually we end up in either vertex 0 or 1. In the former case the boolean variable assignment does not satisfy the formula, in the latter it does.
+BDDs represent boolean formula's as a directed graph where every vertex represents a boolean variable and has two outgoing edges labelled 0 and 1. Furthermore the graph contains special vertices $0$ and $1$ that have no outgoing edges. We decide if a boolean variable assignment satisfies the formula by starting in the initial vertex of the graph and following a path until we get to either vertex 0 or 1. Since every vertex represents a boolean formula we can create a path from the initial vertex by choosing edge 0 at a vertex if the boolean variable represented by that vertex is false in the variable assignment and choosing edge 1 if is true. Eventually we end up in either vertex 0 or 1. In the former case the boolean variable assignment does not satisfy the formula, in the latter it does.
 
 \begin{example}
-	Consider the boolean formula in example \ref{ex_boolform}. This formula can be represented as the BDD shown in Figure \ref{fig:ex_simplebdd}. The vertices representing boolean variables are shown as circles and the boolean variable they represent is indicated inside them. The special vertices are represented as squares and the initial vertex is represented by an incoming edge with that has no origin vertex.
+	Consider the boolean formula in example \ref{ex_boolform}. This formula can be represented as the BDD shown in Figure \ref{fig:ex_simplebdd}. The vertices representing boolean variables are shown as circles and the boolean variables they represent are indicated inside them. The special vertices are represented as squares and the initial vertex is represented by an edge with that has no origin vertex.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.3]{Examples/BDD/simpleexample}
@@ -535,4 +535,4 @@ BDDs represent boolean formula's as a graph where a directed graph every vertice
 	The path created from variable assignment $x_2x_1x_0 = 011$ is highlighted in blue in the diagram and shows that this assignment is indeed not satisfied by the boolean formula. The red path shows the variable assignments $110$ and $111$. Determining the path and the outcome for every variable assignment results in the same truth table as seen in example \ref{ex_boolform}.
 \end{example}
 
-Given $x$ boolean variables and two boolean functions encoded as BDDs we can perform binary operations $\vee,\wedge$ on them in $O(2^{2x})=O(m^2)$ where $m = 2^x$ is the maximum set size that can be represented by $x$ variables \cite{BDD_running_time,Handbook_BDD_Chapter}. The running time specifically depends on the size of the decision diagrams, in general if the boolean functions are simple then the size of the decision diagram is also small and operations can be performed quickly.
+Given $n$ boolean variables and two boolean functions encoded as BDDs we can perform binary operations $\vee,\wedge$ on the BDDs in $O(2^{2n})=O(m^2)$ where $m = 2^n$ is the maximum set size that can be represented by $n$ variables \cite{BDD_running_time,Handbook_BDD_Chapter}. The running time specifically depends on the size of the decision diagrams, in general if the boolean functions are simple then the size of the decision diagram is also small and operations can be performed quickly.
