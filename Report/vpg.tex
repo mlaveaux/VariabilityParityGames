@@ -26,7 +26,7 @@ VPGs are depicted as parity games with labelled edges that represent the sets of
 	\end{figure}
 \end{example}
 
-A VPG can be played for a vertex-configuration pair. When playing a VPG for $v\in V$ and $c \in \mathfrak{C}$ we start by placing a token on vertex $v$. We proceed with the game similar as with a parity game however player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Similar as in a parity game this results in a path. Again the winner is determined by the highest priority occurring infinitely often in the path or, in case of a finite path, the winner is the opponent of the player that can't make a move any more. Paths might be valid for some configurations but not valid for others, we call a path valid for configuration $c$ if and only if for every $i > 0$ we get $(\pi_{i},\pi_{i+1}) \in E$ and $c \in \theta(\pi_{i},\pi_{i+1})$.
+A VPG can be played for a vertex-configuration pair. When playing a VPG for $v\in V$ and $c \in \mathfrak{C}$ we start by placing a token on vertex $v$. We proceed with the game similar as with a parity game however player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Similar as in a parity game this results in a path. Again the winner is determined by the highest priority occurring infinitely often in the path or, in case of a finite path, the winner is the opponent of the player that cannot make a move any more. Paths might be valid for some configurations but not valid for others, we call a path valid for configuration $c$ if and only if for every $i > 0$ we get $(\pi_{i},\pi_{i+1}) \in E$ and $c \in \theta(\pi_{i},\pi_{i+1})$.
 
 Moves made by the players can again be determined by strategies, however for different configurations for which the game is played different strategies might be needed. So we define a strategy not only for a player but also for a configuration. We define a strategy for player $\alpha$ and configuration $c \in \mathfrak{C}$ as a partial function $\sigma_\alpha^c : V^*V_\alpha \rightarrow V$ that maps a series of vertices ending with a vertex owned by player $\alpha$ to the next vertex such that for any $\sigma_\alpha^c(w_0\dots w_m) = w$ we have $(w_m,w) \in E$ and $c \in \theta(w_m,w)$. A path $\pi$ conforms to strategy $\sigma_\alpha^c$ if for every $i > 0$ with $\pi_{i-1}\in V_\alpha$ we have $\pi_i = \sigma_\alpha(\pi_0\pi_1\dots\pi_{i-1})$.
 
@@ -127,7 +127,7 @@ Similar to parity games a VPG can be made total by creating sink vertices $l_0$ 
 
 \begin{example}
 	\label{ex_FTS2VPG}
-	Consider FTS $M$ as shown in Figure \ref{fig:exverfts} that has features $f$ and $g$ and products $\{\emptyset,\{f\},\{f,g\}\}$. Modal $\mu$-calculus formula $\varphi = \mu X.([a]X \vee \langle b \rangle \top)$ expresses that on any path reached by \textit{a}'s we can eventually do a \text{b} action. This holds true for product $\{\emptyset\}$ because $s_1$ can only go to $s_2$ where $b$ can always be done. For product $\{f\}$ this doesn't hold because ones in $s_1$ it is possible to stay in $s_1$ indefinitely through an $a$ transition. For product $\{f,g\}$ however the formula does hold because we can indeed stay in $s_1$ indefinitely however from $s_1$ we can always do a $b$ step.
+	Consider FTS $M$ as shown in Figure \ref{fig:exverfts} that has features $f$ and $g$ and products $\{\emptyset,\{f\},\{f,g\}\}$. Modal $\mu$-calculus formula $\varphi = \mu X.([a]X \vee \langle b \rangle \top)$ expresses that on any path reached by \textit{a}'s we can eventually do a \text{b} action. This holds true for product $\{\emptyset\}$ because $s_1$ can only go to $s_2$ where $b$ can always be done. For product $\{f\}$ this does not hold because ones in $s_1$ it is possible to stay in $s_1$ indefinitely through an $a$ transition. For product $\{f,g\}$ however the formula does hold because we can indeed stay in $s_1$ indefinitely however from $s_1$ we can always do a $b$ step.
 	
 	
 	Figure \ref{fig:exvevpg} shows the VPG resulting from \textit{FTS2VPG}$(M,\varphi)$ made total using sink vertices $l_0$ and $l_1$. Products $\{\emptyset\},\{f\},\{f,g\}$ are depicted as configurations $c_0,c_1,c_2$ respectively.
@@ -191,7 +191,7 @@ edge node [above] {\textit{FTS2VPG}$(M,\varphi)$} (m-1-5)
 (m-2-5)
 (m-1-5) edge [double] node [right] {$\Pi_p$} (m-2-5);
 \end{tikzpicture}\\
-We know from existing theory that solving a parity game constructed using \textit{LTS2PG} can be used to model check an LTS, furthermore we have seen that the winning sets of an VPG for configuration $c$ are equal to the winning sets of that VPG projected onto $c$. Given these facts and the lemma above we can prove that VPGs can be used to model check FTSs.
+We know from existing theory that solving a parity game constructed using \textit{LTS2PG} can be used to model check an LTS, furthermore we have seen that the winning sets of a VPG for configuration $c$ are equal to the winning sets of that VPG projected onto $c$. Given these facts and the lemma above we can prove that VPGs can be used to model check FTSs.
 \begin{theorem}
 	\label{the_FTS2VPG_is_correct} Given:
 	\begin{itemize}
@@ -222,7 +222,7 @@ it holds that $(M_{|p},s) \models \varphi$ if and only if $(s,\varphi) \in W_0^p
 	Using this strategy player 0 can prevent the path infinitely often visiting $(s_1,\mu X.\psi)$ by playing to $(s_1,\langle b \rangle \top)$ and to $(s_1,\top)$ next which brings the play in $l_1$ winning it for player 0.
 \end{example}
 
-We conclude by showing visualizing the verification of an FTS in figure \ref{fig:ftsverificationusingvpg}.
+We conclude by visualizing the verification of an FTS in figure \ref{fig:ftsverificationusingvpg}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{Diagrams/FTSVerificationUsingVPG}

@@ -7,7 +7,7 @@ The parsing phase of the algorithm creates BDDs from the input file, in doing so
 \subsubsection{Game representation}
 The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge (either explicitly or symbolically). For product based algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
 
-Note that only the representation of the games used during the algorithm is relevant, since we don't evaluate the parsing phase it is not relevant how the games are stored in a file.
+Note that only the representation of the games used during the algorithm is relevant, since we do not evaluate the parsing phase it is not relevant how the games are stored in a file.
 \subsubsection{Product based algorithms}
 Three product based algorithms are implemented, ie. algorithms that solve parity games:
 \begin{itemize}

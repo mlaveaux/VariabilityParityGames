@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20191002085559"/>
+<info created="D:20190513152140" modified="D:20191002123408"/>
 <preamble>\usepackage{amsfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -376,12 +376,12 @@ h
 304 132 m
 188.68 0 0 -188.68 480 64 434.238 247.046 a
 </path>
-<text transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_1</text>
-<text matrix="1 0 0 1 160 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_2</text>
-<text matrix="1 0 0 1 320 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_3</text>
-<text matrix="1 0 0 1 352 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_6</text>
-<text matrix="1 0 0 1 -32 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_4</text>
-<text matrix="1 0 0 1 176 -128" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_5</text>
-<text matrix="1 0 0 1 160 -304" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_7</text>
+<text transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">\hat{v}_1\ |\ \mathfrak{C}</text>
+<text matrix="1 0 0 1 160 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">\hat{v}_2\ |\ \mathfrak{C}</text>
+<text matrix="1 0 0 1 320 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">\hat{v}_3\ |\ \mathfrak{C}</text>
+<text matrix="1 0 0 1 344 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\hat{v}_6\ |\ \mathfrak{C}</text>
+<text matrix="1 0 0 1 -24 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" halign="right" valign="bottom" size="Large" style="math">\hat{v}_4\ |\ \mathfrak{C}</text>
+<text matrix="1 0 0 1 168 -128" transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\hat{v}_5\ |\ \mathfrak{C}</text>
+<text matrix="1 0 0 1 160 -304" transformations="translations" pos="128 400" stroke="black" type="label" width="34.408" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">\hat{v}_7\ |\ \mathfrak{C}</text>
 </page>
 </ipe>

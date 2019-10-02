@@ -1,4 +1,4 @@
-Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, we want to find these sets in an efficient manner such that the algorithm doesn't spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
+Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, we want to find these sets in an efficient manner such that the algorithm does not spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
 
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
@@ -30,24 +30,24 @@ The subgames created are based on a set of configurations, we define the subgame
 		\item $E' = \{ e \in E\ |\ \theta'(e) \neq \emptyset \}$.
 	\end{itemize}
 \end{definition}
-VPGs are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality. Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
+VPGs we consider are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality. Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
 
 Finally a subsubgame of two configuration sets is the same as the subgame of the intersection of these configuration sets, ie. $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
 
 \subsubsection{Finding $P_0$ and $P_1$}
-We can find $P_0$ and $P_1$ by using \textit{pessimistic} parity games; a pessimistic PG is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the PG allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
+We can find $P_0$ and $P_1$ by using \textit{pessimistic} parity games; a pessimistic parity game is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the parity game allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
 \begin{definition}
 	\label{def_pess_game}
-	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we define pessimistic PG $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$, such that
+	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we define pessimistic parity game $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$, such that
 	\[ G_{\triangleright\alpha} = \{V,V_0,V_1,E',\Omega \} \]
 	with
 	\[ E' = \{ (v,w) \in E\ |\ v \in V_{\overline{\alpha}} \vee \theta(v,w) = \mathfrak{C} \} \]
 \end{definition}
 
 
-Note that pessimistic parity games are not necessarily total. A play in a PG that is not total might result in a finite path, in such a case the player that can't make a move looses the play.
+Note that pessimistic parity games are not necessarily total. A play in a parity game that is not total might result in a finite path, in such a case the player that cannot make a move looses the play.
 
-When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_0,W_1$, every vertex in $W_\alpha$ is winning for player $\alpha$ in $G$ played for any configuration, as shown in the following theorem.
+When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning sets $W_0,W_1$, every vertex in $W_\alpha$ is winning for player $\alpha$ in $G$ played for any configuration, as shown in the following theorem.
 \begin{theorem}
 	\label{the_pess_is_winning_for_all_conf}
 	Given:
@@ -56,7 +56,7 @@ When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_
 		\item configuration $c \in \mathfrak{C}$,
 		\item winning sets $W_0^c, W_1^c$ for game $G$,
 		\item player $\alpha \in \{0,1\}$ and
-		\item pessimistic PG $G_{\triangleright\alpha}$ with winning sets $P_0$ and $P_1$
+		\item pessimistic parity game $G_{\triangleright\alpha}$ with winning sets $P_0$ and $P_1$
 	\end{itemize}
 	we have $P_\alpha \subseteq W_\alpha^c$.
 	\begin{proof}
@@ -64,32 +64,36 @@ When solving a pessimistic PG $G_{\triangleright\alpha}$ we get winning sets $W_
 		
 		First we observe that any edge that is taken by player $\alpha$ in game $G_{\triangleright\alpha}$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
 		
-		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but can't be taken in $G_{|c}$, in such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ can't win a vertex in $G_{\triangleright\alpha}$ then he/she can't win that vertex in $G_{|c}$.
+		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but cannot be taken in $G_{|c}$, in such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ cannot win a vertex in $G_{\triangleright\alpha}$ then he/she cannot win that vertex in $G_{|c}$.
 		
 		We can conclude that applying the strategy from game $G_{\triangleright\alpha}$ in game $G_{|c}$ for player $\alpha$ wins the same or more vertices.
 	\end{proof}
 \end{theorem}
-Figure \ref{fig:VPG2PPGs} shows an example VPG with corresponding pessimistic games, after solving the pessimistic games we find $P_0 = \{v_2\}$ and $P_1 = \{v_0\}$.
-\begin{figure}[h]
-	\centering
-	\begin{subfigure}{1\textwidth}
+
+\begin{example}
+	Figure \ref{fig:VPG2PPGs} shows an example VPG with corresponding pessimistic games, after solving the pessimistic games we find $P_0 = \{v_2\}$ and $P_1 = \{v_0\}$.
+	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.4]{Examples/PPG/VPG}
-		\caption{VPG $G$ consisting of 2 configurations}
-	\end{subfigure}\\
-	\begin{subfigure}{1\textwidth}
-		\centering
-		\includegraphics[scale=0.4]{Examples/PPG/P0}
-		\caption{Pessimistic game $G_{\triangleright0}$}
-	\end{subfigure}\\
-	\begin{subfigure}{1\textwidth}
-		\centering
-		\includegraphics[scale=0.4]{Examples/PPG/P1}
-		\caption{Pessimistic game $G_{\triangleright1}$}
-	\end{subfigure}
-	\caption{A VPG with its corresponding pessimistic games}
-	\label{fig:VPG2PPGs}
-\end{figure}
+		\begin{subfigure}{1\textwidth}
+			\centering
+			\includegraphics[scale=0.4]{Examples/PPG/VPG}
+			\caption{VPG $G$ consisting of 2 configurations}
+		\end{subfigure}\\
+		\begin{subfigure}{1\textwidth}
+			\centering
+			\includegraphics[scale=0.4]{Examples/PPG/P0}
+			\caption{Pessimistic game $G_{\triangleright0}$}
+		\end{subfigure}\\
+		\begin{subfigure}{1\textwidth}
+			\centering
+			\includegraphics[scale=0.4]{Examples/PPG/P1}
+			\caption{Pessimistic game $G_{\triangleright1}$}
+		\end{subfigure}
+		\caption{A VPG with its corresponding pessimistic games}
+		\label{fig:VPG2PPGs}
+	\end{figure}
+\end{example}
+
 \paragraph{Pessimistic subgames}
 Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winning for player $\alpha$ in pessimistic subgames of $G$, as shown in the following lemma.
 \begin{lemma}
@@ -192,7 +196,7 @@ Similarly we can calculate fixed-point a greatest fixed-point as follows:
 \[ \nu X.f(X) = \bigcap_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \supseteq \nu X.f(X)$. So picking the largest value possible for $X_0$ will always correctly calculate $\nu X. f(X)$.
 
-Let $G$ be a PG and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point iterate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
+Let $G$ be a parity game and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point iterate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
 \[ P_0 \subseteq W_0 \subseteq V\backslash P_1\]
 This restriction can be used to efficiently iterate $S(G)$. If no bounds are know we would iterate fixed-point formula starting at $V$ or $\emptyset$ which are the largest and smallest values possible, however given the bounds we can start our iterations of greatest fixed-point variables at $V\backslash P_1$ and start our iterations of least fixed-point variables at $P_0$. The following lemma's and theorem prove this.
 
@@ -210,7 +214,7 @@ First we show that when a bound on a fixed-point formula is known and we iterate
 	\begin{proof}
 		Assume $R^\bot \supset f(X^i) = X^{i+1}$. By fixed-point iteration definition we have $\nu X.f(X) = \bigcap_{j\geq0} X^j$, so we find $R^\bot \supset \nu X.f(x)$ which is a contradiction so $R^\bot \subseteq f(X^i)$.
 		
-		Assume $X^{i+1} = f(X^i) \supset R^\top$. We start iterating at $X^0 = R^\top$ and have $X^{i+1} \supset X^0$. Consider $f(X^0)$, if $f(X^0) \subseteq X^0$ then $X^1 \subseteq X^0$ and therefore (because of monotonicity) $f(X^1) \subseteq f(X^0) = X^1$, this gives a decreasing series of $X$ values never becoming larger than $R^\top$ and therefore we can't have $X^{i+1} \supset X^0$. We can conclude that $X^1 = f(X^0) \supset X^0$. Next consider $f(X^1)$, we have $X^1 \supset X^0$ therefore (because of monotonicity) we get $f(X^1) \supseteq f(X^0) = X^1$. We have found $X^1 \supset R^\top$ and $f(X^1) \supseteq X^1$, by applying the Knaster-Tarski theorem (\ref{the_knaster_tarski}) we conclude that the greatest fixed-point of $f$ is at least $X^1 \supset R^\top$. This is a contradiction because $\nu X.f(X) \subseteq R^\top$ so the assumption doesn't hold and $f(X^i) \subseteq R^\top$.
+		Assume $X^{i+1} = f(X^i) \supset R^\top$. We start iterating at $X^0 = R^\top$ and have $X^{i+1} \supset X^0$. Consider $f(X^0)$, if $f(X^0) \subseteq X^0$ then $X^1 \subseteq X^0$ and therefore (because of monotonicity) $f(X^1) \subseteq f(X^0) = X^1$, this gives a decreasing series of $X$ values never becoming larger than $R^\top$ and therefore we cannot have $X^{i+1} \supset X^0$. We can conclude that $X^1 = f(X^0) \supset X^0$. Next consider $f(X^1)$, we have $X^1 \supset X^0$ therefore (because of monotonicity) we get $f(X^1) \supseteq f(X^0) = X^1$. We have found $X^1 \supset R^\top$ and $f(X^1) \supseteq X^1$, by applying the Knaster-Tarski theorem (\ref{the_knaster_tarski}) we conclude that the greatest fixed-point of $f$ is at least $X^1 \supset R^\top$. This is a contradiction because $\nu X.f(X) \subseteq R^\top$ so the assumption does not hold and $f(X^i) \subseteq R^\top$.
 	\end{proof}
 \end{lemma}
 
@@ -225,7 +229,7 @@ First we show that when a bound on a fixed-point formula is known and we iterate
 	we iterate $X$ by starting with $X^0 = R^\bot$. For any $i \geq 0$ it holds that
 	\[ R^\bot \subseteq f(X^i) \subseteq R^\top \]
 	\begin{proof}
-		Assume $R^\bot \supset f(X^i) = X^{i+1}$. We start iteration at $X^0 = R^\bot$ and have $X^{i+1} \subset X^0$. Consider $f(X^0)$, if $f(X^0) \supseteq X^0$ then $X^1 \supseteq X^0$ and therefore (because of monotonicity) $f(X^1) \supseteq f(X^0) = X^1$, this gives an increasing series of $X$ values never becoming smaller than $R^\bot$ and therefore we can't have $X^{i+1} \subset X^0$. We can conclude that $X^1 = f(X^0) \subset X^0$. Next consider $f(X^1)$, we have $X^1 \subset X^0$ therefore (because of monotonicity) we get $f(X^1) \subseteq f(X^0) = X^1$. We have found $X^1 \subset R^\bot$ and $f(X^1) \subseteq X^1$, by applying the Knaster-Tarski theorem (\ref{the_knaster_tarski}) we conclude that the least fixed-point of $f$ is at most $X^1 \subset R^\bot$. This is a contradiction because $R^\bot \subseteq \mu X.f(X)$ so the assumption doesn't hold and $R^\bot \subseteq f(X^i)$.
+		Assume $R^\bot \supset f(X^i) = X^{i+1}$. We start iteration at $X^0 = R^\bot$ and have $X^{i+1} \subset X^0$. Consider $f(X^0)$, if $f(X^0) \supseteq X^0$ then $X^1 \supseteq X^0$ and therefore (because of monotonicity) $f(X^1) \supseteq f(X^0) = X^1$, this gives an increasing series of $X$ values never becoming smaller than $R^\bot$ and therefore we cannot have $X^{i+1} \subset X^0$. We can conclude that $X^1 = f(X^0) \subset X^0$. Next consider $f(X^1)$, we have $X^1 \subset X^0$ therefore (because of monotonicity) we get $f(X^1) \subseteq f(X^0) = X^1$. We have found $X^1 \subset R^\bot$ and $f(X^1) \subseteq X^1$, by applying the Knaster-Tarski theorem (\ref{the_knaster_tarski}) we conclude that the least fixed-point of $f$ is at most $X^1 \subset R^\bot$. This is a contradiction because $R^\bot \subseteq \mu X.f(X)$ so the assumption does not hold and $R^\bot \subseteq f(X^i)$.
 		
 		Assume $X^{i+1} = f(X^i) \supset R^\top$. By fixed-point iteration definition we have $\mu X.f(X) = \bigcup_{j\geq0}X^j$, so we find $\mu X.f(x) \supset R^\top $ which is a contradiction so $f(X^i) \subseteq R^\top$.
 	\end{proof}
@@ -233,7 +237,7 @@ First we show that when a bound on a fixed-point formula is known and we iterate
 Using this property of iterating bounded fixed-point variables we can prove that we can indeed start our iteration at the bounds when solving $S(G)$.
 \begin{theorem}
 	\label{the_FPITE_starting}
-	Given PG $G = (V,V_0,V_1,E,\Omega)$ with $P_0$ and $P_1$ such that vertices  in $P_0$ are won by player $0$ in game $G$ and vertices in $P_1$ are won by player $1$ in game $G$ we can solve $S(G)$ by iterating the fixed-point variables starting at $P_0$ for least fixed-points and starting at $V \backslash P_1$ for greatest fixed-points.
+	Given parity game $G = (V,V_0,V_1,E,\Omega)$ with $P_0$ and $P_1$ such that vertices  in $P_0$ are won by player $0$ in game $G$ and vertices in $P_1$ are won by player $1$ in game $G$ we can solve $S(G)$ by iterating the fixed-point variables starting at $P_0$ for least fixed-points and starting at $V \backslash P_1$ for greatest fixed-points.
 	\begin{proof}
 		Let $f(Z_{d-1}) = \mu Z_{d-2}\dots\nu Z_0.F_0(Z_{d-1},\dots,Z_0)$. Because $\nu Z_{d-1}.f(Z_{d-1})$ calculates $W_0$ we know $P_0 \subseteq \nu Z_{d-1}.f(Z_{d-1}) \subseteq V \backslash P_1$ so we can start the fixed-point iteration at $Z_{d-1}^0 = V\backslash P_1$. Using lemma \ref{lem_fixpoint_bounds_nu} we find for any $i \geq 0$ we have $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$.
 		

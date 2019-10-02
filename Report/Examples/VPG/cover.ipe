@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20191001095250"/>
+<info created="D:20190513152140" modified="D:20191002085608"/>
 <preamble>\usepackage{amsfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -313,7 +313,7 @@ h
 <text matrix="1 0 0 1 48 -464" transformations="translations" pos="80 720" stroke="white" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
 <text matrix="1 0 0 1 24 -368" transformations="translations" pos="144 752" stroke="black" type="label" width="61.507" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\{c_0,c_1,c_2\}</text>
 <text matrix="1 0 0 1 200 -368" transformations="translations" pos="144 752" stroke="black" type="label" width="61.507" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\{c_0,c_1,c_2\}</text>
-<text matrix="1 0 0 1 144 -560" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" halign="right" valign="baseline" size="Large" style="math">\{c_0,c_3\}</text>
+<text matrix="1 0 0 1 144 -560" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" halign="right" valign="baseline" size="Large" style="math">\{c_0,c_2\}</text>
 <text matrix="1 0 0 1 4 -572" transformations="translations" pos="144 752" stroke="black" type="label" width="61.507" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_1,c_2\}</text>
 <text matrix="1 0 0 1 144 -456" transformations="translations" pos="144 752" stroke="black" type="label" width="61.507" height="10.756" depth="3.59" halign="right" valign="baseline" size="Large" style="math">\{c_0,c_1,c_2\}</text>
 <text matrix="1 0 0 1 -60 -440" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_1\}</text>

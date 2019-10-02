@@ -116,7 +116,7 @@ The following theorem shows that the winning sets are mutually exclusive.
 		
 		If $W'_{\overline{\alpha}} \neq \emptyset$ then we find a value for $C_W$. If $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$ then $W'_{\overline{\alpha}}$ only contains vertices with a configuration that is in $C_W$. Winning set $W_\alpha$ gets vertices only with a configuration that is not in $C_W$ therefore the two are mutually exclusive. Furthermore since $W'_0 \cup W'_1 \cup A \subseteq V$ we find $W_{\overline{\alpha}} \cup W_\alpha \subseteq V$ and the IH holds in this case.
 		
-		If $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ then we find a value for $B$. Since $B$ is the attractor set of $(W'_{\overline{\alpha}})_{|\backslash C_W}$ and edges don't cross configurations the set $B$ contains no vertices with a configuration that is in $C_W$. Clearly $B \subseteq V$. The recursion step gives $W''_0$ and $W''_1$ which are mutually and have $W''_0 \cup W''_1 \subseteq G\backslash B \backslash V_{||C_W\cup C_B}$ by induction. The algorithm returns these winning sets with $B$ and $(W'_{\overline{\alpha}})_{||C_W}$. Both $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ don't share any vertices with each other nor with the winning sets $W''_0$ and $W''_1$. Moreover all $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ are subsets of $V$ so we can conclude that the IH holds.
+		If $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ then we find a value for $B$. Since $B$ is the attractor set of $(W'_{\overline{\alpha}})_{|\backslash C_W}$ and edges do not cross configurations the set $B$ contains no vertices with a configuration that is in $C_W$. Clearly $B \subseteq V$. The recursion step gives $W''_0$ and $W''_1$ which are mutually and have $W''_0 \cup W''_1 \subseteq G\backslash B \backslash V_{||C_W\cup C_B}$ by induction. The algorithm returns these winning sets with $B$ and $(W'_{\overline{\alpha}})_{||C_W}$. Both $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ do not share any vertices with each other nor with the winning sets $W''_0$ and $W''_1$. Moreover all $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ are subsets of $V$ so we can conclude that the IH holds.
 	\end{proof}
 \end{theorem}
 
@@ -171,7 +171,7 @@ either or both of the following statements hold:
 				\begin{tabular}{|p{14.6cm}}
 					Case $(W'_{\overline{\alpha}})_{|\backslash C} = \emptyset$\\
 					\hline
-					All vertices in $V_{|c}$ are returned to be winning for player $\alpha$. We argued that the $C_W$ operations don't have an effect on the value of $(W'_{\overline{\alpha}})_{|c}$ therefore we can use the same argument as in case $W'_{\overline{\alpha}} = \emptyset$ to show that indeed all vertices in $V_{|c}$ are won by player $\alpha$ and that statement (II) holds.
+					All vertices in $V_{|c}$ are returned to be winning for player $\alpha$. We argued that the $C_W$ operations do not have an effect on the value of $(W'_{\overline{\alpha}})_{|c}$ therefore we can use the same argument as in case $W'_{\overline{\alpha}} = \emptyset$ to show that indeed all vertices in $V_{|c}$ are won by player $\alpha$ and that statement (II) holds.
 				\end{tabular}
 				\begin{tabular}{|p{14.6cm}}
 					Case $(W'_{\overline{\alpha}})_{|\backslash C} \neq \emptyset$\\
