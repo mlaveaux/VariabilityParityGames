@@ -1,6 +1,6 @@
 As discussed in the preliminaries PGs can be solved either globally or locally. Similar to PGs we can solve VPGs either globally or locally. When locally solving a VPG we determine for which configurations a certain vertex is won by player $0$ and for which configurations the vertex is won by player $1$. When globally solving a VPG we determine this for every vertex in the VPG.
 
-When solving a VPG globally we might encounter significant differences in parts of the game or intermediate results between configurations that we perhaps don't encounter when solving it locally because we can terminate earlier. Therefore we hypothesize that the increase in performance between globally-collectively solving VPGs and locally-collectively solving VPGs is greater than the increase performance between globally-independently solving VPGs and locally-independently solving VPGs.
+When solving a VPG globally we might encounter significant differences in parts of the game or intermediate results between configurations that we perhaps do not encounter when solving it locally because we can terminate earlier. Therefore we hypothesize that the increase in performance between globally-collectively solving VPGs and locally-collectively solving VPGs is greater than the increase performance between globally-independently solving VPGs and locally-independently solving VPGs.
 
 The algorithms we have seen thus far are global algorithms, in this section we introduce local variants for the PG algorithms we have seen: Zielonka's recursive algorithm and fixed-point iteration algorithm. Furthermore we introduce local variants for the VPG algorithms we have seen: the recursive algorithm for VPGs and the incremental pre-solve algorithm.
 
@@ -153,7 +153,7 @@ We disprove the following conjecture to show that there indeed can be a vertex t
 
 This counterexample disproves the conjecture.
 \end{proof}\end{conjecture}
-An algorithm that simply stops when $v_0$ is found to be won for player $\overline{\alpha}$ requires the above conjecture to be true, since this isn't the case such an algorithm is flawed. This problem is solved by using the $\Delta$ variable, as is used in the \textsc{RecursivePGLocal} algorithm.
+An algorithm that simply stops when $v_0$ is found to be won for player $\overline{\alpha}$ requires the above conjecture to be true, since this is not the case such an algorithm is flawed. This problem is solved by using the $\Delta$ variable, as is used in the \textsc{RecursivePGLocal} algorithm.
 \subsubsection{Fixed-point iteration local}
 The fixed-point iteration algorithm can be modified to locally solve a game for vertex $v_0$ by distinguishing two cases:
 \begin{enumerate}

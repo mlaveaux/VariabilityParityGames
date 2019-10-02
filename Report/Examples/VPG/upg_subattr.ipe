@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70206" creator="Ipe 7.2.7">
-<info created="D:20190513152140" modified="D:20191002085559"/>
+<info created="D:20190513152140" modified="D:20191002125405"/>
 <preamble>\usepackage{amsfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -311,54 +311,14 @@ h
 h
 </path>
 <text matrix="1 0 0 1 48 -464" transformations="translations" pos="80 720" stroke="black" type="label" width="11.368" height="15.978" depth="0" halign="center" valign="center" size="Huge">1</text>
-<text matrix="1 0 0 1 44 -368" transformations="translations" pos="144 752" stroke="black" type="label" width="8.788" height="9.919" depth="0" valign="baseline" size="Large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 224 -368" transformations="translations" pos="144 752" stroke="black" type="label" width="8.788" height="9.919" depth="0" valign="baseline" size="Large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 136 -560" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" halign="right" valign="baseline" size="Large" style="math">\{c_0,c_2\}</text>
-<text matrix="1 0 0 1 48 -568" transformations="translations" pos="144 752" stroke="black" type="label" width="8.788" height="9.919" depth="0" valign="baseline" size="Large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 136 -444" transformations="translations" pos="144 752" stroke="black" type="label" width="8.788" height="9.919" depth="0" halign="center" valign="baseline" size="Large" style="math">\mathfrak{C}</text>
-<text matrix="1 0 0 1 -60 -440" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_1\}</text>
-<text matrix="1 0 0 1 28 -424" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_1\}</text>
-<text matrix="1 0 0 1 192 -496" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\{c_0,c_1\}</text>
-<text matrix="1 0 0 1 204 -548" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_1\}</text>
-<text matrix="1 0 0 1 240 -604" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_1\}</text>
-<text matrix="1 0 0 1 304 -440" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_2\}</text>
-<text matrix="1 0 0 1 216 -424" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_0,c_2\}</text>
-<text matrix="1 0 0 1 44 -496" transformations="translations" pos="144 752" stroke="black" type="label" width="43.689" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\{c_0,c_2\}</text>
-<path stroke="black" arrow="normal/normal">
-144 384 m
-265.373 384 l
-</path>
-<path stroke="black" arrow="normal/normal">
-425.373 384 m
-310.628 384 l
-</path>
-<path stroke="black" arrow="normal/normal">
-288 272 m
-288 361.373 l
-</path>
-<path stroke="black" arrow="normal/normal">
-300.571 373.943 m
-432 268.8 l
-</path>
-<path stroke="black" arrow="normal/normal">
-448 272 m
-448 361.373 l
-</path>
-<path stroke="black" arrow="normal/normal">
-432 256 m
-304 256 l
-</path>
+<text matrix="1 0 0 1 136 -560" transformations="translations" pos="144 752" stroke="black" type="label" width="25.871" height="10.756" depth="3.59" halign="right" valign="baseline" size="Large" style="math">\{c_2\}</text>
+<text matrix="1 0 0 1 32 -568" transformations="translations" pos="144 752" stroke="black" type="label" width="25.871" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_2\}</text>
+<text matrix="1 0 0 1 204 -548" transformations="translations" pos="144 752" stroke="black" type="label" width="25.871" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_1\}</text>
+<text matrix="1 0 0 1 240 -604" transformations="translations" pos="144 752" stroke="black" type="label" width="25.871" height="10.756" depth="3.59" valign="baseline" size="Large" style="math">\{c_1\}</text>
+<text matrix="1 0 0 1 44 -496" transformations="translations" pos="144 752" stroke="black" type="label" width="25.871" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">\{c_2\}</text>
 <path stroke="black" arrow="normal/normal">
 150.628 256 m
 272 256 l
-</path>
-<path stroke="black" arrow="normal/normal">
-275.43 373.944 m
-140.571 266.057 l
-</path>
-<path stroke="black" arrow="normal/normal">
-128 278.628 m
-128 368 l
 </path>
 <path stroke="black" arrow="normal/normal">
 272 140.8 m
@@ -376,12 +336,12 @@ h
 304 132 m
 188.68 0 0 -188.68 480 64 434.238 247.046 a
 </path>
-<text transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_1</text>
-<text matrix="1 0 0 1 160 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_2</text>
-<text matrix="1 0 0 1 320 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_3</text>
-<text matrix="1 0 0 1 352 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_6</text>
-<text matrix="1 0 0 1 -32 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_4</text>
-<text matrix="1 0 0 1 176 -128" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_5</text>
-<text matrix="1 0 0 1 160 -304" transformations="translations" pos="128 400" stroke="black" type="label" width="12.271" height="6.179" depth="2.15" halign="center" valign="bottom" size="Large" style="math">v_7</text>
+<text transformations="translations" pos="128 400" stroke="black" type="label" width="32.793" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">v_1\ |\ \emptyset</text>
+<text matrix="1 0 0 1 160 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="32.793" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">v_2\ |\ \emptyset</text>
+<text matrix="1 0 0 1 320 6.62775" transformations="translations" pos="128 400" stroke="black" type="label" width="32.793" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">v_3\ |\ \emptyset</text>
+<text matrix="1 0 0 1 344 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="51.492" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">v_6\ |\ \{c_1\}</text>
+<text matrix="1 0 0 1 -24 -144" transformations="translations" pos="128 400" stroke="black" type="label" width="51.492" height="10.756" depth="3.59" halign="right" valign="bottom" size="Large" style="math">v_4\ |\ \{c_2\}</text>
+<text matrix="1 0 0 1 168 -128" transformations="translations" pos="128 400" stroke="black" type="label" width="51.492" height="10.756" depth="3.59" valign="bottom" size="Large" style="math">v_5\ |\ \{c_2\}</text>
+<text matrix="1 0 0 1 160 -304" transformations="translations" pos="128 400" stroke="black" type="label" width="69.31" height="10.756" depth="3.59" halign="center" valign="bottom" size="Large" style="math">v_7\ |\ \{c_1,c_2\}</text>
 </page>
 </ipe>
