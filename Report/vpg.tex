@@ -86,7 +86,7 @@ A VPG contains multiple parity games, in fact playing a VPG $G$ for configuratio
 
 Parity games have a unique winner for every vertex, from theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we can conclude that a VPG player for a configuration also has a unique winner for every vertex. Moreover since it is decidable who wins a vertex in a parity game it is also decidable who wins a vertex in a VPG for configuration $c$. Finally, in a parity game there exists a positional strategy for player $\alpha$ that is winning for all the vertices won by player $\alpha$ in the game. In theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we argued that a strategy that is winning for player $\alpha$ starting in vertex $v$ in a projection of $G$ onto $c$ is also winning in $G$ for player $\alpha$ and configuration $c$ starting in vertex $v$. So we can conclude that VPGs are also positionally determined and we can consider a strategy for player $\alpha$ and configuration $c$ as a total function $\sigma_\alpha^c : V_\alpha \rightarrow V$.
 
-\subsection{Verifying featured transition systems}
+\section{Verifying featured transition systems}
 Given an LTS and a modal $\mu$-calculus formula we can construct a parity game such that solving this parity game tells us if the LTS satisfies the formula. Similarly we can construct a VPG from an FTS and a modal $\mu$-calculus in such a way that solving the VPG tells us what products satisfy the formula.
 
 We create a VPG from an FTS by choosing the set of configurations to be equal to the set of products in the FTS. The game graph is created similar as to how a parity game is created from an LTS. Finally we guard edges going from vertices representing a modal formula.

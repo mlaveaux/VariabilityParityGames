@@ -1,8 +1,8 @@
-\subsection{Fixed-point theory} 
+\section{Fixed-point theory} 
 A fixed-point of a function is an element in the domain of that function such that the function maps to itself for that element. Fixed-points are used in model verification as well as in some parity game algorithms.
 
 Fixed-point theory goes hand in hand with lattice theory which we introduce first.
-\subsubsection{Lattices}
+\subsection{Lattices}
 We introduce definitions for ordering and lattices taken from \cite{birkhoff1940lattice}.
 \begin{definition}[\cite{birkhoff1940lattice}]
 	A partial order is a binary relation $x \leq y$ on set $S$ where for all $x,y,z \in S$ we have:
@@ -20,11 +20,11 @@ We introduce definitions for ordering and lattices taken from \cite{birkhoff1940
 \begin{definition}[\cite{birkhoff1940lattice}]
 	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. An upper bound to $X$ is an element $a \in P$ such that $x \leq a$ for every $x\in X$. A least upper bound to $X$ is an upper bound $a \in P$ such every other upper bound is larger or equal to $a$.
 \end{definition}
-The term least upper bound is synonymous with the term supremum.
+The term least upper bound is synonymous with the term supremum, we write $\sup \{ S \}$ to denote the supremum of set $S$.
 \begin{definition}[\cite{birkhoff1940lattice}]
 	Given partially ordered set $\langle P,\leq \rangle$ and subset $X \subseteq P$. A lower bound to $X$ is an element $a \in P$ such that $a \leq x$ for every $x\in X$. A greatest lower bound to $X$ is a lower bound $a \in P$ such that every other lower bound is smaller or equal to $a$.
 \end{definition}
-The term greatest lower bound is synonymous with the term infimum.
+The term greatest lower bound is synonymous with the term infimum, we write $\inf \{ S\}$ to denote the infimum of set $S$.
 
 \begin{definition}[\cite{birkhoff1940lattice}]
 	A lattice is a partially ordered set where any two of its elements have a supremum and an infimum.
@@ -35,27 +35,21 @@ The term greatest lower bound is synonymous with the term infimum.
 \end{definition}
 
 \begin{definition}[\cite{birkhoff1940lattice}]
-	A function $f : D \rightarrow D'$ is monotonic, also called order preserving, if for all $x \in D$ and $y \in D$ it holds that if $x \leq y$ then $f(x) \leq f(y)$.
+	Given a lattice $\langle D, \leq \rangle$, function $f : D \rightarrow D$ is monotonic if for all $x \in D$ and $y \in D$ it holds that if $x \leq y$ then $f(x) \leq f(y)$.
 \end{definition}
-\subsubsection{Fixed-points}
+\subsection{Fixed-points}
 Fixed-points are formally defined as follows:
 \begin{definition}
-	Given function $f : D \rightarrow D$ the value $x \in D$ is a fixed point for $f$ if and only if $f(x) = x$.
+	Given function $f : D \rightarrow D$ the value $x \in D$ is a fixed-point for $f$ if and only if $f(x) = x$. Furthermore $x$ is the least fixed-point for $f$ if every other fixed-point for $f$ is greater or equal to $x$ and dually $x$ is the greatest fixed-point for $f$ if every other fixed-point $f$ is less or equal to $x$.
 \end{definition}
-\begin{definition}
-	Given function $f : D \rightarrow D$ the value $x \in D$ is the least fixed point for $f$ if and only if $x$ is a fixed point for $f$ and every other fixed point for $f$ is greater or equal to $x$.
-\end{definition}
-\begin{definition}
-	Given function $f : D \rightarrow D$ the value $x \in D$ is the greatest fixed point for $f$ if and only if $x$ is a fixed point for $f$ and every other fixed point for $f$ is less or equal to $x$.
-\end{definition}
-The Knaster-Tarski theorem states that least and greatest fixed points exist for some domain and function given that a few conditions hold.
+The Knaster-Tarski theorem states that least and greatest fixed-points exist for some domain and function given that a few conditions hold.
 The theorem, as written down by Tarski in \cite{tarski1955}, states:
 \begin{theorem}[Knaster-Tarski\cite{tarski1955}]
 	\label{the_knaster_tarski}
 	Let
 	\begin{itemize}
 		\item $\langle A, \leq \rangle$ be a complete lattice,
-		\item $f$ be an increasing function on $A$ to $A$,
+		\item $f$ be a monotonic function on $A$ to $A$,
 		\item $P$ be the set of all fixpoints of f.
 	\end{itemize}
 	Then the set $P$ is not empty and the system $\langle P, \leq \rangle$ is a complete lattice; in particular we have 
@@ -64,7 +58,7 @@ The theorem, as written down by Tarski in \cite{tarski1955}, states:
 	\[ \inf P = \inf \{ x\ |\ f(x) \leq x \} \in P \]
 \end{theorem}
 
-\subsection{Model verification}
+\section{Model verification}
 It is difficult to develop correct software, one way to improve reliability of software is through model verification; the behaviour of software is specified in a model and formal verification techniques are used to show that the behaviour adheres to certain requirements. In this section we inspect how to model behaviour and how to specify requirements.
 
 Behaviour can be modelled as a \textit{labelled transition system} (LTS). An LTS consists of states in which the system can find itself and transitions between states. Transitions represent the possible state change of the system. Transitions are labelled with actions that indicate what kind of change is happening. Formally we define an LTS as follows.
@@ -144,7 +138,7 @@ Given closed formula $\varphi$, LTS $M = (S, Act, trans, s_0)$ and $s \in S$ we 
 	Consider the coffee machine example from Figure \ref{fig:coffeemachinebasiceurolts} and formula $\varphi = \nu X. \mu Y([inst]Y \wedge [std]X)$ which states that action \textit{std} must occur infinitely often over all infinite runs. Obviously this holds for the coffee machine, therefore we have $C \models \varphi$.
 \end{example}
 
-\subsection{Parity games}
+\section{Parity games}
 A \textit{parity game} is a game played by two players: player 0 (also called player \textit{even}) and player 1 (also called player \textit{odd}). We write $\alpha \in \{0,1\}$ to denote an arbitrary player and $\overline{\alpha}$ to denote $\alpha$'s opponent, ie. $\overline{0} = 1$ and $\overline{1} = 0$. A parity game is played on a playing field which is a directed graph where every vertex is owned by either player 0 or player 1. Furthermore every vertex has a natural number, called its \textit{priority}, associated with it.
 \begin{definition}[\cite{Bradfield2018}]
 	\label{def_PG}
@@ -200,7 +194,7 @@ A parity game is \textit{solved} if the vertices are partitioned in two sets, na
 
 Finally parity games are considered \textit{total} if and only if every vertex has at least one outgoing edge. Playing a total parity game always results in an infinite path. We can make a non-total parity game total by adding two sink vertices: $l_0$ and $l_1$. Each sink vertex has only one outgoing edge, namely to itself. Vertex $l_0$ has priority 1 and vertex $l_1$ has priority 0. Clearly if the token ends up in $l_\alpha$ then player $\alpha$ looses the game because with only one outgoing edge we only get a single priority that occurs infinitely often, namely priority $\overline{\alpha}$. For every vertex $v \in V_\alpha$ that does not have an outgoing edge we create an edge from $v$ to $l_\alpha$. In the original game player $\alpha$ lost when the token was in vertex $v$ because he/she could not move any more. In the total game player $\alpha$ can only play to $l_\alpha$ from $v$ where he/she still looses. So using this method vertices in the total game have the same winner as they had in the original game (except for $l_0$ and $l_1$ which did not exist in the original game). In general we try to only work with total games because no distinction is required between finite paths and infinite paths when reasoning about them, however we will encounter some scenario's where non-total games are still considered.
 
-\subsubsection{Relation between parity games and model checking}
+\subsection{Relation between parity games and model checking}
 Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a parity game. This is done by translating an LTS in combination with a formula to a parity game, the solution of the parity game provides the information needed to conclude if the model satisfies the formula. This relation is depicted in figure \ref{fig:ltsverificationusingpg}. 
 \begin{figure}[h]
 	\centering
@@ -305,15 +299,15 @@ Parity games created in this manner relate back to the model verification questi
 	\label{the_LTS_PG_REL}Given LTS $M = (S, Act, trans, s_0)$, modal $\mu$-calculus formula $\varphi$ and state $s \in S$ it holds that $(M, s) \models \varphi$ if and only if $(s,\varphi) \in W_0$ for the game $LTS2PG(M, \varphi)$.
 \end{theorem}
 
-\subsubsection{Globally and locally solving parity games}
+\subsection{Globally and locally solving parity games}
 Parity games can be solved \textit{globally} or \textit{locally}; globally solving a parity game means that for every vertex in the game it is determined who the winner is. Locally solving a parity game means that for a specific vertex in the game it is determined who the winner is. For some applications of parity games, including model checking, there is a specific vertex that needs to be solved to solve the original problem. Locally solving the parity game is sufficient in such cases to solve the original problem.
 
 Most parity game algorithms (including the two considered next) are concerned with globally solving, when talking about solving a parity game we talk about globally solving it unless stated otherwise. 
 
-\subsubsection{Parity game algorithms}
+\subsection{Parity game algorithms}
 Various algorithms for solving parity games are known, we introduce two of them. First Zielonka's recursive algorithm which is well studied and generally considered to be one of the best performing parity game algorithms in practice \cite{Oink,SolvingPGInPractice}. We also inspect the fixed-point iteration algorithm which tends to perform well for model-checking problems with a low number of distinct priorities \cite{BDDSolvingPG}.
 
-\paragraph{Zielonka's recursive algorithm}
+\subsubsection{Zielonka's recursive algorithm}
 First we consider Zielonka's recursive algorithm \cite{ZIELONKA1998135,MCNAUGHTON1993149}, which solves total parity games. Pseudo code is presented in algorithm \ref{alg_zlnk_org}. Zielonka's recursive algorithm has a worst-case time complexity of $O(e*n^d)$ where $e$ is the number of edges, $n$ the number of vertices and $d$ the number of distinct priorities.
 \begin{algorithm}
 	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
@@ -407,7 +401,7 @@ The algorithm also creates subgames, where a set of vertices is removed from a p
 
 Note that a subgame is not necessarily total, however the recursive algorithm always creates subgames that are total (shown in \cite{ZIELONKA1998135}).
 
-\paragraph{Fixed-point iteration algorithm}
+\subsubsection{Fixed-point iteration algorithm}
 Parity games can be solved by solving an alternating fixed-point formula \cite{WALUKIEWICZ2002311}. Consider PG $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
 
 Consider the following formula
@@ -481,7 +475,7 @@ An algorithm to perform the iteration is presented in \cite{FPITE} and shown in 
 	\end{multicols}
 \end{algorithm}
 
-\subsection{Symbolically representing sets}
+\section{Symbolically representing sets}
 A set can straightforwardly be represented by a collection containing all the elements that are in the set. We call this an \textit{explicit} representation of a set. We can also represent sets \textit{symbolically} in which case the set of elements is represented by some sort of formula. A typical way to represent a set symbolically is through a boolean formula encoded in a \textit{binary decision diagram} \cite{BDD_book,Handbook_BDD_Chapter}. 
 
 \begin{example}
@@ -518,7 +512,7 @@ We can perform set operations on sets represented as boolean functions by perfor
 
 Given a set $S$ with arbitrary elements we can represent subsets $S' \subseteq S$ as boolean formula's by assigning a number to every element in $S$ and creating a boolean formula that maps boolean variables to true if and only if they represent a number such that the element associated with this number in $S$ is also in $S'$.
 
-\subsubsection{Binary decision diagrams}
+\subsection{Binary decision diagrams}
 A boolean function can efficiently be represented as a binary decision diagram (BDD), for a comprehensive treatment of BDDs we refer to \cite{BDD_book,Handbook_BDD_Chapter}.
 
 BDDs represent boolean formula's as a directed graph where every vertex represents a boolean variable and has two outgoing edges labelled 0 and 1. Furthermore the graph contains special vertices $0$ and $1$ that have no outgoing edges. We decide if a boolean variable assignment satisfies the formula by starting in the initial vertex of the graph and following a path until we get to either vertex 0 or 1. Since every vertex represents a boolean formula we can create a path from the initial vertex by choosing edge 0 at a vertex if the boolean variable represented by that vertex is false in the variable assignment and choosing edge 1 if is true. Eventually we end up in either vertex 0 or 1. In the former case the boolean variable assignment does not satisfy the formula, in the latter it does.

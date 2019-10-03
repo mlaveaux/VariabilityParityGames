@@ -1,5 +1,39 @@
-\documentclass[]{article}
-\usepackage[margin=1in]{geometry}
+\documentclass[a4paper,10pt]{report}
+
+\usepackage{Packages}
+
+\addto\captionsbritish{\renewcommand{\contentsname}{Table of Contents}}
+
+%\linenumbers
+
+\newcommand{\researchgroup}{Formal system analysis}
+
+\newcommand{\shortdoctitle}{Doc title}
+\newcommand{\doctitle}{Verifying featured transition systems using variability parity games}
+\newcommand{\docsubtitle}{}
+
+\newcommand{\authorone}{Sjef van Loo}
+\newcommand{\keywords}{}
+\newcommand{\version}{Version 1.0}
+\newdateformat{monthdate}{%
+	\monthname[\THEMONTH]}
+\newcommand{\monthYear}{\monthdate\today\ 2019}
+
+\newcommand{\firstCommitteeMember}{T.A.C. Willemse}
+\newcommand{\secondCommitteeMember}{}
+\newcommand{\thirdCommitteeMember}{}
+
+\author{Sjef van Loo}
+
+\hypersetup
+{
+	pdfauthor   = {\authorone},
+	pdftitle    = {\shortdoctitle},
+	pdfsubject  = {\doctitle},
+	pdfkeywords = {\keywords}
+}
+
+\usepackage{geometry}
 \usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -16,89 +50,91 @@
 \usepackage{subcaption}
 \usetikzlibrary{matrix}
 \usepackage{ stmaryrd }
-\newtheorem{definition}{Definition}[section]
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \theoremstyle{definition}
-\newtheorem{example}{Example}[section]
+\newtheorem{example}{Example}[chapter]
 \usepackage[toc,page]{appendix}
 \usepackage{forest}
 \usepackage{enumerate}
 \usepackage{longtable}
 
-%opening
-\title{Verifying Featured Transition Systems using Variability Parity Games}
-\author{Sjef van Loo}
-
 \begin{document}
-
-\maketitle
-\begin{abstract}
-	abstract
-\end{abstract}
-
-\newpage
-\tableofcontents
-
-\pagebreak
-\section{Introduction}
-\input{introduction}
-
-\section{Preliminaries}
-\input{preliminatires_solving}
-
-\section{Problem statement}
-\input{problem_statement}
-
-\section{Related work}
-\input{relatedwork}
-
-\pagebreak
-\section{Variability parity games}
-\label{part:verifying}
-\input{vpg}
-
-\pagebreak
-\section{Solving variability parity games}
-\input{prod_fam_solving}
-
-\subsection{Recursive algorithm for variability parity games}
-\input{recursivezlnk.tex}
-
-\subsection{Incremental pre-solve algorithm}
-\input{FPITEalg}
-
-\pagebreak
-\section{Locally solving (variability) parity games}
-\input{locally_solving_VPGs}
-
-\pagebreak
-\section{Experimental evaluation}
-\input{experimental_evaluation_intro}
-
-\subsection{Implementation}
-\input{implementation}
-
-\subsection{Test cases}
-\input{test_cases}
-
-\subsection{Results}
-\input{results}
-
-\pagebreak
-\section{Conclusion}
-\input{conclusion}
-
-\pagebreak
-\begin{appendices}
-\section{Running time results}
-\label{appendix:resultsexact}
-\input{appendixResults}
-\end{appendices}
-
-\pagebreak
-\bibliographystyle{abbrv}
-\bibliography{mybib} 
-
+	
+	\include{Titlepage}
+	
+	\normalsize
+	
+	\chapter*{Abstract}\label{chapter:Abstract}
+	\setcounter{page}{0}
+	\pagenumbering{roman}
+	\addcontentsline{toc}{chapter}{Abstract}
+	\input{abstract}
+	
+	\tableofcontents
+	
+	\chapter{Introduction}\label{chapter:Introduction}
+	\setcounter{page}{0}
+	\pagenumbering{arabic}
+	\input{introduction}
+	
+	\chapter{Preliminaries}
+	\input{preliminatires_solving}
+	
+	
+	\chapter{Problem statement}
+	\input{problem_statement}
+	
+	
+	\chapter{Related work}
+	\input{relatedwork}
+	
+	
+	\chapter{Variability parity games}
+	\label{part:verifying}
+	\input{vpg}
+	
+	
+	\chapter{Solving variability parity games}
+	\input{prod_fam_solving}
+	
+	\section{Recursive algorithm for variability parity games}
+	\input{recursivezlnk.tex}
+	
+	\section{Incremental pre-solve algorithm}
+	\input{FPITEalg}
+	
+	
+	\chapter{Locally solving (variability) parity games}
+	\input{locally_solving_VPGs}
+	
+	
+	\chapter{Experimental evaluation}
+	\input{experimental_evaluation_intro}
+	
+	\section{Implementation}
+	\input{implementation}
+	
+	\section{Test cases}
+	\input{test_cases}
+	
+	\section{Results}
+	\input{results}
+	
+	
+	\chapter{Conclusion}
+	\input{conclusion}
+	
+	\bibliographystyle{abbrv}
+	\bibliography{mybib}
+	\newpage
+	
+	\appendix
+	\addcontentsline{toc}{chapter}{Appendix}
+	\chapter{Running time results}
+	\label{appendix:resultsexact}
+	\input{appendixResults}
+	
 \end{document}

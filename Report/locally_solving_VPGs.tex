@@ -4,10 +4,10 @@ When solving a VPG globally we might encounter significant differences in parts 
 
 The algorithms we have seen thus far are global algorithms, in this section we introduce local variants for the PG algorithms we have seen: Zielonka's recursive algorithm and fixed-point iteration algorithm. Furthermore we introduce local variants for the VPG algorithms we have seen: the recursive algorithm for VPGs and the incremental pre-solve algorithm.
 
-\subsection{Locally solving parity games}
+\section{Locally solving parity games}
 The two parity game algorithms introduced in the preliminaries (Zielonka's recursive algorithm and the fixed-point iteration algorithm) can be turned into local variants. This local variant can be used to solve VPGs locally-independently.
 
-\subsubsection{Zielonka's recursive algorithm local}
+\subsection{Zielonka's recursive algorithm local}
 \label{sec:zlnk_org_local}
 To make Zielonka's recursive algorithm a local algorithm, we use the property that vertices won by player $\overline{\alpha}$ in game $G \backslash A$ are also won by player $\overline{\alpha}$ in game $G$. This property is proven in the following lemma.
 \begin{lemma}
@@ -111,7 +111,7 @@ Calling $\textsc{RecursivePGLocal}(G, v_0, \{0,1\})$ with $v_0$ in $G$ either so
 
 The time complexity of the local variant is the same as the original algorithm: $O(e*n^d)$. If vertex $v_0$ is not winning for a player in $\Delta$ than the algorithm behaves the same as the original so its worst-case complexity is the same.
 
-\paragraph{A simpler idea} A simpler version of the algorithm is where there is no $\Delta$ variable and the algorithm simply terminates when $v_0$ is found to be won for player $\overline{\alpha}$. After all, vertices won by player $\overline{\alpha}$ in the subgame are also won by player $\overline{\alpha}$ in the game itself. However this idea is flawed because this property only extends one recursion deep. So during some recursion it is possible that the algorithm finds a vertex to be won by player $\overline{\alpha}$ for the subgame $G\backslash A$ and therefore also for game $G$, however game $G$ might be a subgame itself of some game $H$. The vertex found to be won by player $\overline{\alpha}$ in $G\backslash A$ and $G$ might not be won by player $\overline{\alpha}$ in game $H$.
+\subsubsection{A simpler idea} A simpler version of the algorithm is where there is no $\Delta$ variable and the algorithm simply terminates when $v_0$ is found to be won for player $\overline{\alpha}$. After all, vertices won by player $\overline{\alpha}$ in the subgame are also won by player $\overline{\alpha}$ in the game itself. However this idea is flawed because this property only extends one recursion deep. So during some recursion it is possible that the algorithm finds a vertex to be won by player $\overline{\alpha}$ for the subgame $G\backslash A$ and therefore also for game $G$, however game $G$ might be a subgame itself of some game $H$. The vertex found to be won by player $\overline{\alpha}$ in $G\backslash A$ and $G$ might not be won by player $\overline{\alpha}$ in game $H$.
 
 We disprove the following conjecture to show that there indeed can be a vertex that is won by player $\overline{\alpha}$ at some point but be won by player $\alpha$ in a higher recursion level.
 \begin{conjecture}[Disproven]
@@ -154,7 +154,7 @@ We disprove the following conjecture to show that there indeed can be a vertex t
 This counterexample disproves the conjecture.
 \end{proof}\end{conjecture}
 An algorithm that simply stops when $v_0$ is found to be won for player $\overline{\alpha}$ requires the above conjecture to be true, since this is not the case such an algorithm is flawed. This problem is solved by using the $\Delta$ variable, as is used in the \textsc{RecursivePGLocal} algorithm.
-\subsubsection{Fixed-point iteration local}
+\subsection{Fixed-point iteration local}
 The fixed-point iteration algorithm can be modified to locally solve a game for vertex $v_0$ by distinguishing two cases:
 \begin{enumerate}
 	\item If $d-1$ is even then the outermost fixed-point variable is a greatest fixed-point variable. When at some point $v_0 \notin Z_{d-1}$ then we know $v_0$ is never won by player $0$ and we are done.
@@ -163,10 +163,10 @@ The fixed-point iteration algorithm can be modified to locally solve a game for 
 
 If vertex $v_0$ is won by player 0 in the first case or won by player 1 in the second case then the algorithm never terminates early. So in the worst-case the local algorithm behaves the same as the global algorithm, therefore we have an identical time complexity, ie. $O(e*n^d)$.
 
-\subsection{Locally solving variability parity games}
+\section{Locally solving variability parity games}
 To solve a VPG locally we try to find out for which configurations vertex $\hat{v}_0$ is won by player $1$ and for which configurations it is won by player $0$. We consider the two collective VPG algorithms we have seen thus far and create local variants of them.
-\subsubsection{Local recursive algorithm for variability parity games}
+\subsection{Local recursive algorithm for variability parity games}
 \input{localrecursivezlnk.tex}
 
-\subsubsection{Local incremental pre-solve algorithm}
+\subsection{Local incremental pre-solve algorithm}
 \input{localFPITEalg}

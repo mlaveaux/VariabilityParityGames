@@ -1,6 +1,6 @@
 We can use the original Zielonka's recursive algorithm to solve VPGs, we do so by creating one big parity game of a VPG through a process we introduce called \textit{unification}. This parity game can be solved using the original recursive algorithm, however we introduce a way of representing the parity game that potentially increases performance and exploits commonalities between different configurations in the VPG.
 
-\subsubsection{Unified parity games}
+\subsection{Unified parity games}
 We can create a parity game from a VPG by taking all the projections of the VPG, which are parity games, and combining them into one parity games by taking the union of them. We call the resulting parity games the \textit{unification} of the VPG. A parity game that is the result of a unification is called a \textit{unified parity game}, also any total subgame of it will be called a unified parity games. A unified parity game always has a VPG from which it originated.
 \begin{definition}
 	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$ we define the unification of $\hat{G}$, denoted as $\hat{G}_{\downarrow}$, as
@@ -43,7 +43,7 @@ If we solve the parity game that is the unification of a VPG we have solved the 
 	it holds that
 	\[(c,\hat{v}) \in W_\alpha \iff \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\}  \]
 	\begin{proof}
-		The bi-implication is equal to  the following to implications.
+		The bi-implication is equal to  the following two implications.
 		\[ (c,\hat{v}) \in W_\alpha \implies \hat{v} \in \hat{W}^c_\alpha  \text{, for }\alpha \in \{0,1\} \]
 		and
 		\[ (c,\hat{v}) \notin W_\alpha\implies \hat{v} \notin \hat{W}^c_\alpha \text{, for }\alpha \in \{0,1\}  \]
@@ -55,7 +55,7 @@ If we solve the parity game that is the unification of a VPG we have solved the 
 \end{theorem}
 
 
-\paragraph{Projections and totality}
+\subsubsection{Projections and totality}
 A unified parity games can be projected back to one of the games from which it is the union.
 \begin{definition}
 	The projection of unified parity game $G = (V,V_0, V_1,E,{\Omega})$ to configuration $c$, denoted as $G_{|c}$, is the parity game $(V',V_0',V_1',E',\Omega)$ such that:
@@ -69,7 +69,7 @@ A unified parity games can be projected back to one of the games from which it i
 
 One of the properties of a parity game is its totality; a game is total if every vertex has at least one outgoing vertex. The VPGs we consider are also total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$, at least one outgoing edge admitting $c$. Because VPGs are total their unifications are also total. Since edges in a unified parity game do not cross configurations the projection of a total unified parity game is also total, moreover a unified parity game is total if and only if every projection is total.
 
-\subsubsection{Solving unified parity games}
+\subsection{Solving unified parity games}
 A unified parity game can be solved using Zielonka's recursive algorithm, since it is a total parity game. The recursive algorithm revolves around the attractor operation. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
 \[ \{(c_1,\hat{v}_0),(c_2,\hat{v}_0)\}\]
 attracting these for player $0$ gives the set 
@@ -80,7 +80,7 @@ attracting these for player $0$ gives the set
 \end{align*}
 The algorithm tries to attract vertices $(c_1,\hat{v}_1)$ and $(c_2,\hat{v}_1)$ because they have edges to $\{(c_1,\hat{v}_0), (c_2,\hat{v}_0)\}$. So the algorithm, in this, case asks the questions: "Can vertices $(c_1,\hat{v}_1)$ and $(c_2,\hat{v}_1)$ be attracted?" We could also ask the question: "For which configurations can we attract origin vertex $\hat{v}_1$?" Since the vertices in unified parity games are pairs of configurations and origin vertices we can instead of considering vertices individually consider origin vertices and try to attract as much configurations as possible for each origin vertex. This is the idea for the collective recursive VPG we present next. We introduce a way of efficiently representing unified parity games and an algorithm that behaves as the original recursive algorithm but uses the modified representation. Using the representation we can create an attractor set algorithm that tries to attract as much configurations per origin vertex as possible instead of trying to attract each vertex individually.
 
-\subsubsection{Representing unified parity games}
+\subsection{Representing unified parity games}
 Unified parity games have a specific structure because they are the union of parity games that have the same vertices with the same owner and priority. Because they have the same priority we do not actually need to create a new function that is the unification of all the projections, we can simply use the original priority assignment function because the following relation holds:
 \[ \Omega(c,\hat{v}) = \hat{\Omega}(\hat{v}) \]
 Similarly we can use the original partition sets $\hat{V}_0$ and $\hat{V}_1$ instead of having the new partition $V_0$ and $V_1$ because the following relations holds:
@@ -137,7 +137,7 @@ We define $\lambda^\emptyset$ to be the function that maps every element to $\em
 	\[ V = \lambda^\emptyset, E = \lambda^\emptyset \]
 \end{example}
 
-\subsubsection{Algorithms}
+\subsection{Algorithms}
 Using the recursive algorithm as a basis we can solve a VPG in numerous ways. First of all we can solve the projections, ie. solve the VPG independently. Alternatively we can solve it collectively using a set-wise presentation or a function-wise presentation. For the function-wise presentation we are working with functions mapping vertices and edges to sets of configurations. These sets of configurations can either be represented explicitly or symbolically. The following diagram shows the different algorithms:
 \begin{center}
 	\begin{forest}
@@ -155,7 +155,7 @@ Using the recursive algorithm as a basis we can solve a VPG in numerous ways. Fi
 \end{center}
 The independent approach uses the original algorithm, the collective set-wise approach also uses the original algorithm applied to a unified parity game. The function-wise representation requires modifications to the algorithm, as we try to attract multiple configurations at the same time. As we will discuss later, this modified algorithm relies heavily on set operations over sets of configurations. 
 
-\paragraph{Symbolically representing sets of configurations}
+\subsubsection{Symbolically representing sets of configurations}
 \label{sec:symrepconfs}
 For VPGs originating from an FTS the configuration sets are boolean functions over the features. The formula's guarding the edges in the VPG will generally have relatively simple boolean functions, therefore they are specifically appropriate to represent as BDDs.
 
@@ -163,12 +163,12 @@ A set operation over two explicit sets can be performed in $O(m)$ where $m$ is t
 
 We hypothesize that since the collective function-wise symbolic recursive algorithm relies heavily on set operations over sets of configurations this algorithm will perform well when solving VPGs originating from FTSs.
 
-\paragraph{A note on symbolically solving games}
+\subsubsection{A note on symbolically solving games}
 The function-wise algorithm has two variants: an explicit and a symbolic variant. In the explicit variant everything is represented explicitly. In the symbolic variant the sets of configurations are represented symbolically, however the graph is still represented explicitly so the algorithm is partially symbolic and partially explicit. Alternatively an algorithm could completely work symbolically by representing both the graph and the sets of configurations symbolically.
 
 Solving parity games symbolically has been studied in \cite{BDDSolvingPG}. The obstacle is that representing graphs with a large number of nodes makes the corresponding BDDs very complex and performance decreases rapidly. As to not repeat work done in \cite{BDDSolvingPG} we only consider algorithms where we represent the graph explicitly. 
 
-\subsubsection{Recursive algorithm using a function-wise representation}
+\subsection{Recursive algorithm using a function-wise representation}
 We can modify the recursive algorithm to work with the function-wise representation of vertices and edges. The algorithm behaves the same, only operations are modified to work with the different representation.  Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}. Note that for this pseudo code no distinction is needed between explicit and symbolic representations of sets of configurations.
 \begin{algorithm}
 	\caption{$\textsc{RecursiveUPG}(\textit{parity game } G = (\\
@@ -378,7 +378,7 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 
 Theorem \ref{theA_solve_UVPG_is_solve_VPG} shows that solving a unified parity game solves the VPG, furthermore the algorithm \textsc{RecursiveUPG} correctly solves a unified parity game therefore we can conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUPG}(G_{\downarrow})$.
 
-\paragraph{Function-wise attractor set}
+\subsubsection{Function-wise attractor set}
 Next we present an algorithm to calculate the function-wise attractor, the pseudo code is presented in Algorithm \ref{alg_fattr_alg}. The algorithm considers vertices that are in the attracted set for some configuration, for every such vertex the algorithm tries to attract vertices that are connected by an incoming edge. If a vertex is attracted for some configuration then the incoming edges of that vertex will also be considered.
 \begin{algorithm}
 	\caption{$\textsc{$\alpha$-FAttractor}(G, U : \hat{V} \rightarrow 2^\mathfrak{C})$}\label{alg_fattr_alg}
@@ -452,16 +452,16 @@ Set $A = \textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}
 \end{theorem}
 
 
-\subsubsection{Running time}
+\subsection{Running time}
 We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations.
 
 The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified parity game (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a time complexity of $O(c*e*(c*n)^d)$. However, as we show next, this running time can be improved by using the property that a unified parity game consists of $c$ disconnected graphs.
 
 We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominates the other operations performed, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
 
-\paragraph{Base cases} In the base cases the algorithm needs to do two things: find the highest and lowest priority and check if there are no more vertices in the game. For the set-wise variant we find the highest and lowest priorities by iterating all vertices, which takes $O(c*n)$. Checking if there are no more vertices is done in $O(1)$. For the function wise algorithms we can find the highest and lowest priority in $O(n)$ and checking if there are no vertices is also done in $O(n)$ since we have to check $V(\hat{v}) = \emptyset$ for every $\hat{v}$. Note that in a symbolic representation using BDDs we can check if a set is empty in $O(1)$ because the decision diagram contains a single node.
+\subsubsection{Base cases} In the base cases the algorithm needs to do two things: find the highest and lowest priority and check if there are no more vertices in the game. For the set-wise variant we find the highest and lowest priorities by iterating all vertices, which takes $O(c*n)$. Checking if there are no more vertices is done in $O(1)$. For the function wise algorithms we can find the highest and lowest priority in $O(n)$ and checking if there are no vertices is also done in $O(n)$ since we have to check $V(\hat{v}) = \emptyset$ for every $\hat{v}$. Note that in a symbolic representation using BDDs we can check if a set is empty in $O(1)$ because the decision diagram contains a single node.
 
-\paragraph{Attractor sets} For the set-wise collective approach we can use the attractor calculation from the original algorithm which has a time complexity of $O(e)$, so for a unified parity game having $c*e$ edges we have $O(c*e)$.
+\subsubsection{Attractor sets} For the set-wise collective approach we can use the attractor calculation from the original algorithm which has a time complexity of $O(e)$, so for a unified parity game having $c*e$ edges we have $O(c*e)$.
 
 The function-wise variants uses a different attractor algorithm. First we consider the variant where sets of configurations are represented explicitly.
 
@@ -488,7 +488,7 @@ This gives the following time complexities\\
 	\end{tabular} 
 \end{center}
 
-\paragraph{Recursion} The three algorithms behave the same way with regards to their recursion, so we analyse the running time of the set-wise variant and can derive the time complexity of the others using the result.
+\subsubsection{Recursion} The three algorithms behave the same way with regards to their recursion, so we analyse the running time of the set-wise variant and can derive the time complexity of the others using the result.
 
 The algorithm has two recursions, the first recursion lowers the number of distinct priorities by 1. The second recursion removes at least one vertex, however the game is comprised of disjoint projections. We can use this fact in the analyses. Consider unified parity game $G$ and set $A$ as specified by the algorithm. Now consider the projection of $G$ to an arbitrary configuration $q$, $G_{|q}$. If $(G\backslash A)_{|q}$ contains a vertex that is won by player $\overline{\alpha}$ then this vertex is removed in the second recursion step. If there is no vertex won by player $\overline{\alpha}$ then the game is won in its entirety and the only vertices won by player $\overline{\alpha}$ are in different projections. We can conclude that for every configuration $q$ the second recursion either removes a vertex or $(G\backslash A)_{|q}$ is entirely won by player $\alpha$. Let $\overline{n}$ denote be the maximum number of vertices that are won by player $\overline{\alpha}$ in game $(G\backslash A)_{|q}$. Since every projection has at most $n$ vertices the value for $\overline{n}$ can be at most $n$. Furthermore since $\overline{n}$ depends on $A$, which depends on the maximum priority, the value $\overline{n}$ gets reset when the top priority is removed in the first recursion. We can now write down the recursion of the algorithm:
 \[ T(d,\overline{n}) \leq T(d-1,n) + T(d, \overline{n} - 1) + O(c*e) \]
@@ -541,7 +541,7 @@ The different algorithms, including their time complexities, are repeated in the
 	\end{forest}
 \end{center}
 
-\paragraph{Running time in practice}
+\subsubsection{Running time in practice}
 Earlier we hypothesized that the symbolic function-wise algorithm could have the best performance of the 4 algorithms, however it has the worst time complexity. Our hypothesis is based on the notion that VPGs most likely have a lot of commonalities and that sets of configurations in the VPG can be represented efficiently symbolically. Next we argue why the worst-case time complexity might not represent the running time in practice.
 
 We dissect the running time of the function-wise algorithms. The running time complexities of the collective algorithms consist of two parts: the time complexity of the attractor set times $n^d$. The function-wise attractor set time complexity consists of three parts: the number of edges times the maximum number of vertices in the queue ($c*n$) times the time complexity for set operations ($O(c)$ for the explicit variant, $O(c^2)$ for the symbolic variant).
