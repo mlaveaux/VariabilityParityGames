@@ -55,10 +55,10 @@ An FTS expresses the behaviour of multiple products. The behaviour of a single p
 	\end{figure}
 \end{example}
 
+\paragraph{Problem statement}
 Given an FTS $M$, that models the behaviour of an SPL, with products $P$ and modal $\mu$-calculus formula $\varphi$ we want to verify that $\varphi$ holds for every product in $P$. Formally we want to find set $P_s$ such that:
 \begin{itemize}
 	\item for every $p \in P_s$ we have $M_{|p} \models \varphi$ and
 	\item for every $p \in P \backslash P_s$ we have $M_{|p} \not\models \varphi$.
 \end{itemize}
-
-This could be done by projecting the FTS to an LTS for every product and subsequently verifying every such LTS. However, as stated before, we aim to improve upon this method by finding $P_s$ in a way that utilizes the commonalities in behaviour between the different products.
+We aim to find $P_s$ in a way that utilizes the commonalities in behaviour between the different products.

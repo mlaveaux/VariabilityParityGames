@@ -14,7 +14,7 @@ The numbers presented are the times it took to solve the games; times for parsin
 The exact times can be found in appendix \ref{appendix:resultsexact}, in this section the results are visualized and presented to be easily interpreted. In some cases the results in a graph are normalized meaning that the running times are divided by the running times of the first algorithm in the graph. Specifically for the random games the running times vary a lot so normalizing is required to properly visualize the results. The times are presented on a logarithmic scale, games that were unable to be completed (due to memory) are marked with a grey bar.
 
 All the experiments are ran on a Linux x64 operating system with an Intel i5-4570 processor and 8GB of RAM.
-\subsubsection{Zielonka's family based}
+\subsection{Zielonka's family based}
 First we compare the running times of the Zielonka's family based approaches with the Zielonka's product based approach. First we look at the model verification games.
 \begin{figure}[H]
 	\includegraphics[width=1\linewidth]{"results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
@@ -61,7 +61,7 @@ We can clearly conclude that as the number of features increases the family base
 Overall we can conclude that the explicit algorithm performs somewhat arbitrary, however the symbolic algorithm performs really well for model checking problems and random games that have similar properties. Also we can conclude that the algorithms scales well in terms of number of features.
 
 
-\subsubsection{Incremental pre-solve algorithm}
+\subsection{Incremental pre-solve algorithm}
 We compare the running times of the incremental pre-solve approaches with the fixed-point iteration product based algorithm. First we look at the model verification games.
 \begin{figure}[H]
 	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point product based_Incremental pre-solve_"}
@@ -104,7 +104,7 @@ Next we inspect how the algorithms scales in terms of number of features
 There is a downwards trend when it comes to the number of features, however it is quite inconsistent. Note that these games have $\lambda=0.92$. Which is lower than the threshold observed in figure \ref{fig:type1FPIteglobal}.
 
 Overall the performance is not a significant improvement on the product based approach.
-\subsubsection{Incremental pre-solve local algorithm}
+\subsection{Incremental pre-solve local algorithm}
 Next we again compare the incremental pre-solver with the fixed-point iteration product based approach, however this time we compare the local variants. We start with the model-checking games.
 \begin{figure}[H]
 	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point local product based_Incremental pre-solve local_"}
@@ -145,7 +145,7 @@ Next we inspect how the algorithms scales in terms of number of features
 Clearly the performance improves when the number of features becomes larger.
 
 We can conclude that for model-checking games the algorithm performs decent, however the biggest improvements are seen on random games.
-\subsubsection{Comparison}
+\subsection{Comparison}
 After comparing family based and product based variants of the same algorithm we compare the algorithms overall. We do so by comparing the mean solve time of the for every set of games. The incremental pre-solve global algorithm did not complete 3 games, for these games we use the fixed-point product based global times to calculate the mean.
 
 First we compare the product based algorithms:\\

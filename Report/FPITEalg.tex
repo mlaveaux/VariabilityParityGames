@@ -34,7 +34,7 @@ VPGs we consider are total, meaning that for every configuration and every verte
 
 Finally a subsubgame of two configuration sets is the same as the subgame of the intersection of these configuration sets, ie. $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
 
-\subsubsection{Finding $P_0$ and $P_1$}
+\subsection{Finding $P_0$ and $P_1$}
 We can find $P_0$ and $P_1$ by using \textit{pessimistic} parity games; a pessimistic parity game is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the parity game allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
 \begin{definition}
 	\label{def_pess_game}
@@ -94,7 +94,7 @@ When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning
 	\end{figure}
 \end{example}
 
-\paragraph{Pessimistic subgames}
+\subsubsection{Pessimistic subgames}
 Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winning for player $\alpha$ in pessimistic subgames of $G$, as shown in the following lemma.
 \begin{lemma}
 	\label{lem_pessimistic_subgames}
@@ -122,7 +122,7 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 		Let $v \in P_{\overline{\alpha}}$, using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\overline{\alpha}$ in $G_{|c}$ for any $c \in \mathfrak{C}$. Because projections of subgames are the same as projections of the original game we can conclude that $v$ is winning for player $\overline{\alpha}$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.	Assume $v \notin Q_{\overline{\alpha}}$ then $v \in Q_{\alpha}$ and using theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\alpha$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$. This is a contradiction so we can conclude $v \in Q_{\overline{\alpha}}$ and therefore $P_{\overline{\alpha}} \subseteq Q_{\overline{\alpha}}$.
 	\end{proof}
 \end{lemma}
-\subsubsection{Algorithm}
+\subsection{Algorithm}
 In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, specifically we want to solve a parity game that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is 1 configuration left we need a similar algorithm. In algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we show the correctness of the \textsc{IncPreSolve} algorithm, later we explore an appropriate \textsc{Solve} algorithm.
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
@@ -186,7 +186,7 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 	\end{proof}
 \end{theorem}
 
-\subsubsection{A parity game algorithm using pre-solved vertices}
+\subsection{A parity game algorithm using pre-solved vertices}
 The fixed-point iteration algorithm can be used to solve parity games using pre-solved vertices. First recall the fixed-point formula to calculate $W_0$:
 \[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \\mu X.f(x)nu Z_0. F_0(Z_{d-1},\dots,Z_0) \]
 Also recall that we can calculate a least fixed-point as follows:
@@ -290,7 +290,7 @@ We take the fixed-point algorithm presented in \cite{FPITE} and modify it by sta
 
 This algorithm is appropriate to use as a \textsc{Solve} algorithm in \textsc{IncPreSolve} since it solves parity games that are not necessarily total and uses $P_0$ and $P_1$.
 
-\subsubsection{Running time}
+\subsection{Running time}
 We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively.
 
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$. We can use this algorithm to solve $G$ independently, ie. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
