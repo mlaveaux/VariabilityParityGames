@@ -3,4 +3,6 @@
  - Hoe splitsen we set C in incpresolve?
  - Local: incomplete but correct winning sets
  - Complexity class parity games
- - bewijs vierkantje hertikzen
+ - Hoe worden sets van configuraties gecodeerd
+ - Intersectie van bitvectoren kan beter (confs & vertices)
+ - Simpelere variant in local 

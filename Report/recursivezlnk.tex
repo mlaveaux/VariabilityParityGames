@@ -1,18 +1,23 @@
-We can use the original Zielonka's recursive algorithm to solve VPGs, we do so by creating one big parity game of a VPG through a process we introduce called \textit{unification}. This parity game can be solved using the original recursive algorithm, however we introduce a way of representing the parity game that potentially increases performance and exploits commonalities between different configurations in the VPG.
+We can use the original Zielonka's recursive algorithm to solve VPGs, we do so by creating one big parity game of a VPG through a process we introduce called \textit{unification}. This parity game can be solved using the original recursive algorithm, however we introduce a way of representing this parity game that potentially increases performance and exploits commonalities between different configurations in the VPG.
 
 \subsection{Unified parity games}
 We can create a parity game from a VPG by taking all the projections of the VPG, which are parity games, and combining them into one parity games by taking the union of them. We call the resulting parity games the \textit{unification} of the VPG. A parity game that is the result of a unification is called a \textit{unified parity game}, also any total subgame of it will be called a unified parity games. A unified parity game always has a VPG from which it originated.
 \begin{definition}
-	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$ we define the unification of $\hat{G}$, denoted as $\hat{G}_{\downarrow}$, as
+	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1, \hat{E},\hat{\Omega}, \mathfrak{C},\theta)$ we define the unification of $\hat{G}$, denoted by $\hat{G}_{\downarrow}$, as
 	\[  \hat{G}_{\downarrow} = \biguplus_{c\in \mathfrak{C}}\hat{G}_{|c} \]
-	where the disjoin union of two parity games is defined as
+	where the disjoint union of two parity games is defined as
 	\[ (V,V_0,V_1,E,\Omega) \uplus (V',V_0',V_1',E',\Omega') = (V \uplus V', V_0 \uplus V_0', V_1 \uplus V_1', E \uplus E', \Omega \uplus \Omega') \]
+	and the disjoint union of functions $\Omega : V \rightarrow \mathbb{N}$ and $\Omega' : V' \rightarrow \mathbb{N}$ is defined as
+	\[ (\Omega \uplus \Omega')(v) = \begin{cases}
+	\Omega(v) & \text{if }v \in V \\
+	\Omega'(v) & \text{if }v \in V'
+	\end{cases}\]
 \end{definition}
 In this section we use the hat decoration ($\hat{G},\hat{V},\hat{E},\hat{\Omega},\hat{W}$) when referring to a VPG and use no hat decoration when referring to a (unified) parity game.
 
-Every vertex in game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in a unification as a pair consisting of a vertex and a configuration, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in a unification similarly, so $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that edges do not cross configurations so for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$. 
+Every vertex in unified parity game $\hat{G}_{\downarrow}$ originates from a configuration and an original vertex. Therefore we can consider every vertex in a unification as a vertex-configuration pair, ie. $V = \mathfrak{C} \times \hat{V}$. We can consider edges in a unification similarly, so $E \subseteq (\mathfrak{C} \times \hat{V}) \times (\mathfrak{C} \times \hat{V})$. Note that edges do not cross configurations so for every $((c,\hat{v}) , (c',\hat{v}')) \in E$ we have $c = c'$. 
 \begin{example}
-Figure \ref{fig:VPG2UPG} shows a VPG and its the unification of the VPG.
+Figure \ref{fig:VPG2UPG} shows a VPG and its the unification.
 	\begin{figure}[h]
 		\centering
 		\begin{subfigure}{1\textwidth}
@@ -23,7 +28,7 @@ Figure \ref{fig:VPG2UPG} shows a VPG and its the unification of the VPG.
 				
 				\node[odd, label=west:$\hat{v}_1$] (v1) at (10,10) {2};
 				\node[even,label=west:$\hat{v}_2$] (v2) at (10,8) {1};
-				\node[even,label=east:$\hat{v}_3$] (v3) at (12,8) {0};
+				\node[odd,label=south:$\hat{v}_3$] (v3) at (12,8) {0};
 				
 				\path (v1) edge[loop above] node[above]{$\{c_1\}$} (v1);
 				\path (v1) edge[bend right] node[left]{$\{c_1,c_2\}$} (v2);
@@ -31,8 +36,9 @@ Figure \ref{fig:VPG2UPG} shows a VPG and its the unification of the VPG.
 				\path (v2) edge node[above]{$\{c_1,c_2\}$} (v3);
 				\path (v3) edge[bend left] node[below]{$\{c_2\}$} (v2);
 				\path (v3) edge[bend right=40] node[right]{$\{c_1\}$} (v1);
-			\end{tikzpicture}\
-			\caption{VPG consisting of 2 configurations}
+				\path (v3) edge[loop right] node[right]{$\{c_1\}$} (v3);
+			\end{tikzpicture}
+			\caption{VPG with 2 configurations}
 		\end{subfigure}\\
 		\begin{subfigure}{1\textwidth}
 			\centering
@@ -42,13 +48,14 @@ Figure \ref{fig:VPG2UPG} shows a VPG and its the unification of the VPG.
 				
 				\node[odd, label={west:$(c_1,\hat{v}_1)$}] (v1) at (10,10) {2};
 				\node[even,label={west:$(c_1,\hat{v}_2)$}] (v2) at (10,8) {1};
-				\node[even,label={south:$(c_1,\hat{v}_3)$}] (v3) at (12,8) {0};
+				\node[odd,label={south:$(c_1,\hat{v}_3)$}] (v3) at (12,8) {0};
 				
 				\path (v1) edge[loop above] (v1);
 				\path (v1) edge[bend right] (v2);
 				\path (v2) edge[bend right] (v1);
 				\path (v2) edge (v3);
 				\path (v3) edge[bend right=40] (v1);
+				\path (v3) edge[loop right] (v3);
 			\end{tikzpicture}
 				\begin{tikzpicture}[->]
 				\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
@@ -56,15 +63,14 @@ Figure \ref{fig:VPG2UPG} shows a VPG and its the unification of the VPG.
 				
 				\node[odd, label={east:$(c_2,\hat{v}_1)$}] (v1) at (10,10) {2};
 				\node[even,label={south:$(c_2,\hat{v}_2)$}] (v2) at (10,8) {1};
-				\node[even,label={east:$(c_2,\hat{v}_3)$}] (v3) at (12,8) {0};
+				\node[odd,label={south:$(c_2,\hat{v}_3)$}] (v3) at (12,8) {0};
 				
-				\path (v1) edge[loop above] (v1);
 				\path (v1) edge[bend right] (v2);
 				\path (v2) edge[bend right] (v1);
 				\path (v2) edge (v3);
 				\path (v3) edge[bend left] (v2);
 			\end{tikzpicture}
-			\caption{Unified parity game, created from unifying the two projections}
+			\caption{Unified parity game, created by unifying the two projections}
 		\end{subfigure}
 		\caption{A VPG with its corresponding unified parity game}
 		\label{fig:VPG2UPG}
@@ -97,7 +103,7 @@ If we solve the parity game that is the unification of a VPG we have solved the 
 
 
 \subsubsection{Projections and totality}
-A unified parity games can be projected back to one of the games from which it is the union.
+A unified parity game can be projected onto a configuration to get one of the parity games from which it is the union.
 \begin{definition}
 	The projection of unified parity game $G = (V,V_0, V_1,E,{\Omega})$ to configuration $c$, denoted as $G_{|c}$, is the parity game $(V',V_0',V_1',E',\Omega)$ such that:
 	\begin{itemize}
@@ -108,18 +114,20 @@ A unified parity games can be projected back to one of the games from which it i
 	\end{itemize}
 \end{definition}
 
-One of the properties of a parity game is its totality; a game is total if every vertex has at least one outgoing vertex. The VPGs we consider are also total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$, at least one outgoing edge admitting $c$. Because VPGs are total their unifications are also total. Since edges in a unified parity game do not cross configurations the projection of a total unified parity game is also total, moreover a unified parity game is total if and only if every projection is total.
+One of the properties of a parity game is its totality; a game is total if every vertex has at least one outgoing vertex. The VPGs we consider are also total, meaning that every vertex has, for every configuration $c \in \mathfrak{C}$, at least one outgoing edge admitting $c$. Because VPGs are total their unifications are also total. Since edges in a unified parity game do not cross configurations the projection of a total unified parity game is also total.
 
 \subsection{Solving unified parity games}
-A unified parity game can be solved using Zielonka's recursive algorithm, since it is a total parity game. The recursive algorithm revolves around the attractor operation. Consider the example presented in figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
-\[ \{(c_1,\hat{v}_0),(c_2,\hat{v}_0)\}\]
+Since unified parity games are total they can be solved using Zielonka's recursive algorithm. The recursive algorithm revolves around the attractor operation. Consider the example presented in Figure \ref{fig:VPG2UPG}. Vertices with the highest priority are 
+\[ \{(c_1,\hat{v}_1),(c_2,\hat{v}_1)\}\]
 attracting these for player $0$ gives the set 
 \begin{align*}
-\{(c_1,\hat{v}_0),&(c_2,\hat{v}_0),\\
-(c_1,\hat{v}_1),&(c_2,\hat{v}_1),\\
- &(c_2,\hat{v}_2)\}
+\{(c_1,\hat{v}_1),&(c_2,\hat{v}_1),\\
+(c_1,\hat{v}_2),&(c_2,\hat{v}_2),\\
+ &(c_2,\hat{v}_3)\}
 \end{align*}
-The algorithm tries to attract vertices $(c_1,\hat{v}_1)$ and $(c_2,\hat{v}_1)$ because they have edges to $\{(c_1,\hat{v}_0), (c_2,\hat{v}_0)\}$. So the algorithm, in this, case asks the questions: "Can vertices $(c_1,\hat{v}_1)$ and $(c_2,\hat{v}_1)$ be attracted?" We could also ask the question: "For which configurations can we attract origin vertex $\hat{v}_1$?" Since the vertices in unified parity games are pairs of configurations and origin vertices we can instead of considering vertices individually consider origin vertices and try to attract as much configurations as possible for each origin vertex. This is the idea for the collective recursive VPG we present next. We introduce a way of efficiently representing unified parity games and an algorithm that behaves as the original recursive algorithm but uses the modified representation. Using the representation we can create an attractor set algorithm that tries to attract as much configurations per origin vertex as possible instead of trying to attract each vertex individually.
+The algorithm tries to attract vertices $(c_1,\hat{v}_2)$ and $(c_2,\hat{v}_2)$ because they have edges to $\{(c_1,\hat{v}_1), (c_2,\hat{v}_1)\}$. So the algorithm, in this, case asks the questions: "Can vertices $(c_1,\hat{v}_2)$ and $(c_2,\hat{v}_2)$ be attracted?" We could also ask the question: "For which configurations can we attract origin vertex $\hat{v}_2$?" Since the vertices in unified parity games are pairs of configurations and origin vertices we can, instead of considering vertices individually, consider origin vertices and try to attract as much configurations as possible for each origin vertex. This is the idea for the collective recursive VPG we present next. We introduce a way of efficiently representing unified parity games and an algorithm that behaves as the original recursive algorithm but uses the modified representation. Using this representation we can create an attractor set algorithm that tries to attract as much configurations per origin vertex as possible instead of trying to attract each vertex individually.
+
+In VPGs originating from FTSs a large number of edges admit all configurations (as is clear from definition \ref{def_FTS2VPG}), furthermore the sets that don't admit all configurations originate from the boolean formulas guarding transition in the FTS. As argued before, these sets will most likely admit many configurations because in many cases the boolean function will simply include or exclude a small number of features. Because of these two facts we hypothesise that VPGs originating from FTSs have edge guard sets that are relatively large (i.e. admit many of the configurations) and therefore we can attract many configurations at the same time per origin vertex.
 
 \subsection{Representing unified parity games}
 Unified parity games have a specific structure because they are the union of parity games that have the same vertices with the same owner and priority. Because they have the same priority we do not actually need to create a new function that is the unification of all the projections, we can simply use the original priority assignment function because the following relation holds:
@@ -127,7 +135,7 @@ Unified parity games have a specific structure because they are the union of par
 Similarly we can use the original partition sets $\hat{V}_0$ and $\hat{V}_1$ instead of having the new partition $V_0$ and $V_1$ because the following relations holds:
 \[ (c,\hat{v}) \in V_0 \iff \hat{v}\in \hat{V}_0 \]
 \[ (c,\hat{v}) \in V_1 \iff \hat{v}\in \hat{V}_1 \]
-So instead of considering unified parity game $(V,V_0,V_1,E,\Omega)$ we can consider $(V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$. 
+So instead of considering unified parity game $(V,V_0,V_1,E,\Omega)$ we consider $(V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$. 
 
 Next we consider how we represent vertices and edges in a unified parity game. A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a complete function $f : \hat{V} \rightarrow 2^\mathfrak{C}$. The set $X$ and function $f$ are equivalent, denoted by the operator $=_\lambda$, iff the following relation holds:
 \[ (c,\hat{v}) \in X \iff c \in f(\hat{v}) \]
@@ -135,6 +143,9 @@ We can also represent edges as a complete function $f : \hat{E} \rightarrow 2^\m
 \[ ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
 We define $\lambda^\emptyset$ to be the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
 
+Finally we define the union of two functions $f : \hat{V} \rightarrow 2^\mathfrak{C}$ and $g : \hat{V} \rightarrow 2^\mathfrak{C}$ as
+\[ (f \cup g)(\hat{v}) = f(\hat{v}) \cup g(\hat{v})\]
+Clearly $f \cup g =_\lambda V \cup W$ when $f =_\lambda V$ and $g =_\lambda W$.
 \begin{example}
 	We consider a few examples of (sub)games and show their set-wise and function-wise representation. First reconsider the following unified parity game.
 	\begin{center}
@@ -142,9 +153,9 @@ We define $\lambda^\emptyset$ to be the function that maps every element to $\em
 			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
 			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
 			
-			\node[odd, label={west:$(c_1,\hat{v}_1)$}] (c1v1) at (10,10) {2};
-			\node[even,label={west:$(c_1,\hat{v}_2)$}] (c1v2) at (10,8) {1};
-			\node[even,label={south:$(c_1,\hat{v}_3)$}] (c1v3) at (12,8) {0};
+			\node[odd, label={west:$(c_1,\hat{v}_1)$}] (c1v1) at (9.5,10) {2};
+			\node[even,label={west:$(c_1,\hat{v}_2)$}] (c1v2) at (9.5,8) {1};
+			\node[even,label={south:$(c_1,\hat{v}_3)$}] (c1v3) at (11.5,8) {0};
 			
 			\node[odd, label={east:$(c_2,\hat{v}_1)$}] (c2v1) at (13.5,10) {2};
 			\node[even,label={south:$(c_2,\hat{v}_2)$}] (c2v2) at (13.5,8) {1};
@@ -155,8 +166,8 @@ We define $\lambda^\emptyset$ to be the function that maps every element to $\em
 			\path (c1v2) edge[bend right] (c1v1);
 			\path (c1v2) edge (c1v3);
 			\path (c1v3) edge[bend right=40] (c1v1);
+			\path (c1v3) edge[loop right] (c1v3);
 			
-			\path (c2v1) edge[loop above] (c2v1);
 			\path (c2v1) edge[bend right] (c2v2);
 			\path (c2v2) edge[bend right] (c2v1);
 			\path (c2v2) edge (c2v3);
@@ -165,17 +176,19 @@ We define $\lambda^\emptyset$ to be the function that maps every element to $\em
 	\end{center}
 	This game can be represented set-wise:
 	\begin{align*}
-	V = \{&(c_1,\hat{v}_0),(c_2,\hat{v}_0),(c_1,\hat{v}_1),(c_2,\hat{v}_1),(c_1,\hat{v}_2),(c_2,\hat{v}_2) \}\\
-	E = \{& ((c_1,\hat{v}_0),(c_1,\hat{v}_0)),((c_1,\hat{v}_0),(c_1,\hat{v}_1)),((c_1,\hat{v}_1),(c_1,\hat{v}_0)),((c_1,\hat{v}_1),(c_1,\hat{v}_2)),((c_1,\hat{v}_2),(c_1,\hat{v}_0)), \\
-	&((c_2,\hat{v}_0),(c_2,\hat{v}_1)),((c_2,\hat{v}_1),(c_2,\hat{v}_0)),((c_2,\hat{v}_1),(c_2,\hat{v}_2)),((c_2,\hat{v}_2),(c_2,\hat{v}_1))\}
+	V = \{&(c_1,\hat{v}_1),(c_2,\hat{v}_1),(c_1,\hat{v}_2),(c_2,\hat{v}_2),(c_1,\hat{v}_3),(c_2,\hat{v}_3) \}\\
+	E = \{& ((c_1,\hat{v}_1),(c_1,\hat{v}_1)),((c_1,\hat{v}_1),(c_1,\hat{v}_2)),((c_1,\hat{v}_2),(c_1,\hat{v}_1)),\\
+	&((c_1,\hat{v}_2),(c_1,\hat{v}_3)),((c_1,\hat{v}_3),(c_1,\hat{v}_1)),((c_1,\hat{v}_3),(c_1,\hat{v}_3)), \\
+	&((c_2,\hat{v}_1),(c_2,\hat{v}_2)),((c_2,\hat{v}_2),(c_2,\hat{v}_1)),((c_2,\hat{v}_2),(c_2,\hat{v}_3)),((c_2,\hat{v}_3),(c_2,\hat{v}_2))\}
 	\end{align*}
 	and function-wise:
 	\begin{align*}
-	V = \{&\hat{v}_0 \mapsto \{c_1,c_2\},\hat{v}_1 \mapsto \{c_1,c_2\},\hat{v}_2 \mapsto \{c_1,c_2\}\}\\
-	E = \{&(\hat{v}_0,\hat{v}_1) \mapsto \{c_1,c_2\},(\hat{v}_1,\hat{v}_0) \mapsto \{c_1,c_2\},(\hat{v}_1,\hat{v}_2) \mapsto \{c_1,c_2\},\\
-	&(\hat{v}_0,\hat{v}_0) \mapsto \{c_1\},\\
-	&(\hat{v}_2,\hat{v}_0) \mapsto \{c_1\},\\
-	&(\hat{v}_2,\hat{v}_1) \mapsto \{c_2\}\}
+	V = \{&\hat{v}_1 \mapsto \{c_1,c_2\},\hat{v}_2 \mapsto \{c_1,c_2\},\hat{v}_3 \mapsto \{c_1,c_2\}\}\\
+	E = \{&(\hat{v}_1,\hat{v}_2) \mapsto \{c_1,c_2\},(\hat{v}_2,\hat{v}_1) \mapsto \{c_1,c_2\},(\hat{v}_2,\hat{v}_3) \mapsto \{c_1,c_2\},\\
+	&(\hat{v}_1,\hat{v}_1) \mapsto \{c_1\},\\
+	&(\hat{v}_3,\hat{v}_1) \mapsto \{c_1\},\\
+	&(\hat{v}_3,\hat{v}_2) \mapsto \{c_2\},\\
+	&(\hat{v}_3,\hat{v}_3) \mapsto \{c_1\}\}
 	\end{align*}
 	Consider the following subgame:
 	\begin{center}
@@ -196,17 +209,17 @@ We define $\lambda^\emptyset$ to be the function that maps every element to $\em
 	\end{center}
 	This subgame can be represented set-wise:
 	\begin{align*}
-	V = \{&(c_1,\hat{v}_0),(c_2,\hat{v}_0),(c_2,\hat{v}_1) \}\\
-	E = \{& ((c_1,\hat{v}_0),(c_1,\hat{v}_0)), \\
-	&((c_2,\hat{v}_0),(c_2,\hat{v}_1)),((c_2,\hat{v}_1),(c_2,\hat{v}_0)) \}
+	V = \{&(c_1,\hat{v}_1),(c_2,\hat{v}_1),(c_2,\hat{v}_2) \}\\
+	E = \{& ((c_1,\hat{v}_1),(c_1,\hat{v}_1)), \\
+	&((c_2,\hat{v}_1),(c_2,\hat{v}_2)),((c_2,\hat{v}_2),(c_2,\hat{v}_1)) \}
 	\end{align*}
 	and function-wise:
 	\begin{align*}
-	V = \{&\hat{v}_0 \mapsto \{c_1,c_2\},\hat{v}_1 \mapsto \{c_2\},\hat{v}_2 \mapsto \emptyset\}\\
-	E = \{&(\hat{v}_0,\hat{v}_1) \mapsto \{c_2\},(\hat{v}_1,\hat{v}_0) \mapsto \{c_2\},(\hat{v}_1,\hat{v}_2) \mapsto \emptyset,\\
-	&(\hat{v}_0,\hat{v}_0) \mapsto \{c_1\},\\
-	&(\hat{v}_2,\hat{v}_0) \mapsto \emptyset,\\
-	&(\hat{v}_2,\hat{v}_1) \mapsto \emptyset\}
+	V = \{&\hat{v}_1 \mapsto \{c_1,c_2\},\hat{v}_2 \mapsto \{c_2\},\hat{v}_3 \mapsto \emptyset\}\\
+	E = \{&(\hat{v}_1,\hat{v}_2) \mapsto \{c_2\},(\hat{v}_2,\hat{v}_1) \mapsto \{c_2\},(\hat{v}_2,\hat{v}_3) \mapsto \emptyset,\\
+	&(\hat{v}_1,\hat{v}_1) \mapsto \{c_1\},\\
+	&(\hat{v}_3,\hat{v}_1) \mapsto \emptyset,\\
+	&(\hat{v}_3,\hat{v}_2) \mapsto \emptyset\}
 	\end{align*}
 	Finally consider an empty subgame which we can represent set-wise:
 	\[ V = \emptyset, E = \emptyset \]
@@ -215,7 +228,7 @@ We define $\lambda^\emptyset$ to be the function that maps every element to $\em
 \end{example}
 
 \subsection{Algorithms}
-Using the recursive algorithm as a basis we can solve a VPG in numerous ways. First of all we can solve the projections, ie. solve the VPG independently. Alternatively we can solve it collectively using a set-wise presentation or a function-wise presentation. For the function-wise presentation we are working with functions mapping vertices and edges to sets of configurations. These sets of configurations can either be represented explicitly or symbolically. The following diagram shows the different algorithms:
+Using the recursive algorithm as a basis we can solve a VPG in numerous ways. First of all we can solve the projections, i.e. solve the VPG independently. Alternatively we can solve it collectively using a set-wise presentation or a function-wise presentation. For the function-wise presentation we are working with functions mapping vertices and edges to sets of configurations. These sets of configurations can either be represented explicitly or symbolically. The following diagram shows the different algorithms:
 \begin{center}
 	\begin{forest}
 		[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}
@@ -234,36 +247,31 @@ The independent approach uses the original algorithm, the collective set-wise ap
 
 \subsubsection{Symbolically representing sets of configurations}
 \label{sec:symrepconfs}
-For VPGs originating from an FTS the configuration sets are boolean functions over the features. The formula's guarding the edges in the VPG will generally have relatively simple boolean functions, therefore they are specifically appropriate to represent as BDDs.
+For VPGs originating from an FTS the configuration sets guarding the edges either admit all configurations or originate from boolean functions over the features. These boolean functions will most likely be relatively simple and are therefore specifically appropriate to represent as BDDs.
 
-A set operation over two explicit sets can be performed in $O(m)$ where $m$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs ($O(m^2)$). However if the BDDs are small then the set size can still be large but the set operations are performed very quickly. This is a trade-off between worst-case time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however if the sets are not structures in a way that the BDDs are small the running time is worse than with an explicit representation.
+A set operation over two explicit sets can be performed in $O(m)$ where $m$ is the maximum size of the sets, this is better than the time complexity of a set operation using BDDs, which is $O(m^2)$. However if the BDDs are small then the set size can still be large but the set operations are performed very quickly. This is a trade-off between worst-case time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however if the sets are not structures in a way that the BDDs are small the running time is worse than with an explicit representation.
 
 We hypothesize that since the collective function-wise symbolic recursive algorithm relies heavily on set operations over sets of configurations this algorithm will perform well when solving VPGs originating from FTSs.
 
 \subsubsection{A note on symbolically solving games}
 The function-wise algorithm has two variants: an explicit and a symbolic variant. In the explicit variant everything is represented explicitly. In the symbolic variant the sets of configurations are represented symbolically, however the graph is still represented explicitly so the algorithm is partially symbolic and partially explicit. Alternatively an algorithm could completely work symbolically by representing both the graph and the sets of configurations symbolically.
 
-Solving parity games symbolically has been studied in \cite{BDDSolvingPG}. The obstacle is that representing graphs with a large number of nodes makes the corresponding BDDs very complex and performance decreases rapidly. As to not repeat work done in \cite{BDDSolvingPG} we only consider algorithms where we represent the graph explicitly. 
+Solving parity games symbolically has been studied in \cite{BDDSolvingPG}. The obstacle is that representing graphs with a large number of nodes can make the corresponding BDDs very complex if no underlying structure is known for the graph. In such a case performance decreases rapidly. For model verification problems a game graph can conceivably be represented as a BDD by using the structure of the original model to build the BDD. However this is not trivial as argued in \cite{BDDSolvingPG}. As to not repeat work done in \cite{BDDSolvingPG} we only consider algorithms where we represent the graph explicitly. 
 
 \subsection{Recursive algorithm using a function-wise representation}
-We can modify the recursive algorithm to work with the function-wise representation of vertices and edges. The algorithm behaves the same, only operations are modified to work with the different representation.  Pseudo code for the modified algorithm is presented in algorithm \ref{alg_zlnk_UVPG}. Note that for this pseudo code no distinction is needed between explicit and symbolic representations of sets of configurations.
+The recursive algorithm can be modified to work with the function-wise representation of vertices and edges. The algorithm behaves the same as the original; operations are modified to work with the different representation.  Pseudo code for the modified algorithm is presented in Algorithm \ref{alg_zlnk_UVPG}. Note that for this pseudo code no distinction is needed between explicit and symbolic representations of sets of configurations.
 \begin{algorithm}
-	\caption{$\textsc{RecursiveUPG}(\textit{parity game } G = (\\
+	\caption{$\textsc{RecursiveUPG}(\textit{unified parity game } G = (\\
 		V : \hat{V} \rightarrow 2^\mathfrak{C},\\
 		\hat{V}_0 \subseteq \hat{V},\\
 		\hat{V}_1 \subseteq \hat{V},\\
 		E : \hat{E} \rightarrow 2^\mathfrak{C},\\
 		\hat{\Omega} : \hat{V}\rightarrow \mathbb{N}))$}\label{alg_zlnk_UVPG}
 	\begin{algorithmic}[1]
-		\State $m \gets \min\{ \hat{\Omega}(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
+		\If{$V = \lambda^\emptyset$}
+		\State \Return $(\lambda^\emptyset, (\lambda^\emptyset)$
+		\EndIf
 		\State $h \gets \max\{ \hat{\Omega}(\hat{v})\ |\ V(\hat{v}) \neq \emptyset \}$
-		\If{$h = m$ or $V = \lambda^\emptyset$}
-		\If{$h$ is even or $V = \lambda^\emptyset$}
-		\State \Return $(V,\lambda^\emptyset)$
-		\Else
-		\State \Return $(\lambda^\emptyset, V)$
-		\EndIf
-		\EndIf
 		\State $\alpha \gets 0$ if $h$ is even and $1$ otherwise
 		\State $U \gets \lambda^\emptyset$, $U(\hat{v}) \gets V(\hat{v})$ for all $\hat{v}$ with $\hat{\Omega}(\hat{v}) = h$
 		\State $A \gets \alpha\textit{-FAttr}(G, U)$
@@ -293,18 +301,18 @@ V(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E(\hat{v},\hat{v}'))
 	\end{cases}
 	\]
 	Finally:
-	\[\alpha\textit{-FAttr}(G,U) = \bigcup_{i \geq 0} U_i \]
+	\[\alpha\textit{-FAttr}(G,U)(\hat{v}) = \bigcup_{i \geq 0} U_i(\hat{v}) \]
 \end{definition}
 This attractor definition relies heavily on performing set operations on sets of configurations. We also introduce a modified subgame definition to work with the function-wise representation.
 \begin{definition}
 	\label{def_Usubgame}
-	For unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$, represented function-wise, and set $X \subseteq V$ we define the subgame $G \backslash X = (V',\hat{V}_0,\hat{V}_1,E',\hat{\Omega})$ such that:
+	For unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ and set $X \subseteq V$, both represented function-wise, we define the subgame $G \backslash X = (V',\hat{V}_0,\hat{V}_1,E',\hat{\Omega})$ such that:
 	\begin{itemize}
 		\item $V'(\hat{v}) = V(\hat{v}) \backslash X(\hat{v})$
 		\item $E'(\hat{v},\hat{v}') = E(\hat{v},\hat{v}') \cap V'(\hat{v}) \cap V'(\hat{v}')$
 	\end{itemize}
 \end{definition}
-Note that when using the original subgame definition for unified parity games we can omit the modification to the partition because, as we have seen, we can use the partitioning from the VPG in the representation of unified parity games.
+Note that we can omit the modification to the partition because, as we have seen, we can use the partitioning from the VPG in the representation of unified parity games.
 
 \begin{example}
 	Consider unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ originating from a VPG with configuration $\mathfrak{C} = \{c_0,c_1,c_2\}$ represented function-wise in Figure \ref{fig:upg}. We depict every $(v,w)$ such that $E(v,w) \neq \emptyset$ with an edge annotated by the set $E(v,w)$. All the origin vertices are depicted and for every origin vertex $\hat{v}$ we annotate the square or diamond with a label $\hat{v}\ |\ C$ where $C = V(\hat{v})$.
@@ -314,15 +322,15 @@ Note that when using the original subgame definition for unified parity games we
 			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
 			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
 			
-			\node[odd, label=north:$v_1\ |\ \mathfrak{C}$] (v1) at (20,20) {5};
-			\node[even,label=north:$v_2\ |\ \mathfrak{C}$] (v2) at (23,20) {6};
-			\node[even,label=north:$v_3\ |\ \mathfrak{C}$] (v3) at (26,20) {4};
+			\node[odd, label=north:$\hat{v}_1\ |\ \mathfrak{C}$] (v1) at (20,20) {5};
+			\node[even,label=north:$\hat{v}_2\ |\ \mathfrak{C}$] (v2) at (23,20) {6};
+			\node[even,label=north:$\hat{v}_3\ |\ \mathfrak{C}$] (v3) at (26,20) {4};
 			
-			\node[even,label=west:$v_4\ |\ \mathfrak{C}$]  (v4) at (20,17) {1};
-			\node[odd, label=north east:$v_5\ |\ \mathfrak{C}$] (v5) at (23,17) {2};
-			\node[odd, label=east:$v_6\ |\ \mathfrak{C}$] (v6) at (26,17) {3};
+			\node[even,label=west:$\hat{v}_4\ |\ \mathfrak{C}$]  (v4) at (20,17) {1};
+			\node[odd, label=north east:$\hat{v}_5\ |\ \mathfrak{C}$] (v5) at (23,17) {2};
+			\node[odd, label=east:$\hat{v}_6\ |\ \mathfrak{C}$] (v6) at (26,17) {3};
 			
-			\node[odd, label=south:$v_7\ |\ \mathfrak{C}$] (v7) at (23,14) {2};
+			\node[odd, label=south:$\hat{v}_7\ |\ \mathfrak{C}$] (v7) at (23,14) {2};
 			
 			
 			\path (v1) edge node[above]{$\mathfrak{C}$} (v2);
@@ -345,32 +353,32 @@ Note that when using the original subgame definition for unified parity games we
 		\caption{Unified parity game originating from a VPG with configuration $\mathfrak{C} = \{c_0,c_1,c_2\}$}
 		\label{fig:upg}
 	\end{figure}
-We calculate the function-wise attractor set for player 0 from origin vertex $\hat{v}_2$ with all configuration, we have
-\[ U_0 = U = \{\hat{v}_1 \mapsto \emptyset, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \emptyset, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \emptyset, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
+We calculate the function-wise attractor set for player 0 from origin vertex $\hat{v}_3$ with all configuration, we have
+\[ U_0 = U = \{\hat{v}_2 \mapsto \emptyset, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \emptyset, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \emptyset, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
 After the first iteration we find
-\[U_1 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
-Note that $\hat{v}_5$ can be attracted because for configuration $\{c_1\}$ because $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}_7) = \{c_1\}$, $U_0(\hat{v}_2) = \mathfrak{C}$ and for any other origin vertex $\hat{v}$ we have $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}) = \mathfrak{C}$.
+\[U_1 = \{\hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
+Note that $\hat{v}_5$ can be attracted because for configuration $\{c_1\}$ because $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}_7) = \{c_1\}$, $U_0(\hat{v}_3) = \mathfrak{C}$ and for any other origin vertex $\hat{v}$ we have $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}) = \mathfrak{C}$.
 
 In the next iterations we find
-\[U_1 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \emptyset\}\]
-\[U_2 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \{c_0\}\}\]
-\[U_3 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_0,c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \{c_0\}\}\]
+\[U_1 = \{\hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \emptyset\}\]
+\[U_2 = \{\hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \{c_0\}\}\]
+\[U_3 = \{\hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_0,c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \{c_0\}\}\]
 
-Next iterations result in the same set, so $0\textit{-FAttr}(G,U) = U_3$. We create subgame $G\backslash U_3$ depicted in Figure \ref{fig:upg_subattr}.
+Next iterations result in the same function, so $0\textit{-FAttr}(G,U) = U_3$. We create subgame $G\backslash U_3$ depicted in Figure \ref{fig:upg_subattr}.
 \begin{figure}[h]
 	\centering\begin{tikzpicture}[->]
 		\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
 		\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
 		
-		\node[odd, label={north:$v_1\ |\ \emptyset$}] (v1) at (20,20) {5};
-		\node[even,label={north:$v_2\ |\ \emptyset$}] (v2) at (23,20) {6};
-		\node[even,label={north:$v_3\ |\ \emptyset$}] (v3) at (26,20) {4};
+		\node[odd, label={north:$\hat{v}_1\ |\ \emptyset$}] (v1) at (20,20) {5};
+		\node[even,label={north:$\hat{v}_2\ |\ \emptyset$}] (v2) at (23,20) {6};
+		\node[even,label={north:$\hat{v}_3\ |\ \emptyset$}] (v3) at (26,20) {4};
 		
-		\node[even,label={north:$v_4\ |\ \{c_2\}$}]  (v4) at (20,17) {1};
-		\node[odd, label={north:$v_5\ |\ \{c_2\}$}] (v5) at (23,17) {2};
-		\node[odd, label={north:$v_6\ |\ \{c_1\}$}] (v6) at (26,17) {3};
+		\node[even,label={north:$\hat{v}_4\ |\ \{c_2\}$}]  (v4) at (20,17) {1};
+		\node[odd, label={north:$\hat{v}_5\ |\ \{c_2\}$}] (v5) at (23,17) {2};
+		\node[odd, label={north:$\hat{v}_6\ |\ \{c_1\}$}] (v6) at (26,17) {3};
 		
-		\node[odd, label={south:$v_7\ |\ \{c_1,c_2\}$}] (v7) at (23,14) {2};
+		\node[odd, label={south:$\hat{v} _7\ |\ \{c_1,c_2\}$}] (v7) at (23,14) {2};
 		
 		\path (v4) edge node[fill=white]{$\{c_2\}$} (v5);
 		
@@ -465,17 +473,17 @@ In the next two lemma's we show that the function-wise attractor and subgame ope
 		
 		Let $(c,\hat{v}) \in V$.
 		
-		If $(c,\hat{v}) \in U$ then $c \in U^\lambda(\hat{v})$, also $(c,\hat{v}) \notin V'$ (by definition \ref{def_org_subgame}) and $c \notin {V^\lambda}'(\hat{v})$ (by definition \ref{def_Usubgame}).
+		If $(c,\hat{v}) \in U$ then $c \in U^\lambda(\hat{v})$, also $(c,\hat{v}) \notin V'$ (by Definition \ref{def_org_subgame}) and $c \notin {V^\lambda}'(\hat{v})$ (by Definition \ref{def_Usubgame}).
 		
-		If $(c,\hat{v}) \notin U$ then $c \notin U^\lambda(\hat{v})$, also $(c,\hat{v}) \in V'$ (by definition \ref{def_org_subgame}) and $c \in {V^\lambda}'(\hat{v})$ (by definition \ref{def_Usubgame}).
+		If $(c,\hat{v}) \notin U$ then $c \notin U^\lambda(\hat{v})$, also $(c,\hat{v}) \in V'$ (by Definition \ref{def_org_subgame}) and $c \in {V^\lambda}'(\hat{v})$ (by Definition \ref{def_Usubgame}).
 		
 		Let $((c,\hat{v}),(c,\hat{w})) \in E$.
 		
-		If $(c,\hat{v}) \in U$ then $(c,\hat{v}) \notin V'$ and $c \notin {V^\lambda}'(\hat{v})$ (as shown above). We get $((c,\hat{v}),(c,\hat{w})) \notin V' \times V'$ so $((c,\hat{v}),(c,\hat{w})) \notin E'$ (by definition \ref{def_org_subgame}). Also $c \notin {E^\lambda}'(\hat{v},\hat{w})$ (by definition \ref{def_Usubgame}).
+		If $(c,\hat{v}) \in U$ then $(c,\hat{v}) \notin V'$ and $c \notin {V^\lambda}'(\hat{v})$ (as shown above). We get $((c,\hat{v}),(c,\hat{w})) \notin V' \times V'$ so $((c,\hat{v}),(c,\hat{w})) \notin E'$ (by Definition \ref{def_org_subgame}). Also $c \notin {E^\lambda}'(\hat{v},\hat{w})$ (by Definition \ref{def_Usubgame}).
 		
 		If $(c,\hat{w}) \in U$ then we apply the same logic.
 		
-		If neither is in $U$ then both are in $V'$ and in $V' \times V'$ and therefore the $((c,\hat{v}),(c,\hat{w})) \in E'$. Also we get $c \in {V^\lambda}'(\hat{v})$ and $c \in {V^\lambda}'(\hat{w})$ so we get $c \in {E^\lambda}'(\hat{v},\hat{w})$ (by definition \ref{def_Usubgame}).
+		If neither is in $U$ then both are in $V'$ and in $V' \times V'$ and therefore the $((c,\hat{v}),(c,\hat{w})) \in E'$. Also we get $c \in {V^\lambda}'(\hat{v})$ and $c \in {V^\lambda}'(\hat{w})$ so we get $c \in {E^\lambda}'(\hat{v},\hat{w})$ (by Definition \ref{def_Usubgame}).
 	\end{proof}
 \end{lemma}
 
@@ -489,8 +497,6 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 		
 		\textbf{Base} When there are no vertices then \textsc{RecursiveUPG($G^\lambda$)} returns $(\lambda^\emptyset,\lambda^\emptyset)$ and \textsc{RecursivePG($G$)} returns $(\emptyset,\emptyset)$, these two results are equal therefore the theorem holds in this case.
 		
-		\textbf{Base} When there is only one priority, which is even, then \textsc{RecursiveUPG($G^\lambda$)} returns $(V^\lambda,\lambda^\emptyset)$ and \textsc{RecursivePG($G$)} return $(V,\emptyset)$, these two results are equal therefore the theorem holds in this case. Similarly when the one priority is odd.
-		
 		\textbf{Step}
 		Player $\alpha$ gets the same value in both algorithms since the highest priority is equal for both algorithms.
 		
@@ -500,14 +506,14 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 		
 		Let $c \in U^\lambda(\hat{v})$, since $U^\lambda(\hat{v})$ is not empty we have $\hat{\Omega}(\hat{v}) = h$, furthermore $c \in V^\lambda(\hat{v})$ and therefore $(c,\hat{v}) \in V$. We can conclude that $(c, \hat{v}) \in U$ and $U =_\lambda U^\lambda$.
 		
-		For the rest of the algorithm it is sufficient to see that attractor sets are equal if the game and input set are equal (as shown in lemma \ref{lem_attr_equal}) and that the created subgames are equal (as shown in lemma \ref{lem_subgame_eq}). Since the subgames are equal we can apply the theorem on it by induction and conclude that the winning sets are also equal.
+		For the rest of the algorithm it is sufficient to see that attractor sets are equal if the game and input set are equal (as shown in Lemma \ref{lem_attr_equal}) and that the created subgames are equal (as shown in Lemma \ref{lem_subgame_eq}). Since the subgames are equal we can apply the theorem on it by induction and conclude that the winning sets are also equal.
 	\end{proof}
 \end{theorem}
 
 Theorem \ref{theA_solve_UVPG_is_solve_VPG} shows that solving a unified parity game solves the VPG, furthermore the algorithm \textsc{RecursiveUPG} correctly solves a unified parity game therefore we can conclude that for VPG $\hat{G}$ vertex $\hat{v}$ is won by player $\alpha$ for configuration $c$ iff $c \in W_\alpha(\hat{v})$ with $(W_0,W_1) = \textsc{RecursiveUPG}(G_{\downarrow})$.
 
 \subsubsection{Function-wise attractor set}
-Next we present an algorithm to calculate the function-wise attractor, the pseudo code is presented in Algorithm \ref{alg_fattr_alg}. The algorithm considers vertices that are in the attracted set for some configuration, for every such vertex the algorithm tries to attract vertices that are connected by an incoming edge. If a vertex is attracted for some configuration then the incoming edges of that vertex will also be considered.
+Next we present an algorithm to calculate the function-wise attractor, the pseudo code is presented in Algorithm \ref{alg_fattr_alg}. The algorithm considers vertices that are in the attractor set for some configuration, for every such vertex the algorithm tries to attract vertices that are connected by an incoming edge. If a vertex is attracted for some configuration then the incoming edges of that vertex will also be considered.
 \begin{algorithm}
 	\caption{$\textsc{$\alpha$-FAttractor}(G, U : \hat{V} \rightarrow 2^\mathfrak{C})$}\label{alg_fattr_alg}
 	\begin{algorithmic}[1]
@@ -534,17 +540,17 @@ Next we present an algorithm to calculate the function-wise attractor, the pseud
 	\end{algorithmic}
 \end{algorithm}
 
-Consider unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ and vertex set $U \subseteq V$ both represented function-wise. We prove in the following Lemma and Theorem that the result calculated by $\alpha\textsc{-Fattractor}$ is equal to the definition of $\alpha\textit{-FAttr}$ (definition \ref{def_Uattr}).
+Consider unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ and vertex set $U \subseteq V$, both represented function-wise. We prove in the following lemma and theorem that the result calculated by $\alpha\textsc{-Fattractor}$ is equal to the definition of $\alpha\textit{-FAttr}$ (Definition \ref{def_Uattr}).
 \begin{lemma}
 \label{lem_attr_requires_E}
 Vertex $\hat{v}$ and configuration $c$, with $c \in V(\hat{v})$, can only be attracted to $U_i$ if there is a vertex $\hat{v}'$ such that $c \in E(\hat{v}, \hat{v}')$ and $c \in U_i(\hat{v}')$.
 	\begin{proof}
-		We first observe that if $\hat{v} \in \hat{V}_\alpha$ then this property follows immediately from definition the function-wise attractor definition (Definition \ref{def_Uattr}). If $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we note that unified parity games are total and therefore all of their projections are also total. So vertex $\hat{v}$ has at least one outgoing edge for $c$, we have $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w})$.
+		We first observe that if $\hat{v} \in \hat{V}_\alpha$ then this property follows immediately from the function-wise attractor definition (Definition \ref{def_Uattr}). If $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we note that unified parity games are total and therefore all of their projections are also total. So vertex $\hat{v}$ has at least one outgoing edge for $c$, we have $\hat{w}$ such that $c \in E(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in U_i(\hat{w})$.
 	\end{proof}
 \end{lemma}
 \begin{theorem}
 Set $A = \textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}(G,U)$.
-	\begin{proof} We will prove two loop invariants over the while loop of the algorithm.
+	\begin{proof} We prove two loop invariants over the while loop of the algorithm.
 		
 		\textbf{IV1}: For every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ with $c \in A(\hat{w})$ we have $c \in \alpha\textit{-FAttr}(G,U)(\hat{w})$.
 		
@@ -563,7 +569,7 @@ Set $A = \textsc{$\alpha$-FAttractor}(G,U)$ satisfies $A = \alpha\textit{-FAttr}
 			This case cannot happen because $A(\hat{w})$ only increases during the algorithm and the values for $E$ and $V$ are not changed throughout the algorithm.
 			\item $\hat{w}$ with $c$ cannot be attracted by the beginning of the iteration but can by the end.
 			
-			For $\hat{w}$ with $c$ to be able to be attracted at the end of the iteration there must be some $\hat{w}'$ with $c$ such that during the iteration $c$ was added to $A(\hat{w}')$ (lemma \ref{lem_attr_requires_E}). Every $\hat{w}'$ for which $A(\hat{w}')$ is updated is added to the queue (lines 14-17). Therefore we have $\hat{w}' \in Q$ with $c \in E(\hat{w},\hat{w}')$ and IV1 holds.
+			For $\hat{w}$ with $c$ to be able to be attracted at the end of the iteration there must be some $\hat{w}'$ with $c$ such that during the iteration $c$ was added to $A(\hat{w}')$ (Lemma \ref{lem_attr_requires_E}). Every $\hat{w}'$ for which $A(\hat{w}')$ is updated is added to the queue (lines 14-17). Therefore we have $\hat{w}' \in Q$ with $c \in E(\hat{w},\hat{w}')$ and IV1 holds.
 			\item $\hat{w}$ with $c$ can be attracted by the beginning of the iteration and also by the end.
 			
 			Since IV2 holds at the beginning of the iteration we have either $c \in A(\hat{w})$ or we have some $\hat{w}' \in Q$ such that $c \in E(\hat{w},\hat{w}')$. In the former case IV2 holds trivially by the end of the iteration since $A(\hat{w})$ can only increase. For the latter case we distinguish two scenario's. 
@@ -585,21 +591,22 @@ We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{
 
 The original algorithm runs in $O(e * n^d)$, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified parity game (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a time complexity of $O(c*e*(c*n)^d)$. However, as we show next, this running time can be improved by using the property that a unified parity game consists of $c$ disconnected graphs.
 
-We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set is dominates the other operations performed, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
+We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set dominates the other operations performed, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
 
-\subsubsection{Base cases} In the base cases the algorithm needs to do two things: find the highest and lowest priority and check if there are no more vertices in the game. For the set-wise variant we find the highest and lowest priorities by iterating all vertices, which takes $O(c*n)$. Checking if there are no more vertices is done in $O(1)$. For the function wise algorithms we can find the highest and lowest priority in $O(n)$ and checking if there are no vertices is also done in $O(n)$ since we have to check $V(\hat{v}) = \emptyset$ for every $\hat{v}$. Note that in a symbolic representation using BDDs we can check if a set is empty in $O(1)$ because the decision diagram contains a single node.
+\subsubsection{Base cases} In the base cases the algorithm needs to check there are no more vertices in the game. For the set-wise variant this is done in $O(1)$. For the function wise algorithms this is done in $O(n)$ since we have to check $V(\hat{v}) = \emptyset$ for every $\hat{v}$. Note that in a symbolic representation using BDDs we can check if a set is empty in $O(1)$ because the decision diagram contains a single node when representing an empty set.
 
 \subsubsection{Attractor sets} For the set-wise collective approach we can use the attractor calculation from the original algorithm which has a time complexity of $O(e)$, so for a unified parity game having $c*e$ edges we have $O(c*e)$.
 
 The function-wise variants uses a different attractor algorithm. First we consider the variant where sets of configurations are represented explicitly.
 
-Consider algorithm \ref{alg_fattr_alg}. A vertex will be added to the queue when this vertex is attracted for some configuration, this can only happen $c*n$ times, once for every vertex configuration combination. 
+Consider Algorithm \ref{alg_fattr_alg}. A vertex will be added to the queue when this vertex is attracted for some configuration, this can only happen $c*n$ times, once for every vertex-configuration combination. 
 
-The first for loop considers all the incoming edges of a vertex. When we consider all vertices the for loop will have considered all edges, since we consider every vertex at most $c$ times the for loop will run at most $c*e$ times in total.
 
-The second for loop considers all outgoing edges of a vertex. The vertices that are considered are the vertices that have an edge going to the vertex being considered by the while loop. Since the while loop considers $c*n$ vertices the second for loop runs in total at most $c * n * e$ times. The loop itself performs set operations on the set of configurations which can be done in $O(c)$. This gives a total time complexity for the attractor set of $O(n*c^2*e)$.
+During an iteration of the while loop, the first for loop considers all vertices with an edge to the vertex under consideration by the while loop. We note that during one iteration of the while loop the first for loop never considers a vertex twice. Because of this we can also conclude that during one iteration of the while loop the second for loop considers no edge twice. Since the while loop runs at most $c*n$ times and in every iteration the second for loop considers at most $e$ edges we conclude that the second for loop runs at most $c*n*e$ times. 
 
-For the symbolic representation set operations can be done in $O(c^2)$ so we get a time complexity of $O(n*c^3*e)$.
+The second for loop performs set operations on the set of configurations which can be done in $O(c)$ for using an explicit representation. This gives a total time complexity for the attractor set of $O(n*c^2*e)$.
+
+Symbolic set operations can be done in $O(c^2)$ so we get a time complexity of $O(n*c^3*e)$.
 
 This gives the following time complexities\\
 \begin{center}
@@ -607,7 +614,7 @@ This gives the following time complexities\\
 		\hline 
 		& Base & Attractor set \\ 
 		\hline 
-		Set-wise & $O(c*n)$ & $O(c*e)$  \\ 
+		Set-wise & $O(1)$ & $O(c*e)$  \\ 
 		\hline 
 		Function-wise explicit & $O(n)$ &  $O(n*c^2*e)$ \\ 
 		\hline 
@@ -616,44 +623,42 @@ This gives the following time complexities\\
 	\end{tabular} 
 \end{center}
 
-\subsubsection{Recursion} The three algorithms behave the same way with regards to their recursion, so we analyse the running time of the set-wise variant and can derive the time complexity of the others using the result.
+\subsubsection{Recursion} The three algorithms behave the same way with regards to their recursion, so we analyse the recursion for all three algorithms at the same time. Let $O_B$ denote the time complexity of the base case for the algorithm and let $O_A$ denote the time complexity of the attractor set. For all variants of the algorithm we have $O_B \leq O_A$.
 
 The algorithm has two recursions, the first recursion lowers the number of distinct priorities by 1. The second recursion removes at least one vertex, however the game is comprised of disjoint projections. We can use this fact in the analyses. Consider unified parity game $G$ and set $A$ as specified by the algorithm. Now consider the projection of $G$ to an arbitrary configuration $q$, $G_{|q}$. If $(G\backslash A)_{|q}$ contains a vertex that is won by player $\overline{\alpha}$ then this vertex is removed in the second recursion step. If there is no vertex won by player $\overline{\alpha}$ then the game is won in its entirety and the only vertices won by player $\overline{\alpha}$ are in different projections. We can conclude that for every configuration $q$ the second recursion either removes a vertex or $(G\backslash A)_{|q}$ is entirely won by player $\alpha$. Let $\overline{n}$ denote be the maximum number of vertices that are won by player $\overline{\alpha}$ in game $(G\backslash A)_{|q}$. Since every projection has at most $n$ vertices the value for $\overline{n}$ can be at most $n$. Furthermore since $\overline{n}$ depends on $A$, which depends on the maximum priority, the value $\overline{n}$ gets reset when the top priority is removed in the first recursion. We can now write down the recursion of the algorithm:
-\[ T(d,\overline{n}) \leq T(d-1,n) + T(d, \overline{n} - 1) + O(c*e) \]
+\[ T(d,\overline{n}) \leq T(d-1,n) + T(d, \overline{n} - 1) + O_A \]
 When $\overline{n} = 0$ we will get $W_{\overline{\alpha}} = \emptyset$ as a result of the first recursion. In such a case there will be only 1 recursion.
-\[ T(d,0) \leq T(d-1,n) + O(c*e) \]
+\[ T(d,0) \leq T(d-1,n) + O_A \]
 Finally we have the base case where there is 1 priority:
-\[ T(1, \overline{n}) \leq O(c*n) \]
+\[ T(1, \overline{n}) \leq O_B \]
 Expanding the second recursion gives
 \begin{align*}
-T(d) &\leq (n+1)T(d-1) + (n+1)O(c*e)\\
-T(1) &\leq O(c*n)
+T(d) &\leq (n+1)T(d-1) + (n+1)O_A\\
+T(1) &\leq O_B
 \end{align*}
-We prove that $T(d) \leq (n+d)^dO(c*e)$ by induction on $d$.
+We prove that $T(d) \leq (n+d)^dO_A$ by induction on $d$.
 
-\textbf{Base} $d=1$: $T(1) \leq O(c*n) \leq O(c*e) \leq (n+1)^1O(c*e)$
+\textbf{Base} $d=1$: $T(1) \leq O_B \leq O_A \leq (n+1)^1O_A$
 
 \textbf{Step} $d > 1$:
 \begin{align*}
-T(d) &\leq (n+1)T(d-1) + (n+1)O(c*e)\\
-&\leq (n+1)(n+d-1)^{d-1}O(c*e) + (n+1)O(c*e)
+T(d) &\leq (n+1)T(d-1) + (n+1)O_A\\
+&\leq (n+1)(n+d-1)^{d-1}O_A + (n+1)O_A
 \end{align*}
 Since $n+1 \leq n+d-1$ we get:
 \begin{align*}
-T(d) &\leq (n+d-1)(n+d-1)^{d-1}O(c*e) + (n+1)O(c*e)\\
-&\leq ((n+d-1)(n+d-1)^{d-1}+n+1)O(c*e)\\
-&\leq (n(n+d-1)^{d-1} + d(n+d-1)^{d-1} - (n+d-1)^{d-1} + n +1)O(c*e)\\
-&\leq (n(n+d)^{d-1} + d(n+d)^{d-1} - (n+d-1)^{d-1} + n +1)O(c*e)\\
+T(d) &\leq (n+d-1)(n+d-1)^{d-1}O_A + (n+1)O_A\\
+&\leq ((n+d-1)(n+d-1)^{d-1}+n+1)O_A\\
+&\leq (n(n+d-1)^{d-1} + d(n+d-1)^{d-1} - (n+d-1)^{d-1} + n +1)O_A\\
+&\leq (n(n+d)^{d-1} + d(n+d)^{d-1} - (n+d-1)^{d-1} + n +1)O_A\\
 \end{align*}
 Because $(n+d-1)^{d-1} \geq n+1$ we have $ - (n+d-1)^{d-1} + n +1 \leq 0$, therefore:
 \begin{align*}
-T(d) &\leq (n(n+d)^{d-1} + d(n+d)^{d-1})O(c*e)\\
-&\leq (n+d)(n+d)^{d-1}O(c*e)\\
-&\leq (n+d)^{d}O(c*e)\\
+T(d) &\leq (n(n+d)^{d-1} + d(n+d)^{d-1})O_A\\
+&\leq (n+d)(n+d)^{d-1}O_A\\
+&\leq (n+d)^{d}O_A\\
 \end{align*}
-This gives a time complexity of $O(c*e*(n+d)^d) = O(c*e*n^d)$. Note that the base time complexity is subsumed in the recursion by the time complexity of the attractor set. Since the time complexity of the attractor set is higher that the time complexity of the base cases for all three variants of algorithms we can simply fill in the attractor time complexity to get $O(n*c^2*e*n^d)$ for the function-wise explicit algorithm and $O(n*c^3*e*n^d)$ for the function-wise symbolic algorithm.
-
-The different algorithms, including their time complexities, are repeated in the diagram below:\\
+This gives a time complexity of $O(O_A*(n+d)^d) = O(O_A*n^d)$. Filling in values for $O_A$ we get the following time complexities:\\
 \begin{center}
 	\begin{forest}
 	[Recursive algorithm, for tree={parent anchor=south, child anchor=north, align=center, s sep=5mm}

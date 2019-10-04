@@ -101,7 +101,7 @@ A VPG contains multiple parity games, in fact playing a VPG $G$ for configuratio
 	\label{lem_start_in_VPG_valid_iff_start_in_proj_valid}
 	Any strategy $\sigma_\alpha^c$ for player $\alpha$ and configuration $c \in \mathfrak{C}$ in VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ is also a strategy in $G_{|c}$ for player $\alpha$ and any strategy $\sigma_\alpha$ for player $\alpha$ in $G_{|c}$ is also a strategy in $G$ for player $\alpha$ and configuration $c$.
 	\begin{proof}
-		The exact same reasoning as in lemma \ref{lem_path_in_VPG_valid_iff_path_in_proj_valid} can be applied to prove this lemma.
+		The exact same reasoning as in Lemma \ref{lem_path_in_VPG_valid_iff_path_in_proj_valid} can be applied to prove this lemma.
 	\end{proof}
 \end{lemma}
 
@@ -109,13 +109,13 @@ A VPG contains multiple parity games, in fact playing a VPG $G$ for configuratio
 	\label{the_winning_set_is_equal_to_proj_winning_set}
 	Winning sets $(W_0^c, W_1^c)$ of VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ played for configuration $c \in \mathfrak{C}$ are equal to winning sets $(Q_0,Q_1)$ of parity game $G_{|c}$.
 	\begin{proof}
-		Let $v \in W_\alpha^c$ for some $\alpha \in \{0,1\}$. There exists a strategy $\sigma_\alpha^c$ in VPG $G$ for player $\alpha$ and configuration $c$ such that any valid path starting in $v$ is winning for player $\alpha$. As shown in lemma \ref{lem_start_in_VPG_valid_iff_start_in_proj_valid}, $\sigma_\alpha^c$ is also a strategy for player $\alpha$ in $G_{|c}$. Any valid path starting in $v$ in game $G$ played for configuration $c$ is also valid in game $G$ as shown in lemma \ref{lem_path_in_VPG_valid_iff_path_in_proj_valid}, additionally any path valid in $G_{|c}$ is also valid in $G$ played for $c$. Assume there is a valid path in $G_{|c}$ that conforms to $\sigma_\alpha^c$ starting from $v$ that is not won by player $\alpha$. This path is also valid in $G$ played for configuration $c$ which contradicts $v \in W_\alpha^c$, therefore no such path exists and strategy $\sigma_\alpha^c$ is winning for player $\alpha$ from $v$ in parity game $G_{|c}$, hence $v \in Q_\alpha$.
+		Let $v \in W_\alpha^c$ for some $\alpha \in \{0,1\}$. There exists a strategy $\sigma_\alpha^c$ in VPG $G$ for player $\alpha$ and configuration $c$ such that any valid path starting in $v$ is winning for player $\alpha$. As shown in Lemma \ref{lem_start_in_VPG_valid_iff_start_in_proj_valid}, $\sigma_\alpha^c$ is also a strategy for player $\alpha$ in $G_{|c}$. Any valid path starting in $v$ in game $G$ played for configuration $c$ is also valid in game $G$ as shown in Lemma \ref{lem_path_in_VPG_valid_iff_path_in_proj_valid}, additionally any path valid in $G_{|c}$ is also valid in $G$ played for $c$. Assume there is a valid path in $G_{|c}$ that conforms to $\sigma_\alpha^c$ starting from $v$ that is not won by player $\alpha$. This path is also valid in $G$ played for configuration $c$ which contradicts $v \in W_\alpha^c$, therefore no such path exists and strategy $\sigma_\alpha^c$ is winning for player $\alpha$ from $v$ in parity game $G_{|c}$, hence $v \in Q_\alpha$.
 		
-		Let $v \in Q_\alpha$ for some $\alpha \in \{0,1\}$. There exists a strategy $\sigma_\alpha$ in parity game $G_{|c}$ for player $\alpha$ such that any valid path starting in $v$ is winning for player $\alpha$. Using lemma \ref{lem_start_in_VPG_valid_iff_start_in_proj_valid} we find that $\sigma_\alpha$ is a strategy in game $G$ for player $\alpha$ and configuration $c$. Assume there is a valid path in $G$ for $c$ that conforms to $\sigma_\alpha$ starting from $v$ that is not won by player $\alpha$. This path is also valid in $G_{|c}$ which contradicts $v \in Q_\alpha$, therefore no such path exists and strategy $\sigma_\alpha$ is winning for player $\alpha$ and configuration $c$ from $v$ in VPG $G$, hence $v \in W_\alpha^c$.
+		Let $v \in Q_\alpha$ for some $\alpha \in \{0,1\}$. There exists a strategy $\sigma_\alpha$ in parity game $G_{|c}$ for player $\alpha$ such that any valid path starting in $v$ is winning for player $\alpha$. Using Lemma \ref{lem_start_in_VPG_valid_iff_start_in_proj_valid} we find that $\sigma_\alpha$ is a strategy in game $G$ for player $\alpha$ and configuration $c$. Assume there is a valid path in $G$ for $c$ that conforms to $\sigma_\alpha$ starting from $v$ that is not won by player $\alpha$. This path is also valid in $G_{|c}$ which contradicts $v \in Q_\alpha$, therefore no such path exists and strategy $\sigma_\alpha$ is winning for player $\alpha$ and configuration $c$ from $v$ in VPG $G$, hence $v \in W_\alpha^c$.
 	\end{proof}
 \end{theorem}
 
-Parity games have a unique winner for every vertex, from theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we can conclude that a VPG player for a configuration also has a unique winner for every vertex. Moreover since it is decidable who wins a vertex in a parity game it is also decidable who wins a vertex in a VPG for configuration $c$. Finally, in a parity game there exists a positional strategy for player $\alpha$ that is winning for all the vertices won by player $\alpha$ in the game. In theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we argued that a strategy that is winning for player $\alpha$ starting in vertex $v$ in a projection of $G$ onto $c$ is also winning in $G$ for player $\alpha$ and configuration $c$ starting in vertex $v$. So we can conclude that VPGs are also positionally determined and we can consider a strategy for player $\alpha$ and configuration $c$ as a total function $\sigma_\alpha^c : V_\alpha \rightarrow V$.
+Parity games have a unique winner for every vertex, from Theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we can conclude that a VPG player for a configuration also has a unique winner for every vertex. Moreover since it is decidable who wins a vertex in a parity game it is also decidable who wins a vertex in a VPG for configuration $c$. Finally, in a parity game there exists a positional strategy for player $\alpha$ that is winning for all the vertices won by player $\alpha$ in the game. In Theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we argued that a strategy that is winning for player $\alpha$ starting in vertex $v$ in a projection of $G$ onto $c$ is also winning in $G$ for player $\alpha$ and configuration $c$ starting in vertex $v$. So we can conclude that VPGs are also positionally determined and we can consider a strategy for player $\alpha$ and configuration $c$ as a total function $\sigma_\alpha^c : V_\alpha \rightarrow V$.
 
 \section{Verifying featured transition systems}
 Given an LTS and a modal $\mu$-calculus formula we can construct a parity game such that solving this parity game tells us if the LTS satisfies the formula. Similarly we can construct a VPG from an FTS and a modal $\mu$-calculus in such a way that solving the VPG tells us what products satisfy the formula.
@@ -256,7 +256,7 @@ In the following lemma we prove that in fact parity game $G$ and $\hat{G}_{|p}$ 
 		We have proven $\hat{E}' = E$ and therefore $\hat{G}_{|p} = G$.
 	\end{proof}
 \end{lemma}
-Using this Lemma we get the following diagram showing the relation between FTSs, LTSs, parity games and VPGs.\\
+Using this lemma we get the following diagram showing the relation between FTSs, LTSs, parity games and VPGs.\\
 \begin{tikzpicture}
 \node (FTSM) at (10,10) {FTS $M$};
 \node (VPGG) at (15,10) {VPG $\hat{G}$};
@@ -299,7 +299,7 @@ it holds that $(M_{|p},s) \models \varphi$ if and only if $(s,\varphi) \in W_0^p
 	Using this strategy player 0 can prevent the path infinitely often visiting $(s_1,\mu X.\psi)$ by playing to $(s_1,\langle b \rangle \top)$ and to $(s_1,\top)$ next which brings the play in $l_1$ winning it for player 0.
 \end{example}
 
-We conclude by visualizing the verification of an FTS in figure \ref{fig:ftsverificationusingvpg}.
+We conclude by visualizing the verification of an FTS in Figure \ref{fig:ftsverificationusingvpg}.
 \begin{figure}[h]
 	\centering
 	
