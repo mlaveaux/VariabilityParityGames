@@ -20,7 +20,38 @@ VPGs are depicted as parity games with labelled edges that represent the sets of
 	Figure \ref{fig:vpg_basicex} shows an example of a VPG with configuration $\mathfrak{C} = \{c_0,c_1,c_2\}$.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/VPG/Basic}
+		\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[odd, label=north:$v_1$] (v1) at (20,20) {5};
+			\node[even,label=north:$v_2$] (v2) at (23,20) {6};
+			\node[even,label=north:$v_3$] (v3) at (26,20) {4};
+			
+			\node[even,label=west:$v_4$]  (v4) at (20,17) {1};
+			\node[odd, label=north east:$v_5$] (v5) at (23,17) {2};
+			\node[odd, label=east:$v_6$] (v6) at (26,17) {3};
+			
+			\node[odd, label=south:$v_7$] (v7) at (23,14) {2};
+			
+			
+			\path (v1) edge node[above]{$\mathfrak{C}$} (v2);
+			\path (v3) edge node[above]{$\mathfrak{C}$} (v2);
+			
+			\path (v4) edge node[left]{$\{c_0,c_1\}$} (v1);
+			\path (v2) edge node[fill=white]{$\{c_0,c_1\}$} (v4);
+			\path (v4) edge node[above]{$\{c_0,c_2\}$} (v5);
+			\path (v5) edge node[left]{$\mathfrak{C}$} (v2);
+			\path (v6) edge node[above]{$\{c_0,c_1\}$} (v5);
+			\path (v2) edge node[fill=white]{$\{c_0,c_2\}$} (v6);
+			\path (v6) edge node[right]{$\{c_0,c_2\}$} (v3);
+			
+			
+			\path (v7) edge node[fill=white]{$\mathfrak{C}$} (v4);
+			\path (v5) edge node[left,near start]{$\{c_0,c_2\}$} (v7);
+			\path (v7) edge[bend left] node[fill=white]{$\{c_0,c_1\}$} (v6);
+			\path (v6) edge[bend left] node[fill=white]{$\{c_0,c_1\}$} (v7);
+		\end{tikzpicture}
 		\caption{VPG with configurations $\mathfrak{C} = \{c_0,c_1,c_2\}$}
 		\label{fig:vpg_basicex}
 	\end{figure}
@@ -100,28 +131,22 @@ We create a VPG from an FTS by choosing the set of configurations to be equal to
 	Vertices are created for every state with every formula in the Fischer-Ladner closure of $\varphi$. We define the set of vertices:
 	\[ V = (S \times \textit{FL}(\varphi))\]
 	
-	The following table shows the owner, successors and edge guards of vertices where we write $w\ |\ C$ as a successor of $v$ to denote that there is an edge $(v,w) \in E$ such that the edge is guarded by set $C \subseteq \mathfrak{C}$, i.e. $\theta(v,w) = C$. 
+	The following table shows the owners, successors with edge guards and priorities of vertices where we write $w\ |\ C$ as a successor of $v$ to denote that there is an edge $(v,w) \in E$ such that the edge is guarded by set $C \subseteq \mathfrak{C}$, i.e. $\theta(v,w) = C$. 
 	\begin{center}
-		\begin{tabular}{l|l|l}
-			Vertex & Owner & Successor$\ |\ $ guard set \\\hline
-			$(s,\bot)$ & 0     &        \\
-			$(s,\top)$ & 1     &        \\
-			$(s,\psi_1 \vee \psi_2)$ & 0       & $(s,\psi_1)\ |\ \mathfrak{C}$ and $(s,\psi_2)\ |\ \mathfrak{C}$ \\
-			$(s,\psi_1 \wedge \psi_2)$ & 1       & $(s,\psi_1)\ |\ \mathfrak{C}$ and $(s,\psi_2)\ |\ \mathfrak{C}$ \\
-			$(s, \langle a \rangle \psi)$ & 0 & $(s',\psi)\ |\ \{c \in \mathfrak{C}\ |\ c \models g\}$ for every $s \xrightarrow{ a\ |\ g} s'$\\
-			$(s, [ a ] \psi)$ & 1 & $(s',\psi)\ |\ \{c \in \mathfrak{C}\ |\ c \models g\}$ for every $s \xrightarrow{ a\ |\ g} s'$\\
-			$(s, \mu X. \psi)$ & 1 & $(s, \psi[X:= \mu X. \psi])\ |\ \mathfrak{C}$ \\
-			$(s, \nu X. \psi)$ & 1 & $(s, \psi[X:= \nu X. \psi])\ |\ \mathfrak{C}$ 
+		\begin{tabular}{l|l|l|l}
+			Vertex & Owner & Successor$\ |\ $ guard set & Priority\\\hline
+			$(s,\bot)$ & 0     &       & 0 \\
+			$(s,\top)$ & 1     &       & 0 \\
+			$(s,\psi_1 \vee \psi_2)$ & 0       & $(s,\psi_1)\ |\ \mathfrak{C}$ and $(s,\psi_2)\ |\ \mathfrak{C}$ & 0 \\
+			$(s,\psi_1 \wedge \psi_2)$ & 1       & $(s,\psi_1)\ |\ \mathfrak{C}$ and $(s,\psi_2)\ |\ \mathfrak{C}$ & 0 \\
+			$(s, \langle a \rangle \psi)$ & 0 & $(s',\psi)\ |\ \{c \in \mathfrak{C}\ |\ c \models g\}$ for every $s \xrightarrow{ a\ |\ g} s'$& 0 \\
+			$(s, [ a ] \psi)$ & 1 & $(s',\psi)\ |\ \{c \in \mathfrak{C}\ |\ c \models g\}$ for every $s \xrightarrow{ a\ |\ g} s'$& 0 \\
+			$(s, \mu X. \psi)$ & 1 & $(s, \psi[X:= \mu X. \psi])\ |\ \mathfrak{C}$ & $2 \lfloor adepth(X) / 2 \rfloor + 1$\\
+			$(s, \nu X. \psi)$ & 1 & $(s, \psi[X:= \nu X. \psi])\ |\ \mathfrak{C}$ & $2 \lfloor adepth(X) / 2 \rfloor$
 		\end{tabular}
 	\end{center}
 	
 	Since the Fischer-Ladner formula's are closed we never get a vertex $(s,X)$.
-	
-	Finally we have $\Omega(v) = \begin{cases}
-	2 \lfloor adepth(X) / 2 \rfloor & \text{if } v = (s,\nu X. \psi)\\
-	2 \lfloor adepth(X) / 2 \rfloor + 1 & \text{if } v = (s,\mu X. \psi)\\
-	0 & \text{otherwise}
-	\end{cases}$
 \end{definition}
 Similar to parity games a VPG can be made total by creating sink vertices $l_0$ and $l_1$ with priority 1 and 0 respectively and each having an edge to itself with guard set $\mathfrak{C}$. When the VPG is played for configuration $c$ and the token ends up in $l_\alpha$ then clearly player $\alpha$ looses. We make a VPG total by adding vertices $l_0$ and $l_1$ and adding an edge from every vertex $v \in V_\alpha$ that has $\bigcup \{ \theta(v,w)\ |\ (v,w) \in E \} \neq \mathfrak{C}$ to $l_\alpha$ with guard set $\mathfrak{C} \backslash \bigcup \{ \theta(v,w)\ |\ (v,w) \in E \}$. Any vertex $v_\alpha$ where player $\alpha$ could not have made a move in the original game played for configuration $c$ now has an edge admitting $c$ to $l_\alpha$ where player $\alpha$ still looses. An edge admitting $c$ is only added if there was no outgoing edge admitting $c$ so the winner of vertex $v$ for configuration $c$ in the original game is the same as in the total game.
 
@@ -133,30 +158,83 @@ Similar to parity games a VPG can be made total by creating sink vertices $l_0$ 
 	Figure \ref{fig:exvevpg} shows the VPG resulting from \textit{FTS2VPG}$(M,\varphi)$ made total using sink vertices $l_0$ and $l_1$. Products $\{\emptyset\},\{f\},\{f,g\}$ are depicted as configurations $c_0,c_1,c_2$ respectively.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/ExamleVerification/FTS}
+		\begin{tikzpicture}[->]
+			\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+			
+			\node[state] (s1) at (1,1.5) {$s_1$};
+			\node[state] (s2) at (4,1.5) {$s_2$};
+			
+			\path (s1) edge[bend left] node[above]{a $|\ \top$} (s2) ;
+			\path (s2) edge[bend left] node[above]{a $|\ \top$} (s1) ;
+			\path (s1) edge[loop above] node[above]{b $|\ f \wedge g$} (s1);
+			\path (s1) edge[loop below] node[below]{a $|\ f$} (s1);
+			\path (s2) edge[loop right] node[right]{b $|\ \top$} (s2);
+			\path (0,2) edge (s1);
+		\end{tikzpicture}
 		\caption[FTS $M$]{FTS $M$}
 		\label{fig:exverfts}
 	\end{figure}
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/ExamleVerification/VPG}
-		\caption[VPG]{Total VPG created by \textit{FTS2VPG}}
+		\begin{tikzpicture}[->,scale=0.9]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[even,label={north:$(s_1,\langle b \rangle\top)$}] (s1<b>T) at (9.5,6) {0};
+			\node[odd,label={south:$l_0$}] (l0) at (9.5,4.5) {1};
+			\node[odd,label={south:$(s_1,\top)$}] (s1T) at (13,4.5) {0};
+			
+			
+			\node[odd,label={west:$(s_1,\mu X.\phi)$}] (s1muxphi) at (13,10) {1};
+			\node[even,label={west:$(s_1,[a](\mu X.\phi) \vee \langle b \rangle \top)$}] (s1muxphiunf) at (13,8.5) {0};
+			\node[odd,label={south:$(s_1,[a](\mu X .\phi))$}] (s1[a]muxphi) at (13,7) {0};
+			
+			\node[odd,label={east:$(s_2,\mu X.\phi)$}] (s2muxphi) at (17,10) {1};
+			\node[even,label={east:$(s_2,[a](\mu X.\phi) \vee \langle b \rangle \top)$}] (s2muxphiunf) at (17,8.5) {0};
+			\node[odd,label={south:$(s_2,[a](\mu X .\phi))$}] (s2[a]muxphi) at (17,7) {0};
+			
+			
+			\node[even,label={north:$(s_2,\langle b \rangle\top)$}] (s2<b>T) at (20.5,6) {0};
+			\node[odd,label={south:$(s_2,\top)$}] (s2T) at (20.5,4.5) {0};
+			\node[even,label={south:$l_1$}] (l1) at (17,4.5) {0};
+			
+			\path (s1muxphiunf) edge node[fill=white]{$\mathfrak{C}$} (s1<b>T);
+			\path (s1muxphi) edge node[left]{$\mathfrak{C}$} (s1muxphiunf);
+			\path (s1muxphiunf) edge node[left]{$\mathfrak{C}$} (s1[a]muxphi);
+			\path (s1<b>T) edge node[left]{$\{c_0,c_1\}$} (l0);
+			\path (l0) edge[loop right] node[right]{$\mathfrak{C}$} (l0);
+			\path (s1<b>T) edge node[fill=white]{$\{c_2\}$} (s1T);
+			
+			\path (s2muxphiunf) edge node[fill=white]{$\mathfrak{C}$} (s2<b>T);
+			\path (s2muxphi) edge node[right]{$\mathfrak{C}$} (s2muxphiunf);
+			\path (s2muxphiunf) edge node[right]{$\mathfrak{C}$} (s2[a]muxphi);
+			\path (s2<b>T) edge node[right]{$\mathfrak{C}$} (s2T);
+			
+			\path(s1[a]muxphi) edge[bend right] node[fill=white,near start]{$\mathfrak{C}$} (s2muxphi);
+			\path(s2[a]muxphi) edge[bend right] node[fill=white,near end]{$\mathfrak{C}$} (s1muxphi);
+			\path(s1[a]muxphi) edge[bend right] node[right]{$\{c_1,c_2\}$} (s1muxphi);
+			
+			\path(s2T) edge node[fill=white]{$\mathfrak{C}$} (l1);
+			\path(l1) edge[loop above] node[left]{$\mathfrak{C}$} (l1);
+			\path(s1T) edge node[fill=white]{$\mathfrak{C}$} (l1);
+		\end{tikzpicture}
+		\caption[VPG]{Total VPG created by \textit{FTS2VPG} with $\phi = [a]X \vee \langle b \rangle \top$}
 		\label{fig:exvevpg}
 	\end{figure}	
 \end{example}
 
 In order to prove that solving a VPG created by \textit{FTS2VPG} can be used to model check an FTS we inspect the relations we have seen between FTSs, LTSs, parity games and VPGs. Given FTS $M$ and formula $\varphi$ we can project $M$ onto a product to create an LTS and create a parity game from the resulting LTS and $\varphi$ using \textit{LTS2PG}. Alternatively we can create a VPG from $M$ and $\varphi$ using \textit{FTS2VPG} which can be projected onto a configuration to get a parity game. These different transformations are shown in the following diagram, where $\Pi_p$ depicts a projection onto product $p$ or configuration $p$:\\
 \begin{tikzpicture}
-\matrix (m) [matrix of math nodes,row sep=4em,column sep=1em,minimum width=2em]
-{
-	\text{\ \ FTS }M & \  & \ &\ & \text{VPG } \hat{G}  \\
-	\text{LTS }M_{|p} & \ & \ & \text{PG } G & \text{\ \ PG }\hat{G}_{|p} \\};
-\path[-stealth]
-(m-1-1) edge [double] node [left] {$\Pi_p$} (m-2-1)
-edge node [above] {\textit{FTS2VPG}$(M,\varphi)$} (m-1-5)
-(m-2-1.east|-m-2-4) edge node [above] {\textit{LTS2PG}$(M_{|p},\varphi)$}
-(m-2-4)
-(m-1-5) edge [double] node [right] {$\Pi_p$} (m-2-5);
+	\node (FTSM) at (10,10) {FTS $M$};
+	\node (VPGG) at (16,10) {VPG $\hat{G}$};
+	\node (LTSMp) at (10,8) {LTS $M_{|p}$};
+	\node (PGG) at (14,8) {PG $G$};
+	\node (PGGp) at (16,8) {PG $\hat{G}_{|p}$};
+	
+	\path[->] (FTSM) edge node[above]{\textit{FTS2VPG}$(M,\varphi)$} (VPGG);
+	\path[->] (LTSMp) edge node[above]{\textit{LTS2PG}$(M_{|p},\varphi)$} (PGG);
+	\path[->,dashed] (FTSM) edge node[left]{$\Pi_p$} (LTSMp);
+	\path[->,dashed] (VPGG) edge node[right]{$\Pi_p$} (PGGp);
 \end{tikzpicture}\\
 In the following lemma we prove that in fact parity game $G$ and $\hat{G}_{|p}$ are identical.
 \begin{lemma}
@@ -180,16 +258,15 @@ In the following lemma we prove that in fact parity game $G$ and $\hat{G}_{|p}$ 
 \end{lemma}
 Using this Lemma we get the following diagram showing the relation between FTSs, LTSs, parity games and VPGs.\\
 \begin{tikzpicture}
-\matrix (m) [matrix of math nodes,row sep=4em,column sep=1em,minimum width=2em]
-{
-	\text{\ \ FTS }M & \  & \ &\ & \text{VPG } \hat{G}  \\
-	\text{LTS }M_{|p} & \ & \ & \  & \text{\ \ PG }\hat{G}_{|p} \\};
-\path[-stealth]
-(m-1-1) edge [double] node [left] {$\Pi_p$} (m-2-1)
-edge node [above] {\textit{FTS2VPG}$(M,\varphi)$} (m-1-5)
-(m-2-1.east|-m-2-5) edge node [above] {\textit{LTS2PG}$(M_{|p},\varphi)$}
-(m-2-5)
-(m-1-5) edge [double] node [right] {$\Pi_p$} (m-2-5);
+\node (FTSM) at (10,10) {FTS $M$};
+\node (VPGG) at (15,10) {VPG $\hat{G}$};
+\node (LTSMp) at (10,8) {LTS $M_{|p}$};
+\node (PGGp) at (15,8) {PG $\hat{G}_{|p}$};
+
+\path[->] (FTSM) edge node[above]{\textit{FTS2VPG}$(M,\varphi)$} (VPGG);
+\path[->] (LTSMp) edge node[above]{\textit{LTS2PG}$(M_{|p},\varphi)$} (PGGp);
+\path[->,dashed] (FTSM) edge node[left]{$\Pi_p$} (LTSMp);
+\path[->,dashed] (VPGG) edge node[right]{$\Pi_p$} (PGGp);
 \end{tikzpicture}\\
 We know from existing theory that solving a parity game constructed using \textit{LTS2PG} can be used to model check an LTS, furthermore we have seen that the winning sets of a VPG for configuration $c$ are equal to the winning sets of that VPG projected onto $c$. Given these facts and the lemma above we can prove that VPGs can be used to model check FTSs.
 \begin{theorem}
@@ -225,7 +302,21 @@ it holds that $(M_{|p},s) \models \varphi$ if and only if $(s,\varphi) \in W_0^p
 We conclude by visualizing the verification of an FTS in figure \ref{fig:ftsverificationusingvpg}.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{Diagrams/FTSVerificationUsingVPG}
+	
+	\begin{tikzpicture}[->]
+	\tikzstyle{odd} = [diamond,draw,minimum size=0.75cm]
+	\tikzstyle{even}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+	
+	\node (lts) at (0,6	)  {FTS $M$};
+	\node (form)at (6,6)  {Modal $\mu$-calculus formula $\varphi$};
+	\node (PG)  at (3,3.5){VPG};
+	\node (check)at (3,1){$M_{|p} \stackrel{?}{\models} \varphi$};
+	\node (aaa) at (3,0.4) {for every valid product $p$ in $M$};
+	
+	\path (lts) edge (PG);
+	\path (form)edge (PG);
+	\path (PG)  edge (check);
+	\end{tikzpicture}
 	\caption[FTS verification using VPG]{FTS verification using VPG}
 	\label{fig:ftsverificationusingvpg}
 \end{figure}

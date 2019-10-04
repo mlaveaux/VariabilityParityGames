@@ -81,7 +81,16 @@ An LTS is usually depicted as a graph where the vertices represent the states, t
 	\[ (\{s_1,s_2\},\{std,ins\},\{(s_1,ins,s_2),(s_2,std,s_1)\},s_1)\]
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/CoffeeMachine/BasicEuroLTS}
+		\begin{tikzpicture}[->]
+			\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+			
+			\node[state] (s1) at (1,0) {$s_1$};
+			\node[state] (s2) at (4,0) {$s_2$};
+			
+			\path (s1) edge node[above]{ins} (s2) ;
+			\path (s2) edge[bend right] node[above]{std} (s1) ;
+			\path (0,0.5) edge (s1);
+		\end{tikzpicture}
 		\caption[Coffee machine LTS]{Coffee machine LTS $C$}
 		\label{fig:coffeemachinebasiceurolts}
 	\end{figure}
@@ -93,7 +102,19 @@ LTSs might be non-deterministic, meaning that from a state there might be multip
 	We extend the coffee machine example where at some point the coffee machine can be empty and needs a fill before the system is ready to receive a coin again. This LTS is depicted in Figure \ref{fig:coffeemachineundeterministic}. When the \textit{std} transition is taken from state $s_2$ it is non-determined in which states the system ends.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/CoffeeMachine/NonDeterministicEuroLTS}
+		\begin{tikzpicture}[->]
+			\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+			
+			\node[state] (s1) at (1,1.5) {$s_1$};
+			\node[state] (s2) at (4,1.5) {$s_2$};
+			\node[state] (s3) at (4,0) {$s_3$};
+			
+			\path (s1) edge node[above]{ins} (s2) ;
+			\path (s2) edge[bend right] node[above]{std} (s1) ;
+			\path (s2) edge node [right]{std} (s3);
+			\path (s3) edge node [above]{fill} (s1);
+			\path (0,2) edge (s1);
+		\end{tikzpicture}
 		\caption[Coffee machine LTS]{Coffee machine with non-deterministic behaviour}
 		\label{fig:coffeemachineundeterministic}
 	\end{figure}
@@ -158,7 +179,24 @@ Parity games are usually represented as a graph where vertices owned by player 0
 	\[ \Omega = \{v_1 \mapsto 2, v_2 \mapsto 3, v_3 \mapsto 0, v_4 \mapsto 0, v_5 \mapsto 1 \}\]
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/SimplePG/PG}
+		\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[even,label=west:$v_1$] (v1) at (0,3) {2};
+			\node[odd, label=east:$v_2$] (v2) at (2,3) {3};
+			\node[odd, label=west:$v_3$] (v3) at (0,1.5) {0};
+			\node[even,label=east:$v_4$] (v4) at (2,1.5) {0};
+			\node[even,label=west:$v_5$] (v5) at (0,0) {1};
+			
+			\path (v3) edge (v5) ;
+			\path (v1) edge [bend left] (v2) ;
+			\path (v2) edge [bend left] (v1) ;
+			\path (v1) edge (v3) ;
+			\path (v3) edge (v4) ;
+			\path (v2) edge (v4) ;
+			\path (v4) edge [loop below] (v4);
+		\end{tikzpicture}
 		\caption[Parity game example]{Parity game example}
 		\label{fig:simplepgpg}
 	\end{figure}
@@ -198,7 +236,19 @@ Finally parity games are considered \textit{total} if and only if every vertex h
 Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a parity game. This is done by translating an LTS in combination with a formula to a parity game, the solution of the parity game provides the information needed to conclude if the model satisfies the formula. This relation is depicted in figure \ref{fig:ltsverificationusingpg}. 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{Diagrams/LTSVerificationUsingPG}
+	\begin{tikzpicture}[->]
+		\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+		\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+		
+		\node (lts) at (0,5)  {LTS $M$};
+		\node (form)at (6,5)  {Modal $\mu$-calculus formula $\varphi$};
+		\node (PG)  at (3,2.5){PG};
+		\node (check)at (3,0){$M \stackrel{?}{\models} \varphi$};
+		
+		\path (lts) edge (PG);
+		\path (form)edge (PG);
+		\path (PG)  edge (check);
+	\end{tikzpicture}
 	\caption[LTS verification using PG]{LTS verification using PG}
 	\label{fig:ltsverificationusingpg}
 \end{figure}
@@ -241,34 +291,39 @@ Next we define the transformation from an LTS and a formula to a parity game.
 	Vertices in the parity game are presented as pairs of states and sub-formulas. A vertex is created for every state with every formula in the Fischer-Ladner closure of $\varphi$. We define the set of vertices:
 	\[ V = S \times \textit{FL}(\varphi) \]
 	
-	Vertices have the following owner and successors:\\
+	Vertices have the following owners, successors and priorities:\\
 	\begin{center}
-		\begin{tabular}{l|l|l}
-			Vertex & Owner & Successor(s) \\\hline
-			$(s,\bot)$ & 0     &        \\
-			$(s,\top)$ & 1     &       \\
-			$(s,\psi_1 \vee \psi_2)$ & 0       & $(s,\psi_1)$ and $(s,\psi_2)$ \\
-			$(s,\psi_1 \wedge \psi_2)$ & 1       & $(s,\psi_1)$ and $(s,\psi_2)$ \\
-			$(s, \langle a \rangle \psi)$ & 0 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$ \\
-			$(s, [ a ] \psi)$ & 1 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$\\
-			$(s, \mu X. \psi)$ & 1 & $(s, \psi[X:= \mu X. \psi])$ \\
-			$(s, \nu X. \psi)$ & 1 & $(s, \psi[X:= \nu X. \psi])$ 
+		\begin{tabular}{l|l|l|l}
+			Vertex & Owner & Successor(s) & Priority \\\hline
+			$(s,\bot)$ & 0     &       & 0 \\
+			$(s,\top)$ & 1     &      & 0 \\
+			$(s,\psi_1 \vee \psi_2)$ & 0       & $(s,\psi_1)$ and $(s,\psi_2)$  & 0 \\
+			$(s,\psi_1 \wedge \psi_2)$ & 1       & $(s,\psi_1)$ and $(s,\psi_2)$  & 0 \\
+			$(s, \langle a \rangle \psi)$ & 0 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$  & 0 \\
+			$(s, [ a ] \psi)$ & 1 & $(s',\psi)$ for every $s \xrightarrow{ a} s'$ & 0 \\
+			$(s, \mu X. \psi)$ & 1 & $(s, \psi[X:= \mu X. \psi])$ & $2 \lfloor adepth(X) / 2 \rfloor + 1$ \\
+			$(s, \nu X. \psi)$ & 1 & $(s, \psi[X:= \nu X. \psi])$ & $2 \lfloor adepth(X) / 2 \rfloor$
 		\end{tabular}
 	\end{center}
 
 	Since the Fischer-Ladner formula's are closed we never get a vertex $(s,X)$.
-	
-	Finally we have $\Omega(v) = \begin{cases}
-	2 \lfloor adepth(X) / 2 \rfloor & \text{if } v = (s,\nu X. \psi)\\
-	2 \lfloor adepth(X) / 2 \rfloor + 1 & \text{if } v = (s,\mu X. \psi)\\
-	0 & \text{otherwise}
-	\end{cases}$
 \end{definition}
 \begin{example}
 	Consider LTS $M$ in figure \ref{fig:exverltsprojempty} and formula $\varphi = \mu X.([a]X \vee \langle b \rangle \top)$ expressing that on any path reached by $a$'s we can eventually do a $b$ action.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/ExamleVerification/LTSprojempty}
+		\begin{tikzpicture}[->]
+			\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+			
+			\node[state] (s1) at (1,1.5) {$s_1$};
+			\node[state] (s2) at (4,1.5) {$s_2$};
+			
+			\path (s1) edge node[above]{a} (s2) ;
+			\path (s2) edge[bend right] node[above]{a} (s1) ;
+			\path (s2) edge [loop right] node[right]{b} (s2);
+			
+			\path (0,2) edge (s1);
+		\end{tikzpicture}
 		\caption[LTS $M$]{LTS $M$}
 		\label{fig:exverltsprojempty}
 	\end{figure}
@@ -288,8 +343,40 @@ Next we define the transformation from an LTS and a formula to a parity game.
 	Note that the choice where to go from $(s_2, [a](\mu X.\phi) \vee \langle b \rangle \top)$ does not matter for the winning sets.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/ExamleVerification/PG}
-		\caption[Parity game $LTS2PG(M, \varphi)$]{Parity game $LTS2PG(M, \varphi)$}
+		\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[even,label={west:$(s_1,\langle b \rangle\top)$}] (s1<b>T) at (10,10) {0};
+			\node[odd,label={west:$(s_1,\top)$}] (s1T) at (9,7) {0};
+			
+			
+			\node[odd,label={west:$(s_1,\mu X.\phi)$}] (s1muxphi) at (13,10) {1};
+			\node[even,label={west:$(s_1,[a](\mu X.\phi) \vee \langle b \rangle \top)$}] (s1muxphiunf) at (13,8.5) {0};
+			\node[odd,label={west:$(s_1,[a](\mu X .\phi))$}] (s1[a]muxphi) at (13,7) {0};
+			
+			\node[odd,label={east:$(s_2,\mu X.\phi)$}] (s2muxphi) at (15,10) {1};
+			\node[even,label={east:$(s_2,[a](\mu X.\phi) \vee \langle b \rangle \top)$}] (s2muxphiunf) at (15,8.5) {0};
+			\node[odd,label={east:$(s_2,[a](\mu X .\phi))$}] (s2[a]muxphi) at (15,7) {0};
+			
+			
+			\node[even,label={east:$(s_2,\langle b \rangle\top)$}] (s2<b>T) at (18,10) {0};
+			\node[odd,label={east:$(s_2,\top)$}] (s2T) at (20,8.5) {0};
+			
+			\path (s1muxphiunf) edge (s1<b>T);
+			\path (s1muxphi) edge (s1muxphiunf);
+			\path (s1muxphiunf) edge (s1[a]muxphi);
+			
+			\path (s2muxphiunf) edge (s2<b>T);
+			\path (s2muxphi) edge (s2muxphiunf);
+			\path (s2muxphiunf) edge (s2[a]muxphi);
+			\path (s2<b>T) edge (s2T);
+			
+			\path(s1[a]muxphi) edge (s2muxphi);
+			\path(s2[a]muxphi) edge (s1muxphi);
+		\end{tikzpicture}
+		
+		\caption[Parity game $LTS2PG(M, \varphi)$]{Parity game $LTS2PG(M, \varphi)$ with $\phi = [a] X \vee \langle b \rangle \top$}
 		\label{fig:exverpg}
 	\end{figure}
 \end{example}
@@ -366,17 +453,104 @@ An attractor set is a set of vertices $A \subseteq V$ calculated for player $\al
 	\centering
 	\begin{subfigure}{1\textwidth}
 		\centering
-		\includegraphics[scale=0.4]{Examples/Attr/Attr0}
+		\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[even] (v1) at (10,10) {1};
+			\node[odd]  (v2) at (11.5,10) {3};
+			\node[odd]  (v3) at (13,10) {3};
+			\node[even,fill=highlightgraph] (v4) at (14.5,10) {2};
+			\node[even] (v5) at (16,10) {2};
+			
+			\node[even] (v6) at (11.5,8.5) {1};
+			\node[odd]  (v7) at (13,8.5) {0};
+			\node[even,fill=highlightgraph] (v8) at (14.5,8.5) {0};
+			
+			\path (v1) edge [bend right] (v2);
+			\path (v2) edge [bend right] (v1);
+			\path (v2) edge (v3);
+			\path (v3) edge (v4);
+			\path (v4) edge [bend left] (v5);
+			\path (v5) edge [bend left] (v4);
+			
+			\path (v6) edge (v1);
+			\path (v2) edge (v6);
+			\path (v6) edge (v3);
+			\path (v7) edge (v3);
+			\path (v7) edge (v8);
+			\path (v3) edge (v8);
+			\path (v4) edge [bend left] (v8);
+			\path (v8) edge [bend left] (v4);
+		\end{tikzpicture}
 		\caption{Set $U = U_0$}
 	\end{subfigure}\\
 	\begin{subfigure}{1\textwidth}
 		\centering
-		\includegraphics[scale=0.4]{Examples/Attr/Attr1}
+		\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[even] (v1) at (10,10) {1};
+			\node[odd]  (v2) at (11.5,10) {3};
+			\node[odd,fill=highlightgraph]  (v3) at (13,10) {3};
+			\node[even,fill=highlightgraph] (v4) at (14.5,10) {2};
+			\node[even,fill=highlightgraph] (v5) at (16,10) {2};
+			
+			\node[even] (v6) at (11.5,8.5) {1};
+			\node[odd]  (v7) at (13,8.5) {0};
+			\node[even,fill=highlightgraph] (v8) at (14.5,8.5) {0};
+			
+			\path (v1) edge [bend right] (v2);
+			\path (v2) edge [bend right] (v1);
+			\path (v2) edge (v3);
+			\path (v3) edge (v4);
+			\path (v4) edge [bend left] (v5);
+			\path (v5) edge [bend left] (v4);
+			
+			\path (v6) edge (v1);
+			\path (v2) edge (v6);
+			\path (v6) edge (v3);
+			\path (v7) edge (v3);
+			\path (v7) edge (v8);
+			\path (v3) edge (v8);
+			\path (v4) edge [bend left] (v8);
+			\path (v8) edge [bend left] (v4);
+		\end{tikzpicture}
 		\caption{Set $U_1$}
 	\end{subfigure}\\
 	\begin{subfigure}{1\textwidth}
 		\centering
-		\includegraphics[scale=0.4]{Examples/Attr/Attr2}
+		\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node[even] (v1) at (10,10) {1};
+			\node[odd]  (v2) at (11.5,10) {3};
+			\node[odd,fill=highlightgraph]  (v3) at (13,10) {3};
+			\node[even,fill=highlightgraph] (v4) at (14.5,10) {2};
+			\node[even,fill=highlightgraph] (v5) at (16,10) {2};
+			
+			\node[even,fill=highlightgraph] (v6) at (11.5,8.5) {1};
+			\node[odd,fill=highlightgraph]  (v7) at (13,8.5) {0};
+			\node[even,fill=highlightgraph] (v8) at (14.5,8.5) {0};
+			
+			\path (v1) edge [bend right] (v2);
+			\path (v2) edge [bend right] (v1);
+			\path (v2) edge (v3);
+			\path (v3) edge (v4);
+			\path (v4) edge [bend left] (v5);
+			\path (v5) edge [bend left] (v4);
+			
+			\path (v6) edge (v1);
+			\path (v2) edge (v6);
+			\path (v6) edge (v3);
+			\path (v7) edge (v3);
+			\path (v7) edge (v8);
+			\path (v3) edge (v8);
+			\path (v4) edge [bend left] (v8);
+			\path (v8) edge [bend left] (v4);
+		\end{tikzpicture}
 		\caption{Set $U_2 = 0\textit{-Attr}(G,U)$}
 	\end{subfigure}
 	\caption{Game $G$ showing the attractor calculation for $0\textit{-Attr}(G,U)$}
@@ -521,7 +695,30 @@ BDDs represent boolean formula's as a directed graph where every vertex represen
 	Consider the boolean formula in example \ref{ex_boolform}. This formula can be represented as the BDD shown in Figure \ref{fig:ex_simplebdd}. The vertices representing boolean variables are shown as circles and the boolean variables they represent are indicated inside them. The special vertices are represented as squares and the initial vertex is represented by an edge with that has no origin vertex.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.3]{Examples/BDD/simpleexample}
+	\begin{tikzpicture}[->]
+		\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+		\tikzstyle{final}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+		
+		\node[state] (x2) at (20,20) {$x_2$};
+		\node[state] (x10) at (18,18) {$x_1$};
+		\node[state] (x11) at (22,18) {$x_1$};
+		\node[state] (x0) at (18,16) {$x_0$};
+		\node[final] (f1) at (18,14) {$1$};
+		\node[final] (f0) at (22,14) {$0$};
+		
+		\path (20,21) edge (x2);
+		\path (x2) edge[blue] node[black,left] {0} (x10);
+		\path (x2) edge[red] node[black,right] {1} (x11);
+		
+		\path (x10) edge[blue] node[black,left,near start] {1} (x0);
+		\path (x10) edge[black] node[black,above,near start] {0} (f0);
+		
+		\path (x11) edge[black] node[black,above,near start] {0} (x0);
+		\path (x11) edge[red] node[black,below,near start] {1} (f1);
+		
+		\path (x0) edge[black] node[black,left,near start] {0} (f1);
+		\path (x0) edge[blue] node[black,below] {1} (f0);
+	\end{tikzpicture}
 	\caption{BDD highlighting boolean variable assignment $x_2x_1x_0 = 011$ in blue and $x_2x_1 = 11$ in red}
 	\label{fig:ex_simplebdd}
 \end{figure}

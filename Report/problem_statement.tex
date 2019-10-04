@@ -21,7 +21,19 @@ A transition $s \xrightarrow a s'$ and $\gamma(s,a,s') = f$ is denoted by $s \xr
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{Examples/CoffeeMachine/FTS}
+		\begin{tikzpicture}[->]
+			\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+			
+			\node[state] (s1) at (1,1.5) {$s_1$};
+			\node[state] (s2) at (4,1.5) {$s_2$};
+			\node[state] (s3) at (7,1.5) {$s_3$};
+			
+			\path (s1) edge node[above]{ins $|\ \top$} (s2) ;
+			\path (s2) edge[bend right=60] node[above]{std $|\ \officialeuro$} (s1) ;
+			\path (s2) edge node [above]{ins $|\ \$$} (s3);
+			\path (s3) edge[bend left] node [above]{xxl $|\ \top$} (s1);
+			\path (0,2) edge (s1);
+		\end{tikzpicture}
 		\caption[Coffee machine LTS]{Coffee machine FTS $C$}
 		\label{fig:coffeemachinefts}
 	\end{figure}
@@ -40,13 +52,37 @@ An FTS expresses the behaviour of multiple products. The behaviour of a single p
 		\centering
 		\begin{subfigure}{.5\textwidth}
 			\centering
-			\includegraphics[scale=0.3]{Examples/CoffeeMachine/FTSProjEuro}
+			\begin{tikzpicture}[->,scale=0.8]
+				\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+				
+				\node[state] (s1) at (1,1.5) {$s_1$};
+				\node[state] (s2) at (4,1.5) {$s_2$};
+				\node[state] (s3) at (7,1.5) {$s_3$};
+				
+				\path (s1) edge node[above]{ins} (s2) ;
+				\path (s2) edge[bend right=60] node[above]{std} (s1) ;
+				\path (s3) edge[bend left] node [above]{xxl} (s1);
+				\path (0,2) edge (s1);
+			\end{tikzpicture}\
 			\caption[$C_{|\{\$\}}$]{$C$ projected to the \textit{euro} product: $C_{|\{\officialeuro\}}$}
 			\label{fig:coffeemachineftsprojeuro}
 		\end{subfigure}%
 		\begin{subfigure}{.5\textwidth}
 			\centering
-			\includegraphics[scale=0.3]{Examples/CoffeeMachine/FTSProjDollar}
+			
+			\begin{tikzpicture}[->,scale=0.8]
+				\tikzstyle{state} = [circle,draw,minimum size=0.75cm]
+				
+				\node[state] (s1) at (1,1.5) {$s_1$};
+				\node[state] (s2) at (4,1.5) {$s_2$};
+				\node[state] (s3) at (7,1.5) {$s_3$};
+				
+				\path (s1) edge node[above]{ins} (s2) ;
+				\path (s2) edge[bend right=60] node[above]{std} (s1) ;
+				\path (s2) edge node [above]{ins} (s3);
+				\path (s3) edge[bend left] node [above]{xxl} (s1);
+				\path (0,2) edge (s1);
+			\end{tikzpicture}\
 			\caption[$C_{|\{\$\}}$]{$C$ projected to the \textit{euro and dollar} product: $C_{|\{\officialeuro,\$\}}$}
 			\label{fig:coffeemachineftsprojdollar}
 		\end{subfigure}%
