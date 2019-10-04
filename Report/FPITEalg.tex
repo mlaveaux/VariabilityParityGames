@@ -76,17 +76,53 @@ When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning
 		\centering
 		\begin{subfigure}{1\textwidth}
 			\centering
-			\includegraphics[scale=0.4]{Examples/PPG/VPG}
+			\begin{tikzpicture}[->]
+				\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+				\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+				
+				\node[odd,label=north:$v_0$] (v0) at (20,20) {1};
+				\node[even,label=north:$v_1$] (v1) at (23,20) {0};
+				\node[even,label=north:$v_2$] (v2) at (26,20) {2};
+				
+				\path (v0) edge[loop left] node[left]{$\{c_1,c_2\}$} (v0);
+				\path (v0) edge[bend left] node[above]{$\{c_2\}$} (v1);
+				\path (v1) edge[bend left] node[above]{$\{c_2\}$} (v0);			
+				\path (v1) edge node[above]{$\{c_1\}$} (v2);
+				\path (v2) edge[loop right] node[right]{$\{c_1,c_2\}$} (v2);
+			\end{tikzpicture}
 			\caption{VPG $G$ consisting of 2 configurations}
 		\end{subfigure}\\
 		\begin{subfigure}{1\textwidth}
 			\centering
-			\includegraphics[scale=0.4]{Examples/PPG/P0}
+			\begin{tikzpicture}[->]
+				\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+				\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+				
+				\node[odd,label=north:$v_0$] (v0) at (20,20) {1};
+				\node[even,label=north:$v_1$] (v1) at (23,20) {0};
+				\node[even,label=north:$v_2$] (v2) at (26,20) {2};
+				
+				\path (v0) edge[loop left] (v0);
+				\path (v0) edge[bend left] (v1);	
+				\path (v2) edge[loop right] (v2);
+			\end{tikzpicture}
 			\caption{Pessimistic game $G_{\triangleright0}$}
 		\end{subfigure}\\
 		\begin{subfigure}{1\textwidth}
 			\centering
-			\includegraphics[scale=0.4]{Examples/PPG/P1}
+			\begin{tikzpicture}[->]
+				\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+				\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+				
+				\node[odd,label=north:$v_0$] (v0) at (20,20) {1};
+				\node[even,label=north:$v_1$] (v1) at (23,20) {0};
+				\node[even,label=north:$v_2$] (v2) at (26,20) {2};
+				
+				\path (v0) edge[loop left] (v0);
+				\path (v1) edge[bend left] (v0);			
+				\path (v1) edge (v2);
+				\path (v2) edge[loop right] (v2);
+			\end{tikzpicture}
 			\caption{Pessimistic game $G_{\triangleright1}$}
 		\end{subfigure}
 		\caption{A VPG with its corresponding pessimistic games}
