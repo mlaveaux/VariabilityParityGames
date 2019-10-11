@@ -47,14 +47,14 @@ Given set $X \subseteq (\mathfrak{C} \times \hat{V})$ we define the complementar
 			\State $W_\alpha \gets A \cup W_\alpha'$
 			\State $W_{\overline{\alpha}} \gets \emptyset$
 			\Else
-				\State $C_W \gets \textsc{LocalConfs}(W'_{\overline{\alpha}})$
+				\State $C_W \gets \textsc{LocalConfs}(W'_{\overline{\alpha}})$\label{line:recursiveUPGLocal:calcC_W}
 				\If{$(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$}\label{line:recursiveUPGLocal:wopponentwithoutCWisempty}
 					\State $W_{\overline{\alpha}} \gets W'_{\overline{\alpha}}$
 					\State $W_\alpha \gets (W'_\alpha \cup A)_{|\backslash C_W}$
 				\Else
-				\State $B \gets \overline{\alpha}\textit{-Attr}(G, (W'_{\overline{\alpha}})_{|\backslash C_W})$
-				\State $C_B \gets \textsc{LocalConfs}(B)$
-				\State $(W_0'', W_1'') \gets \textsc{RecursiveUPGLocal}(G \backslash B\backslash (V_{|| C_W \cup C_B}), \hat{v}_0, \Delta)$
+				\State $B \gets \overline{\alpha}\textit{-Attr}(G, (W'_{\overline{\alpha}})_{|\backslash C_W})$\label{line:recursiveUPGLocal:calcB}
+				\State $C_B \gets \textsc{LocalConfs}(B)$\label{line:recursiveUPGLocal:calcC_B}
+				\State $(W_0'', W_1'') \gets \textsc{RecursiveUPGLocal}(G \backslash B\backslash (V_{|| C_W \cup C_B}), \hat{v}_0, \Delta)$\label{line:recursiveUPGLocal:subgame2}
 				\State $W_\alpha \gets W''_\alpha$
 				\State $W_{\overline{\alpha}} \gets W''_{\overline{\alpha}} \cup B \cup (W'_{\overline{\alpha}})_{||C_W}$
 				\EndIf
@@ -99,192 +99,85 @@ Given set $X \subseteq (\mathfrak{C} \times \hat{V})$ we define the complementar
 		\textbf{Base}: If $G$ is empty then the algorithm returns $(\emptyset,\emptyset)$ in which case statement (II) holds trivially.
 		
 		\textbf{Step}:
+		When $G_{|c}$ is empty then $(W_0)_{|c} = \emptyset$ and $(W_0)_{|c} = \emptyset$ because the algorithm only returns vertices in the winning sets that are in $V$. In this case statement (II) holds trivially. Assume for the remainder of the proof that $G_{|c}$ is not empty, that is $V_{|c} \neq \emptyset$.
+		
 		The algorithm considers the highest priority in the game which has parity $\alpha$. The set $U$ contains all vertices with this priority and $A$ contains all vertices such that player $\alpha$ can force the play into $U$.
 		
 		The first recursion removes vertices in $A$ from the game, since $A$ is non-empty we can apply induction to find that at least one of the two statements hold for $G\backslash A$ and winning sets $(W_0',W_1')$.
 		
 		If $W'_{\overline{\alpha}} = \emptyset$ (line \ref{line:recursiveUPGLocal:wopponentisempty}) then no vertex is won by player $\overline{\alpha}$ in $G\backslash A$ and therefore no vertex in $(G\backslash A)_{|c}$ is won by player $\overline{\alpha}$. Therefore statement (II) holds for $(G\backslash A)_{|c}$ and indeed all vertices in $(G\backslash A)_{|c}$ are won by player $\alpha$, moreover player $\alpha$ has a strategy $\sigma_\alpha$ for $(G\backslash A)_{|c}$ that is winning for all vertices. Clearly this strategy can also be applied game $G_{|c}$. Consider valid path $\pi$ in game $G$ conforming to $\sigma_\alpha$. When this path eventually stays in $(V \backslash A)_{|c}$ then player $\alpha$ wins because $\sigma_\alpha$ is winning here. Otherwise the path visits $A_{|c}$ infinitely often, in which case player $\alpha$ forces play into $U_{|c}$ infinitely often and therefore the highest priority occurring infinitely often has parity $\alpha$. So player $\alpha$ wins all vertices in $V_{|c}$ and the algorithm returns winning sets accordingly; statement (II) holds.
 		
-		Otherwise the algorithm continues by calculating configuration set $C_W$. If $(W'_{\overline{\alpha}}) = \emptyset$ (line \ref{line:recursiveUPGLocal:wopponentwithoutCWisempty}) then we distinguish two cases. When $c \in C_W$ then we find $(c,\hat{v}_0) \in W'_{\overline{\alpha}}$ and $\overline{\alpha} \in \Delta$. Using induction we indeed find that $\hat{v}_0$ is won by player $\overline{\alpha}$ in $G_{|c}$. Using Lemma's \ref{lem_projected_attr_is_attr_of_projected} and \ref{lem_overlinealphawinner} we find that the vertices in $(W'_{\overline{\alpha}})_{|c}$ are won by player $\overline{\alpha}$ in $G_{|c}$. The algorithm returns all vertices in $W'_{\overline{\alpha}}$ to be winning for player $\overline{\alpha}$ in game $G$. For player $\alpha$ the set $(W'_\alpha \cup A)_{|\backslash C_W}$ is returned, this set contains no vertices of configuration $c$. We conclude that statement (I) holds.
+		Otherwise the algorithm continues by calculating configuration set $C_W$ (line \ref{line:recursiveUPGLocal:calcC_W}). For the remained of the proof numerous case distinction need to be made. These distinctions will be presented in a Fitch-like style.
+		
+		\begin{tabular}{|p{14.2cm}}
+			Assume $A_{|c} = \emptyset$\\
+			\hline
+			Clearly $G_{|c} = (G\backslash A)_{|c}$, so all vertices in $(W'_{\overline{\alpha}})$ are won by player $\overline{\alpha}$ in game $G_{|c}$.
+		\end{tabular}\\\\
+		\begin{tabular}{|p{14.2cm}}
+			Assume $A_{|c} \neq \emptyset$\\
+			\hline
+			We use Lemma's \ref{lem_projected_attr_is_attr_of_projected} and \ref{lem_overlinealphawinner} to find that the vertices in $(W'_{\overline{\alpha}})_{|c}$ are won by player $\overline{\alpha}$ in $G_{|c}$.
+		\end{tabular}\\\\
+		In either case we find that all vertices in $(W'_{\overline{\alpha}})_{|c}$ are won by player $\overline{\alpha}$ in $G_{|c}$.
+		
+		\begin{longtable}{|p{14.2cm}}
+			Assume $c \in C_W$\\
+			\hline
+			We find $(c,\hat{v}_0) \in W'_{\overline{\alpha}}$ and $\overline{\alpha} \in \Delta$.
+			
+			\begin{tabular}{|p{14cm}}
+				Assume $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$ (line \ref{line:recursiveUPGLocal:wopponentwithoutCWisempty})\\
+				\hline
+				The algorithm returns all vertices in $W'_{\overline{\alpha}}$ to be winning for player $\overline{\alpha}$ in game $G$. For player $\alpha$ the set $(W'_\alpha \cup A)_{|\backslash C_W}$ is returned, this set contains no vertices of configuration $c$. We conclude that statement (I) holds.
+			\end{tabular}\\\\
+			\begin{tabular}{|p{14cm}}
+				Assume $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ (line \ref{line:recursiveUPGLocal:wopponentwithoutCWisempty})\\
+				\hline
+				Set $B$, as calculated by the algorithm, (line \ref{line:recursiveUPGLocal:calcC_B}) contains no vertices with configuration $c$ because the attractor set is calculated over $(W'_{\overline{\alpha}})_{|\backslash C_W}$.\\
+				The second subgame that is created by the algorithm (line \ref{line:recursiveUPGLocal:subgame2}) does not contain any vertices with configuration $c$ because $V_{||C_W}$ is removed from the game. Therefore $W''_0$ and $W''_1$ do not contain any vertices with configuration $c$.\\
+				We find that the only vertices with configuration $c$ that are returned by the algorithm are in the set $(W'_{\overline{\alpha}})_{||C_W}$. Earlier we found that indeed the vertices in $(W'_{\overline{\alpha}})_{|c}$ are won by player $\overline{\alpha}$ in $G_{|c}$. We conclude that statement (I) holds.
+			\end{tabular}
+		\end{longtable}
+		\begin{longtable}{|p{14.2cm}}
+			Assume $c \notin C_W$\\
+			\hline
+			\begin{tabular}{|p{14cm}}
+				Assume $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$ (line \ref{line:recursiveUPGLocal:wopponentwithoutCWisempty})\\
+				\hline
+				Because $c \notin C_W$ we find that $(W'_{\overline{\alpha}})_{|c} = \emptyset$, i.e.  all vertices in game $(G \backslash A)_{|c}$ are won by player $\alpha$. Earlier we argued that when all vertices in game $(G\backslash A)_{|c}$ are won by player $\alpha$ then all vertices in game $G_{|c}$ are won by player $\alpha$. The algorithm returns all vertices in $(W'_\alpha \cup A)_{|c}$ to be winning for player $\alpha$, these are all the vertices from $G_{|c}$. No vertices with configuration $c$ are returned to be winning for player $\overline{\alpha}$. We conclude that statement (II) holds.
+			\end{tabular}\\\\
+			\begin{tabular}{|p{14cm}}
+				Assume $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ (line \ref{line:recursiveUPGLocal:wopponentwithoutCWisempty})\\
+				\hline
+				The algorithm continues with calculating $B$ (line \ref{line:recursiveUPGLocal:calcB}) and $C_B$.\\
+				\begin{tabular}{|p{13.8cm}}
+					Assume $c \in C_B$\\
+					\hline
+					The second subgame that is created by the algorithm (line \ref{line:recursiveUPGLocal:subgame2}) does not contain any vertices with configuration $c$ because $V_{||C_B}$ is removed from the game. Therefore $W''_0$ and $W''_1$ do not contain any vertices with configuration $c$. We find that the only vertices with configuration $c$ that are returned by the algorithm are in the set $B$.\\
+					For $c$ to be in $C_B$ we must have $(W'_{\overline{\alpha}})_{|c} \neq \emptyset$. We can apply Lemma \ref{lem_projected_attr_is_attr_of_projected} to find that set $B_{|c}$ contains all vertices such that player $\overline{\alpha}$ can force the play to $(W'_{\overline{\alpha}})_{|c}$ in game $G_{|c}$. Earlier we found that all vertices in $(W'_{\overline{\alpha}})_{|c}$ are won by player $\overline{\alpha}$ in game $G_{|c}$ so clearly all vertices in $B_{|c}$ are also won by player $\overline{\alpha}$.\\
+					The algorithm returns vertices $B_{|c}$ to be winning for player $\overline{\alpha}$. Because $c \in C_B$ we find that $\overline{\alpha} \in \Delta$ and $\hat{v}\in B_{|c}$. We conclude that statement (I) holds.
+				\end{tabular}\\\\
+				\begin{tabular}{|p{13.8cm}}
+					Assume $c \notin C_B$\\
+					\hline
+					\begin{tabular}{|p{13.6cm}}
+						Assume $(W'_{\overline{\alpha}})_{|c} = \emptyset$\\
+						\hline
+						In this case $B_{|c} = \emptyset$ and the second subgame $G'$ created (line \ref{line:recursiveUPGLocal:subgame2}) projected onto $c$ is identical to $G_{|c}$. Using induction we find that statement (I) or (II) hold for $G'$. The algorithm returns $W''_0$ and $W''_1$ for game $G$ so the same statement that holds for the subgame holds for $G$. Note that $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ do not contain vertices with configuration $c$.
+					\end{tabular}\\\\
+					\begin{tabular}{|p{13.6cm}}
+						Assume $(W'_{\overline{\alpha}})_{|c} \neq \emptyset$\\
+						\hline
+						We apply Lemma \ref{lem_projected_attr_is_attr_of_projected} to find that $B_{|c} = \overline{\alpha}\textit{-Attr}(G_{|c},(W'_{\overline{\alpha}})_{|c})$. For the second subgame $G'$ created (line \ref{line:recursiveUPGLocal:subgame2}) we have $(G')_{|c} = G_{|c} \backslash B_{|c}$.\\
+						The algorithm returns any vertex $\hat{v}$ in $(W''_\beta)_{|c}$ to be winning for player $\beta$ in game $G_{|c}$. Using induction and Lemma \ref{lem_GwithoutB_is_subset} we find that indeed $\hat{v}$ is won by player $\beta$ in game $G_{|c}$. Furthermore the algorithm returns $B_{|c}$ to be winning for player $\overline{\alpha}$ as well as $(W'_{\overline{\alpha}})_{|c}$. Earlier we found that all vertices in $(W'_{\overline{\alpha}})_{|c}$ are won by player $\overline{\alpha}$ in game $G_{|c}$ so clearly all vertices in $B_{|c}$ are also won by player $\overline{\alpha}$.\\
+						The vertices with configuration $c$ that are returned by the algorithm are in the correct winning set. If statement (I) holds for the subgame $G'$ then statement (I) also holds for $G$ because we use $\Delta$ unmodified in the recursion. If statement (II) holds for the subgame $G'$ then statement (II) also holds for $G$.
+					\end{tabular}
+				\end{tabular}
+			\end{tabular}
+		\end{longtable}
 	\end{proof}
 \end{theorem}
-		
-		
-		
-		
-		
-		
-
-In order to prove the correctness of the algorithm we repeat parts of the original proof given in \cite{ZIELONKA1998135}. 
-
-We prove the correctness of the algorithm by first showing that the winning sets are mutually exclusive. Next we prove that vertex $(c,\hat{v}_0)$ is in the correct winning set for every configuration.
-
-The following theorem shows that the winning sets are mutually exclusive.
-\begin{theorem}Given:
-	\begin{itemize}
-		\item VPG $\hat{G} = (\hat{V}, \hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$,
-		\item origin vertex $\hat{v}_0 \in \hat{V}$,
-		\item total unified parity game $G = (V, \hat{V}_0, \hat{V}_1,E,\hat{\Omega})$ that is a subgame of, or equal to, unified parity game $\hat{G}_{\downarrow}$,
-		\item a set of players $\Delta \subseteq \{0,1\}$ and
-		\item winning sets $(W_0,W_1) = \textsc{RecursiveUPGLocal}(G,\hat{v}_0,\Delta)$
-	\end{itemize}
-	we have $W_0\cap W_1 = \emptyset$.
-	\begin{proof}
-		Proof by induction on $G$, with induction hypothesis:
-		\[ W_0\cap W_1 = \emptyset\text{ and }W_0 \cup W_1 \subseteq V \]
-		
-		\textbf{Base}: If there is only one priority or there are no vertices than one of the winning sets is empty and the other is equal to $V$ so the IH holds.
-		
-		\textbf{Step}: In the first recursion step we find by induction that $W'_0$ and $W'_1$ are mutually exclusive and that $W'_0 \cup W'_1 \subseteq V\backslash A$. We find that $W'_0 \cup W'_1 \cup A \subseteq V$. If $W'_{\overline{\alpha}} = \emptyset$ then we return $A\cup W'_{\overline{\alpha}}$ and $\emptyset$ as winning sets in which case the IH holds.
-		
-		If $W'_{\overline{\alpha}} \neq \emptyset$ then we find a value for $C_W$. If $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$ then $W'_{\overline{\alpha}}$ only contains vertices with a configuration that is in $C_W$. Winning set $W_\alpha$ gets vertices only with a configuration that is not in $C_W$ therefore the two are mutually exclusive. Furthermore since $W'_0 \cup W'_1 \cup A \subseteq V$ we find $W_{\overline{\alpha}} \cup W_\alpha \subseteq V$ and the IH holds in this case.
-		
-		If $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$ then we find a value for $B$. Since $B$ is the attractor set of $(W'_{\overline{\alpha}})_{|\backslash C_W}$ and edges do not cross configurations the set $B$ contains no vertices with a configuration that is in $C_W$. Clearly $B \subseteq V$. The recursion step gives $W''_0$ and $W''_1$ which are mutually and have $W''_0 \cup W''_1 \subseteq G\backslash B \backslash V_{||C_W\cup C_B}$ by induction. The algorithm returns these winning sets with $B$ and $(W'_{\overline{\alpha}})_{||C_W}$. Both $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ do not share any vertices with each other nor with the winning sets $W''_0$ and $W''_1$. Moreover all $B$ and $(W'_{\overline{\alpha}})_{||C_W}$ are subsets of $V$ so we can conclude that the IH holds.
-	\end{proof}
-\end{theorem}
-
-The next theorem proves that vertex $(c,\hat{v}_0)$ is in the correct winning set for every configuration $c \in \mathfrak{C}$.
-\begin{theorem}
-	Given:
-	\begin{itemize}
-		\item VPG $\hat{G} = (\hat{V}, \hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$,
-		\item origin vertex $\hat{v}_0 \in \hat{V}$,
-		\item total unified parity game $G = (V, \hat{V}_0, \hat{V}_1,E,\hat{\Omega})$ that is a subgame of, or equal to, unified parity game $\hat{G}_{\downarrow}$,
-		\item configuration $c\in \mathfrak{C}$,
-		\item winning sets $Q_0$ and $Q_1$ for game $G_{|c}$,
-		\item a set of players $\Delta \subseteq \{0,1\}$ and
-		\item winning sets $(W_0, W_1) = \textsc{RecursiveUPGLocal}(G,\hat{v}_0,\Delta)$
-	\end{itemize}
-either or both of the following statements hold:
-	\begin{enumerate}[(I)]
-		\item For some $\beta \in \Delta$ we have $(c,\hat{v}_0) \in W_\beta$ and $\hat{v}_0 \in Q_\beta$.
-		\item $(W_0)_{|c} = Q_0$ and $(W_1)_{|c} = Q_1$.
-	\end{enumerate}
-\begin{proof}
-	First observe that statement (II) means that the projection of $G$ to $c$ is solved correctly, if $G$ is solved globally then statement (II) holds for any $c$.
-	
-	We prove the theorem by comparing the behaviour of \textsc{RecursiveUPGLocal} with the behaviour of the original algorithm (\textsc{RecursivePG}) which solves a unified parity game globally.
-	
-	Prove by induction on $G$.
-	
-	\textbf{Base}: If $G$ has only one priority or no vertices then \textsc{RecursiveUPGLocal} behaves the same as the original algorithm so statement (II) holds.
-
-	\textbf{Step}: The algorithm makes a number of case distinction. In order to prove the correctness we inspect all the different paths through the algorithm. We use a Fitch-like notation to keep an overview of the different case distinctions and improve readability.\\
-	\begin{longtable}{|p{15.2cm}}
-		Case $G_{|c}$ is empty.\\
-		\hline
-		Winning sets $(W_0)_{|c}$ and $(W_1)_{|c}$ are empty since the winning sets will be subsets of $V$ and $V_{|c}$ is empty. Clearly $Q_0$ and $Q_1$ are empty so the theorem holds.
-	\end{longtable}
-	\begin{longtable}{|p{15.2cm}}
-		Case $G_{|c}$ is not empty.\\
-		\hline
-		\begin{tabular}{|p{15cm}}
-			Case $(c,\hat{v}_0) \notin V$\\
-			\hline
-			Vertex $(c,\hat{v}_0)$ is also not in any subgame of $G$. By induction we can conclude that either or both statements are true for subgame $G\backslash A$ with configuration $c$ and sets $(W'_0,W'_1)$. Since $(c,\hat{v}_0)$ is not in the subgame statement (II) must hold.\\\\
-			\begin{tabular}{|p{14.8cm}}
-				Case $W'_{\overline{\alpha}} = \emptyset$\\
-				\hline
-				In this case the algorithm returns all vertices to be winning for player $\alpha$. By induction we found that indeed all vertices in game $(G\backslash A)_{|c}$ are won by player $\alpha$. This means that when we consider game $G_{|c}$ player $\overline{\alpha}$ must play the token away from vertices $V_{|c} \backslash A_{|c}$ to win. When the play goes to vertices in $A_{|c}$ then player $\alpha$ can make sure that the play goes to one of the vertices with the highest priority. After that the play can either go to vertices in $A_{|c}$ or vertices in $V_{|c} \backslash A_{|c}$. In the former case play will again go to a vertex with the highest priority. In the latter case player $\overline{\alpha}$ must play back to $A_{|c}$ or loose the game, however playing to $A_{|c}$ causes the play to go to the highest vertex again. Since the highest vertex has a parity equal to $\alpha$ every play is won by player $\alpha$ and we can conclude that indeed every vertex in $G_{|c}$ is won by player $\alpha$ and that statement (II) holds.
-			\end{tabular}
-			\begin{tabular}{|p{14.8cm}}
-				Case $W'_{\overline{\alpha}} \neq \emptyset$\\
-				\hline
-				Since $(c,\hat{v}_0) \notin V$ we conclude $c \notin C_W$ and $((W'_{\overline{\alpha}})_{|\backslash C_W})_{|c} = (W'_{\overline{\alpha}})_{|c}$.\\\\
-				\begin{tabular}{|p{14.6cm}}
-					Case $(W'_{\overline{\alpha}})_{|\backslash C} = \emptyset$\\
-					\hline
-					All vertices in $V_{|c}$ are returned to be winning for player $\alpha$. We argued that the $C_W$ operations do not have an effect on the value of $(W'_{\overline{\alpha}})_{|c}$ therefore we can use the same argument as in case $W'_{\overline{\alpha}} = \emptyset$ to show that indeed all vertices in $V_{|c}$ are won by player $\alpha$ and that statement (II) holds.
-				\end{tabular}
-				\begin{tabular}{|p{14.6cm}}
-					Case $(W'_{\overline{\alpha}})_{|\backslash C} \neq \emptyset$\\
-					\hline
-					Again we find that $c \notin C_B$. Set $V \backslash A$ is an $\alpha$-trap in $G$ (using Lemma \ref{lem_attr_is_trap}), therefore $(V \backslash A)_{|c}$ is an $\alpha$-trap in $G_{|c}$. Set $(W'_{\overline{\alpha}})_{|c}$ is an $\alpha$-trap in $(G\backslash A)_{|c}$ (because it is a winning set). We can conclude that $(W'_{\overline{\alpha}})_{|c}$ is an $\alpha$-trap in $G_{|c}$. Using Lemma \ref{lem_attr_trap_is_trap} we find that $B_{|c}$ is an $\alpha$-trap in $G_{|c}$, meaning that player $\overline{\alpha}$ can keep the play in $B_{|c}$, moreover player $\overline{\alpha}$ can play towards $(W'_{\overline{\alpha}})_{|c}$ where this player wins. We can conclude that any vertex in $B_{|c}$ is won by player $\overline{\alpha}$ and there are no edges that go from a vertex owned by player $\overline{\alpha}$ in $V_{|c} \backslash B_{|c}$ to $B_{|c}$. There might be such an edge owned by player $\alpha$, however if player $\alpha$ chooses plays along such an edge play ends up in $B_{|c}$ and player $\overline{\alpha}$ wins. Therefore we can simply solve game $G_{|c} \backslash B_{|c}$, the winning sets in this subgame are also winning in game $G_{|c}$.\\\\			
-					The subgame created projected to $c$ is $G_{|c} \backslash B_{|c}$, since $\hat{v}_0$ is not in $G_{|c}$ it is also not in $G_{|c} \backslash B_{|c}$. By induction we find that statement (II) holds for $G_{|c} \backslash B_{|c}$ with sets $W''_0,W''_1$. The algorithm returns $(W''_\alpha)_{|c}$ for player $\alpha$ and $(W''_{\overline{\alpha}})_{|c} \cup B_{|c}$ for player $\overline{\alpha}$, this correctly solves game $G_{|c}$ therefore statement (II) holds.
-				\end{tabular}
-			\end{tabular}
-		\end{tabular}\\
-		\begin{tabular}{|p{15cm}}
-			Case $(c,\hat{v}_0) \in V$\\
-			\hline
-			\begin{tabular}{|p{14.8cm}}
-				Case $\overline{\alpha} \notin \Delta$\\
-				\hline
-				In the first recursion we get $\Delta = \emptyset$, therefore by induction we conclude that statement (II) holds for game $G\backslash A$ with configuration $c$ and sets $(W'_0, W'_1)$.\\
-				\begin{tabular}{|p{14.6cm}}
-					Case $W'_{\overline{\alpha}} = \emptyset$\\
-					\hline
-					As argued before if $(G \backslash A)_{|c}$ is entirely won by player $\alpha$ then $G_{|c}$ is entirely won by player $\alpha$. The algorithm returns all vertices to be winning for player $\alpha$ so statement (II) holds in this case.
-				\end{tabular} 
-				\begin{tabular}{|p{14.6cm}}
-					Case $W'_{\overline{\alpha}} \neq \emptyset$\\
-					\hline
-					Since $\overline{\alpha} \notin \Delta$ \textsc{LocalConfs} will always return $\emptyset$. So $c \notin C_W$.\\
-					\begin{tabular}{|p{14.4cm}}
-						Case $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$\\
-						\hline
-						Similarly, in this case $(G\backslash A)_{|c}$ is entirely won by player $\alpha$ and therefore statement (II) holds.
-					\end{tabular}
-					\begin{tabular}{|p{14.4cm}}
-						Case $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$\\
-						\hline
-						As argued before when $c \notin C_W$ and $c \notin C_B$ then if a vertex is won by a certain player in subgame $(G\backslash B)_{|c}$ it is also won by that player in game $G_{|c}$.\\
-						
-						Therefore we can conclude that if statement (I) holds for the subgame it holds for the game, similarly if statement (II) holds for the subgame it holds for the game. By induction at least one holds so the theorem holds in this case.
-					\end{tabular}
-				\end{tabular}
-			\end{tabular}
-			\begin{tabular}{|p{14.8cm}}
-				Case $\overline{\alpha} \in \Delta$\\
-				\hline
-				The first recursion is called with $\Delta = \{\overline{\alpha}\}$. By induction we find that either or both statements hold for game $G\backslash A$, configuration $c$ and sets $(W'_0, W'_1)$.\\
-				\begin{tabular}{|p{14.6cm}}
-					Case $W'_{\overline{\alpha}} = \emptyset$\\
-					\hline
-					In this case statement (II) must hold. And similar as before we find that indeed all vertices in $G_{|c}$ are won by player $\alpha$.
-				\end{tabular}
-				\begin{tabular}{|p{14.6cm}}
-					Case $W'_{\overline{\alpha}} \neq \emptyset$\\
-					\hline
-					\begin{tabular}{|p{14.4cm}}
-						Case $c \in C_W$\\
-						\hline
-						Using Lemma \ref{lem_overlinealphawinner} we find that anything won in subgame $G\backslash A$ by player $\overline{\alpha}$ is also won by that player in game $G$. We find $(c,\hat{v}_0)$ to be won by player $\overline{\alpha}$ in game $G\backslash A$ so this vertex is also won by player $\overline{\alpha}$ in game $G$. The algorithm returns $W'_{\overline{\alpha}}$ or $(W'_{\overline{\alpha}})_{||C_W}$ to be won by player $\overline{\alpha}$, this includes $(c,\hat{v}_0)$ so statement (I) holds.
-					\end{tabular}
-					\begin{tabular}{|p{14.4cm}}
-						Case $c \notin C_W$\\
-						\hline
-						Statement (II) must hold for game $G \backslash A$ with configuration $c$ and sets $(W'_0,W'_1)$ because if statement (I) would hold we would have had $c \in C_W$.\\
-						\begin{tabular}{|p{14.2cm}}
-							Case $(W'_{\overline{\alpha}})_{|\backslash C_W} = \emptyset$\\
-							\hline
-							We find that game $(G \backslash A)_{|c}$ is entirely won by player $\alpha$ and therefore game $G_{|c}$ is entirely won by player $\alpha$ so returning all vertices with configuration $c$ to be winning for player $\alpha$ makes statement (II) true.
-						\end{tabular}
-						\begin{tabular}{|p{14.2cm}}
-							Case $(W'_{\overline{\alpha}})_{|\backslash C_W} \neq \emptyset$\\
-							\hline
-							\begin{tabular}{|p{14cm}}
-								Case $c \in C_B$\\
-								\hline
-								Anything won by player $\overline{\alpha}$ in game $G\backslash A$ is also won by that player in game $G$. Set $B$ contains vertices such that player $\overline{\alpha}$ can force the play to a vertex that is won by player $\overline{\alpha}$ in game $G$, therefore anything in $B$ is also won by player $\overline{\alpha}$ in game $G$. The algorithm returns everything in $B$ to be winning for player $\overline{\alpha}$, so statement (I) holds.
-							\end{tabular}
-							\begin{tabular}{|p{14cm}}
-								Case $c \notin C_B$\\
-								\hline
-								As argued before when $c \notin C_W$ and $c \notin C_B$ then if a vertex is won by a certain player in subgame $(G\backslash B)_{|c}$ it is also won by that player in game $G_{|c}$.\\
-								
-								Therefore we can conclude that if statement (I) holds for the subgame it holds for the game, similarly if statement (II) holds for the subgame it holds for the game. By induction at least one holds so the theorem holds in this case.
-							\end{tabular}
-						\end{tabular}
-					\end{tabular}
-				\end{tabular}
-			\end{tabular}
-		\end{tabular}
-	\end{longtable}
-\end{proof}
-\end{theorem}
-
-Using these two theorems we can conclude that $\textsc{RecursiveUPGLocal}(\hat{G}_{\downarrow},\hat{v}_0,\{0,1\})$ correctly locally solves VPG $\hat{G}$ for vertex $\hat{v}_0$.
 
 The pseudo code presented for the algorithm uses a set-wise representation of unified parity games. As we have seen previously in the \textsc{RecursiveUPG} algorithm we can modify the recursive algorithm to use a function-wise representation with a function-wise attractor set calculation. The \textsc{RecursiveUPGLocal} algorithm can be transformed in the same way. The \textsc{RecursiveUPGLocal} algorithm introduces defintions for projections to sets of configurations as well as the \textsc{LocalConfs} subroutine, we introduce function-wise variants for these definitions and subroutine.
 \begin{definition}
