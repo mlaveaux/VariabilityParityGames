@@ -5,4 +5,12 @@
  - Complexity class parity games
  - Hoe worden sets van configuraties gecodeerd
  - Intersectie van bitvectoren kan beter (confs & vertices)
- - Simpelere variant in local 
+ - start bij v_1 en c_1 overal
+ - line ref in sectie 6
+ - aanpassen ite definitie (en spatie) (en game in F_0)
+ - non-total games in FPite
+ - subset definitie voor function wise
+ - aanpassen strategy definitie (niet totaal)
+ - comma's na koppel worden
+ - referentie running time FPIte
+ - Check dat overal total wordt gebruikt bij zlnk

@@ -1,15 +1,15 @@
-Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in Algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$, we want to find these sets in an efficient manner such that the algorithm does not spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
+Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$, if we have a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only 1 configuration remains. Pseudo code is presented in Algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$. We want to find these sets in an efficient manner such that the algorithm does not spend time finding vertices that are already pre-solved. Finally when there is only 1 configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
 
 \begin{algorithm}
-	\caption{$\textsc{IncPreSolve}(VPG G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
+	\caption{$\textsc{IncPreSolve}(\textit{VPG } G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
 	\begin{algorithmic}[1]
 		\If{$|\mathfrak{C}| = 1$}
-		\State $\{c\} \gets \mathfrak{C}$
+		\State Let $\mathfrak{C} = \{c\}$
 		\State $(W'_0,W'_1) \gets $ solve $G_{|c}$ using $P_0$ and $P_1$
 		\State \Return $(\mathfrak{C} \times W'_0, \mathfrak{C} \times W'_1)$
 		\EndIf
-		\State $P'_0 \gets$ find vertices won by player $0$ for all configuration in $\mathfrak{C}$
-		\State $P'_1 \gets$ find vertices won by player $1$ for all configuration in $\mathfrak{C}$
+		\State $P'_0 \gets$ find vertices won by player $0$ for all configurations in $\mathfrak{C}$
+		\State $P'_1 \gets$ find vertices won by player $1$ for all configurations in $\mathfrak{C}$
 		\If{$P'_0 \cup P'_1 = V$}
 		\State \Return $(\mathfrak{C} \times P'_0, \mathfrak{C} \times P'_1)$
 		\EndIf
@@ -21,7 +21,7 @@ Next we explore a collective algorithm that tries to solve the game for all conf
 		\State \Return $(W_0,W_1)$
 	\end{algorithmic}
 \end{algorithm}
-The subgames created are based on a set of configurations, we define the subgame operator as follows:
+The subgames created are based on a set of configurations. We define the subgame operator as follows:
 \begin{definition}
 	Given VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ and non-empty set $\mathfrak{X} \subseteq \mathfrak{C}$ we define the subgame $G \cap \mathfrak{X} = (V,V_0,V_1,E',\Omega,\mathfrak{C}', \theta')$ such that
 	\begin{itemize}
@@ -39,13 +39,13 @@ We can find $P_0$ and $P_1$ by using \textit{pessimistic} parity games; a pessim
 \begin{definition}
 	\label{def_pess_game}
 	Given VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$, we define pessimistic parity game $G_{\triangleright\alpha}$ for player $\alpha \in \{0,1\}$, such that
-	\[ G_{\triangleright\alpha} = \{V,V_0,V_1,E',\Omega \} \]
+	\[ G_{\triangleright\alpha} = (V,V_0,V_1,E',\Omega ) \]
 	with
 	\[ E' = \{ (v,w) \in E\ |\ v \in V_{\overline{\alpha}} \vee \theta(v,w) = \mathfrak{C} \} \]
 \end{definition}
 
 
-Note that pessimistic parity games are not necessarily total. A parity game that is not total might result in a finite path, in such a case the player that cannot make a move looses the play.
+Note that pessimistic parity games are not necessarily total. A parity game that is not total might result in a finite path, in which case the player that cannot make a move loses the path.
 
 When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning sets $W_0,W_1$, every vertex in $W_\alpha$ is winning for player $\alpha$ in $G$ played for any configuration, as shown in the following theorem.
 \begin{theorem}
@@ -64,7 +64,7 @@ When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning
 		
 		First we observe that any edge that is taken by player $\alpha$ in game $G_{\triangleright\alpha}$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
 		
-		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but cannot be taken in $G_{|c}$, in such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ cannot win a vertex in $G_{\triangleright\alpha}$ then he/she cannot win that vertex in $G_{|c}$. Note that when players $\overline{\alpha}$'s choices are limited to the point that he/she can't move from vertex $v$ then player $\alpha$ wins when play ends up in $v$.
+		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but cannot be taken in $G_{|c}$. In such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ cannot win a vertex in $G_{\triangleright\alpha}$ then he/she cannot win that vertex in $G_{|c}$.
 		
 		We can conclude that applying the strategy from game $G_{\triangleright\alpha}$ in game $G_{|c}$ for player $\alpha$ wins the same or more vertices.
 	\end{proof}
@@ -137,11 +137,11 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 	Given:
 	\begin{itemize}
 		\item VPG $G = (V,V_0,V_1,E,\Omega, \mathfrak{C},\theta)$,
-		\item $P_0$ being the winning set of game $G_{\triangleright0}$ for player $0$,
-		\item $P_1$ being the winning set of game $G_{\triangleright1}$ for player $1$,
+		\item $P_0$ being the winning set of pessimistic parity game $G_{\triangleright0}$ for player $0$,
+		\item $P_1$ being the winning set of pessimistic parity game $G_{\triangleright1}$ for player $1$,
 		\item non-empty set $\mathfrak{X} \subseteq \mathfrak{C}$,
 		\item player $\alpha \in \{0,1\}$ and
-		\item winning sets $Q_0,Q_1$ for game $(G \cap \mathfrak{X})_{\triangleright\alpha}$
+		\item winning sets $Q_0,Q_1$ for pessimistic parity game $(G \cap \mathfrak{X})_{\triangleright\alpha}$
 	\end{itemize}
 	we have
 	\[ P_0 \subseteq Q_0 \]
@@ -152,19 +152,19 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 		
 		Let edge $(v,w)$ be an edge in game $(G \cap \mathfrak{X})_{\triangleright\alpha}$ with $v \in V_{\overline{\alpha}}$. The edge admits some configuration in $\mathfrak{C} \cap \mathfrak{X}$, this configuration is also in $\mathfrak{C}$ so we can conclude that edge $(v,w)$ is also an edge of game $G_{\triangleright\alpha}$.
 		
-		We have concluded that game $(G \cap \mathfrak{X})_{\triangleright\alpha}$ has the same or more edges for player $\alpha$ as game $G_{\triangleright\alpha}$ and the same or less edges for player $\overline{\alpha}$. Therefore we can conclude that any vertex won by player $\alpha$ in $G_{\triangleright\alpha}$ is also won by $\alpha$ in game $(G \cap \mathfrak{X})_{\triangleright\alpha}$, ie. $P_\alpha \subseteq Q_\alpha$.
+		We have concluded that game $(G \cap \mathfrak{X})_{\triangleright\alpha}$ has the same or more edges for player $\alpha$ as game $G_{\triangleright\alpha}$ and the same or fewer edges for player $\overline{\alpha}$. Therefore we can conclude that any vertex won by player $\alpha$ in $G_{\triangleright\alpha}$ is also won by $\alpha$ in game $(G \cap \mathfrak{X})_{\triangleright\alpha}$, i.e. $P_\alpha \subseteq Q_\alpha$.
 		
 		
-		Let $v \in P_{\overline{\alpha}}$, using Theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\overline{\alpha}$ in $G_{|c}$ for any $c \in \mathfrak{C}$. Because projections of subgames are the same as projections of the original game we can conclude that $v$ is winning for player $\overline{\alpha}$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.	Assume $v \notin Q_{\overline{\alpha}}$ then $v \in Q_{\alpha}$ and using Theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\alpha$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$. This is a contradiction so we can conclude $v \in Q_{\overline{\alpha}}$ and therefore $P_{\overline{\alpha}} \subseteq Q_{\overline{\alpha}}$.
+		Let $v \in P_{\overline{\alpha}}$, using Theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\overline{\alpha}$ in $G_{|c}$ for any $c \in \mathfrak{C}$. Because projections of subgames are the same as projections of the original game we can conclude that $v$ is winning for player $\overline{\alpha}$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.	Assume $v \notin Q_{\overline{\alpha}}$. Then $v \in Q_{\alpha}$ and using Theorem \ref{the_pess_is_winning_for_all_conf} we find that $v$ is winning for player $\alpha$ in $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$. This is a contradiction so we can conclude $v \in Q_{\overline{\alpha}}$ and therefore $P_{\overline{\alpha}} \subseteq Q_{\overline{\alpha}}$.
 	\end{proof}
 \end{lemma}
 \subsection{Algorithm}
-In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, specifically we want a parity game algorithm that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is 1 configuration left we need a similar algorithm. In Algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we show the correctness of the \textsc{IncPreSolve} algorithm, later we explore an appropriate \textsc{Solve} algorithm.
+In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game. Specifically we want a parity game algorithm that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is a single configuration left we also need a parity game algorithm that uses the vertices that are already pre-solved. In Algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we show the correctness of the \textsc{IncPreSolve} algorithm, later we explore an appropriate \textsc{Solve} algorithm.
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
 	\begin{algorithmic}[1]
 		\If{$|\mathfrak{C}| = 1$}
-		\State $\{c\} \gets \mathfrak{C}$
+		\State Let $\mathfrak{C} = \{c\}$
 		\State $(W'_0,W'_1) \gets \textsc{Solve}(G_{|c}, P_0,P_1)$
 		\State \Return $(\mathfrak{C} \times W'_0, \mathfrak{C} \times W'_1)$
 		\EndIf
@@ -182,9 +182,9 @@ In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game, spe
 	\end{algorithmic}
 \end{algorithm}
 
-A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$ and $P_1$ are in fact vertices that are won by player $0$ and $1$ respectively. We prove that this is the case in the \textsc{IncPreSolve} algorithm.
+A \textsc{Solve} algorithm must correctly solve a game as long as the sets $P_0$ and $P_1$ are in fact vertices that are won by player $0$ and $1$ respectively. We prove that, assuming the correctness of \textsc{Solve}, the values for $P_0$ and $P_1$ are always correct in \textsc{IncPreSolve}.
 \begin{theorem}
-	Given VPG $\hat{G}$. For every $\textsc{Solve}(G,P_0,P_1)$ that is invoked during $\textsc{IncPreSolve}(\hat{G},\emptyset,\emptyset)$ we have winning sets $W_0,W_1$ for game $G$ for which the following holds:
+	Given VPG $\hat{G}$ and assuming the correctness of \textsc{Solve}. For every $\textsc{Solve}(G,P_0,P_1)$ that is invoked during $\textsc{IncPreSolve}(\hat{G},\emptyset,\emptyset)$ we have winning sets $W_0,W_1$ for game $G$ for which the following holds:
 	\[ P_0 \subseteq  W_0 \]
 	\[ P_1 \subseteq  W_1 \]
 	\begin{proof}
@@ -218,7 +218,7 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 		
 		If $P_0' \cup P_1' = V$ then the algorithm returns $(\mathfrak{C} \times P_0',\mathfrak{C} \times P_1')$. In which case the theorem holds because there are no configuration vertex combinations that are not in either winning set and Theorem \ref{the_pess_is_winning_for_all_conf} proves the correctness.
 		
-		If $P_0' \cup P_1' \neq V$ then we have winning sets $(W_0^a, W_1^a)$ for which the theorem holds (by induction) for game $G \cap \mathfrak{C}^a$ and $(W_0^b, W_1^b)$ for which the theorem holds (by induction) for game $G \cap \mathfrak{C}^b$. The algorithm returns $(W_0^a \cup W_0^b, W_1^a \cup W_1^b)$. Since $\mathfrak{C}^a \cup \mathfrak{C}^b = \mathfrak{C}$ all vertex configuration combinations are in the winning sets and the correctness follows from induction.
+		If $P_0' \cup P_1' \neq V$ then we have winning sets $(W_0^a, W_1^a)$ for which the theorem holds (by induction) for game $G \cap \mathfrak{C}^a$ and $(W_0^b, W_1^b)$ for which the theorem holds (by induction) for game $G \cap \mathfrak{C}^b$. The algorithm returns $(W_0^a \cup W_0^b, W_1^a \cup W_1^b)$. Since $\mathfrak{C}^a \cup \mathfrak{C}^b = \mathfrak{C}$ and $\mathfrak{C}^a \cap \mathfrak{C}^b = \emptyset$ all vertex configuration combinations are in the winning sets and the correctness follows from induction.
 	\end{proof}
 \end{theorem}
 
@@ -327,7 +327,7 @@ We take the fixed-point algorithm presented in \cite{FPITE} and modify it by sta
 This algorithm is appropriate to use as a \textsc{Solve} algorithm in \textsc{IncPreSolve} since it solves parity games that are not necessarily total and uses $P_0$ and $P_1$.
 
 \subsection{Running time}
-We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively.
+We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. We use $n$ to denote the number of vertices, $e$ the number of edges, and $d$ the number of distinct priorities. When analysing a VPG then we also use $c$ to indicate the number of configurations.
 
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$. We can use this algorithm to solve $G$ independently, i.e. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 
