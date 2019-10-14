@@ -4,7 +4,6 @@
  - Local: incomplete but correct winning sets
  - Complexity class parity games
  - Hoe worden sets van configuraties gecodeerd
- - Intersectie van bitvectoren kan beter (confs & vertices)
  - start bij v_1 en c_1 overal
  - line ref in sectie 6
  - aanpassen ite definitie (en spatie) (en game in F_0)
@@ -14,3 +13,5 @@
  - comma's na koppel worden
  - referentie running time FPIte
  - Check dat overal total wordt gebruikt bij zlnk
+ - Streepjes voor local
+ - bool vector conjunction beschrijven
