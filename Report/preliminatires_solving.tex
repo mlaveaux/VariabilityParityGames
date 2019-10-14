@@ -574,9 +574,12 @@ Note that a subgame is not necessarily total, however the recursive algorithm al
 Parity games can be solved by solving an alternating fixed-point formula \cite{WALUKIEWICZ2002311}. Consider PG $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
 
 Consider the following formula
-\[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(Z_{d-1},\dots,Z_0) \]
+\[ S(G) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(G,Z_{d-1},\dots,Z_0) \]
 with
-\[ F_0(Z_{d-1},\dots,Z_0) = \{ v \in V_0\ |\ \exists_{w\in V} (v,w) \in E \wedge Z_{\Omega(w)} \} \cup \{ v \in V_1\ |\ \forall_{w\in V} (v,w) \in E \implies Z_{\Omega(w)} \} \]
+\begin{align*}
+ F_0(G = (V,V_0,V_1,E,\Omega),Z_{d-1},\dots,Z_0) = &\{ v \in V_0\ |\ \exists_{w\in V}\ (v,w) \in E \wedge w\in Z_{\Omega(w)} \}\\
+  \cup &\{ v \in V_1\ |\ \forall_{w\in V}\ (v,w) \in E \implies w\in Z_{\Omega(w)} \}
+\end{align*}
 where $Z_i \subseteq V$. The formula $\nu X. f(X)$ solves the greatest fixed-point of $X$ in $f$, similarly $\mu X.f(X)$ solves the least fixed-point of $X$ in $f$. As shown in \cite{WALUKIEWICZ2002311} formula $S(G)$ is calculates the set of vertices winning for player 0 in parity game $G$.
 
 To understand the formula we consider sub-formula $\nu Z_0. F_0(Z_{d-1},\dots,Z_0)$. This formula holds for vertices from which player $0$ can either force the play into a node with priority $i > 0$ for which $Z_i$ holds or the player can stay in vertices with priority $0$ indefinitely. The formula $\mu Z_0. F_0(Z_{d-1},\dots,Z_0)$ holds for vertices from which player $0$ can force the play into a node with priority $i > 0$, for which $Z_i$ holds in finitely many steps. By alternating fixed-points the formula allows infinitely many consecutive stays in even vertices and finitely many consecutive stays in odd vertices. For an extensive treatment we refer to \cite{WALUKIEWICZ2002311}.

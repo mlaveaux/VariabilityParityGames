@@ -223,8 +223,17 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 \end{theorem}
 
 \subsection{A parity game algorithm using pre-solved vertices}
-The fixed-point iteration algorithm can be used to solve parity games using pre-solved vertices. First recall the fixed-point formula to calculate $W_0$:
-\[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \\mu X.f(x)nu Z_0. F_0(Z_{d-1},\dots,Z_0) \]
+The fixed-point iteration algorithm can be used to solve parity games using pre-solved vertices. Recall that the fixed-point iteration algorithm calculates an alternating fixed-point formula to find the winning set for player 0. When iterating fixed-point formula $\nu X.f(X)$ we choose some initial value for $X$ and keep iterating $f(X)$ until we find $X = f(X)$. The original fixed-point iteration algorithm chooses $\emptyset$ as the initial value. In this section we show that given $P_0$ and $P_1$ we use the fixed-point iteration algorithm but instead of choosing initial value $\emptyset$ we choose initial value $P_0$. This will most likely decrease the number of iterations needed before we find $X = f(X)$. Moreover we show that we can ignore vertices in $P_0$ in parts of the calculation because we already know these vertices are winning. Similarly, we find that we can choose initial value $V\backslash P_1$ instead of $V$ (where $V$ is the set of vertices) when iterating a greatest fixed-point formula. 
+
+We choose to use modify the fixed-point parity game algorithm because the algorithm using pre-solved vertices is very similar to the original algorithm. When experimenting with the incremental pre-solve algorithm we can compare its performance with the performance of independently solving the projections using the fixed-point iteration algorithm to get a good idea of how well the incremental pre-solve idea performs.
+
+First recall the fixed-point formula to calculate $W_0$:
+\[ S(G = (V,V_0,V_1,E,\Omega)) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(G,Z_{d-1},\dots,Z_0) \]
+with
+\begin{align*}
+	F_0(G = (V,V_0,V_1,E,\Omega),Z_{d-1},\dots,Z_0) = &\{ v \in V_0\ |\ \exists_{w\in V}\ (v,w) \in E \wedge w\in Z_{\Omega(w)} \}\\
+	\cup &\{ v \in V_1\ |\ \forall_{w\in V}\ (v,w) \in E \implies w\in Z_{\Omega(w)} \}
+\end{align*}
 Also recall that we can calculate a least fixed-point as follows:
 \[ \mu X.f(X) = \bigcup_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \subseteq \mu X.f(X)$. So picking the smallest value possible for $X_0$ will always correctly calculate $\mu X. f(X)$.
@@ -234,55 +243,197 @@ where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \supseteq \nu X.f(X)$. So picking 
 
 Let $G$ be a parity game and let sets $P_0$ and $P_1$ be such that vertices in $P_0$ are won by player $0$ and vertices in $P_1$ are won by player $1$. We can fixed-point iterate $S(G)$ to calculate $W_0$, we know that $W_0$ is bounded by $P_0$ and $P_1$, specifically we have
 \[ P_0 \subseteq W_0 \subseteq V\backslash P_1\]
-This restriction can be used to efficiently iterate $S(G)$. If no bounds are know we would iterate fixed-point formula starting at $V$ or $\emptyset$ which are the largest and smallest values possible, however given the bounds we can start our iterations of greatest fixed-point variables at $V\backslash P_1$ and start our iterations of least fixed-point variables at $P_0$. The following lemma's and theorem prove this.
 
-First we show that when a bound on a fixed-point formula is known and we iterate starting at that bound then at no point during the iteration do we find a value outside of the bound. This is shown in the following two lemma's, which are the dual of each other.
+In this section we prove that formula 
+\[ S^P(G) = \nu Z_{d-1}.\mu Z_{d-2}\dots \nu Z_0.(F_0(G,Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0) \]
+also solves $W_0$ for $G$. Note that the formula $F_0(G,Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0$ is still monotonic as shown in Lemma \ref{lem_monotonic_union}.
 \begin{lemma}
-	\label{lem_fixpoint_bounds_nu}
-	Given
-	\begin{itemize}
-		\item A complete lattice $\langle 2^A, \subseteq \rangle$,
-		\item monotonic function $f : 2^A \rightarrow 2^A$ and
-		\item $R^\bot \subseteq A$ and $R^\top \subseteq A$ such that $R^\bot \subseteq \nu X. f(X) \subseteq R^\top$
-	\end{itemize}
-	we iterate $X$ by starting with $X^0 = R^\top$. For any $i \geq 0$ it holds that
-	\[ R^\bot \subseteq f(X^i) \subseteq R^\top \]
+	\label{lem_monotonic_union}
+	Given lattice $\langle 2^D, \subseteq \rangle $, monotonic function $f :  2^D \rightarrow 2^D$ and $A \subseteq D$. The functions $f^\cup(x) = f(x) \cup A$ and $f^\cap(x) = f(x) \cap A$ are also monotonic.
 	\begin{proof}
-		Assume $R^\bot \supset f(X^i) = X^{i+1}$. By fixed-point iteration definition we have $\nu X.f(X) = \bigcap_{j\geq0} X^j$, so we find $R^\bot \supset \nu X.f(x)$ which is a contradiction so $R^\bot \subseteq f(X^i)$.
+		Let $x,y \subseteq D$ and $x\subseteq y$ then $f(x) \subseteq f(y)$.
 		
-		Assume $X^{i+1} = f(X^i) \supset R^\top$. We start iterating at $X^0 = R^\top$ and have $X^{i+1} \supset X^0$. Consider $f(X^0)$, if $f(X^0) \subseteq X^0$ then $X^1 \subseteq X^0$ and therefore (because of monotonicity) $f(X^1) \subseteq f(X^0) = X^1$, this gives a decreasing series of $X$ values never becoming larger than $R^\top$ and therefore we cannot have $X^{i+1} \supset X^0$. We can conclude that $X^1 = f(X^0) \supset X^0$. Next consider $f(X^1)$, we have $X^1 \supset X^0$ therefore (because of monotonicity) we get $f(X^1) \supseteq f(X^0) = X^1$. We have found $X^1 \supset R^\top$ and $f(X^1) \supseteq X^1$, by applying the Knaster-Tarski theorem (Theorem \ref{the_knaster_tarski}) we conclude that the greatest fixed-point of $f$ is at least $X^1 \supset R^\top$. This is a contradiction because $\nu X.f(X) \subseteq R^\top$ so the assumption does not hold and $f(X^i) \subseteq R^\top$.
+		Let $e \in f(x) \cup A$. If $e \in f(x)$ then $e \in f(y)$ and $e \in f(y) \cup A$. If $e \in A$ then $e \in f(y) \cup A$. We find $f^\cup(x) \subseteq f^\cup(y)$.
+		
+		Let $e \in f(x) \cap A$. We have $e \in f(x)$ and $e \in A$. Therefore $e \in f(y)$ and $e \in f(y) \cap A$. We find $f^\cap(x) \subseteq f^\cap(y)$.
 	\end{proof}
 \end{lemma}
 
+\subsubsection{Fixed-point iteration index} We introduce the notion of fixed-point \textit{iteration index} to help with the proof.
+
+Consider alternating fixed-point formula
+\[ \nu X_m.\mu X_{m-1}\dots.\nu X_0.f(X_m,X_{m-1},\dots,X_0) \]
+
+Using fixed-point iteration to solve this formula results in a number of intermediate values for the iteration variables $X_m,\dots X_0$. We define an iteration index that, intuitively, indicates where in the iteration process we are. For an alternating fixed-point formula with $m$ fixed-point variables we define an iteration index $\zeta \subseteq \mathbb{N}^m$.
+
+When applying iteration to formula $\nu X_j.f(X)$ we start with some value for $X_j^0$ and calculate $X_j^{i+1} = f(X_j^{i})$. So we get a list of values for $X_j$, however when we have alternating fixed-point formula's we might iterate $X_j$ multiple times but get different lists of values because the values for $X_m,\dots,X_{j-1}$ are different. We use the iteration index to distinguish between these different lists. 
+
+Iteration index $\zeta = (k_m,\dots,k_0)$ indicates where in the iteration process we are. We start at $\zeta = (0,0,\dots,0)$. We first iterate $X_0$, when we calculate $X_0^1$ we are at iteration index $\zeta=(0,0,\dots,1)$, when we calculate $X_0^2$ we are at iteration index $\zeta=(0,0,\dots,2)$ and so on. In general when we calculate a value for $X_j^i$ then $k_j = i$ in $\zeta$. This induces the lexicographical order 
+\begin{center}
+	$(0,\dots,0,0,0)$\\
+	$(0,\dots,0,0,1)$\\
+	$(0,\dots,0,0,2)$\\
+	$\vdots$\\
+	$(0,\dots,0,1,0)$\\
+	$(0,\dots,0,1,1)$\\
+	$(0,\dots,0,1,2)$\\
+	$\vdots$
+\end{center}
+We define $\{a_1,\dots,a_m\} -1 = \{a_1,\dots,a_m-1\}$ and $\{a_1,\dots,a_m\} + 1 = \{a_1,\dots,a_m+1\}$ for convenience of notation.
+
+We write $X_j^\zeta$ to indicate the value of variable $X_j$ at moment $\zeta$ of the iteration process. Variable $X_j$ doesn't change values when a variable $X_l$ with $j>l$ changes values, there we have for indexes $\zeta = (k_m,\dots,k_j,k_{j-1},\dots,k_0)$ and $\zeta' = (k_m,\dots,k_j,k'_{j-1},\dots,k'_0)$ that $X_j^\zeta = X_j^{\zeta'}$.
+
+We can use the fixed-point iteration definition to define the values for $X_j^\zeta$. Let  $\zeta= (k_m,\dots,k_0)$, we have:
+\[ X_0^{\zeta+1} = f(X_m^\zeta, X_{m-1}^\zeta,\dots,X_0^\zeta) \]
+and for any even $0 < j \leq m$
+\[ X_j^{(\dots,k_j+1,\dots)} = \mu X_{j-1}\dots = \bigcup_{i \geq 0}X^{(\dots,k_j,i,\dots)} \]
+and for any odd $0 < j \leq m$
+\[ X_j^{(\dots,k_j+1,\dots)} = \nu X_{j-1}\dots = \bigcap_{i \geq 0}X^{(\dots,k_j,i,\dots)} \]
+
+\paragraph{$\Gamma$-games} 
+
+We define $\Gamma$, which transforms a parity game, to help with the proof.
+
+\begin{definition}
+	\label{def_gamma_games}
+	Given parity game $G=(V,V_0,V_1,E,\Omega)$ with winning set $W_0$ such that $P_0 \subseteq W_0 \subseteq V \backslash P_1$. We define $\Gamma(G,P_0,P_1) = (V',V_0',V_1',E',\Omega')$ such that
+	\begin{align*}
+	&V' = (V \backslash P_0 \backslash P_1) \cup \{s_0,s_1\}\\
+	&V_0' = (V_0 \cap V') \cup \{s_1\}\\
+	&V_1' = (V_1 \cap V') \cup \{s_0\}\\
+	&E' = (E \cap (V' \times V')) \cup \{ (v,s_\alpha)\ |\ (v,w) \in E \wedge w \in P_\alpha \}\\
+	&\Omega'(v) = \begin{cases}0 & \text{if } v\in \{s_0,s_1\}\\
+	\Omega(v) & \text{otherwise}\end{cases}
+	\end{align*}
+\end{definition}
+Parity game $\Gamma(G,P_0,P_1)$ contains vertices $s_0$ and $s_1$ such that they have no outgoing edges and $s_\alpha$ is owned by player $s_{\overline{\alpha}}$. Clearly if the token ends in $s_\alpha$ then player $\alpha$ wins. Vertices that had edges to a vertex in $P_\alpha$ now have an edge to $s_\alpha$. 
+
+Note that because $s_0$ and $s_1$ don't have successors, their priorities don't matter for winning sets of $G'$. They are assigned priority 0, this will be convenient in the proof of the correctness of $S^P$. Also note that this parity is not total, as shown in \cite{WALUKIEWICZ2002311} the formula $S(G)$ also solves non-total games.
+
+Next we show that vertices in $V\backslash P_0 \backslash P_1$ have the same winner in games $G$ and $G'$.
 \begin{lemma}
-	\label{lem_fixpoint_bounds_mu}
-	Given
-	\begin{itemize}
-		\item A complete lattice $\langle 2^A, \subseteq \rangle$,
-		\item monotonic function $f : 2^A \rightarrow 2^A$ and
-		\item $R^\bot \subseteq A$ and $R^\top \subseteq A$ such that $R^\bot \subseteq \mu X. f(X) \subseteq R^\top$
-	\end{itemize}
-	we iterate $X$ by starting with $X^0 = R^\bot$. For any $i \geq 0$ it holds that
-	\[ R^\bot \subseteq f(X^i) \subseteq R^\top \]
+	\label{lem_gamma_same_winner}
+	Given parity game $G=(V,V_0,V_1,E,\Omega)$ with winning set $W_0$ such that $P_0 \subseteq W_0 \subseteq V \backslash P_1$ and parity game $G' = \Gamma(G,P_0,P_1)$ with winning set $Q_0$ we have $W_0 \backslash P_0 \backslash P_1 = Q_0 \backslash \{s_0,s_1\}$.
 	\begin{proof}
-		Assume $R^\bot \supset f(X^i) = X^{i+1}$. We start iteration at $X^0 = R^\bot$ and have $X^{i+1} \subset X^0$. Consider $f(X^0)$, if $f(X^0) \supseteq X^0$ then $X^1 \supseteq X^0$ and therefore (because of monotonicity) $f(X^1) \supseteq f(X^0) = X^1$, this gives an increasing series of $X$ values never becoming smaller than $R^\bot$ and therefore we cannot have $X^{i+1} \subset X^0$. We can conclude that $X^1 = f(X^0) \subset X^0$. Next consider $f(X^1)$, we have $X^1 \subset X^0$ therefore (because of monotonicity) we get $f(X^1) \subseteq f(X^0) = X^1$. We have found $X^1 \subset R^\bot$ and $f(X^1) \subseteq X^1$, by applying the Knaster-Tarski theorem (Theorem \ref{the_knaster_tarski}) we conclude that the least fixed-point of $f$ is at most $X^1 \subset R^\bot$. This is a contradiction because $R^\bot \subseteq \mu X.f(X)$ so the assumption does not hold and $R^\bot \subseteq f(X^i)$.
+		Let vertex $v\in V \backslash P_0 \backslash P_1$. Assume $v$ is won by player $\alpha$ in $G$ using strategy $\sigma_\alpha : V_\alpha \rightarrow V$. We construct a strategy $\sigma'_\alpha :  V'_\alpha \rightarrow V'$ for game $G'$ as follows:
+		\[ \sigma'_\alpha(w) = \begin{cases} s_\beta & \text{if $\sigma_\alpha(w) \in P_\beta$ for some $\beta \in \{0,1\}$}\\
+		\sigma_\alpha(w) & \text{otherwise}
+		\end{cases} \]
+		This strategy maps the vertices to the same successors except when a vertex is mapped to a vertex in $P_\beta$, in which case $\sigma'_\alpha$ maps the vertex to $s_\beta$.
 		
-		Assume $X^{i+1} = f(X^i) \supset R^\top$. By fixed-point iteration definition we have $\mu X.f(X) = \bigcup_{j\geq0}X^j$, so we find $\mu X.f(x) \supset R^\top $ which is a contradiction so $f(X^i) \subseteq R^\top$.
+		Let $\pi'$ be a valid path in $G'$, starting from $v$ and conforming to $\sigma'_\alpha$. Since vertices $s_0$ and $s_1$ don't have any successors we distinguish three cases for $\pi'$:
+		\begin{itemize}
+			\item Assume $\pi'$ ends in $s_{\overline{\alpha}}$. Let $\pi' = (x_0\dots x_m s_{\overline{\alpha}})$ with $v = x_0$. Because $s_0$ and $s_1$ don't have successors no $x_i$ is $s_0$ or $s_1$; we find $x_i \in V\backslash P_0 \backslash P_1$. For every $x_ix_{i+1}$ we have $(x_i,x_{i+1}) \in E'$, any such edge is also in $E$ because the edges between vertices in $V\backslash P_0 \backslash P_1$ were left intact when creating $G'$. Finally we find that $(x_m,y) \in E$ with $y \in P_{\overline{\alpha}}$. There must exist a valid path $\pi = (x_0 \dots x_m y\dots)$ in game $G$. Moreover this path conforms to $\sigma_\alpha$ because $\sigma'_\alpha$ and $\sigma_\alpha$ map to the same vertices for all $x_0\dots x_{m-1}$ and $x_m$ maps to a vertex in $P_{\overline{\alpha}}$. Player $\overline{\alpha}$ has a winning strategy from $y$ so we conclude that $\pi$ is won by $\overline{\alpha}$ in game $G$. Because $\pi$ exists and conforms to $\sigma_\alpha$ we find that $\sigma_\alpha$ is not winning for $\alpha$ from $v$ in $G$. This is a contradiction so we conclude that $\pi'$ never ends in $s_{\overline{\alpha}}$.
+			\item Assume $\pi'$ ends in $s_\alpha$. In this case player $\alpha$ wins the path.
+			\item Assume $\pi'$ never visits $s_\alpha$ or $s_{\overline{\alpha}}$. Assume the path is on by player $\overline{\alpha}$, as we argued above we find that this path is also valid in game $G$, conforms to $\sigma_\alpha$ and is winning for $\overline{\alpha}$. Therefore $\sigma_\alpha$ is not winning for player $\alpha$ from $v$, this is a contradiction so we conclude that player ${\alpha}$ wins the path $\pi'$.
+		\end{itemize}
+		We find that $\pi'$ is always won by player $\alpha$ in game $G'$. We conclude that any vertex $v \in V \backslash P_0 \backslash P_1$ won by player $\alpha$ in game $G$ is also won by player $\alpha$ in $G'$. 
+		
+		Let $v \in V'\backslash \{s_0,s_1\}$. Let $v$ be won by player $\alpha$ in game $G'$. Assume that $v$ is not won by $\alpha$ in game $G$ then $v$ is won by $\overline{\alpha}$ in game $G$. Clearly $v \in V \backslash P_0 \backslash P_1$ so we conclude that $v$ is won by player $\overline{\alpha}$ in game $G'$. This is a contradiction so $v$ is won by player $\alpha$ in game $G$.
 	\end{proof}
 \end{lemma}
-Using this property of iterating bounded fixed-point variables we can prove that we can indeed start our iteration at the bounds when solving $S(G)$.
+
+\paragraph{Proof}
 \begin{theorem}
-	\label{the_FPITE_starting}
-	Given parity game $G = (V,V_0,V_1,E,\Omega)$ with $P_0$ and $P_1$ such that vertices  in $P_0$ are won by player $0$ in game $G$ and vertices in $P_1$ are won by player $1$ in game $G$ we can solve $S(G)$ by iterating the fixed-point variables starting at $P_0$ for least fixed-points and starting at $V \backslash P_1$ for greatest fixed-points.
+	\label{the_formula_cupP0_etc_is_correct}
+	Given parity game $G = (V,V_0,V_1,E,\Omega)$ with winning set $W_0$ such that $P_0\subseteq W_0 \subseteq V\backslash P_1$. The formula 
+	\[ S^P(G) = \nu Z_{d-1}.\mu Z_{d-2}\dots \nu Z_0.(G,F_0(Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0) \]
+	correctly solves $W_0$ for $G$.
 	\begin{proof}
-		Let $f(Z_{d-1}) = \mu Z_{d-2}\dots\nu Z_0.F_0(Z_{d-1},\dots,Z_0)$. Because $\nu Z_{d-1}.f(Z_{d-1})$ calculates $W_0$ we know $P_0 \subseteq \nu Z_{d-1}.f(Z_{d-1}) \subseteq V \backslash P_1$ so we can start the fixed-point iteration at $Z_{d-1}^0 = V\backslash P_1$. Using Lemma \ref{lem_fixpoint_bounds_nu} we find for any $i \geq 0$ we have $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$.
+		Let $G' = \Gamma(G,P_0,P_1)$. We consider $S(G')$, which calculates the winning set for player $0$ for game $G'$. Formula $F_0(G',Z_{d-1},\dots,Z_0)$ will always include $s_0$ and never include $s_1$ regardless of the values for $Z_{d-1} \dots Z_0$. Clearly any $\nu Z_i\dots$ or $\mu Z_i\dots$ contains $s_0$ and doesn't contain $s_1$. As shown in \cite{Emerson:1986:MCP:900378} we can start the iteration of least fixed-point formula $\mu X.f(X)$ at any value $X^0 \subseteq \mu  X.f(X)$. Similarly, we can start the iteration of greatest fixed-point formula $\nu X.f(X)$ at any value $X^0 \supseteq \nu X.f(X)$. So we can calculate $S(G')$ using fixed-point iteration, starting least fixed-point variables at $\{s_0\}$ and greatest fixed-point variables at $V'\backslash \{s_1\}$.
 		
-		Let $g(Z_{d-2}) = \nu Z_{d-3} \dots \nu Z_0. F_0(Z_{d-1}^i,Z_{d-2},\dots,Z_0)$. We found $P_0 \subseteq f(Z_{d-1}^i) \subseteq V \backslash P_1$, therefore we have $P_0 \subseteq \mu Z_{d-2}.g(Z_{d-2})\subseteq V \backslash P_1$ so we can start the fixed-point iteration at $Z_{d-2}^0 = P_0$. Using Lemma \ref{lem_fixpoint_bounds_mu} we find that for any $j \geq 0$ we have $P_0 \subseteq g(Z_{d-2}^j) \subseteq V\backslash P_1$.
+		We can also calculate $S^P(G)$ using fixed-point iteration starting at $P_0$ and $V\backslash P_1$ because clearly any $\nu Z_i \dots$ or $\mu Z_i\dots$ contains all vertices from $P_0$ and none from $P_1$.
 		
-		We can repeat this logic up until $Z_0$ to conclude that the theorem holds.
+		We will go through the iteration of formula's $S^P(G)$ and $S(G')$ using iteration index $\zeta$ to indicate where in the iteration we are. We write $Z_i$ to denote variables in $S(G')$ and $Y_i$ to denote variables in $S^P(G)$. 
+		
+		Trivially, for any $\zeta$ and $i$ we have $P_0 \subseteq Y_i^{\zeta} \subseteq V\backslash P_1$ and $\{s_0\} \subseteq Z_i^\zeta\subseteq V\backslash \{s_1\}$
+		
+		
+		We define operator $\simeq : V \times V' \rightarrow \mathbb{B}$ such that for $Y \subseteq V$ and $Z \subseteq V'$ we have $Y \simeq Z$ if and only if:
+		\[ Y \backslash P_0 \backslash P_1 = Z \backslash \{s_0,s_1\}\]
+		
+		We will prove that for any $\zeta = (k_{d-1},\dots,k_0)$ we have $Y_i^{\zeta} \simeq Z_i^{\zeta}$ for every $i \in [0,d-1]$.
+		
+		Proof by induction on $\zeta$.
+		
+		\textbf{Base} $\zeta = (0,0,\dots,0)$: we have for least fixed-point variables $Z_i^\zeta$ and $Y_i^{\zeta}$ the values $\{s_0\}$ and $P_0$, clearly $Z_i^\zeta \simeq Y_i^{\zeta}$. 
+		
+		For greatest fixed-point variables $Z_j^\zeta$ and $Y_j^{\zeta}$ we have $Z_j^\zeta \backslash \{s_0,s_1\} = V \backslash P_1 \backslash P_0$. So we find $Z_j^\zeta \simeq Y_j^{\zeta}$.
+		
+		\textbf{Step}: Consider $\zeta = (k_{d-1},\dots,k_0)$. Let $0 \leq j \leq d-1$. If $k_j = 0$ then $Z_j^\zeta = Z_j^{(0,0,\dots,0)}$ and $Y_j^{\zeta} = Y_j^{(0,0,\dots,0)}$, furthermore $Z_j^{(0,0,\dots,0)}\simeq Y_j^{(0,0,\dots,0)}$ so we find $Z_j^{\zeta} \simeq Y_j^{\zeta}$.
+		If $k_j > 0$ then we distinguish three cases for $j$ to show that $Z_j^{\zeta} \simeq Y_j^{\zeta}$:
+		\begin{itemize}
+			\item Case: $j=0$. We have the following equations:
+			\[ Y_0^{\zeta} = F_0(G,Y_{d-1}^{\zeta-1},\dots,Y_0^{\zeta-1}) \cap (V\backslash P_1) \cup P_0 \]
+			and
+			\[ Z_0^{\zeta} = F_0(G',Z_{d-1}^{\zeta-1},\dots,Z_0^{\zeta-1}) \]
+			By induction we find $Y_i^{\zeta-1} \simeq Z_i^{\zeta-1}$ for all $i \in [0,d-1]$.
+			
+			
+			Consider vertex $v \in V\backslash P_0 \backslash P_1$. We distinguish two cases:
+			\begin{itemize}
+				\item Assume $v \in V_0$.
+				
+				If $v \in Y_0^{\zeta}$ then $v$ must have an edge in game $G$ to $w$ such that $w\in Y^{\zeta-1}_{\Omega(w)}$. We find $w \notin P_1$ because vertices from $P_1$ are never in the iteration variable. If $w \in P_0$ then it follows from the way we created $G'$ that in $G'$ there exists an edge from $v$ to $s_0$ and since $s_0$ is always in the iteration variable we find $v \in Z_0^{\zeta}$. If $w \notin P_0$ then because $Y^{\zeta-1}_{\Omega(w)} \simeq Z^{\zeta-1}_{\Omega(w)}$ we find $w \in Z^{\zeta-1}_{\Omega(w)}$ and therefore $v \in Z_0^{\zeta}$.
+				
+				If $v \in Z_0^{\zeta}$ then $v$ must have an edge in game $G'$ to $w$ such that $w\in Z^{\zeta-1}_{\Omega(w)}$. We find $w \neq s_1$ because $w$ is never in the iteration variable. If $w = s_0$ then it follows from the way we created $G'$ that in $G$ there exists an edge from $v$ to a vertex in $P_0$ and since any vertex in $P_0$ is always in the iteration variable we find $v \in Y_0^{\zeta}$. If $w \neq s_0$ then because $Y^{\zeta-1}_{\Omega(w)} \simeq Z^{\zeta-1}_{\Omega(w)}$ we find $w \in Y^{\zeta-1}_{\Omega(w)}$ and therefore $v \in Y_0^{\zeta}$.
+				\item Assume $v \in V_1$.
+				
+				If $v \in Y_0^{\zeta}$ then for any successor $w$ of $v$ in game $G$ it holds that $w \in Y^{\zeta-1}_{\Omega(w)}$. Consider successor $x$ of $v$ in game $G'$. We distinguish three cases:
+				\begin{itemize}
+					\item $x = s_0$: In this case $x \in Z^{\zeta-1}_{\Omega(x)}$ because $s_0$ is always in the iteration variables.
+					\item $x = s_1$: Because of the way $G'$ is constructed we find vertex $v$ must have a successor $w$ in $P_1$, however we found $w \in Y^{\zeta-1}_{\Omega(w)}$. This is a contradiction because vertices in $P_1$ are never in the iteration variables. So this case can not happen.
+					\item $x \notin \{s_0,s_1\}$: We have $x \in V'\backslash \{s_0,s_1\}$ and therefore $x$ is also a successor of $v$ in game $G$. We find $x \in Y^{\zeta-1}_{\Omega(x)}$ and because $Y^{\zeta-1}_{\Omega(x)} \simeq Z^{\zeta-1}_{\Omega(x)}$ we have $x \in Z^{\zeta-1}_{\Omega(x)}$.
+				\end{itemize}
+				We always find  $x \in Z^{\zeta-1}_{\Omega(x)}$, therefore $v \in Z_0^{\zeta}$.
+				
+				If $v \in Z_0^{\zeta}$ then for any successor $w$ of $v$ in game $G'$ it holds that $w \in Z^{\zeta-1}_{\Omega(w)}$. Consider successor $x$ of $v$ in game $G$. We distinguish three cases:
+				\begin{itemize}
+					\item $x \in P_0$: In this case $x \in Y^{\zeta-1}_{\Omega(x)}$ because vertices in $P_0$ are always in the iteration variables.
+					\item $x \in P_1$: Because of the way $G'$ is constructed we find vertex $v$ must have successor $s_1$ in game $G'$, however we found that for any successor $w$ of $v$ in game $G'$ we have $w \in Z^{\zeta-1}_{\Omega(w)}$. This is a contradiction because $s_1$ is never in the iteration variable. So this case can not happen.
+					\item $x \in V \backslash P_0 \backslash P_1$: We find that $x$ is also a successor of $v$ in game $G'$. We find $x \in Z^{\zeta-1}_{\Omega(w)}$ and because $Y^{\zeta-1}_{\Omega(x)} \simeq Z^{\zeta}_{\Omega(x)}$ we have $x \in Y^{\zeta}_{\Omega(x)}$.
+				\end{itemize}
+				We always find  $x \in Y^{\zeta-1}_{\Omega(x)}$, therefore $v \in Y_0^{\zeta}$.
+			\end{itemize}
+			
+			\item Case: $j > 0$ being even. We have 
+			\[ Z_j^{\zeta} = \mu Z_{j-1}\dots = \bigcup_{i\geq 0} Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}\]
+			and 
+			
+			\[ Y_j^{\zeta} = \mu Y_{j-1}\dots = \bigcup_{i\geq 0} Y_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}\]
+			
+			Let $v \in V \backslash P_0 \backslash P_1$.
+			
+			If $v \in Z_j^{\zeta}$ then there exists some $i$ such that $v \in Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}$. Since $\{k_{d-1},\dots,k_j-1,i,\dots\} < \zeta$ we apply induction to find $Y_{j-1}^{\{k_{d-1},\dots,k_j-1,l,\dots\}} \simeq Z_{j-1}^{\{k_{d-1},\dots,k_j-1,l,\dots\}}$. Because $v \in V \backslash P_0 \backslash P_1$ we find $v \in Y_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}$ and therefore $v \in Y_j^{\zeta}$.
+			
+			If $v \in Y_j^{\zeta}$ then we apply symmetrical reasoning to find $v \in Z_j^{\zeta}$.
+			\item Case: $j > 0$ being odd. We have 
+			
+			\[ Z_j^{\zeta} = \nu Z_{j-1}\dots = \bigcap_{i\geq 0} Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}\]
+			and 
+			
+			\[ Y_j^{\zeta} = \nu Y_{j-1}\dots = \bigcap_{i\geq 0} Y_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}\]
+			
+			Let $v \in V \backslash P_0 \backslash P_1$.
+			
+			If $v \in Z_j^{\zeta}$ then for all $i \geq 0$ we have $v \in Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}$. Assume $v \notin Y_j^{\zeta}$, there must exist an $l \geq 0$ such that $v \notin Y_j^{\{k_{d-1},\dots,k_j-1,l,\dots\}}$. Since $\{k_{d-1},\dots,k_j-1,l,\dots\} < \zeta$ we apply induction to find $Y_{j-1}^{\{k_{d-1},\dots,k_j-1,l,\dots\}} \simeq Z_{j-1}^{\{k_{d-1},\dots,k_j-1,l,\dots\}}$. Because $v \in V \backslash P_0 \backslash P_1$ we find $v \notin Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}$ which is a contradiction so we have $v \in Y_j^{\zeta}$.
+			
+			If $v \in Y_j^{\zeta}$ then we apply symmetrical reasoning to find $v \in Z_j^{\zeta}$.
+		\end{itemize}
+		
+		This proves that for any $\zeta$ we have $Y_i^{\zeta} \simeq Z_i^{\zeta}$ for every $i \in [0,d-1]$.
+		
+		We have shown that when starting the iteration of $S(G')$ and $S^P(G)$ at specific values then we get a similar results for vertices in $V \backslash P_0 \backslash P_1$. We chose these values such that they solve the formula's correctly, so we conclude that $S(G') \backslash \{s_0,s_1\} = S^P(G) \backslash P_0 \backslash P_1$. Lemma \ref{lem_gamma_same_winner} shows that $S(G')$ correctly solves vertices in $V \backslash P_0 \backslash P_1$ for game $G$. So $S^P(G)$ also correctly solves vertices $V \backslash P_0 \backslash P_1$ for game $G$. 
+		
+		Moreover any vertex in $P_0$ is in $S^P(G)$, which is correct because $P_0$ vertices are winning for player 0. Any vertex in $P_1$ is not in $S^P(G)$, which is correct because $P_1$ vertices are winning for player 1. We conclude that all vertices are correctly solved by $S^P(G)$.
 	\end{proof}
 \end{theorem}
-We take the fixed-point algorithm presented in \cite{FPITE} and modify it by starting at $P_0$ and $V \backslash P_1$. The pseudo code is presented in Algorithm \ref{alg_FPITE}, its correctness follows from \cite{FPITE} and Theorem \ref{the_FPITE_starting}.
+
+\subsubsection{Algorithm}
+We use the original fixed-point algorithm presented in \cite{FPITE} and modify it such that its starts in iteration at $P_0$ and $V\backslash P_1$. Moreover we ignore vertices in $P_0$ or $P_1$ in the diamond and box calculation, finally we always add vertices in $P_0$ to the results of the diamond and box operator. The correctness follow from Theorem \ref{the_formula_cupP0_etc_is_correct} and \cite{FPITE,WALUKIEWICZ2002311}.
+
+Note that in \cite{FPITE} total games are used. However in this paper it is argued that the algorithm correctly solves the formula presented in \cite{WALUKIEWICZ2002311}. The only property of parity games that is used in this argumentation is that parity games have a unique owned and priority. Clearly this is still the case for total parity games so the algorithm correctly solves the formula presented in \cite{WALUKIEWICZ2002311}. In \cite{WALUKIEWICZ2002311} it is shown that the formula also correctly solves non-total parity games.
+
 \begin{algorithm}
 	\caption{Fixed-point iteration with $P_0$ and $P_1$}
 	\label{alg_FPITE}
@@ -294,7 +445,7 @@ We take the fixed-point algorithm presented in \cite{FPITE} and modify it by sta
 				\EndFor
 				\Repeat
 					\State $Z_0'\gets Z_0$
-					\State $Z_0 \gets \textsc{Diamond}() \cup \textsc{Box}()$
+					\State $Z_0 \gets P_0 \cup \textsc{Diamond}() \cup \textsc{Box}()$
 					\State $i \gets 0$
 					\While{$Z_i=Z_i' \wedge i < d-1$}
 						\State $i \gets i+1$
@@ -313,12 +464,12 @@ We take the fixed-point algorithm presented in \cite{FPITE} and modify it by sta
 		\end{algorithmic}\bigskip
 		\begin{algorithmic}[1]
 			\Function{Diamond}{}
-				\State \Return $\{ v \in V_0\ |\ \exists_{w\in V} (v,w) \in E \wedge w \in Z_{\Omega(w)}\}$
+				\State \Return $\{ v \in V_0 \backslash P_0 \backslash P_1 \ |\ \exists_{w\in V}\ (v,w) \in E \wedge w \in Z_{\Omega(w)}\}$
 			\EndFunction
 		\end{algorithmic}\bigskip
 		\begin{algorithmic}[1]
 			\Function{Box}{}
-			\State \Return $\{ v \in V_1\ |\ \forall_{w\in V} (v,w) \in E \implies w \in Z_{\Omega(w)}\}$
+			\State \Return $\{ v \in V_1\backslash P_0 \backslash P_1\ |\ \forall_{w\in V}\ (v,w) \in E \implies w \in Z_{\Omega(w)}\}$
 			\EndFunction
 		\end{algorithmic}
 	\end{multicols}
