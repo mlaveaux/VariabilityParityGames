@@ -2,7 +2,7 @@
 lambda=0.92
 for sub in a b c d
 do
-	for i in `seq 2 12`
+	for i in `seq 13 20`
 	do
 		N=$(((RANDOM%400)+10))
 		P=$(((RANDOM%10)+1))
