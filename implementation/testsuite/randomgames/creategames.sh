@@ -1,12 +1,12 @@
 #!/bin/bash
 lambda=0.5
-for i in `seq 50 100`
+for i in `seq 50 99`
 do
-	N=$(((RANDOM%400)+10))
+	N=$(((RANDOM%500)+100))
 	P=$(((RANDOM%10)+1))
 	l=1
-	h=$(((RANDOM%($N/4))+1))
-	c=$(((RANDOM%8)+4))
+	h=$(((RANDOM%8)+3))
+	c=$(((RANDOM%8)+6))
 
 	for T in FF FC BC
 	do
@@ -19,3 +19,5 @@ do
 	done
 	lambda=`echo "scale=2;$lambda+0.01"|bc`
 done
+for f in game*;do VPGSolver_bdd $f/SVPG Q$f;done
+
