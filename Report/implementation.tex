@@ -23,7 +23,7 @@ A few optimizations are applied to the fixed-point iteration algorithm. The foll
 \end{itemize}
 Finally the vertices in the game are reordered such that they are sorted by parity first and by priority second. Using the above optimizations the algorithm needs to reset variables $Z_{m}, Z_{m-2},\dots$, these variables are stored in a single bit-vector $Z$. By reordering the variables to be sorted by parity and priority these vertices that need to be reset are always consecutively stored in $Z$, so resetting this sequence can be done by a memory copy instead of iterating all the different vertices. Note that when the algorithm is used by the pre-solve algorithm the variables are not reset to simply $\emptyset$ and $V$ but are reset to two specific bit-vectors that are given by the pre-solve algorithm. These bit-vectors have the same order and resetting can be done by copying a part of them into $Z$.
 
-The advantage of using a memory copy as opposed to iteration all the different vertices is due to the fact that a bit vector uses integers to store its boolean values. A 32-bit integer can store 32 boolean values. Iterating and writing every boolean value individually causes the integer to be written 32 times. However with a memory copy we can simply copy the entire integer value and the integer is only written once.
+The advantage of using a memory copy as opposed to iteration all the different vertices is due to the fact that a bit vector uses integers to store its boolean values. A 64-bit integer can store 64 boolean values. Iterating and writing every boolean value individually causes the integer to be written 64 times. However with a memory copy we can simply copy the entire integer value and the integer is only written once.
 \subsection{Family based algorithms}
 Four family based algorithms are implemented:
 \begin{itemize}
@@ -32,6 +32,6 @@ Four family based algorithms are implemented:
 	\item Incremental pre-solve algorithm, global variant.
 	\item Incremental pre-solve algorithm, local variant.
 \end{itemize}
-The incremental pre-solve algorithms use the fixed-point iteration algorithm as described above to solve the (pessimistic) PGs.
+The incremental pre-solve algorithms use the fixed-point iteration algorithm as described above to solve the (pessimistic) parity games.
 \subsection{Random verification}
-In order to prevent implementation mistakes 200 VPGs are created randomly, every VPG is projected to all its configurations to get a set of PGs. These PGs are solved using the PGSolver tool (\cite{Friedmann2010ThePC}). All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
+In order to prevent implementation mistakes 200 VPGs are created randomly, every VPG is projected to all its configurations to get a set of parity games. These parity games are solved using the PGSolver tool \cite{Friedmann2010ThePC}. All algorithms implemented are used to solve the 200 VPGs and the solutions are compared to the solutions created by the PGSolver.
