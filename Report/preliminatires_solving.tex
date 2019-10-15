@@ -249,7 +249,7 @@ Verifying LTSs against a modal $\mu$-calculus formula can be done by solving a p
 		\path (form)edge (PG);
 		\path (PG)  edge (check);
 	\end{tikzpicture}
-	\caption[LTS verification using PG]{LTS verification using PG}
+	\caption[LTS verification using parity games]{LTS verification using parity games}
 	\label{fig:ltsverificationusingpg}
 \end{figure}
 
@@ -397,7 +397,7 @@ Various algorithms for solving parity games are known, we introduce two of them.
 \subsubsection{Zielonka's recursive algorithm}
 First we consider Zielonka's recursive algorithm \cite{ZIELONKA1998135,MCNAUGHTON1993149}, which solves total parity games. Pseudo code is presented in Algorithm \ref{alg_zlnk_org}. Zielonka's recursive algorithm has a worst-case time complexity of $O(e*n^d)$where $e$ is the number of edges, $n$ the number of vertices and $d$ the number of distinct priorities \cite{friedmanPG}.
 \begin{algorithm}
-	\caption{$\textsc{RecursivePG}(\textit{PG } G = (V,V_0,V_1, E, \Omega))$}
+	\caption{$\textsc{RecursivePG}(\textit{parity game } G = (V,V_0,V_1, E, \Omega))$}
 	\label{alg_zlnk_org}
 	\begin{algorithmic}[1]
 		\If{$V = \emptyset$}
@@ -571,7 +571,7 @@ The algorithm also creates subgames, where a set of vertices is removed from a p
 Note that a subgame is not necessarily total, however the recursive algorithm always creates subgames that are total (shown in \cite{ZIELONKA1998135}).
 
 \subsubsection{Fixed-point iteration algorithm}
-Parity games can be solved by solving an alternating fixed-point formula \cite{WALUKIEWICZ2002311}. Consider PG $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
+Parity games can be solved by solving an alternating fixed-point formula \cite{WALUKIEWICZ2002311}. Consider parity game $G = (V,V_0,V_1, E, \Omega)$ with $d$ distinct priorities. We can apply \textit{priority compression} to make sure every priority in $G$ maps to a value in $\{0,\dots,d-1\}$ or $\{1, \dots, d\}$ \cite{SolvingInPractice,FPITE}. We assume without loss of generality that the priorities map to $\{0,\dots,d-1\}$ and that $d-1$ is even. 
 
 Consider the following formula
 \[ S(G) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(G,Z_{d-1},\dots,Z_0) \]
