@@ -1,18 +1,14 @@
+==== Report ====
+ - comma's na koppel woorden
+Algs:
+ - subset definitie voor function wise
+ - Check dat overal total wordt gebruikt bij zlnk
+ - nalopen of ik altijd de term function gebruik bij function-wise
+Implementatie:
  - Priority compression in implementatie sectie
  - Hypotheses in sectie II herhalen in sectie III
  - Hoe splitsen we set C in incpresolve?
- - Complexity class parity games
  - Hoe worden sets van configuraties gecodeerd
- - start bij v_1 en c_1 overal
- - line ref in sectie 6
- - aanpassen ite definitie (en spatie) (en game in F_0)
- - non-total games in FPite
- - subset definitie voor function wise
- - aanpassen strategy definitie (niet totaal)
- - comma's na koppel worden
- - referentie running time FPIte
- - Check dat overal total wordt gebruikt bij zlnk
- - Streepjes voor local
  - bool vector conjunction beschrijven
- - Notatie winning set (W_0,W_1) of W_0 en W_1
- - nalopen of ik altijd de term function gebruik bij function-wise
+Results:
+ - Streepjes voor local
