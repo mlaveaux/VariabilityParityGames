@@ -1,4 +1,10 @@
-for p in minepump elevator randomgames randomscalegames
+if [ "$1"  = "" ]
+then
+	probs="minepump elevator randomgames randomscalegames"
+else
+	probs=$1
+fi
+for p in $probs
 do
 	echo Family zlnk explicit $p
 	./time.sh $p VPGSolver_explicit > `pwd`/data/family/${p}_zlnk_explicit.data
