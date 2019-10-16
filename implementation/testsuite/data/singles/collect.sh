@@ -1,4 +1,10 @@
-for p in minepump elevator randomscalegames randomgames
+if [ "$1"  = "" ]
+then
+        probs="minepump elevator randomgames randomscalegames"
+else
+        probs=$1
+fi
+for p in $probs
 do
         echo Single Zlnk $p
         ./time_single.sh $p VPGSolver_bdd_single > `pwd`/data/singles/${p}_zlnk.data
