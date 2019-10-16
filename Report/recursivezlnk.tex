@@ -115,16 +115,18 @@ Similarly we can use the original partition sets $\hat{V}_0$ and $\hat{V}_1$ ins
 So instead of considering unified parity game $(V,V_0,V_1,E,\Omega)$ we consider $(V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$. 
 
 Next we consider how we represent vertices and edges in a unified parity game. A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a total function $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$. The set $X$ and function $X^\lambda$ are equivalent, denoted by the operator $=_\lambda: 2^{\mathfrak{C} \times \hat{V}} \times (\hat{V} \rightarrow 2^\mathfrak{C}) \rightarrow \mathbb{B}$, such that
-\[ X =_\lambda X^\lambda \text{ if and only if } (c,\hat{v}) \in X \iff c \in X^\lambda(\hat{v}) \]
+\[ X =_\lambda X^\lambda \text{ if and only if } (c,\hat{v}) \in X \iff c \in X^\lambda(\hat{v})\text{ for all }c \in \mathfrak{C}\text{ and }\hat{v} \in \hat{V} \]
 We can also represent edges as a total function $E^\lambda : \hat{E} \rightarrow 2^\mathfrak{C}$. The set $E$ and function $E^\lambda$ are equivalent, denoted by the operator $=_\lambda 2^{(\mathfrak{C} \times \hat{V}) \times(\mathfrak{C} \times \hat{V})} \times (\hat{V} \rightarrow 2^\mathfrak{C}) \rightarrow \mathbb{B}$, such that:
-\[ E =_\lambda E^\lambda \text{ if and only if } ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}') \]
+\[ E =_\lambda E^\lambda \text{ if and only if } ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}')\text{ for all }c \in \mathfrak{C}\text{ and }\hat{v},\hat{v}' \in \hat{V} \]
 We use the $=_\lambda$ operator to indicate that a set and a function represent the same vertices or edges. For convenience of notation we denote equality for edges and vertices both using the $=_\lambda$ operator. We define $\lambda^\emptyset$ to be the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. 
 
 We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
 
-Finally we define the union of two functions $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ and $Y^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ as
+We define the union of two functions $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ and $Y^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ as
 \[ (X^\lambda \cup Y^\lambda)(\hat{v}) = X^\lambda(\hat{v}) \cup Y^\lambda(\hat{v})\]
-Clearly $X^\lambda \cup Y^\lambda =_\lambda V \cup W$ when $X^\lambda =_\lambda V$ and $Y^\lambda =_\lambda W$.
+Given $X^\lambda =_\lambda X$ and $Y^\lambda =_\lambda Y$, then clearly $X^\lambda \cup Y^\lambda =_\lambda X \cup Y$. We also define the subset or equal operator for two function $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ and $Y^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ as
+\[ X^\lambda \subseteq Y^\lambda\text{ if and only if } X^\lambda(\hat{v}) \subseteq Y^\lambda(\hat{v})\text{ for all }\hat{v} \in \hat{V} \]
+Given $X^\lambda =_\lambda X$ and $Y^\lambda =_\lambda Y$, then clearly $X^\lambda \subseteq Y^\lambda$ if and only if $X \subseteq Y$.
 \begin{example}
 	We consider a few examples of (sub)games and show their set-wise and function-wise representation. First reconsider the following unified parity game.
 	\begin{center}
@@ -296,7 +298,7 @@ We also introduce a modified subgame definition to work with the function-wise r
 Note that we can omit the modification to the partition ($V_0$ and $V_1$) because, as we have seen, we can use the partitioning from the VPG in the representation of unified parity games. As we will show later, this definition is equal to the original subgame definition (Definition \ref{def_org_subgame}).
 
 \begin{example}
-	Consider unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ originating from a VPG with configuration $\mathfrak{C} = \{c_0,c_1,c_2\}$ represented function-wise in Figure \ref{fig:upg}. We depict every $(v,w)$ for which $E(v,w) \neq \emptyset$ with an edge annotated by the set $E(v,w)$. All the origin vertices are depicted and for every origin vertex $\hat{v}$ we annotate the square or diamond with a label $\hat{v}\ |\ C$ where $C = V(\hat{v})$.
+	Consider unified parity game $G = (V,\hat{V}_0,\hat{V}_1,E,\hat{\Omega})$ originating from a VPG with configuration $\mathfrak{C} = \{c_1,c_2,c_3\}$ represented function-wise in Figure \ref{fig:upg}. We depict every $(v,w)$ for which $E(v,w) \neq \emptyset$ with an edge annotated by the set $E(v,w)$. All the origin vertices are depicted and for every origin vertex $\hat{v}$ we annotate the square or diamond with a label $\hat{v}\ |\ C$ where $C = V(\hat{v})$.
 	\begin{figure}[h]
 		\centering
 		\begin{tikzpicture}[->]
@@ -317,33 +319,33 @@ Note that we can omit the modification to the partition ($V_0$ and $V_1$) becaus
 			\path (v1) edge node[above]{$\mathfrak{C}$} (v2);
 			\path (v3) edge node[above]{$\mathfrak{C}$} (v2);
 			
-			\path (v4) edge node[left]{$\{c_0,c_1\}$} (v1);
-			\path (v2) edge node[fill=white]{$\{c_0,c_1\}$} (v4);
-			\path (v4) edge node[above]{$\{c_0,c_2\}$} (v5);
+			\path (v4) edge node[left]{$\{c_1,c_2\}$} (v1);
+			\path (v2) edge node[fill=white]{$\{c_1,c_2\}$} (v4);
+			\path (v4) edge node[above]{$\{c_1,c_3\}$} (v5);
 			\path (v5) edge node[left]{$\mathfrak{C}$} (v2);
-			\path (v6) edge node[fill=white]{$\{c_0,c_1\}$} (v5);
-			\path (v2) edge node[fill=white]{$\{c_0,c_2\}$} (v6);
-			\path (v6) edge node[right]{$\{c_0,c_2\}$} (v3);
+			\path (v6) edge node[fill=white]{$\{c_1,c_2\}$} (v5);
+			\path (v2) edge node[fill=white]{$\{c_1,c_3\}$} (v6);
+			\path (v6) edge node[right]{$\{c_1,c_3\}$} (v3);
 			
 			
 			\path (v7) edge node[fill=white]{$\mathfrak{C}$} (v4);
-			\path (v5) edge node[left,near start]{$\{c_0,c_2\}$} (v7);
-			\path (v7) edge[bend left] node[fill=white]{$\{c_0,c_1\}$} (v6);
-			\path (v6) edge[bend left] node[fill=white]{$\{c_0,c_1\}$} (v7);
+			\path (v5) edge node[left,near start]{$\{c_1,c_3\}$} (v7);
+			\path (v7) edge[bend left] node[fill=white]{$\{c_1,c_2\}$} (v6);
+			\path (v6) edge[bend left] node[fill=white]{$\{c_1,c_2\}$} (v7);
 		\end{tikzpicture}
-		\caption{Unified parity game originating from a VPG with configuration $\mathfrak{C} = \{c_0,c_1,c_2\}$}
+		\caption{Unified parity game originating from a VPG with configuration $\mathfrak{C} = \{c_1,c_2,c_3\}$}
 		\label{fig:upg}
 	\end{figure}
 We calculate the function-wise attractor set for player 0 from origin vertex $\hat{v}_2$ with all configuration, we have
 \[ U_0 = U = \{\hat{v}_1 \mapsto \emptyset, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \emptyset, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \emptyset, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
 After the first iteration we find
-\[U_1 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
-Note that $\hat{v}_5$ can be attracted for configuration $\{c_1\}$ because $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}_7) = \{c_1\}$, $U_0(\hat{v}_3) = \mathfrak{C}$ and for any other origin vertex $\hat{v}$ we have $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}) = \mathfrak{C}$.
+\[U_1 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \emptyset, \hat{v}_5 \mapsto \{c_2\}, \hat{v}_6 \mapsto \emptyset, \hat{v}_7 \mapsto \emptyset\}\]
+Note that $\hat{v}_5$ can be attracted for configuration $\{c_2\}$ because $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}_7) = \{c_2\}$, $U_0(\hat{v}_3) = \mathfrak{C}$ and for any other origin vertex $\hat{v}$ we have $\mathfrak{C} \backslash E(\hat{v}_5,\hat{v}) = \mathfrak{C}$.
 
 In the next iterations we find
-\[U_1 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \emptyset\}\]
-\[U_2 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \{c_0\}\}\]
-\[U_3 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_0,c_1\}, \hat{v}_5 \mapsto \{c_0,c_1\}, \hat{v}_6 \mapsto \{c_0,c_2\}, \hat{v}_7 \mapsto \{c_0\}\}\]
+\[U_1 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_1,c_2\}, \hat{v}_5 \mapsto \{c_2\}, \hat{v}_6 \mapsto \{c_1,c_3\}, \hat{v}_7 \mapsto \emptyset\}\]
+\[U_2 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_1,c_2\}, \hat{v}_5 \mapsto \{c_2\}, \hat{v}_6 \mapsto \{c_1,c_3\}, \hat{v}_7 \mapsto \{c_1\}\}\]
+\[U_3 = \{\hat{v}_1 \mapsto \mathfrak{C}, \hat{v}_2 \mapsto \mathfrak{C}, \hat{v}_3 \mapsto \mathfrak{C}, \hat{v}_4 \mapsto \{c_1,c_2\}, \hat{v}_5 \mapsto \{c_1,c_2\}, \hat{v}_6 \mapsto \{c_1,c_3\}, \hat{v}_7 \mapsto \{c_1\}\}\]
 
 Next iterations result in the same function, so $0\textit{-FAttr}(G,U) = U_3$. We create subgame $G\backslash U_3$ depicted in Figure \ref{fig:upg_subattr}.
 \begin{figure}[h]
@@ -355,19 +357,19 @@ Next iterations result in the same function, so $0\textit{-FAttr}(G,U) = U_3$. W
 		\node[even,label={north:$\hat{v}_2\ |\ \emptyset$}] (v2) at (23,20) {6};
 		\node[even,label={north:$\hat{v}_3\ |\ \emptyset$}] (v3) at (26,20) {4};
 		
-		\node[even,label={north:$\hat{v}_4\ |\ \{c_2\}$}]  (v4) at (20,17) {1};
-		\node[odd, label={north:$\hat{v}_5\ |\ \{c_2\}$}] (v5) at (23,17) {2};
-		\node[odd, label={north:$\hat{v}_6\ |\ \{c_1\}$}] (v6) at (26,17) {3};
+		\node[even,label={north:$\hat{v}_4\ |\ \{c_3\}$}]  (v4) at (20,17) {1};
+		\node[odd, label={north:$\hat{v}_5\ |\ \{c_3\}$}] (v5) at (23,17) {2};
+		\node[odd, label={north:$\hat{v}_6\ |\ \{c_2\}$}] (v6) at (26,17) {3};
 		
-		\node[odd, label={south:$\hat{v} _7\ |\ \{c_1,c_2\}$}] (v7) at (23,14) {2};
+		\node[odd, label={south:$\hat{v} _7\ |\ \{c_2,c_3\}$}] (v7) at (23,14) {2};
 		
-		\path (v4) edge node[fill=white]{$\{c_2\}$} (v5);
+		\path (v4) edge node[fill=white]{$\{c_3\}$} (v5);
 		
 		
-		\path (v7) edge node[fill=white]{$\{c_2\}$} (v4);
-		\path (v5) edge node[left,near start]{$\{c_2\}$} (v7);
-		\path (v7) edge[bend left] node[fill=white]{$\{c_1\}$} (v6);
-		\path (v6) edge[bend left] node[fill=white]{$\{c_1\}$} (v7);
+		\path (v7) edge node[fill=white]{$\{c_3\}$} (v4);
+		\path (v5) edge node[left,near start]{$\{c_3\}$} (v7);
+		\path (v7) edge[bend left] node[fill=white]{$\{c_2\}$} (v6);
+		\path (v6) edge[bend left] node[fill=white]{$\{c_2\}$} (v7);
 	\end{tikzpicture}
 	\caption{Unified parity game $G \backslash U_3$}
 	\label{fig:upg_subattr}
@@ -493,10 +495,9 @@ Next we prove the correctness of the algorithm by showing that the winning sets 
 	\begin{proof}
 		Proof by induction on $\mathcal{G}$.
 		
-		\textbf{Base} When there are no vertices then \textsc{RecursiveUPG($G^\lambda$)} returns $(\lambda^\emptyset,\lambda^\emptyset)$ and \textsc{RecursivePG($G$)} returns $(\emptyset,\emptyset)$, these two results are equal therefore the theorem holds in this case.
+		\textbf{Base}: When there are no vertices then \textsc{RecursiveUPG($G^\lambda$)} returns $(\lambda^\emptyset,\lambda^\emptyset)$ and \textsc{RecursivePG($G$)} returns $(\emptyset,\emptyset)$, these two results are equal therefore the theorem holds in this case.
 		
-		\textbf{Step}
-		Player $\alpha$ gets the same value in both algorithms since the highest priority is equal for both algorithms.
+		\textbf{Step}: Player $\alpha$ gets the same value in both algorithms since the highest priority is equal for both algorithms.
 		
 		Let $U = \{(c,\hat{v}) \in V\ |\ \hat{\Omega}(\hat{v}) = h \}$ (as calculated by \textsc{RecursivePG}) and $U^\lambda(\hat{v}) = V^\lambda(\hat{v})$ for all $\hat{v}$ with $\hat{\Omega}(\hat{v}) = h$ (as calculated by \textsc{RecursiveUPG}). We will show that $U =_\lambda U^\lambda$.
 		
@@ -595,7 +596,7 @@ Function $A^\lambda = \textsc{$\alpha$-FAttractor}(G^\lambda,U^\lambda)$ satisfi
 
 
 \subsection{Running time}
-We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations. We use $n$ to denote the number of vertices, $e$ the number of edges, and $d$ the number of distinct priorities. When analysing a VPG then we also use $c$ to indicate the number of configurations.
+We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively using the different types of representations. We use $n$ to denote the number of vertices, $e$ the number of edges, $d$ the number of distinct priorities and $c$ to indicate the number of configurations.
 
 The original algorithm runs in $O(e * n^d)$ \cite{friedmanPG}, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified parity game (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a time complexity of $O(c*e*(c*n)^d)$. However, as we show next, this upper bound can be improved by using the property that a unified parity game consists of $c$ disconnected graphs.
 
