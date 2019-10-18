@@ -9,7 +9,7 @@ The graph is represented by using adjacency lists for incoming and outgoing edge
 
 Note that only the representation of the games used during the algorithm is relevant, since we do not evaluate the parsing phase it is not relevant how the games are stored in a file.
 \subsection{Product based algorithms}
-Three product based algorithms are implemented, ie. algorithms that solve parity games:
+Three product based algorithms are implemented, i.e. algorithms that solve parity games:
 \begin{itemize}
 	\item Zielonka's recursive algorithm.
 	\item Fixed-point iteration algorithm, global variant.
@@ -19,7 +19,7 @@ A few optimizations are applied to the fixed-point iteration algorithm. The foll
 \begin{itemize}
 	\item For fixed-point variable $Z_i$ its value is only ever used to check if a vertex with priority $i$ is in $Z_i$. So instead of storing all vertices in $Z_i$ we only have to store the vertices that have priority $i$. We can store all fixed-point variables in a single bit-vector, named $Z$, of size $n$.
 	\item The algorithm only reinitializes a certain range of fixed-point variables. So the diamond and box operations can use the previous result and only reconsider vertices that have an edge to a vertex that has a priority for which its fixed-point variable is reset.
-	\item The algorithm updates variables $Z_0$ to $Z_m$ and reinitializes $Z_0$ to $Z_{m-1}$, however if $Z_m$ is a least fixed-point variable then $Z_m$ has just increased and due to monotonicity the other least fixed-point formula's, ie. $Z_{m-2},Z_{m-4},\dots$, will also increase so there is no need to reset them. Similarly for greatest fixed-point variables. So we only to reset half of the variables instead of all of them.
+	\item The algorithm updates variables $Z_0$ to $Z_m$ and reinitializes $Z_0$ to $Z_{m-1}$, however if $Z_m$ is a least fixed-point variable then $Z_m$ has just increased and due to monotonicity the other least fixed-point formula's, i.e. $Z_{m-2},Z_{m-4},\dots$, will also increase so there is no need to reset them. Similarly for greatest fixed-point variables. So we only to reset half of the variables instead of all of them.
 \end{itemize}
 Finally the vertices in the game are reordered such that they are sorted by parity first and by priority second. Using the above optimizations the algorithm needs to reset variables $Z_{m}, Z_{m-2},\dots$, these variables are stored in a single bit-vector $Z$. By reordering the variables to be sorted by parity and priority these vertices that need to be reset are always consecutively stored in $Z$, so resetting this sequence can be done by a memory copy instead of iterating all the different vertices. Note that when the algorithm is used by the pre-solve algorithm the variables are not reset to simply $\emptyset$ and $V$ but are reset to two specific bit-vectors that are given by the pre-solve algorithm. These bit-vectors have the same order and resetting can be done by copying a part of them into $Z$.
 

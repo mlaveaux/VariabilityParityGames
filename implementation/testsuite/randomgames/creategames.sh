@@ -19,5 +19,3 @@ do
 	done
 	lambda=`echo "scale=2;$lambda+0.01"|bc`
 done
-for f in game*;do VPGSolver_bdd $f/SVPG Q$f;done
-
