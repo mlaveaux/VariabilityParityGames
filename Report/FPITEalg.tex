@@ -1,10 +1,10 @@
-Next we explore a collective algorithm that tries to solve the game for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically, we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$. If we find a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or only a single configuration remains. Pseudo code is presented in Algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$. We want to find these sets in an efficient manner such that the algorithm does not spend time finding vertices that are already pre-solved. Finally, when there is only a single configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
+Next we explore a collective algorithm that tries to solve the VPG for all configurations as much as possible, then split the configurations in two sets, create subgames using those two configuration sets and recursively repeat the process. Specifically, we try to find vertices that are won by the same player for all configurations in $\mathfrak{C}$. If we find a vertex that is won by the same player for all configurations we call such a vertex \textit{pre-solved}. The algorithm tries to recursively increase the set of pre-solved vertices until all vertices are either pre-solved or a single configuration remains. Pseudo code is presented in Algorithm \ref{alg_IncPreSolveBasic}. The algorithm is based around finding sets $P_0$ and $P_1$. We want to find these sets in an efficient manner such that the algorithm does not spend time finding vertices that are already pre-solved. Finally, when there is only a single configuration left we want an algorithm that solves the parity game $G_{|c}$ in an efficient manner by using the vertices that are pre-solved.
 
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(\textit{VPG } G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolveBasic}
 	\begin{algorithmic}[1]
 		\If{$|\mathfrak{C}| = 1$}
-		\State Let $\mathfrak{C} = \{c\}$
+		\State Let $\{c\} = \mathfrak{C}$
 		\State $(W'_0,W'_1) \gets $ solve $G_{|c}$ using $P_0$ and $P_1$
 		\State \Return $(\mathfrak{C} \times W'_0, \mathfrak{C} \times W'_1)$
 		\EndIf
@@ -32,7 +32,7 @@ The subgames created are based on a set of configurations. We define the subgame
 \end{definition}
 VPGs we consider are total, meaning that for every configuration and every vertex there is an outgoing edge from that vertex admitting that configuration. In subgames the set of configurations is restricted and only edge guards and edges are removed for configurations that fall outside the restricted set, therefore we still have totality. Furthermore it is trivial to see that every projection $G_{|c}$ is equal to $(G \cap \mathfrak{X})_{|c}$ for any $c \in \mathfrak{C} \cap \mathfrak{X}$.
 
-Finally a subsubgame of two configuration sets is the same as the subgame of the intersection of these configuration sets, ie. $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
+Finally a subsubgame of two configuration sets is the same as the subgame of the intersection of these configuration sets, i.e. $(G \cap \mathfrak{X}) \cap \mathfrak{X}' = G \cap (\mathfrak{X} \cap \mathfrak{X}') = G \cap \mathfrak{X} \cap \mathfrak{X}'$.
 
 \subsection{Finding $P_0$ and $P_1$}
 We can find $P_0$ and $P_1$ using \textit{pessimistic} parity games; a pessimistic parity game is a parity game created from a VPG for a player $\alpha \in \{0,1\}$ such that the parity game allows all edges that player $\overline{\alpha}$ might take but only allows edges for $\alpha$ when that edge admits all the configurations in $\mathfrak{C}$.
@@ -62,11 +62,11 @@ When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning
 	\begin{proof}
 		Player $\alpha$ has a strategy in game $G_{\triangleright\alpha}$ such that vertices in $P_\alpha$ are won. We show that this strategy can also be applied to game $G_{|c}$ to win the same or more vertices.
 		
-		First we observe that any edge that is taken by player $\alpha$ in game $G_{\triangleright\alpha}$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$.
+		First we observe that any edge that is taken by player $\alpha$ in game $G_{\triangleright\alpha}$ can also be taken in game $G_{|c}$ so player $\alpha$ can play the same strategy in game $G_{|c}$. 
 		
 		For player $\overline{\alpha}$ there are possibly edges that can be taken in $G_{\triangleright\alpha}$ but cannot be taken in $G_{|c}$. In such a case player $\overline{\alpha}$'s choices are limited in game $G_{|c}$ compared to $G_{\triangleright\alpha}$ so if player $\overline{\alpha}$ cannot win a vertex in $G_{\triangleright\alpha}$ then he/she cannot win that vertex in $G_{|c}$.
 		
-		We can conclude that applying the strategy from game $G_{\triangleright\alpha}$ in game $G_{|c}$ for player $\alpha$ wins the same or more vertices.
+		We can conclude that applying the strategy from game $G_{\triangleright\alpha}$ in game $G_{|c}$ for player $\alpha$ wins the same or more vertices. Note that this strategy might be incomplete for game $G_{|c}$, it could be the case that a vertex owned by player $\alpha$ in game $G_{\triangleright\alpha}$ has no successor while the same vertex has successors in $G_{|c}$. In such a case the vertex is never in $P_\alpha$ so it is not relevant to the theorem who would win this vertex in $G_{|c}$.
 	\end{proof}
 \end{theorem}
 
@@ -106,7 +106,7 @@ When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning
 				\path (v0) edge[bend left] (v1);	
 				\path (v2) edge[loop right] (v2);
 			\end{tikzpicture}
-			\caption{Pessimistic parity game $G_{\triangleright0}$}
+			\caption{Pessimistic parity game $G_{\triangleright0}$ with winning sets $(P_0,-)$}
 		\end{subfigure}\\
 		\begin{subfigure}{1\textwidth}
 			\centering
@@ -123,7 +123,7 @@ When solving a pessimistic parity game $G_{\triangleright\alpha}$ we get winning
 				\path (v1) edge (v2);
 				\path (v2) edge[loop right] (v2);
 			\end{tikzpicture}
-			\caption{Pessimistic parity game $G_{\triangleright1}$}
+			\caption{Pessimistic parity game $G_{\triangleright1}$ with winning sets $(-,P_1)$}
 		\end{subfigure}
 		\caption{A VPG with its corresponding pessimistic parity games}
 		\label{fig:VPG2PPGs}
@@ -159,12 +159,12 @@ Vertices in winning set $P_\alpha$ for $G_{\triangleright\alpha}$ are also winni
 	\end{proof}
 \end{lemma}
 \subsection{Algorithm}
-In order to find $P_0$ and $P_1$ we need to solve a pessimistic parity game. Specifically we want a parity game algorithm that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is a single configuration left we also need a parity game algorithm that uses the vertices that are already pre-solved. In Algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we show the correctness of the \textsc{IncPreSolve} algorithm while assuming the correctness of the \textsc{Solve} algorithm. Later we explore an appropriate \textsc{Solve} algorithm.
+In order to find $P_0$ and $P_1$ we need to solve pessimistic parity games. Specifically we want a parity game algorithm that uses the vertices that are already pre-solved to efficiently solve the parity game. Note that when there is a single configuration left we also need a parity game algorithm that uses the vertices that are already pre-solved. In Algorithm \ref{alg_IncPreSolve} we present the \textsc{IncPreSolve} algorithm using pessimistic parity games. The algorithm uses a \textsc{Solve} algorithm for solving parity games using the pre-solved vertices. First we show the correctness of the \textsc{IncPreSolve} algorithm while assuming the correctness of the \textsc{Solve} algorithm. Later we explore an appropriate \textsc{Solve} algorithm.
 \begin{algorithm}
 	\caption{$\textsc{IncPreSolve}(G = (V,V_0,V_1, E, \Omega, \mathfrak{C}, \theta), P_0,P_1)$}\label{alg_IncPreSolve}
 	\begin{algorithmic}[1]
 		\If{$|\mathfrak{C}| = 1$}
-		\State Let $\mathfrak{C} = \{c\}$
+		\State Let $\{c\} = \mathfrak{C}$
 		\State $(W'_0,W'_1) \gets \textsc{Solve}(G_{|c}, P_0,P_1)$
 		\State \Return $(\mathfrak{C} \times W'_0, \mathfrak{C} \times W'_1)$
 		\EndIf
@@ -191,14 +191,14 @@ A \textsc{Solve} algorithm is correct when it correctly solves a parity game usi
 		\label{lem_P0_and_P1_are_always_correct}
 		When $P_0 = \emptyset$ and $P_1 = \emptyset$ the theorem holds trivially. So we will start the analyses after the first recursion. 
 		
-		After the first recursion the game is $\hat{G} \cap \mathfrak{X}$ with $\mathfrak{X}$ being either $\mathfrak{C}^a$ or $\mathfrak{C}^b$. The set $P_0$ is the winning set for player $0$ for game $\hat{G}_{\triangleright0}$ and the set $P_1$ is the winning set for player $1$ for game $\hat{G}_{\triangleright1}$. In the next recursion the game is $\hat{G} \cap \mathfrak{X} \cap \mathfrak{X}'$ with $P_0$ being the winning set for player $0$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright0}$ and $P_1$ being the winning set for player $1$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright1}$. In general, after the $k$th recursion, with $k > 0$, the game is of the form  $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1}) \cap \mathfrak{X}^k$. Furthermore $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$.
+		After the first recursion the game is $\hat{G} \cap \mathfrak{X}$ with $\mathfrak{X}$ being either $\mathfrak{C}^a$ or $\mathfrak{C}^b$. The set $P_0$ is the winning set for player $0$ for game $\hat{G}_{\triangleright0}$ and the set $P_1$ is the winning set for player $1$ for game $\hat{G}_{\triangleright1}$. In the next recursion the game is $\hat{G} \cap \mathfrak{X} \cap \mathfrak{X}'$ with $P_0$ being the winning set for player $0$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright0}$ and $P_1$ being the winning set for player $1$ in game $(\hat{G} \cap \mathfrak{X})_{\triangleright1}$. In general, after the $k$th recursion, with $k > 0$, the game is of the form  $(\hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1}) \cap \mathfrak{X}^k$. Furthermore $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$.
 		
 		Next we inspect the three places where \textsc{Solve} is invoked:
 		\begin{enumerate}
-			\item Consider the case where there is only one configuration in $\mathfrak{C}$ (line 1-5). Because $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ the vertices in $P_0$ are won by player $0$ in game $G_{|c}$ for all $c \in \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1}$ (using Theorem \ref{the_pess_is_winning_for_all_conf}). This includes the one element in $\mathfrak{C}$. So we can conclude $P_0 \subseteq W_0$ where $W_0$ is the winning set for player $0$ in game $G_{|c}$ where $\{c\} = \mathfrak{C}$.
+			\item Consider the case where there is only one configuration in $\mathfrak{C}$ (line 1-5). Because $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ the vertices in $P_0$ are won by player $0$ in game $G_{|c}$ for all $c \in \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1}$ (using Theorem \ref{the_pess_is_winning_for_all_conf}). This includes the one element in $\mathfrak{C}$. So we can conclude $P_0 \subseteq W_0$ where $W_0$ is the winning set for player $0$ in game $G_{|c}$ where $\{c\} = \mathfrak{C}$.
 			
 			Similarly for player $1$ we can conclude $P_1 \subseteq W_1$ and the lemma holds in this case.
-			\item On line $6$ the game $G_{\triangleright0}$ is solved with $P_0$ and $P_1$. Because $G = \hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1} \cap \mathfrak{X}^k$ and $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^0 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$ we can apply Lemma \ref{lem_pessimistic_subgames} to conclude that the lemma holds in this case.
+			\item On line $6$ the game $G_{\triangleright0}$ is solved with $P_0$ and $P_1$. Because $G = \hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1} \cap \mathfrak{X}^k$ and $P_0$ is the winning set for player $0$ for game $(\hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright0}$ and $P_1$ is the winning set for player $1$ for game $(\hat{G} \cap \mathfrak{X}^1 \cap \dots \cap \mathfrak{X}^{k-1})_{\triangleright1}$ we can apply Lemma \ref{lem_pessimistic_subgames} to conclude that the lemma holds in this case.
 			\item On line $7$ we apply the same reasoning and lemma to conclude that the lemma holds in this case.
 		\end{enumerate}
 	\end{proof}
@@ -206,11 +206,11 @@ A \textsc{Solve} algorithm is correct when it correctly solves a parity game usi
 
 Next we prove the correctness of the algorithm, assuming the correctness of the \textsc{Solve} algorithm.
 \begin{theorem}
-	Given VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ with winning sets $(\hat{W}_0^c, \hat{W}_1^c)$ and $(W_0,W_1) = \textsc{IncPreSolve}(\hat{G},\emptyset,\emptyset)$. For every configuration $c \in \mathfrak{C}$ it holds that:
-	\[ (c,v) \in W_0 \iff v \in \hat{W}_0^c \]
-	\[ (c,v) \in W_1 \iff v \in \hat{W}_1^c \]
+	Given VPG ${G} = ({V},{V}_0,{V}_1,{E},{\Omega},\mathfrak{C},\theta)$ with winning sets $({W}_0^c, {W}_1^c)$ and $(W_0,W_1) = \textsc{IncPreSolve}({G},\emptyset,\emptyset)$. For every configuration $c \in \mathfrak{C}$ it holds that:
+	\[ (c,v) \in W_0 \iff v \in {W}_0^c \]
+	\[ (c,v) \in W_1 \iff v \in {W}_1^c \]
 	\begin{proof}
-		We assumed that \textsc{Solve}$(G',P_0,P_1)$ correctly solves $G'$ as long as vertices in $P_0$ and $P_1$ are won by player 0 and 1 respectively. Lemma \ref{lem_P0_and_P1_are_always_correct} shows that this is always the case when invoking \textsc{IncPreSolve}$(\hat{G},\emptyset,\emptyset)$. We therefore find that \textsc{Solve}$(G',P_0,P_1)$ always correctly solves $G'$ during the algorithm.
+		We assumed that \textsc{Solve}$(G',P_0,P_1)$ correctly solves $G'$ as long as vertices in $P_0$ and $P_1$ are won by player 0 and 1 respectively. Lemma \ref{lem_P0_and_P1_are_always_correct} shows that this is always the case when invoking \textsc{IncPreSolve}$({G},\emptyset,\emptyset)$. We therefore find that \textsc{Solve}$(G',P_0,P_1)$ always correctly solves $G'$ during the algorithm.
 		
 		We prove the theorem by applying induction on $\mathfrak{C}$.
 		
@@ -224,10 +224,10 @@ Next we prove the correctness of the algorithm, assuming the correctness of the 
 	\end{proof}
 \end{theorem}
 
-\subsection{A parity game algorithm using pre-solved vertices}
-The fixed-point iteration algorithm can be used to solve parity games using pre-solved vertices. Recall that the fixed-point iteration algorithm calculates an alternating fixed-point formula to find the winning set for player 0. When iterating fixed-point formula $\nu X.f(X)$ we choose some initial value for $X$ and keep iterating $f(X)$ until we find $X = f(X)$. The original fixed-point iteration algorithm chooses $\emptyset$ as the initial value. In this section we show that given $P_0$ and $P_1$ we use the fixed-point iteration algorithm but instead of choosing initial value $\emptyset$ we choose initial value $P_0$. This will most likely decrease the number of iterations needed before we find $X = f(X)$. Moreover we show that we can ignore vertices in $P_0$ in parts of the calculation because we already know these vertices are winning. Similarly, we find that we can choose initial value $V\backslash P_1$ instead of $V$ (where $V$ is the set of vertices) when iterating a greatest fixed-point formula. 
+\subsection{A parity game algorithm using $P_0$ and $P_1$}
+We can modify the fixed-point iteration algorithm to solve parity games using pre-solved vertices. Recall that the fixed-point iteration algorithm calculates an alternating fixed-point formula to find the winning set for player 0. When iterating fixed-point formula $\mu X.f(X)$ we choose some initial value for $X$ and keep iterating $f(X)$ until we find $X = f(X)$. The original fixed-point iteration algorithm chooses $\emptyset$ as the initial value. In this section we show that given $P_0$ and $P_1$ we can use the fixed-point iteration algorithm, but instead of choosing initial value $\emptyset$ we choose initial value $P_0$. This will most likely decrease the number of iterations needed before we find $X = f(X)$. Moreover we show that we can ignore vertices in $P_0$ in parts of the calculation because we already know these vertices are winning. Similarly, we find that we can choose initial value $V\backslash P_1$ instead of $V$ (where $V$ is the set of vertices) when iterating a greatest fixed-point formula and ignore vertices in $P_1$.
 
-We choose to modify the fixed-point parity game algorithm because the algorithm using pre-solved vertices is very similar to the original algorithm. When experimenting with the incremental pre-solve algorithm we can compare its performance with the performance of independently solving the projections using the fixed-point iteration algorithm to get a good idea of how well the incremental pre-solve idea performs.
+We choose to use the fixed-point parity game algorithm because the modified version using pre-solved vertices is very similar to the original version. When experimenting with the incremental pre-solve algorithm we can compare its performance with the performance of independently solving the projections using the fixed-point iteration algorithm to get a good idea of how well the incremental pre-solve idea performs.
 
 First recall the fixed-point formula to calculate $W_0$:
 \[ S(G) = \nu Z_{d-1}. \mu Z_{d-2}. \dots . \nu Z_0. F_0(G,Z_{d-1},\dots,Z_0) \]
@@ -248,7 +248,7 @@ Let $G$ be a parity game and let sets $P_0$ and $P_1$ be such that vertices in $
 
 We will prove that formula 
 \[ S^P(G) = \nu Z_{d-1}.\mu Z_{d-2}\dots \nu Z_0.(F_0(G,Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0) \]
-also solves $W_0$ for $G$. Note that the formula $F_0(G,Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0$ is still monotonic as shown in Lemma \ref{lem_monotonic_union}.
+also solves $W_0$ for $G$. Note that the formula $F_0(G,Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0$ is still monotonic, as shown in Lemma \ref{lem_monotonic_union}.
 \begin{lemma}
 	\label{lem_monotonic_union}
 	Given lattice $\langle 2^D, \subseteq \rangle $, monotonic function $f :  2^D \rightarrow 2^D$ and $A \subseteq D$. The functions $f^\cup(x) = f(x) \cup A$ and $f^\cap(x) = f(x) \cap A$ are also monotonic.
@@ -261,16 +261,16 @@ also solves $W_0$ for $G$. Note that the formula $F_0(G,Z_{d-1},\dots,Z_0) \cap 
 	\end{proof}
 \end{lemma}
 
-\subsubsection{Fixed-point iteration index} We introduce the notion of fixed-point \textit{iteration indices} to help with the proof.
+\subsubsection{Fixed-point iteration index} We introduce the notion of fixed-point \textit{iteration indices} to help with the proof of $S^P$.
 
 Consider the following alternating fixed-point formula:
-\[ \nu X_m.\mu X_{m-1}\dots.\nu X_0.f(X_m,X_{m-1},\dots,X_0) \]
+\[ \nu X_{m-1}\dots.\nu X_0.f(X_{m-1},\dots,X_0) \]
 
-Using fixed-point iteration to solve this formula results in a number of intermediate values for the iteration variables $X_m,\dots X_0$. We define an iteration index that, intuitively, indicates where in the iteration process we are. For an alternating fixed-point formula with $m$ fixed-point variables we define an iteration index $\zeta \subseteq \mathbb{N}^m$.
+Using fixed-point iteration to solve this formula results in a number of intermediate values for the iteration variables $X_{m-1},\dots X_0$. We define an iteration index that, intuitively, indicates where in the iteration process we are. For an alternating fixed-point formula with $m$ fixed-point variables we define an iteration index $\zeta \subseteq \mathbb{N}^m$.
 
-When applying iteration to formula $\nu X_j.f(X)$ we start with some value for $X_j^0$ and calculate $X_j^{i+1} = f(X_j^{i})$. So we get a list of values for $X_j$, however when we have alternating fixed-point formula's we might iterate $X_j$ multiple times but get different lists of values because the values for $X_m,\dots,X_{j-1}$ are different. We use the iteration index to distinguish between these different lists. 
+When applying iteration to formula $\nu X_j.f(X)$ we start with some value for $X_j^0$ and calculate $X_j^{i+1} = f(X_j^{i})$. So we get a list of values for $X_j$, however when we have alternating fixed-point formulas we might iterate $X_j$ multiple times but get different lists of values because the values for $X_{m-1},\dots,X_{j-1}$ are different. We use the iteration index to distinguish between these different lists. 
 
-Iteration index $\zeta = (k_m,\dots,k_0)$ indicates where in the iteration process we are. We start at $\zeta = (0,0,\dots,0)$ and first iterate $X_0$. When we calculate $X_0^1$ we are at iteration index $\zeta=(0,0,\dots,1)$, when we calculate $X_0^2$ we are at iteration index $\zeta=(0,0,\dots,2)$ and so on. In general when we calculate a value for $X_j^i$ then $k_j = i$ in $\zeta$. This induces the lexicographical order 
+Iteration index $\zeta = (k_{m-1},\dots,k_0)$ indicates where in the iteration process we are. We start at $\zeta = (0,0,\dots,0)$ and first iterate $X_0$. When we calculate $X_0^1$ we are at iteration index $\zeta=(0,0,\dots,1)$, when we calculate $X_0^2$ we are at iteration index $\zeta=(0,0,\dots,2)$ and so on. In general when we calculate a value for $X_j^i$ then $k_j = i$ in $\zeta$. This induces the lexicographical order 
 \begin{center}
 	$(0,\dots,0,0,0)$\\
 	$(0,\dots,0,0,1)$\\
@@ -281,15 +281,15 @@ Iteration index $\zeta = (k_m,\dots,k_0)$ indicates where in the iteration proce
 	$(0,\dots,0,1,2)$\\
 	$\vdots$
 \end{center}
-We define $\{a_1,\dots,a_m\} -1 = \{a_1,\dots,a_m-1\}$ and $\{a_1,\dots,a_m\} + 1 = \{a_1,\dots,a_m+1\}$ for convenience of notation.
+We define $\{k_{m-1},\dots,k_0\} -1 = \{k_{m-1},\dots,k_0-1\}$ and $\{k_{m-1},\dots,k_0\} + 1 = \{k_{m-1},\dots,k_0+1\}$ for convenience of notation.
 
-We write $X_j^\zeta$ to indicate the value of variable $X_j$ at moment $\zeta$ of the iteration process. Variable $X_j$ doesn't change values when a variable $X_l$ with $j>l$ changes values, there we have for indexes $\zeta = (k_m,\dots,k_j,k_{j-1},\dots,k_0)$ and $\zeta' = (k_m,\dots,k_j,k'_{j-1},\dots,k'_0)$ that $X_j^\zeta = X_j^{\zeta'}$.
+We write $X_j^\zeta$ to indicate the value of variable $X_j$ at moment $\zeta$ of the iteration process. Variable $X_j$ does not change values when a variable $X_l$ with $j>l$ changes values, there we have for indexes $\zeta = (k_{m-1},\dots,k_j,k_{j-1},\dots,k_0)$ and $\zeta' = (k_{m-1},\dots,k_j,k'_{j-1},\dots,k'_0)$ that $X_j^\zeta = X_j^{\zeta'}$.
 
-We use the fixed-point iteration definition to define the values for $X_j^\zeta$. Let  $\zeta= (k_m,\dots,k_0)$, we have:
-\[ X_0^{\zeta+1} = f(X_m^\zeta, X_{m-1}^\zeta,\dots,X_0^\zeta) \]
-and for any even $0 < j \leq m$
+We use the fixed-point iteration definition to define the values for $X_j^\zeta$. Let  $\zeta= (k_{m-1},\dots,k_0)$, we have:
+\[ X_0^{\zeta+1} = f(X_{m-1}^\zeta,\dots,X_0^\zeta) \]
+and for any even $0 < j < m$
 \[ X_j^{(\dots,k_j+1,\dots)} = \mu X_{j-1}\dots = \bigcup_{i \geq 0}X^{(\dots,k_j,i,\dots)} \]
-and for any odd $0 < j \leq m$
+and for any odd $0 < j < m$
 \[ X_j^{(\dots,k_j+1,\dots)} = \nu X_{j-1}\dots = \bigcap_{i \geq 0}X^{(\dots,k_j,i,\dots)} \]
 
 \paragraph{$\Gamma$-games} 
@@ -310,7 +310,7 @@ We define $\Gamma$, which transforms a parity game, to help with the proof. The 
 \end{definition}
 Parity game $\Gamma(G,P_0,P_1)$ contains vertices $s_0$ and $s_1$ such that they have no outgoing edges and $s_\alpha$ is owned by player $s_{\overline{\alpha}}$. Clearly if the token ends in $s_\alpha$ then player $\alpha$ wins. Vertices that had edges to a vertex in $P_\alpha$ now have an edge to $s_\alpha$. 
 
-Note that because $s_0$ and $s_1$ don't have successors, their priorities don't matter for winning sets of $G'$. Also note that this parity is not total, as shown in \cite{WALUKIEWICZ2002311} the formula $S(G)$ also solves non-total games.
+Note that because $s_0$ and $s_1$ do not have successors, their priorities do not matter for winning sets of $G'$. Also note that this parity game is not total, as shown in \cite{WALUKIEWICZ2002311} the formula $S(G)$ also solves non-total games.
 
 Next we show that vertices in $V\backslash P_0 \backslash P_1$ have the same winner in games $G$ and $G'$.
 \begin{lemma}
@@ -323,11 +323,11 @@ Next we show that vertices in $V\backslash P_0 \backslash P_1$ have the same win
 		\end{cases} \]
 		This strategy maps the vertices to the same successors except when a vertex is mapped to a vertex in $P_\beta$, in which case $\sigma'_\alpha$ maps the vertex to $s_\beta$.
 		
-		Let $\pi'$ be a valid path in $G'$, starting from $v$ and conforming to $\sigma'_\alpha$. Since vertices $s_0$ and $s_1$ don't have any successors we distinguish three cases for $\pi'$:
+		Let $\pi'$ be a valid path in $G'$, starting from $v$ and conforming to $\sigma'_\alpha$. Since vertices $s_0$ and $s_1$ do not have any successors we distinguish three cases for $\pi'$:
 		\begin{itemize}
-			\item Assume $\pi'$ ends in $s_{\overline{\alpha}}$. Let $\pi' = (x_0\dots x_m s_{\overline{\alpha}})$ with $v = x_0$. Because $s_0$ and $s_1$ don't have successors no $x_i$ is $s_0$ or $s_1$; we find $x_i \in V\backslash P_0 \backslash P_1$. For every $x_ix_{i+1}$ we have $(x_i,x_{i+1}) \in E'$, any such edge is also in $E$ because the edges between vertices in $V\backslash P_0 \backslash P_1$ were left intact when creating $G'$. Finally we find that $(x_m,y) \in E$ with $y \in P_{\overline{\alpha}}$. There must exist a valid path $\pi = (x_0 \dots x_m y\dots)$ in game $G$. Moreover this path conforms to $\sigma_\alpha$ because $\sigma'_\alpha$ and $\sigma_\alpha$ map to the same vertices for all $x_0\dots x_{m-1}$ and $x_m$ maps to a vertex in $P_{\overline{\alpha}}$. Player $\overline{\alpha}$ has a winning strategy from $y$ so we conclude that $\pi$ is won by $\overline{\alpha}$ in game $G$. Because $\pi$ exists and conforms to $\sigma_\alpha$ we find that $\sigma_\alpha$ is not winning for $\alpha$ from $v$ in $G$. This is a contradiction so we conclude that $\pi'$ never ends in $s_{\overline{\alpha}}$.
+			\item Assume $\pi'$ ends in $s_{\overline{\alpha}}$. Let $\pi' = (x_0\dots x_m s_{\overline{\alpha}})$ with $v = x_0$. Because $s_0$ and $s_1$ do not have successors no $x_i$ is $s_0$ or $s_1$; we find $x_i \in V\backslash P_0 \backslash P_1$. For every $x_ix_{i+1}$ we have $(x_i,x_{i+1}) \in E'$, any such edge is also in $E$ because the edges between vertices in $V\backslash P_0 \backslash P_1$ were left intact when creating $G'$. Finally we find that $(x_m,y) \in E$ with $y \in P_{\overline{\alpha}}$. There must exist a valid path $\pi = (x_0 \dots x_m y\dots)$ in game $G$. Moreover this path conforms to $\sigma_\alpha$ because $\sigma'_\alpha$ and $\sigma_\alpha$ map to the same vertices for all $x_0\dots x_{m-1}$ and $x_m$ maps to a vertex in $P_{\overline{\alpha}}$. Player $\overline{\alpha}$ has a winning strategy from $y$ so we conclude that $\pi$ is won by $\overline{\alpha}$ in game $G$. Because $\pi$ exists and conforms to $\sigma_\alpha$ we find that $\sigma_\alpha$ is not winning for $\alpha$ from $v$ in $G$. This is a contradiction so we conclude that $\pi'$ never ends in $s_{\overline{\alpha}}$.
 			\item Assume $\pi'$ ends in $s_\alpha$. In this case player $\alpha$ wins the path.
-			\item Assume $\pi'$ never visits $s_\alpha$ or $s_{\overline{\alpha}}$. Assume the path is won by player $\overline{\alpha}$, as we argued above we find that this path is also valid in game $G$, conforms to $\sigma_\alpha$ and is winning for $\overline{\alpha}$. Therefore $\sigma_\alpha$ is not winning for player $\alpha$ from $v$, this is a contradiction so we conclude that player ${\alpha}$ wins the path $\pi'$.
+			\item Assume $\pi'$ never visits $s_\alpha$ or $s_{\overline{\alpha}}$. Assume the path is won by player $\overline{\alpha}$, as we argued above we find that this path is also valid in game $G$, conforms to $\sigma_\alpha$ and is winning for $\overline{\alpha}$. Therefore $\sigma_\alpha$ is not winning for player $\alpha$ from $v$ in game $G$, this is a contradiction so we conclude that player ${\alpha}$ wins the path $\pi'$.
 		\end{itemize}
 		We find that $\pi'$ is always won by player $\alpha$ in game $G'$. We conclude that any vertex $v \in V \backslash P_0 \backslash P_1$ won by player $\alpha$ in game $G$ is also won by player $\alpha$ in $G'$. 
 		
@@ -343,7 +343,7 @@ Using the $\Gamma$ operator and the iteration indices we can now prove the corre
 	\[ S^P(G) = \nu Z_{d-1}.\mu Z_{d-2}\dots \nu Z_0.(F_0(G,Z_{d-1},\dots,Z_0) \cap (V\backslash P_1) \cup P_0) \]
 	correctly solves $W_0$ for $G$.
 	\begin{proof}
-		Let $G' = (V',V'_0,V'_1,E',\Omega') = \Gamma(G,P_0,P_1)$. We consider $S(G')$, which calculates the winning set for player $0$ for game $G'$. Formula $F_0(G',Z_{d-1},\dots,Z_0)$ will always include $s_0$ and never include $s_1$ regardless of the values for $Z_{d-1} \dots Z_0$. Clearly any $\nu Z_i\dots$ or $\mu Z_i\dots$ contains $s_0$ and doesn't contain $s_1$. As shown in \cite{Emerson:1986:MCP:900378} we can start the iteration of least fixed-point formula $\mu X.f(X)$ at any value $X^0 \subseteq \mu  X.f(X)$. Similarly, we can start the iteration of greatest fixed-point formula $\nu X.f(X)$ at any value $X^0 \supseteq \nu X.f(X)$. So we can calculate $S(G')$ using fixed-point iteration, starting least fixed-point variables at $\{s_0\}$ and greatest fixed-point variables at $V'\backslash \{s_1\}$.
+		Let $G' = (V',V'_0,V'_1,E',\Omega') = \Gamma(G,P_0,P_1)$. We consider $S(G')$, which calculates the winning set for player $0$ for game $G'$. Formula $F_0(G',Z_{d-1},\dots,Z_0)$ will always include $s_0$ and never include $s_1$, regardless of the values for $Z_{d-1} \dots Z_0$. Clearly any $\nu Z_i\dots$ or $\mu Z_i\dots$ contains $s_0$ and does not contain $s_1$. As shown in \cite{Emerson:1986:MCP:900378} we can start the iteration of least fixed-point formula $\mu X.f(X)$ at any value $X^0 \subseteq \mu  X.f(X)$. Similarly, we can start the iteration of greatest fixed-point formula $\nu X.f(X)$ at any value $X^0 \supseteq \nu X.f(X)$. So we can calculate $S(G')$ using fixed-point iteration, starting least fixed-point variables at $\{s_0\}$ and greatest fixed-point variables at $V'\backslash \{s_1\}$.
 		
 		We can also calculate $S^P(G)$ using fixed-point iteration starting at $P_0$ and $V\backslash P_1$ because clearly any $\nu Z_i \dots$ or $\mu Z_i\dots$ contains all vertices from $P_0$ and none from $P_1$.
 		
@@ -365,7 +365,7 @@ Using the $\Gamma$ operator and the iteration indices we can now prove the corre
 		\textbf{Step}: Consider $\zeta = (k_{d-1},\dots,k_0)$. Let $d-1 \geq j \geq 0$. If $k_j = 0$ then $Z_j^\zeta = Z_j^{(0,0,\dots,0)}$ and $Y_j^{\zeta} = Y_j^{(0,0,\dots,0)}$, furthermore $Z_j^{(0,0,\dots,0)}\simeq Y_j^{(0,0,\dots,0)}$ so we find $Y_j^{\zeta} \simeq Z_j^{\zeta}$.
 		If $k_j > 0$ then we distinguish three cases for $j$ to show that $Y_j^{\zeta} \simeq Z_j^{\zeta}$:
 		\begin{itemize}
-			\item Case: $j=0$. We have the following equations:
+			\item Case $j=0$: We have the following equations:
 			\[ Y_0^{\zeta} = F_0(G,Y_{d-1}^{\zeta-1},\dots,Y_0^{\zeta-1}) \cap (V\backslash P_1) \cup P_0 \]
 			and
 			\[ Z_0^{\zeta} = F_0(G',Z_{d-1}^{\zeta-1},\dots,Z_0^{\zeta-1}) \]
@@ -398,7 +398,7 @@ Using the $\Gamma$ operator and the iteration indices we can now prove the corre
 				We always find  $x \in Y^{\zeta-1}_{\Omega(x)}$, therefore $v \in Y_0^{\zeta}$.
 			\end{itemize}
 			
-			\item Case: $j > 0$ being even. We have 
+			\item Case $j > 0$ being even: We have 
 			\[ Z_j^{\zeta} = \mu Z_{j-1}\dots = \bigcup_{i\geq 0} Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}\]
 			and 
 			
@@ -409,7 +409,7 @@ Using the $\Gamma$ operator and the iteration indices we can now prove the corre
 			If $v \in Z_j^{\zeta}$ then there exists some $i$ such that $v \in Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}$. Since $\{k_{d-1},\dots,k_j-1,i,\dots\} < \zeta$ we apply induction to find $Y_{j-1}^{\{k_{d-1},\dots,k_j-1,l,\dots\}} \simeq Z_{j-1}^{\{k_{d-1},\dots,k_j-1,l,\dots\}}$. Because $v \in V \backslash P_0 \backslash P_1$ we find $v \in Y_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}$ and therefore $v \in Y_j^{\zeta}$.
 			
 			If $v \in Y_j^{\zeta}$ then we apply symmetrical reasoning to find $v \in Z_j^{\zeta}$.
-			\item Case: $j > 0$ being odd. We have 
+			\item Case $j > 0$ being odd: We have 
 			
 			\[ Z_j^{\zeta} = \nu Z_{j-1}\dots = \bigcap_{i\geq 0} Z_{j-1}^{\{k_{d-1},\dots,k_j-1,i,\dots\}}\]
 			and 
@@ -425,7 +425,7 @@ Using the $\Gamma$ operator and the iteration indices we can now prove the corre
 		
 		This proves that for any $\zeta$ we have $Y_i^{\zeta} \simeq Z_i^{\zeta}$ for every $i \in [0,d-1]$.
 		
-		We have shown that when starting the iteration of $S(G')$ and $S^P(G)$ at specific values then we get a similar results for vertices in $V \backslash P_0 \backslash P_1$. We chose these values such that they solve the formula's correctly, so we conclude that $S(G') \backslash \{s_0,s_1\} = S^P(G) \backslash P_0 \backslash P_1$. Lemma \ref{lem_gamma_same_winner} shows that $S(G')$ correctly solves vertices in $V \backslash P_0 \backslash P_1$ for game $G$. So $S^P(G)$ also correctly solves vertices $V \backslash P_0 \backslash P_1$ for game $G$. 
+		We have shown that when starting the iteration of $S(G')$ and $S^P(G)$ at specific values we get identical results for vertices in $V \backslash P_0 \backslash P_1$. We chose these values such that they solve the formula's correctly, so we conclude that $S(G') \backslash \{s_0,s_1\} = S^P(G) \backslash P_0 \backslash P_1$. Lemma \ref{lem_gamma_same_winner} shows that $S(G')$ correctly solves vertices in $V \backslash P_0 \backslash P_1$ for game $G$. So $S^P(G)$ also correctly solves vertices $V \backslash P_0 \backslash P_1$ for game $G$. 
 		
 		Moreover any vertex in $P_0$ is in $S^P(G)$, which is correct because $P_0$ vertices are winning for player 0. Any vertex in $P_1$ is not in $S^P(G)$, which is correct because $P_1$ vertices are winning for player 1. We conclude that all vertices are correctly solved by $S^P(G)$.
 	\end{proof}
@@ -436,12 +436,12 @@ We use the original fixed-point algorithm presented in \cite{FPITE} and modify i
 
 Note that in \cite{FPITE} total games are used. However, it is argued that the algorithm correctly solves the formula presented in \cite{WALUKIEWICZ2002311}. The only property of parity games that is used in this argumentation is that parity games have a unique owner and priority. Clearly this is still the case for total parity games so the algorithm correctly solves the formula presented in \cite{WALUKIEWICZ2002311}. In \cite{WALUKIEWICZ2002311} it is shown that the formula also correctly solves non-total parity games.
 
-\begin{algorithm}[h]
+\begin{algorithm}
 	\caption{Fixed-point iteration with $P_0$ and $P_1$}
 	\label{alg_FPITE}
 	\begin{multicols}{2}
 		\begin{algorithmic}[1]
-			\Function{FPIter}{$G = (V, V_0, V_1, E, \Omega)$\newline$, P_0\subseteq V, P_1\subseteq V$}
+			\Function{FPIter}{$G = (V, V_0, V_1, E, \Omega),$\newline$ P_0\subseteq V, P_1\subseteq V$}
 				\For{$i \gets d-1,\dots,0$}
 					\State $\textsc{Init}(i)$
 				\EndFor
@@ -480,7 +480,7 @@ Note that in \cite{FPITE} total games are used. However, it is argued that the a
 This algorithm can be used as a \textsc{Solve} algorithm in \textsc{IncPreSolve} since it solves parity games using $P_0$ and $P_1$.
 
 \subsection{Running time}
-We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. We use $n$ to denote the number of vertices, $e$ the number of edges, $d$ the number of distinct priorities and $c$ to indicate the number of configurations.
+We consider the running time for solving VPG $G = (V,V_0,V_1,E,\Omega,\mathfrak{C},\theta)$ independently and collectively. We use $n$ to denote the number of vertices, $e$ the number of edges, $d$ the number of distinct priorities and $c$ the number of configurations.
 
 The fixed-point iteration algorithm without $P_0$ and $P_1$ runs in $O(e*n^d)$ \cite{FPITE}. We can use this algorithm to solve $G$ independently, i.e. solve all the projections of $G$. This gives a time complexity of $O(c*e*n^d)$.
 

@@ -17,4 +17,3 @@ do
 		java -jar ../housekeeping.jar randomgame $N $P $l $h $c $lambda FF `pwd`/game_scaleconfs_$i$sub
 	done
 done
-for f in game*;do VPGSolver_bdd $f/SVPG Q$f;done
