@@ -1,9 +1,9 @@
 ==== Report ====
- - comma's na koppel woorden
+ - Intro SPL & variablitity, algemeen: sectie 3 met intro aan sluiten
 Algs:
- - subset definitie voor function wise
  - Check dat overal total wordt gebruikt bij zlnk
  - nalopen of ik altijd de term function gebruik bij function-wise
+ - overal lambda notatie
 Implementatie:
  - Priority compression in implementatie sectie
  - Hypotheses in sectie II herhalen in sectie III
