@@ -1,5 +1,11 @@
-for p in minepump randomgames elevator
+if [ "$1"  = "" ]
+then
+        probs="minepump elevator randomgames randomscalegames"
+else
+        probs=$1
+fi
+for p in $probs
 do
-	echo measureMBR $p
-	./measureMBR.sh $p VPGSolver_bdd `pwd`/data/measures/${p}_pess_games/ > `pwd`/data/measures/$p.data
+	echo measureZlnk $p
+	./measureZlnk.sh  $p VPGSolver_bdd > `pwd`/data/measures/${p}_zlnk.data
 done
