@@ -2,12 +2,12 @@
 lambda=0.92
 for sub in a b c d
 do
-	for i in `seq 2 20`
+	for i in `seq 2 15`
 	do
 		N=$(((RANDOM%500)+100))
 		P=$(((RANDOM%10)+1))
 		l=1
-		h=$(((RANDOM%(8))+3))
+		h=$(((RANDOM%(17))+3))
 		c=$i	
 
 		rm -f `pwd`/game_scaleconfs_$i$sub/*

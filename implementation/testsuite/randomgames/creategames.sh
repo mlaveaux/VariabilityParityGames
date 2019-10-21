@@ -5,8 +5,8 @@ do
 	N=$(((RANDOM%500)+100))
 	P=$(((RANDOM%10)+1))
 	l=1
-	h=$(((RANDOM%8)+3))
-	c=$(((RANDOM%8)+6))
+	h=$(((RANDOM%17)+3))
+	c=$(((RANDOM%8)+4))
 
 	for T in FF FC BC
 	do
