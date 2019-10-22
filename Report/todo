@@ -2,13 +2,8 @@
  - Intro SPL & variablitity, algemeen: sectie 3 met intro aan sluiten
 Algs:
  - Check dat overal total wordt gebruikt bij zlnk
- - nalopen of ik altijd de term function gebruik bij function-wise
- - overal lambda notatie
+ - nalopen of ik altijd de term function gebruik bij function-wis
 Implementatie:
- - Priority compression in implementatie sectie
  - Hypotheses in sectie II herhalen in sectie III
- - Hoe splitsen we set C in incpresolve?
- - Hoe worden sets van configuraties gecodeerd
- - bool vector conjunction beschrijven
-Results:
- - Streepjes voor local
+
+ Make git repo public

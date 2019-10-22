@@ -1,4 +1,4 @@
-The algorithms are used to solve VPGs created from different test cases. We have two model checking problems as well as random VPGs. The model checking VPGs are created as described in part \ref{part:verifying}, with the exception that only vertices are added when they are reachable from the initial vertex. So these games are never disjointed, random games can be disjointed.
+We evaluate the performance of the algorithms on numerous test cases. We have two model checking problems as well as random VPGs. The model checking VPGs are created as described in chapter \ref{part:verifying}, with the exception that only vertices are added when they are reachable from the initial vertex. So these games are never disjointed, random games can be disjointed.
 
 \subsection{Model checking games}
 We use two software product line examples, first the minepump example as described in \cite{Kramer1983CONICAI} and implemented in the mCRL2 toolset as described in \cite{FamBasedModelCheckingWithMCRL2}. The minepump example models the behaviour of controllers for a pump that pumps water out of a mineshaft. There are 10 different features that change the way the sensors/actors behave. In total there are 128 valid feature assignments, i.e. products. 
@@ -75,9 +75,9 @@ We can create 4 types of games:
 	\item Beta distributed and feature based. Games created in this way do not have the average relative set size of $\lambda$ because the feature based approach can only create sets of size $\frac{1}{2^i}$ for any $\lambda \geq \frac{1}{2}$ almost all the sets have either relative size $\frac{1}{2}$ or $1$, so  this creates almost the exact same games as using the Bernoulli distribution only with an incorrect average relative set size. Therefore we will not consider this category of games.
 \end{enumerate}
 
-We create four sets of random games. For random games of type 1,2 and 3 we create 50 games: game 50 to game 99, where game $i$ has $\lambda=\frac{i}{100}$ and a random number of features, nodes, edges and maximum priority. Furthermore we create 52 games to evaluate how the algorithm scales when the number of features becomes larger. For every $i \in [2,15]$ we create random games $i$a, $i$b, $i$c and $i$d of type 1 with $\lambda=0.92$, $i$ features and a random number of nodes, edges and maximum priority. 
+We create four sets of random games. For random games of type 1,2 and 3 we create 25 games: game 75 to game 99, where game $i$ has $\lambda=\frac{i}{100}$ and a random number of features, nodes, edges and maximum priority. Furthermore we create 52 games to evaluate how the algorithm scales when the number of features becomes larger. For every $i \in [2,15]$ we create random games $i$a, $i$b, $i$c and $i$d of type 1 with $\lambda=0.92$, $i$ features and a random number of nodes, edges and maximum priority. 
 
-Besides the number of configurations and the value for $\lambda$ we need to choose the number of vertices for a game, the minimum number of successors of a vertex, the maximum number of successors of a vertex and the number of distinct priorities in the game. The number of minimum and maximum successor is decides for the en game. So if we pick $l$ and $h$ as the number of minimum and maximum respectively then for every vertex of the game we uniformly pick a its number of successors between $l$ and $h$.
+Besides the number of configurations and the value for $\lambda$ we need to choose the number of vertices for a game, the minimum number of successors of a vertex, the maximum number of successors of a vertex and the number of distinct priorities in the game. The number of minimum and maximum successor is decides per game. So if we pick $l$ and $h$ as the number of minimum and maximum respectively then for every vertex of the game we uniformly pick its number of successors between $l$ and $h$.
 
 Table \ref{tab_random_games} shows the different categories of games and the corresponding parameters. The minimum number of successors per vertex is always 1 so this value is omitted from the table.
 
@@ -86,10 +86,10 @@ Table \ref{tab_random_games} shows the different categories of games and the cor
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		Category & \# vertices & \shortstack{Maximum \\\# successors} & \shortstack{\# distinct\\priorities} & \# confs  & $\lambda$ \\ \hline
-		Type 1, scale in $\lambda$ & $100-600$            & $3-8$                   & $1-10$                          & $2^{6}-2^{14}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
-		Type 2, scale in $\lambda$ & $100-600$            & $3-8$                   & $1-10$                          & $2^{6}-2^{14}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
-		Type 3, scale in $\lambda$ & $100-600$            & $3-8$                   & $1-10$                          & $2^{6}-2^{14}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
-		Type 1, scale in \# confs          & $100-600$            &  $3-8$                   & $1-10$                          & $2^\textit{game nr}$                & $0.92$                   \\ \hline
+		Type 1, scale in $\lambda$ & $100-600$            & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
+		Type 2, scale in $\lambda$ & $100-600$            & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
+		Type 3, scale in $\lambda$ & $100-600$            & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
+		Type 1, scale in \# confs          & $100-600$            &  $3-20$                   & $1-10$                          & $2^\textit{game nr}$                & $0.92$                   \\ \hline
 	\end{tabular}
 \caption{Categories of random games}
 	\label{tab_random_games}
