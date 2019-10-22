@@ -17,12 +17,12 @@ All the experiments are ran on a Linux x64 operating system with an Intel i5-457
 \subsection{Zielonka's family based}
 First we compare the running times of the Zielonka's family based approaches with the Zielonka's product based approach. First we look at the model verification games.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+	\includegraphics[width=1\linewidth]{"results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
 	\caption{Running time of Zielonka's algorithms on the minepump problem}
 	\label{fig:minepumpzlnks}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/elevator/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+	\includegraphics[width=1\linewidth]{"results/elevator/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
 	\caption{Running time of Zielonka's algorithms on the elevator problem}
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -30,17 +30,17 @@ We can see that the performance of the explicit variant varies a lot between gam
 
 Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized.
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/FF_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\includegraphics[width=1\linewidth]{"results/FF_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
 \caption{Running time of Zielonka's algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 \label{fig:elevatorzlnks}
 \end{figure}%
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/FC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\includegraphics[width=1\linewidth]{"results/FC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
 \caption{Running time of Zielonka's algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 \label{fig:elevatorzlnks}
 \end{figure}%
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/BC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\includegraphics[width=1\linewidth]{"results/BC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
 \caption{Running time of Zielonka's algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 \label{fig:elevatorzlnks}
 \end{figure}%
@@ -52,7 +52,7 @@ For type 3 games the product based approach performs generally better than the f
 
 Next we inspect how the algorithms scales in terms of number of features
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/randomscalegames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+\includegraphics[width=1\linewidth]{"results/randomscalegames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
 \caption{Running time of Zielonka's algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
 \label{fig:elevatorzlnks}
 \end{figure}%
@@ -64,12 +64,12 @@ Overall we can conclude that the explicit algorithm performs somewhat arbitrary,
 \subsection{Incremental pre-solve algorithm}
 We compare the running times of the incremental pre-solve approaches with the fixed-point iteration product based algorithm. First we look at the model verification games.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point product based_Incremental pre-solve_"}
+	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point product based_Incremental pre-solve_.svg"}
 	\caption{Running time of the incremental pre-solve algorithms on the minepump problem}
 	\label{fig:minepumpzlnks}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/elevator/Fixed-point product based_Incremental pre-solve_"}
+	\includegraphics[width=1\linewidth]{"results/elevator/Fixed-point product based_Incremental pre-solve_.svg"}
 	\caption{Running time of the incremental pre-solve algorithms on the elevator problem. Game 3, 4 and 5 were not able to be finished }
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -77,17 +77,17 @@ The incremental pre-solve algorithms does not show any significant improvements 
 
 Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Fixed-point product based_Incremental pre-solve_"}
+	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Fixed-point product based_Incremental pre-solve_.svg"}
 	\caption{Running time of the incremental pre-solve algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 	\label{fig:type1FPIteglobal}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Fixed-point product based_Incremental pre-solve_"}
+	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Fixed-point product based_Incremental pre-solve_.svg"}
 	\caption{Running time of incremental pre-solve algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Fixed-point product based_Incremental pre-solve_"}
+	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Fixed-point product based_Incremental pre-solve_.svg"}
 	\caption{Running time of incremental pre-solve algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -97,7 +97,7 @@ Again we see that for type 3 games the family based algorithm performs worse.
 
 Next we inspect how the algorithms scales in terms of number of features
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/randomscalegames/Fixed-point product based_Incremental pre-solve_"}
+	\includegraphics[width=1\linewidth]{"results/randomscalegames/Fixed-point product based_Incremental pre-solve_.svg"}
 	\caption{Running time of incremental pre-solve algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -107,12 +107,12 @@ Overall the performance is not a significant improvement on the product based ap
 \subsection{Incremental pre-solve local algorithm}
 Next we again compare the incremental pre-solver with the fixed-point iteration product based approach, however this time we compare the local variants. We start with the model-checking games.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point local product based_Incremental pre-solve local_"}
+	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point local product based_Incremental pre-solve local_.svg"}
 	\caption{Running time of the incremental pre-solve local algorithms on the minepump problem}
 	\label{fig:minepumpzlnks}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/elevator/Fixed-point local product based_Incremental pre-solve local_"}
+	\includegraphics[width=1\linewidth]{"results/elevator/Fixed-point local product based_Incremental pre-solve local_.svg"}
 	\caption{Running time of the incremental pre-solve local algorithms on the elevator problem}
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -120,17 +120,17 @@ Generally the performance of the incremental pre-solver local algorithm is bette
 
 Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
+	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Fixed-point local product based_Incremental pre-solve local_.svg"}
 	\caption{Running time of the incremental pre-solve local algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
+	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Fixed-point local product based_Incremental pre-solve local_.svg"}
 	\caption{Running time of incremental pre-solve local algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
+	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Fixed-point local product based_Incremental pre-solve local_.svg"}
 	\caption{Running time of incremental pre-solve local algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -138,7 +138,7 @@ For type 1 games the local incremental pre-solve algorithm greatly outperforms t
 
 Next we inspect how the algorithms scales in terms of number of features
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/randomscalegames/Fixed-point local product based_Incremental pre-solve local_"}
+	\includegraphics[width=1\linewidth]{"results/randomscalegames/Fixed-point local product based_Incremental pre-solve local_.svg"}
 	\caption{Running time of incremental pre-solve local algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
 	\label{fig:elevatorzlnks}
 \end{figure}%
@@ -146,28 +146,44 @@ Clearly the performance improves when the number of features becomes larger.
 
 We can conclude that for model-checking games the algorithm performs decent, however the biggest improvements are seen on random games.
 \subsection{Comparison}
-After comparing family based and product based variants of the same algorithm we compare the algorithms overall. We do so by comparing the mean solve time of the for every set of games. The incremental pre-solve global algorithm did not complete 3 games, for these games we use the fixed-point product based global times to calculate the mean.
+After comparing family based and product based variants of the same algorithm we compare the algorithms overall. We do so by comparing the mean solve time of every set of games.
 
-First we compare the product based algorithms:\\
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	& \shortstack{Zlnk product based\\\ } & \shortstack{Fixed-point product based\\global} & \shortstack{Fixed-point product based\\local} \\ \hline
-	Minepump& 118 ms& 4719 ms& 4469 ms\\ \hline
-	Elevator& 36540 ms& 9842835 ms& 1713073 ms\\ \hline
-	Random games type 1& 55 ms& 413 ms& 324 ms\\ \hline
-	Random games type 2& 54 ms& 413 ms& 381 ms\\ \hline
-	Random games type 3& 55 ms& 416 ms& 351 ms\\ \hline
-	Random scale games& 108 ms& 408 ms& 381 ms\\ \hline
-\end{tabular}
+First we compare the independent algorithms. Table \ref{tab_compare_independent_algs} shows for every set of VPGs how long on average it took each algorithm to solve a VPG in that set.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		& Zlnk & & Fixed-point & \\
+		& & local & & local \\
+		\hline
+		minepump& 113 ms& 97 ms& 4606 ms& 4474 ms\\ \hline
+		elevator& 35062 ms& 28399 ms& 9733571 ms& 1707949 ms\\ \hline
+		FF randomgames& 314 ms& 288 ms& 64119 ms& 47106 ms\\ \hline
+		FC randomgames& 312 ms& 288 ms& 53218 ms& 39947 ms\\ \hline
+		BC randomgames& 318 ms& 307 ms& 44561 ms& 36483 ms\\ \hline
+		randomscalegames& 756 ms& 697 ms& 75579 ms& 43983 ms\\ \hline
+	\end{tabular}
+	\caption{Comparison of independent algorithms}
+	\label{tab_compare_independent_algs}
+\end{table}
 
-Next we compare the family based algorithms:\\
-\begin{tabular}{|l|l|l|l|l|}
-	\hline
-	& \shortstack{Zlnk fam based\\ explicit} & \shortstack{Zlnk fam based\\symbolic} & \shortstack{Incremental pre-solve\\global} & \shortstack{Incremental pre-solve\\local} \\ \hline
-	Minepump& 391 ms& 16 ms& 1154 ms& 672 ms\\ \hline
-	Elevator& 46775 ms& 6592 ms& 8612914 ms& 381041 ms\\ \hline
-	Random games type 1& 513 ms& 59 ms& 274 ms& 40 ms\\ \hline
-	Random games type 2& 1149 ms& 2569 ms& 8283 ms& 1507 ms\\ \hline
-	Random games type 3& 1117 ms& 2114 ms& 12733 ms& 4365 ms\\ \hline
-	Random scale games& 397 ms& 9 ms& 205 ms& 24 ms\\ \hline
-\end{tabular}
+In table \ref{tab_compare_collective_algs} we compare the performance of the collective algorithms.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		& Zlnk& & & & Incremental& \\
+		& explicit & & symbolic & & pre-solve &
+		\\
+		&  & local & & local & & local
+		\\ \hline
+		minepump& 112 ms& 103 ms& 16 ms& 15 ms& 1153 ms& 671 ms\\ \hline
+		elevator& 105856 ms& 36380 ms& 6674 ms& 5337 ms& 1065377 ms& 378460 ms\\ \hline
+		FF randomgames& 324 ms& 329 ms& 3489 ms& 3488 ms& 28900 ms& 22716 ms\\ \hline
+		FC randomgames& 506 ms& 514 ms& 50286 ms& 47707 ms& 118559 ms& 108023 ms\\ \hline
+		BC randomgames& 540 ms& 535 ms& 38619 ms& 37885 ms& 145491 ms& 128929 ms\\ \hline
+		randomscalegames& 28 ms& 24 ms& 2 ms& 2 ms& 1727 ms& 594 ms\\ \hline
+	\end{tabular}
+	\caption{Comparison of collective algorithms}
+	\label{tab_compare_collective_algs}
+\end{table}

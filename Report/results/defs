@@ -1,0 +1,31 @@
+<defs>
+	<pattern id="pattern0" patternUnits="userSpaceOnUse" width="10" height="10">
+		<rect x="0" y="0" width="10" height="10" style="fill: rgb(148, 103, 190)"/>
+		<line x1="0" y1="0" x2="10" y2="10" style="stroke: white;stroke-width:2"/>
+		<line x1="-1" x2="1" y1="9" y2="11" style="stroke: white;stroke-width:2"/>
+		<line x1="9" x2="11" y1="-1" y2="1" style="stroke: white;stroke-width:2"/>
+	</pattern>
+	<pattern id="pattern1" patternUnits="userSpaceOnUse" width="10" height="10">
+		<rect x="0" y="0" width="10" height="10" style="fill: rgb(255, 127, 15)"/>
+		<line x1="0" y1="0" x2="10" y2="10" style="stroke: white;stroke-width:2"/>
+		<line x1="-1" x2="1" y1="9" y2="11" style="stroke: white;stroke-width:2"/>
+		<line x1="9" x2="11" y1="-1" y2="1" style="stroke: white;stroke-width:2"/>
+	</pattern>
+	<pattern id="pattern2" patternUnits="userSpaceOnUse" width="10" height="10">
+		<rect x="0" y="0" width="10" height="10" style="fill: rgb(31, 119, 181)"/>
+		<line x1="0" y1="0" x2="10" y2="10" style="stroke: white;stroke-width:2"/>
+		<line x1="-1" x2="1" y1="9" y2="11" style="stroke: white;stroke-width:2"/>
+		<line x1="9" x2="11" y1="-1" y2="1" style="stroke: white;stroke-width:2"/>
+	</pattern>
+	<pattern id="pattern3" patternUnits="userSpaceOnUse" width="10" height="10">
+		<rect x="0" y="0" width="10" height="10" style="fill: rgb(214, 39, 41)"/>
+		<line x1="0" y1="0" x2="10" y2="10" style="stroke: white;stroke-width:2"/>
+		<line x1="-1" x2="1" y1="9" y2="11" style="stroke: white;stroke-width:2"/>
+		<line x1="9" x2="11" y1="-1" y2="1" style="stroke: white;stroke-width:2"/>
+	</pattern>
+	<pattern id="pattern4" patternUnits="userSpaceOnUse" width="10" height="10">
+		<rect x="0" y="0" width="10" height="10" style="fill: rgb(44, 160, 45)"/>
+		<line x1="0" y1="0" x2="10" y2="10" style="stroke: white;stroke-width:2"/>
+		<line x1="-1" x2="1" y1="9" y2="11" style="stroke: white;stroke-width:2"/>
+		<line x1="9" x2="11" y1="-1" y2="1" style="stroke: white;stroke-width:2"/>
+	</pattern></defs>
