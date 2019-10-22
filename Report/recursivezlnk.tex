@@ -515,22 +515,22 @@ Next we present an algorithm to calculate the function-wise attractor, the pseud
 \begin{algorithm}
 	\caption{$\textsc{$\alpha$-FAttractor}(G, U^\lambda : \hat{V} \rightarrow 2^\mathfrak{C})$}\label{alg_fattr_alg}
 	\begin{algorithmic}[1]
-		\State Queue $Q \gets \{\hat{v} \in \hat{V} \ |\ U^\lambda(\hat{v}) \neq \emptyset  \}$
 		\State $A^\lambda \gets U^\lambda$
-		\While{$Q$ is not empty}
-		\State $\hat{v}' \gets Q.pop()$
-		\For{every $\hat{v}$ such that $E^\lambda(\hat{v},\hat{v}') \neq \emptyset$}
-			\If{$\hat{v} \in \hat{V}_\alpha$}
-				\State $a \gets V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap A^\lambda(\hat{v}')$
+		\State Queue $Q \gets \{\hat{v} \in \hat{V} \ |\ U^\lambda(\hat{v}) \neq \emptyset  \}$
+		\While{$Q$ is not empty}\label{line:fattr:while}
+		\State $\hat{v}' \gets Q.pop()$\label{line:fattr:pop}
+		\For{every $\hat{v}$ such that $E^\lambda(\hat{v},\hat{v}') \neq \emptyset$}\label{line:fattr:firstfor}
+			\If{$\hat{v} \in \hat{V}_\alpha$}\label{line:fattr:if_owner_alpha}
+				\State $a \gets V^\lambda(\hat{v}) \cap E^\lambda(\hat{v},\hat{v}') \cap A^\lambda(\hat{v}')$\label{line:fattr:attract_owner_alpha}
 			\Else
-				\State $a \gets V^\lambda(\hat{v})$
+				\State $a \gets V^\lambda(\hat{v})$\label{line:fattr:attract_owner_not_alpha_start}
 				\For{every $\hat{v}''$ such that $E^\lambda(\hat{v},\hat{v}'') \neq \emptyset$}
 					\State $a \gets a \cap ((\mathfrak{C}\backslash E^\lambda(\hat{v},\hat{v}'')) \cup A^\lambda(\hat{v}''))$
-				\EndFor
-			\EndIf
-			\If{$a \backslash A^\lambda(\hat{v}) \neq \emptyset$}
-				\State $A^\lambda(\hat{v}) \gets A^\lambda(\hat{v}) \cup a$
-				\State $Q.push(\hat{v})$
+				\EndFor\label{line:fattr:attract_owner_not_alpha_end}
+			\EndIf\label{line:fattr:if_owner_alpha_end}
+			\If{$a \backslash A^\lambda(\hat{v}) \neq \emptyset$}\label{line:fattr:if_something_attracted}
+				\State $A^\lambda(\hat{v}) \gets A^\lambda(\hat{v}) \cup a$\label{line:fattr:add_to_A}
+				\State $Q.push(\hat{v})$\label{line:fattr:add_to_Q}
 			\EndIf
 		\EndFor
 		\EndWhile
@@ -538,61 +538,37 @@ Next we present an algorithm to calculate the function-wise attractor, the pseud
 	\end{algorithmic}
 \end{algorithm}
 
-Consider unified parity game $G = (V^\lambda,\hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$ and vertex set $U^\lambda \subseteq V^\lambda$, both represented function-wise. We prove in the following lemma and theorem that the result calculated by $\alpha\textsc{-Fattractor}$ is equal to the definition of $\alpha\textit{-FAttr}$ (Definition \ref{def_Uattr}). 
+We prove that the result calculated by $\alpha\textsc{-Fattractor}$ is equal to the definition of $\alpha\textit{-FAttr}$ (Definition \ref{def_Uattr}). 
 
-We say that an origin vertex $\hat{v}$ and configuration $c$ can be attracted to $A^\lambda \subseteq V^\lambda$ when it meets the criteria required to be added to the attractor set. Formally, using Definition \ref{def_Uattr}, $c$ and $\hat{v}$ can be attracted to $A^\lambda$ when 
-\[
-c \in A^\lambda(\hat{v}) \cup \begin{cases}
-V^\lambda(\hat{v}) \cap \bigcup_{\hat{v}'} (E^\lambda(\hat{v},\hat{v}') \cap A^\lambda(\hat{v}')) & \text{if } \hat{v} \in \hat{V_{\alpha}}\\
-V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup A^\lambda(\hat{v}')) & \text{if }\hat{v} \in  \hat{V_{\overline{\alpha}}}\end{cases} 
-\]
-\begin{lemma}
-\label{lem_attr_requires_E}
-Vertex $\hat{v}$ and configuration $c$, with $c \in V^\lambda(\hat{v})$, can only be attracted to $A^\lambda$ if there is a vertex $\hat{v}'$ such that $c \in E^\lambda(\hat{v}, \hat{v}')$ and $c \in A^\lambda(\hat{v}')$.
-	\begin{proof}
-		If $\hat{v} \in \hat{V}_\alpha$ then this property follows immediately from the function-wise attractor definition (Definition \ref{def_Uattr}). 
-		
-		If $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we note that unified parity games are total and therefore all of their projections are also total. So vertex $\hat{v}$ has at least one outgoing edge for $c$. We have $\hat{w}$ such that $c \in E^\lambda(\hat{v},\hat{w})$. For $\hat{v}$ with $c$ to be attracted we must have $c \in A^\lambda(\hat{w})$.
-	\end{proof}
-\end{lemma}
 \begin{theorem}
-Function $A^\lambda = \textsc{$\alpha$-FAttractor}(G^\lambda,U^\lambda)$ satisfies $A^\lambda = \alpha\textit{-FAttr}(G^\lambda,U^\lambda)$.
-	\begin{proof} We prove two loop invariants over the while loop of the algorithm.
+Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$, represented function-wise, and $U^\lambda \subseteq V^\lambda$, the algorithm $\alpha$-\textsc{FAttractor}$(G, U^\lambda)$ correctly calculates $\alpha\textit{-FAttr}(G,U^\lambda)$.
+	\begin{proof}\ 
 		
-		\textbf{IV1}: For every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ with $c \in A^\lambda(\hat{w})$ we have $c \in \alpha\textit{-FAttr}(G^\lambda,U^\lambda)(\hat{w})$.
+		\textit{Termination}. First note that the algorithm terminates. This follows from the fact that only vertices are added to $Q$ (line \ref{line:fattr:add_to_Q}) when something is added to $A^\lambda$ (lines \ref{line:fattr:if_something_attracted} - \ref{line:fattr:add_to_A}). This can only happen finitely many times before $A^\lambda(\hat{v}) = \mathfrak{C}$ for every $\hat{v}$, so $Q$ is empty after finitely many steps.
 		
-		\textbf{IV2}: For every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ that can be attracted to $A^\lambda$ either $c \in A^\lambda(\hat{w})$ or there exists a $\hat{w}' \in Q$ such that $c \in E^\lambda(\hat{w},\hat{w}')$.
+		\textit{Soundness}. To prove the soundness of the algorithm we must show that at the end of the algorithm we have for every $c\in A^\lambda(\hat{w})$ that $c \in \alpha$-\textsc{FAttractor}$(G, U^\lambda)(\hat{w})$. This property actually holds throughout the entire algorithm. Before the while loop (line \ref{line:fattr:while}) we have $A^\lambda = U^\lambda$ and the property holds trivially. Consider the beginning of a while loop iteration (the algorithm is on line \ref{line:fattr:pop}) and assume that the property holds. The algorithm considers a number of vertices in the first for loop (line \ref{line:fattr:firstfor}), let $\hat{v}$ be such a vertex. The algorithm calculates $a \subseteq \mathfrak{C}$, which is added to $A^\lambda(\hat{v})$ on line \ref{line:fattr:add_to_A}. Note that this is the only place in the while loop where $A^\lambda$ is modified. The value calculated for $a$ on lines \ref{line:fattr:if_owner_alpha}-\ref{line:fattr:if_owner_alpha_end} exactly reflects the definition of $\alpha\textit{-FAttr}$ (Definition \ref{def_Uattr}). Because we assumed that the property holds at the beginning of the while loop iteration we can conclude that $a \subseteq \alpha\textit{-FAttr}(G,U^\lambda)(\hat{v})$. We conclude that the property is maintained during the while loop and that it holds at the end of the algorithm.
 		
-		\textbf{Base}: Before the loop starts we have $A^\lambda = U^\lambda$, therefore IV1 holds. Furthermore all the vertices that are in $A^\lambda$ for some $c$ are also in $Q$ so IV2 holds.
+		\textit{Completeness}. To prove completeness we consider $c \in \alpha\textit{-FAttr}(G,U^\lambda)(\hat{w})$ and show that $c \in \alpha$-\textsc{FAttractor}$(G, U^\lambda)(\hat{w})$.
 		
-		\textbf{Step}: Consider the beginning of a while loop iteration and assume IV1 and IV2 hold. To prove: IV1 and IV2 hold at the end of the while loop iteration.
+		Consider the values for $U^\lambda_i$ for $\alpha\textit{-FAttr}(G,U^\lambda)$ as defined in Definition \ref{def_Uattr}. It is clear that for some $i \geq 0$ we have $c \in U^\lambda_i(\hat{w})$, however not necessarily for all $i \geq 0$.	Let $i \geq 0$ such that $c \in U^\lambda_i(\hat{w})$ and either $i=0$ or $c \notin U^\lambda_{i-1}(\hat{w})$.
 		
-		Function $A^\lambda$ only contains vertices with configurations that are in $\alpha\textit{-FAttr}(G^\lambda,U^\lambda)$. The function is only updated through lines 6-13 and 15 of the algorithm which reflects the exact definition of the attractor set therefore IV1 holds at the end of the iteration.
+		We apply induction on $i$, to show that at some point during the algorithm we have $c \in A^\lambda(\hat{w})$ and $\hat{w} \in Q$. Note that $A^\lambda(\hat{w})$ never decreases during the algorithm, so by proving this we get completeness.
 		
-		Consider $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$, we distinguish three cases to prove IV2. We consider whether $\hat{w}$ with $c$ can be attracted by the beginning of the while loop iteration, i.e. the algorithm is a line 4, and whether $\hat{w}$ with $c$ can be attracted at the end of the while loop iteration, i.e. the algorithm is at line 18. We show that in all three cases IV2 still holds at the end of the iteration and therefore IV2 is a correct loop invariant for the while loop.
+		\textbf{Base} $i=0$: In this case $c \in U^\lambda(\hat{w})$ and in the first two lines of the algorithm we find $c \in A^\lambda(\hat{w})$ and $\hat{w}$ in $Q$.
+		
+		\textbf{Step} $i > 0$: We distinguish two cases:
 		\begin{itemize}
-			\item $\hat{w}$ with $c$ can be attracted by the beginning of the while loop iteration but not by the end.
+			\item If $\hat{w} \in \hat{V}_\alpha$ then there exists a $\hat{w}'$ such that $c \in E^\lambda(\hat{w},\hat{w}')$ and $c \in U^\lambda_{i-1}(\hat{w}')$. We apply induction on $w'$ to find that at some point $c \in A^\lambda(\hat{w}')$ and $\hat{w}'$ is in $Q$. So at some point, the algorithm pops $\hat{w}'$ from $Q$ (line \ref{line:fattr:pop}) and we have $c \in A^\lambda(\hat{w}')$. Because $c \in E^\lambda(\hat{w},\hat{w}')$ the first for loop (line \ref{line:fattr:firstfor}) considers vertex $\hat{w}$ and on line \ref{line:fattr:attract_owner_alpha} we get $c \in a$. 
+		
+			If at this point we do not already have $c \in A^\lambda(\hat{w})$ then we get $c \in A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} and $\hat{w}$ is added to $Q$ on line \ref{line:fattr:add_to_Q}. If we already had $c \in A^\lambda(\hat{w})$ then $c$ had to be added to $A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} (because $i > 0$ this could not have been done in the first two lines) and $\hat{w}$ would also be added to $Q$ on line \ref{line:fattr:add_to_Q}. So the induction hypothesis holds in this case.
 			
-			This case cannot happen because $A^\lambda(\hat{w})$ only increases during the algorithm and the values for $E^\lambda$ and $V^\lambda$ are not changed throughout the algorithm.
-			\item $\hat{w}$ with $c$ cannot be attracted by the beginning of the while loop iteration but can by the end.
+			\item If $\hat{w} \in \hat{V}_{\overline{\alpha}}$ then for every $\hat{w}'$ with $c \in E^\lambda(\hat{w},\hat{w}')$ we get $c \in U^\lambda_{i-1}(\hat{w}')$, we call these vertices the successors of $\hat{w}$ for configuration $c$. We apply induction on every successor $\hat{w}'$ of $\hat{w}$ for $c$ to find that at some point $c \in A^\lambda(\hat{w}')$ and $\hat{w}'$ is in $Q$. So at some point, the algorithm pops successor $\hat{w}''$ from $Q$ (line \ref{line:fattr:pop}) and we have $c \in A^\lambda(\hat{w}')$ for all successor $\hat{w}'$ of $\hat{w}$ for $c$. Because $c \in E^\lambda(\hat{w},\hat{w}'')$ the first for loop (line \ref{line:fattr:firstfor}) considers vertex $\hat{w}$ and on lines \ref{line:fattr:attract_owner_not_alpha_start}-\ref{line:fattr:attract_owner_not_alpha_end} we get $c \in a$. 
 			
-			For $\hat{w}$ with $c$ to be able to be attracted at the end of the iteration there must be some $\hat{w}'$ with $c$ such that during the iteration $c$ was added to $A^\lambda(\hat{w}')$ (Lemma \ref{lem_attr_requires_E}). Every $\hat{w}'$ for which $A^\lambda(\hat{w}')$ is updated is added to the queue (lines 14-17). Therefore we have $\hat{w}' \in Q$ with $c \in E^\lambda(\hat{w},\hat{w}')$ and IV2 holds.
-			\item $\hat{w}$ with $c$ can be attracted by the beginning of the while loop iteration and also by the end.
-			
-			Since IV2 holds at the beginning of the iteration we have either $c \in A^\lambda(\hat{w})$ or we have some $\hat{w}' \in Q$ such that $c \in E^\lambda(\hat{w},\hat{w}')$. In the former case IV2 holds trivially by the end of the iteration since $A^\lambda(\hat{w})$ can only increase. For the latter case we distinguish two scenario's. 
-			
-			First we consider the scenario where vertex $\hat{v}'$ that is considered during the iteration (line 4 of the algorithm) is $\hat{w}'$. There is a vertex $c \in E^\lambda(\hat{w},\hat{w}')$ by IV2. Therefore we can conclude that $\hat{w}$ is considered in the for loop starting at line 5 and will be attracted in lines 6-13 and added to $A^\lambda(\hat{w})$ in line 15. Therefore IV2 holds by the end of the iteration.
-			
-			Next we consider the scenario where $\hat{v}' \neq \hat{w}'$. In this case by the end of the iteration $\hat{w}'$ will still be in $Q$ and IV2 holds.
+			If at this point we do not already have $c \in A^\lambda(\hat{w})$ then we get $c \in A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} and $\hat{w}$ is added to $Q$ on line \ref{line:fattr:add_to_Q}. If we already had $c \in A^\lambda(\hat{w})$ then $c$ had to be added to $A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} (because $i > 0$ this could not have been done in the first two lines) and $\hat{w}$ would also be added to $Q$ on line \ref{line:fattr:add_to_Q}. So the induction hypothesis holds in this case.
 		\end{itemize}
-		Note that the fourth case ($\hat{w}$ with $c$ can not be attracted at the beginning nor at the end of the while loop iteration) is irrelevant to IV2.
-	
-		Vertices are only added to the queue when something is added to $A^\lambda$ (if statement on line 14). This can only finitely often happen because $A^\lambda(\hat{v})$ can never be larger than $V^\lambda(\hat{v})$. We can conclude that the while loop terminates after a finite number of iterations.
-	
-		When the while loop terminates IV1 and IV2 hold, so for every $\hat{w} \in \hat{V}$ and $c \in \mathfrak{C}$ that can be attracted to $A^\lambda$ we have $c \in A^\lambda(\hat{w})$. Since we start with $A^\lambda = U^\lambda$ we can conclude the completeness of the algorithm. IV1 shows the soundness.
+		
 	\end{proof}
 \end{theorem}
-
 
 \subsection{Running time}
 We consider the running time for solving VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ independently and collectively using the different types of representations. We use $n$ to denote the number of vertices, $e$ the number of edges, $d$ the number of distinct priorities and $c$ the number of configurations.
