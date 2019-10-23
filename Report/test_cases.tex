@@ -5,7 +5,51 @@ We use two software product line examples, first the minepump example as describ
 
 The mCRL2 implementation creates an LTS with parametrized actions, the parameters describe the boolean formula's guarding the transitions, effectively making it an FTS. This FTS is interpreted in combination with nine different $\mu$-calculus formula's to create nine VPGs. The model uses 10 features, however only 128 feature assignments are valid. The FTS consists of 582 states and 1376 transitions. The resulting VPGs have on average 6600 vertices per game. Note that our implementation still creates BDDs using 10 boolean variables even though 7 would be enough to represent 128 configurations. By using the same number of variables as there are features the boolean formula's from the FTS are left intact when using them in the VPG.
 
+\begin{table}[]
+	\centering
+	\begin{tabularx}{\linewidth}{|c|L|c|c|c|}
+		\hline
+		& formula & 0/1 & $n$ & $d$ \\ \hline
+		
+		\multirow{2}{*}{$\varphi_1$} & \textit{Absence of deadlock}& \multirow{2}{*}{$128/0$} & \multirow{2}{*}{3494} & \multirow{2}{*}{1}\\
+		& $[\textbf{true}^*]\langle \textbf{true} \rangle \top$ &  & & \\ \hline
+		
+		\multirow{2}{*}{$\varphi_2$}& \textit{The controller cannot infinitely often receive water level readings}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{3004} & \multirow{2}{*}{3} \\
+		& $\mu X. [ (\neg \textit{levelMsg}^*.\textit{levelMsg}]X$ & & &\\ \hline
+		
+		\multirow{2}{*}{$\varphi_3$} & \textit{The controller cannot fairly receive each of the three message types}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{9156} & \multirow{2}{*}{3}\\
+		& $\mu X. ([\textbf{true}^*.\textit{commandMsg}]X \vee [\textbf{true}^*.\textit{alarmMsg}]X \vee [\textbf{true}^*.\textit{levelMsg}]X)$ & & &\\ \hline
+		
+		& \textit{The pump cannot be switched on infinitely often}& & &\\
+		$\varphi_4$ & $(\mu X. \nu Y. ([\textit{pumpStart}.(\neg \textit{pumpStop})^*.\textit{pumpStop}]X \wedge [\neg \textit{pumpStart}]Y)) \wedge ([\textbf{true}^*.\textit{pumpStart}] \mu Z. [\neg \textit{pumpStop}]Z)$ & $96/32$ &6236 & 4\\ \hline
+		
+		& \textit{The system cannot be in a situation in which the pump runs indefinitely in the
+			presence of methane}& & &\\
+		$\varphi_5$& $[\textbf{true}^*] (( [\textit{pumpStart}.(\neg\textit{pumpStop})^*.\textit{methaneRise}] \mu X.[R]X) \wedge ([\textit{methaneRise}.(\neg\textit{methaneLower})^*.\textit{pumpStart}] \mu X.[R]X))$ &  $96/32$ &7096 &3\\
+		& for $R=\neg (\textit{pumpStop}+\textit{methaneLower})$ & & &\\ \hline
+		
+		 \multirow{6}{*}{$\varphi_6$} & \textit{Assuming fairness ($\varphi_3$), the system cannot be in a situation in which the pump runs indefinitely in the presence of methane ($\varphi_5$)} & \multirow{6}{*}{$112/16$} & \multirow{6}{*}{9224} & \multirow{6}{*}{4}\\
+		& $[\textbf{true}^*] (( [\textit{pumpStart}.(\neg\textit{pumpStop})^*.\textit{methaneRise}] \Psi) \wedge ([\textit{methaneRise}.(\neg\textit{methaneLower})^*.\textit{pumpStart}] \Psi)$ & & &\\
+		& for $\Psi = \mu X.([R^*.\textit{commandMsg}]X \vee [R^*.\textit{alarmMsg}] X \vee [R^*.\textit{levelMsg}]X)$ & & &\\
+		& and $R=\neg (\textit{pumpStop}+\textit{methaneLower})$ & & &\\ \hline
+		
+		 \multirow{3}{*}{$\varphi_7$} & \textit{The controller can always eventually receive/read a message, i.e. it can return to its initial state from any state} &  \multirow{3}{*}{$128/0$} & \multirow{3}{*}{5285} &  \multirow{3}{*}{3}\\
+		& $[\textbf{true}^*]\langle \textbf{true}^*.\textit{receiveMsg}\rangle \top$& & &\\ \hline
+		
+		\multirow{2}{*}{$\varphi_8$}& \textit{Invariantly the pump is not started when the low water level signal fires}& \multirow{2}{*}{$128/0$} & \multirow{2}{*}{3902} & \multirow{2}{*}{1}\\
+		& $[\textbf{true}^*.\textit{lowLevel}.(\neg(\textit{normalLevel}+\textit{highLevel}))^*.\textit{pumpStart}]\bot$ & & &\\ \hline
+		
+		\multirow{2}{*}{$\varphi_9$} & \textit{Invariantly, when the level of methane rises, it inevitably decreases}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{5418} & \multirow{2}{*}{3}\\
+		& $[\textbf{true}^*.\textit{methaneRise}] \mu X.[\neg \textit{methaneLower}] X \wedge \langle \textbf{true} \rangle \top$ & & &\\ \hline
+	\end{tabularx}
+	\caption{Minepump properties with its partitioning and the size of the resulting VPG. Parts of the table is taken from \cite{FamBasedModelCheckingWithMCRL2}}
+	\label{tab_minepump_formulas}
+\end{table}
+
+
 Next we have the elevator example, described in \cite{PLATH200153}. This example models the behaviour of an elevator where five different features modify the behaviour of the model. All feature assignments are valid. Therefore we have $2^5 = 32$ feature assignments, i.e. products. Again an mCRL2 implementation\footnote{\label{note1}https://github.com/SjefvanLoo/VariabilityParityGames/blob/master/implementation/Elevator.tar.gz} (created by T.A.C. Willemse) is used to create seven VPGs. The FTS consists 95591 states and 622265 transitions. The resulting VPGs have on average 3659210 vertices per game. 
+
+Partitioning: 0/32 for all games
 \subsection{Random games}
 Random VPGs can be created by creating a random parity game and create sets of configurations that guard the edges. For these sets we need to consider two factors: how large are the sets guarding the edges and how are they constructed.
 

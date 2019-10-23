@@ -1,152 +1,174 @@
-In this section the experimental results are presented. The following algorithms are used to solve the 6 categories of games:
-\begin{enumerate}
-	\item Zielonka's recursive algorithm, product based
-	\item Fixed-point iteration, product based
-	\item Fixed-point iteration, local product based
-	\item Zielonka's recursive algorithm, family based with explicit configuration representation
-	\item Zielonka's recursive algorithm, family based with symbolic configuration representation
-	\item Incremental pre-solve algorithm
-	\item Incremental pre-solve algorithm, local
-\end{enumerate}
+In this section the experimental results are presented. We evaluate the performance on six sets of games:
+\begin{itemize}
+	\item the minepump games,
+	\item the elevator games,
+	\item random games of type 1 with an increasing $\lambda$,
+	\item random games of type 2 with an increasing $\lambda$,
+	\item random games of type 3 with an increasing $\lambda$ and
+	\item random games of type 1 with an increasing number of configuration.
+\end{itemize}
 
-The numbers presented are the times it took to solve the games; times for parsing, projecting (for product based approaches) and printing solutions are excluded. So the product based results are the sum of the solve times of the projections, parsing and projecting are not included in the result.
+We present the times it took to solve a VPG. For an independent approach this means the sum of the times it took to solve every projection of the VPG. For a collective approach this means simply means the solve time for the VPG. In either case we only measure the solve time; parsing, projecting and solution printing is excluded from the evaluation.
 
-The exact times can be found in appendix \ref{appendix:resultsexact}, in this section the results are visualized and presented to be easily interpreted. In some cases the results in a graph are normalized meaning that the running times are divided by the running times of the first algorithm in the graph. Specifically for the random games the running times vary a lot so normalizing is required to properly visualize the results. The times are presented on a logarithmic scale, games that were unable to be completed (due to memory) are marked with a grey bar.
+The exact times can be found in appendix \ref{appendix:resultsexact}, in this section the results are visualized and presented in a way such that we can easily compare independent and collective approaches. We have four independent approaches:
+\begin{itemize}
+	\item Recursive algorithm (global),
+	\item Recursive algorithm (local),
+	\item fixed-point iteration (global) and
+	\item fixed-point iteration (local).
+\end{itemize}
+For every set of problems we present four charts; for every independent approaches we present a chart where its performance is compared to one or two collective algorithms. We compare the performance of recursive algorithm for VPGs with the the performance of the original recursive algorithm and the performance of the incremental pre-solve algorithm with the performance of the fixed-point iteration algorithm. In every chart the solve times are divided by the independent solve times to visualize how much better or worse the collective variants performance.
 
+The following legend holds for all charts presented in this section:
+\begin{itemize}[\ ]
+	\item Independent approaches:
+	\begin{itemize}[\ ]
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[line width=2pt,color=cyan] (19,20) edge (20,20);
+\end{tikzpicture}} Recursive algorithm for parity games (global)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[line width=2pt,color=violet] (19,20) edge (20,20);
+\end{tikzpicture}} Fixed-point iteration algorithm for parity games (global)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+	\path[dashed,line width=2pt,color=cyan] (19,20) edge (20,20);
+	\end{tikzpicture}} Recursive algorithm for parity games (local)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+	\path[dashed,line width=2pt,color=violet] (19,20) edge (20,20);
+	\end{tikzpicture}} Fixed-point iteration algorithm for parity games (local)
+\end{itemize}
+\item Collective approaches:
+\begin{itemize}[\ ]
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[line width=2pt,color=green] (19,20) edge (20,20);
+\end{tikzpicture}} Recursive algorithm for VPGs with a symbolic representation of configurations (global)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[line width=2pt,color=red] (19,20) edge (20,20);
+\end{tikzpicture}} Recursive algorithm for VPGs with an explicit representation of configurations (global)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[line width=2pt,color=orange] (19,20) edge (20,20);
+\end{tikzpicture}} Incremental pre-solve algorithm (global)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[dashed,line width=2pt,color=green] (19,20) edge (20,20);
+\end{tikzpicture}} Recursive algorithm for VPGs with a symbolic representation of configurations (local)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[dashed,line width=2pt,color=red] (19,20) edge (20,20);
+\end{tikzpicture}} Recursive algorithm for VPGs with an explicit representation of configurations (local)
+\item \raisebox{.7\height}{\begin{tikzpicture}
+\path[dashed,line width=2pt,color=orange] (19,20) edge (20,20);
+\end{tikzpicture}} Incremental pre-solve algorithm (local)
+\end{itemize}
+\end{itemize}
 All the experiments are ran on a Linux x64 operating system with an Intel i5-4570 processor and 8GB of DDR3 RAM.
-\subsection{Zielonka's family based}
-First we compare the running times of the Zielonka's family based approaches with the Zielonka's product based approach. First we look at the model verification games.
+\subsection{Model checking examples}
+Figures \ref{fig:results_minepump} and \ref{fig:results_elevator} show the solving times of the algorithms when applied to the model checking examples.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
-	\caption{Running time of Zielonka's algorithms on the minepump problem}
-	\label{fig:minepumpzlnks}
+	\centering
+	\begin{multicols}{2}
+		\input{"results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}\\\vfill
+		\input{"results/minepump/Zlnk local product based_Zlnk fam based - explicit local_Zlnk fam based - symbolic local_"}\\
+		\input{"results/minepump/Fixed-point product based_Incremental pre-solve_"}\\\vfill
+		\input{"results/minepump/Fixed-point local product based_Incremental pre-solve local_"}
+	\end{multicols}
+	\caption{Running times on the minepump games, times are normalized}
+	\label{fig:results_minepump}
 \end{figure}%
+For the minepump example we see that the recursive algorithm for VPGs using a symbolic representation of configurations performs particularly well. For the elevator example we find a similar result, however for these games we also find a good performance for the incremental pre-solve algorithm. There is no clear difference between the relative performances of the global algorithms and the local algorithms.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/elevator/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
-	\caption{Running time of Zielonka's algorithms on the elevator problem}
-	\label{fig:elevatorzlnks}
+	\centering
+	\begin{multicols}{2}
+		\input{"results/elevator/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}\\\vfill
+		\input{"results/elevator/Zlnk local product based_Zlnk fam based - explicit local_Zlnk fam based - symbolic local_"}\\
+		\input{"results/elevator/Fixed-point product based_Incremental pre-solve_"}\\\vfill
+		\input{"results/elevator/Fixed-point local product based_Incremental pre-solve local_"}
+	\end{multicols}
+	\caption{Running times on the elevator games, times are normalized}
+	\label{fig:results_elevator}
 \end{figure}%
-We can see that the performance of the explicit variant varies a lot between games. The symbolic variant greatly outperforms the product based approach for every problem.
 
-Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized.
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/FF_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
-\caption{Running time of Zielonka's algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-\label{fig:elevatorzlnks}
-\end{figure}%
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/FC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
-\caption{Running time of Zielonka's algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-\label{fig:elevatorzlnks}
-\end{figure}%
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/BC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
-\caption{Running time of Zielonka's algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-\label{fig:elevatorzlnks}
-\end{figure}%
-For type 1 games we see that when $\lambda$ gets bigger the family based symbolic approach starts winning from the product based approach. There are a few exceptions to this, games 80, 82 and 86, all three of these games have only 4 features. As we will see later the less features there are in a game the worse the family based approaches perform.
+\subsection{Random games}
+Figure \ref{fig:results_type1} shows the performance of the algorithms on type 1 games. The recursive algorithms for VPGs performans quite well, even though there are a few instances where the performance is worse that the independent approach. The symbolic variant performs quite a bit better than the explicit variant. The relative performance of the local variants of the recursive algorithms is about the same as the relative performance of the global variants. 
 
-For type 2 the explicit variant performs very similar to the type 1 games, however the symbolic approach performs much worse. This is due to the unstructured nature of the configuration sets which negatively influences bdd performance but has no effect on the explicit set operations. We also see the explicit algorithm outperforming the symbolic algorithm in some cases.
-
-For type 3 games the product based approach performs generally better than the family based approaches unless $\lambda$ becomes very high.
-
-Next we inspect how the algorithms scales in terms of number of features
+For the incremental pre-solve algorithm we do see a big difference between a local and global approach. The global variant performs well only for games 90 and up. The local variant, however, performs well for nearly all the games. Furthermore, even for the games where the global variant performs well does the local variant perform even better.
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{"results/randomscalegames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_.svg"}
-\caption{Running time of Zielonka's algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
-\label{fig:elevatorzlnks}
+	\centering
+	\begin{multicols}{2}
+		\input{"results/FF_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}\\
+		\input{"results/FF_randomgames/Zlnk local product based_Zlnk fam based - explicit local_Zlnk fam based - symbolic local_"}\\
+		\input{"results/FF_randomgames/Fixed-point product based_Incremental pre-solve_"}\\
+		\input{"results/FF_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
+	\end{multicols}
+	\caption{Running times on random games of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
+	\label{fig:results_type1}
 \end{figure}%
-We can clearly conclude that as the number of features increases the family based symbolic approach performs better compared to the product based approach.
-
-Overall we can conclude that the explicit algorithm performs somewhat arbitrary, however the symbolic algorithm performs really well for model checking problems and random games that have similar properties. Also we can conclude that the algorithms scales well in terms of number of features.
 
 
-\subsection{Incremental pre-solve algorithm}
-We compare the running times of the incremental pre-solve approaches with the fixed-point iteration product based algorithm. First we look at the model verification games.
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point product based_Incremental pre-solve_.svg"}
-	\caption{Running time of the incremental pre-solve algorithms on the minepump problem}
-	\label{fig:minepumpzlnks}
-\end{figure}%
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/elevator/Fixed-point product based_Incremental pre-solve_.svg"}
-	\caption{Running time of the incremental pre-solve algorithms on the elevator problem. Game 3, 4 and 5 were not able to be finished }
-	\label{fig:elevatorzlnks}
-\end{figure}%
-The incremental pre-solve algorithms does not show any significant improvements over the product based fixed-point algorithm.
+Figure \ref{fig:results_type2} shows the performance of the algorithms on type 1 games. For the recursive algorithms we see that the explicit variant takes over from the symbolic variant. This is to be expected since these games have edge guards that are not created from features but created by picking random configurations. Both variant still perform somewhat better than the independent approach. Again we do not find a significant difference between the global and local approach.
 
-Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized.
+For the incremental pre-solve algorithm we find a similar result as with type 1 games. The global variant performs well only when $\lambda$ is high. The local variant performs significantly better and performs well for almost all games.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Fixed-point product based_Incremental pre-solve_.svg"}
-	\caption{Running time of the incremental pre-solve algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-	\label{fig:type1FPIteglobal}
+	\centering
+	\begin{multicols}{2}
+		\input{"results/FC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}\\
+		\input{"results/FC_randomgames/Zlnk local product based_Zlnk fam based - explicit local_Zlnk fam based - symbolic local_"}\\
+		\input{"results/FC_randomgames/Fixed-point product based_Incremental pre-solve_"}\\
+		\input{"results/FC_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
+	\end{multicols}
+	\caption{Running times on random games of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
+	\label{fig:results_type2}
 \end{figure}%
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Fixed-point product based_Incremental pre-solve_.svg"}
-	\caption{Running time of incremental pre-solve algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Fixed-point product based_Incremental pre-solve_.svg"}
-	\caption{Running time of incremental pre-solve algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-For type 1 and type 2 games we see that when $\lambda$ gets bigger the incremental pre-solve start performing better, however it this trends only appears when $\lambda$ get larger than about $0.95$.
 
-Again we see that for type 3 games the family based algorithm performs worse.
+Figure \ref{fig:results_type3} shows the performance of the algorithms on type 3 games. For these games we see the symbolic variant of the recursive algorithm performing worse that the independent approach for almost all games. The explicit variant still performs significantly better that the symbolic variant and performs somewhat better than the independent approach. Again we do not find a significant difference between the global and local approach.
 
-Next we inspect how the algorithms scales in terms of number of features
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/randomscalegames/Fixed-point product based_Incremental pre-solve_.svg"}
-	\caption{Running time of incremental pre-solve algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-There is a downwards trend when it comes to the number of features, however it is quite inconsistent. Note that these games have $\lambda=0.92$. Which is lower than the threshold observed in Figure \ref{fig:type1FPIteglobal}.
+The global incremental pre-solve algorithm performs worse than the independent approach for almost all games. Notably for these games we do not find a significant increase in relative performance when using a local variant.
 
-Overall the performance is not a significant improvement on the product based approach.
-\subsection{Incremental pre-solve local algorithm}
-Next we again compare the incremental pre-solver with the fixed-point iteration product based approach, however this time we compare the local variants. We start with the model-checking games.
 \begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/minepump/Fixed-point local product based_Incremental pre-solve local_.svg"}
-	\caption{Running time of the incremental pre-solve local algorithms on the minepump problem}
-	\label{fig:minepumpzlnks}
+	\centering
+	\begin{multicols}{2}
+		\input{"results/BC_randomgames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}\\\vfill
+		\input{"results/BC_randomgames/Zlnk local product based_Zlnk fam based - explicit local_Zlnk fam based - symbolic local_"}\\
+		\input{"results/BC_randomgames/Fixed-point product based_Incremental pre-solve_"}\\\vfill
+		\input{"results/BC_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
+	\end{multicols}
+	\caption{Running times on random games of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
+	\label{fig:results_type3}
 \end{figure}%
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/elevator/Fixed-point local product based_Incremental pre-solve local_.svg"}
-	\caption{Running time of the incremental pre-solve local algorithms on the elevator problem}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-Generally the performance of the incremental pre-solver local algorithm is better, also games 3, 4 and 5 for the elevator problem were solved which was not the case for the global algorithm.
 
-Next we inspect the random games, first we look at the games with a variable $\lambda$ and a random number of features. The graphs are normalized.
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FF_randomgames/Fixed-point local product based_Incremental pre-solve local_.svg"}
-	\caption{Running time of the incremental pre-solve local algorithms on randomgames of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/FC_randomgames/Fixed-point local product based_Incremental pre-solve local_.svg"}
-	\caption{Running time of incremental pre-solve local algorithms on randomgames of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/BC_randomgames/Fixed-point local product based_Incremental pre-solve local_.svg"}
-	\caption{Running time of incremental pre-solve local algorithms on randomgames of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-For type 1 games the local incremental pre-solve algorithm greatly outperforms the product based approach, for type 2 games this is still the case but we can see differences becoming a bit smaller. Finally for type 3 games it only outperforms the product based approach when $\lambda$ gets sufficiently high.
+\subsection{Scaling}
+Figure \ref{fig:results_scalegames} shows the performance of the algorithms on type 1 games, the number of configurations increase exponentially in the x-axis of the charts. For the recursive algorithm we see that the collective approach starts outperforming the independent approach around $2^4$ configurations. As the number of configurations grow we see that the symbolic variant keeps increasing in relative performance while the explicit variants relative performance starts to flatten. This is to be expected because the performance of the explicit variant always scales linearly in the number of configurations. In the worst case the symbolic variant scales quadratically in the number of configurations, however when the sets of configurations can be represented efficiently it scales much better and in this case sublinear (since the performance of the local variant keeps increasing relative to the explicit variant).
 
-Next we inspect how the algorithms scales in terms of number of features
-\begin{figure}[H]
-	\includegraphics[width=1\linewidth]{"results/randomscalegames/Fixed-point local product based_Incremental pre-solve local_.svg"}
-	\caption{Running time of incremental pre-solve local algorithms on randomgames of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
-	\label{fig:elevatorzlnks}
-\end{figure}%
-Clearly the performance improves when the number of features becomes larger.
+The global incremental pre-solve algorithms does not increase notably in relative performance when the number of configurations increases. However the relative performance of the local variant does increase in performance when the number of configurations increases. The recursion of the incremental pre-solve algorithm can be conceptualized as a tree where at every node the algorithm tries to increase the pre-solved vertices. The local variant can terminate when at some node the vertex that is being locally solved is found. In such a case the whole subtree of that node is longer computed. When the number of configurations grow then potentially the size of this subtree also grows. The fact that the local incremental pre-solve algorithm scales well in the number of configurations is most likely because the algorithm can terminate early for a relatively large set of configurations.
 
-We can conclude that for model-checking games the algorithm performs decent, however the biggest improvements are seen on random games.
+\begin{figure}[H]
+	\centering
+	\begin{multicols}{2}
+		\input{"results/randomscalegames/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}\\\vfill
+		\input{"results/randomscalegames/Zlnk local product based_Zlnk fam based - explicit local_Zlnk fam based - symbolic local_"}\\
+		\input{"results/randomscalegames/Fixed-point product based_Incremental pre-solve_"}\\\vfill
+		\input{"results/randomscalegames/Fixed-point local product based_Incremental pre-solve local_"}
+	\end{multicols}
+	\caption{Running times on random games of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
+	\label{fig:results_scalegames}
+\end{figure}%
+
 \subsection{Comparison}
-After comparing family based and product based variants of the same algorithm we compare the algorithms overall. We do so by comparing the mean solve time of every set of games.
+From the experimental results we observe that the symbolic variant of the recursive algorithms for VPGs performs well for the model verification problems. For type 1 random games it also performs well and particularly scales very well in the number of configurations. For type 2 and 3 games the sets of configurations can no longer be efficiently represented symbolically. Earlier we hypothesised that the recursive algorithm for VPGs could perform well if we can attract many configurations simultaneously. For every VPG we measure the average number of configurations that were attracted simultaneously. We measure this relative to the total number of configurations in the VPG. This gives a number for every VPG. For every set of VPGs we average this number to get an average set size for every problem set that indicates how many configuration were attracted simultaneously. These values are presented in Table \ref{tab_attracted_set_size}. We see that this number somewhat predicts the performance of the recursive algorithms.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		minepump& 46\%\\ \hline
+		elevator& 76\%\\ \hline
+		FF randomgames& 61\%\\ \hline
+		FC randomgames& 55\%\\ \hline
+		BC randomgames& 22\%\\ \hline
+		randomscalegames& 72\%\\ \hline
+	\end{tabular}
+	\caption{Relative size of attracted sets}
+	\label{tab_attracted_set_size}
+\end{table}
+
+After comparing independent and collective approaches we compare the performances of the algorithms overall.
 
 First we compare the independent algorithms. Table \ref{tab_compare_independent_algs} shows for every set of VPGs how long on average it took each algorithm to solve a VPG in that set.
 \begin{table}[h]
@@ -158,14 +180,15 @@ First we compare the independent algorithms. Table \ref{tab_compare_independent_
 		\hline
 		minepump& 113 ms& 97 ms& 4606 ms& 4474 ms\\ \hline
 		elevator& 35062 ms& 28399 ms& 9733571 ms& 1707949 ms\\ \hline
-		FF randomgames& 314 ms& 288 ms& 64119 ms& 47106 ms\\ \hline
-		FC randomgames& 312 ms& 288 ms& 53218 ms& 39947 ms\\ \hline
-		BC randomgames& 318 ms& 307 ms& 44561 ms& 36483 ms\\ \hline
-		randomscalegames& 756 ms& 697 ms& 75579 ms& 43983 ms\\ \hline
+		FF randomgames& 75 ms& 69 ms& 3241 ms& 3108 ms\\ \hline
+		FC randomgames& 75 ms& 71 ms& 4626 ms& 4502 ms\\ \hline
+		BC randomgames& 74 ms& 77 ms& 3866 ms& 3213 ms\\ \hline
+		randomscalegames& 590 ms& 529 ms& 11641 ms& 7295 ms\\ \hline
 	\end{tabular}
 	\caption{Comparison of independent algorithms}
 	\label{tab_compare_independent_algs}
 \end{table}
+
 
 In table \ref{tab_compare_collective_algs} we compare the performance of the collective algorithms.
 \begin{table}[h]
@@ -179,10 +202,10 @@ In table \ref{tab_compare_collective_algs} we compare the performance of the col
 		\\ \hline
 		minepump& 112 ms& 103 ms& 16 ms& 15 ms& 1153 ms& 671 ms\\ \hline
 		elevator& 105856 ms& 36380 ms& 6674 ms& 5337 ms& 1065377 ms& 378460 ms\\ \hline
-		FF randomgames& 324 ms& 329 ms& 3489 ms& 3488 ms& 28900 ms& 22716 ms\\ \hline
-		FC randomgames& 506 ms& 514 ms& 50286 ms& 47707 ms& 118559 ms& 108023 ms\\ \hline
-		BC randomgames& 540 ms& 535 ms& 38619 ms& 37885 ms& 145491 ms& 128929 ms\\ \hline
-		randomscalegames& 28 ms& 24 ms& 2 ms& 2 ms& 1727 ms& 594 ms\\ \hline
+		FF randomgames& 7 ms& 6 ms& 4 ms& 4 ms& 455 ms& 267 ms\\ \hline
+		FC randomgames& 9 ms& 8 ms& 109 ms& 104 ms& 3164 ms& 833 ms\\ \hline
+		BC randomgames& 26 ms& 26 ms& 624 ms& 630 ms& 9238 ms& 5423 ms\\ \hline
+		randomscalegames& 20 ms& 18 ms& 2 ms& 2 ms& 1009 ms& 15 ms\\ \hline
 	\end{tabular}
 	\caption{Comparison of collective algorithms}
 	\label{tab_compare_collective_algs}
