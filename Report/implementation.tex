@@ -2,10 +2,10 @@ The algorithms are implemented in C++ version 14 and use BuDDy\footnote{\label{n
 
 The implementation is split in three phases: parsing, solving and solution printing. The solving part contains the implementations of the algorithms presented. The parsing and solution printing parts are implemented trivially and hardly optimized, their running times are not considered in the experimental evaluation.
 
-The parsing phase of the algorithm creates BDDs from the input file, in doing so parts of the BDD cache gets filled. After parsing the BDD cache is cleared to make sure that the work done in the solving phase corresponds with the algorithms presented and no work to assist it has been done prior to this phase.
+The parsing phase of the algorithm creates BDDs from the input file, in doing so parts of the BDD cache gets filled. After parsing the BDD cache is cleared to make sure that the work done in the solving phase corresponds with the algorithms presented and no work to assist it has been done prior to this phase. Creating BDDs is not a trivial task, however one could argue that an FTS should already express its transition guards as BDDs. In any case, we leave the creation of BDDs out of scope.
 
 \subsection{Game representation}
-The graph is represented by using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge. Sets of configurations are either represented symbolically or explicitly. In the former case we use BDDs, in the latter case we use bit-vectors. For independent algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
+The graph is represented using adjacency lists for incoming and outgoing edges, furthermore every edge maps to a set of configurations representing the $\theta$ value for the edge. Sets of configurations are either represented symbolically or explicitly. In the former case we use BDDs, in the latter case we use bit-vectors. For independent algorithms the edges are not mapped to sets of configurations. Finally sets of vertices are represented using bit-vectors.
 
 Note that only the representation of the games used during the algorithm is relevant, since we do not evaluate the parsing phase it is not relevant how the games are stored in a file.
 \subsection{Independent algorithms}
@@ -37,6 +37,6 @@ Six collective algorithms are implemented, i.e. algorithms for solving VPGs. A g
 \end{itemize}
 The incremental pre-solve algorithms use the fixed-point iteration algorithm as described above to solve the (pessimistic) parity games. When using the incremental pre-solve algorithm we apply priority compression once, directly on the VPG. Since the (pessimistic) parity games that are created during the algorithm have the same vertices as the VPG we do not have to apply priority compression again when using the fixed-point iteration algorithm to solve them.
 
-The incremental pre-solve algorithm splits creates subgames by splitting the set of configurations. The games we evaluate are based on features, we simply split the set of configurations by choosing a feature arbitrarily and requiring this feature in one set of configurations and excluding this feature in the other set of configurations.
+The incremental pre-solve algorithm creates subgames by splitting the set of configurations. The games we evaluate are based on features, we simply split the set of configurations by choosing a feature arbitrarily and requiring this feature in one set of configurations and excluding this feature in the other set of configurations.
 \subsection{Random verification}
 In order to prevent implementation mistakes 200 VPGs are created randomly, every VPG is projected to all its configurations to get a set of parity games. These parity games are solved using the PGSolver tool \cite{Friedmann2010ThePC}. All algorithms implemented are used to solve the 200 VPGs independently and collectively, the solutions are compared to the solutions created by the PGSolver.
