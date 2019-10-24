@@ -1,17 +1,19 @@
 We evaluate the performance of the algorithms on numerous test cases. We have two model checking problems as well as random VPGs. The model checking VPGs are created as described in chapter \ref{part:verifying}, with the exception that only vertices are added when they are reachable from the initial vertex. So these games are never disjointed, random games can be disjointed.
 
 \subsection{Model checking games}
-We use two software product line examples, first the minepump example as described in \cite{Kramer1983CONICAI} and implemented in the mCRL2 toolset as described in \cite{FamBasedModelCheckingWithMCRL2}. The minepump example models the behaviour of controllers for a pump that pumps water out of a mineshaft. There are 10 different features that change the way the sensors/actors behave. In total there are 128 valid feature assignments, i.e. products. 
+We use two SPL examples, first the minepump example as described in \cite{Kramer1983CONICAI} and implemented in the mCRL2 toolset as described in \cite{FamBasedModelCheckingWithMCRL2}. The minepump example models the behaviour of controllers for a pump that pumps water out of a mineshaft. There are 10 different features that change the way the sensors/actors behave. In total there are 128 valid feature assignments, i.e. products. 
 
-The mCRL2 implementation creates an LTS with parametrized actions, the parameters describe the boolean formula's guarding the transitions, effectively making it an FTS. This FTS is interpreted in combination with nine different $\mu$-calculus formula's to create nine VPGs. The model uses 10 features, however only 128 feature assignments are valid. The FTS consists of 582 states and 1376 transitions. The resulting VPGs have on average 6600 vertices per game. Note that our implementation still creates BDDs using 10 boolean variables even though 7 would be enough to represent 128 configurations. By using the same number of variables as there are features the boolean formula's from the FTS are left intact when using them in the VPG.
+The mCRL2 implementation creates an LTS with parametrized actions, the parameters describe the boolean formula's guarding the transitions, effectively making it an FTS consisting of 582 states and 1376 transitions. This FTS is interpreted in combination with nine different $\mu$-calculus formulas to create nine VPGs.
 
-\begin{table}[]
+We choose to represent the sets of configurations using 10 boolean variables even though 128 configurations could be represented using only 7 boolean variables. By using the same number of variables as there are features the boolean formula's from the FTS are left intact when using them in the VPG. Table \ref{tab_minepump_formulas} shows the different formula's, as well as the result of the verification and the size of the resulting games. All the properties can be expressed in the modal $\mu$-calculus we introduced in Definition \ref{def_mu_syntax},. However, for readability, we present them using action formula's, regular formula's and universal quantifiers  \cite{Groote}. Table \ref{tab_minepump_formulas} is largely identical to the table with results from \cite{FamBasedModelCheckingWithMCRL2}.
+
+\begin{table}[h]
 	\centering
 	\begin{tabularx}{\linewidth}{|c|L|c|c|c|}
 		\hline
-		& formula & 0/1 & $n$ & $d$ \\ \hline
+		& formula & \textbf{t}/\textbf{f} & $n$ & $d$ \\ \hline
 		
-		\multirow{2}{*}{$\varphi_1$} & \textit{Absence of deadlock}& \multirow{2}{*}{$128/0$} & \multirow{2}{*}{3494} & \multirow{2}{*}{1}\\
+		\multirow{2}{*}{$\varphi_1$} & \textit{Absence of deadlock}& \multirow{2}{*}{$128/0$} & \multirow{2}{*}{3494} & \multirow{2}{*}{2}\\
 		& $[\textbf{true}^*]\langle \textbf{true} \rangle \top$ &  & & \\ \hline
 		
 		\multirow{2}{*}{$\varphi_2$}& \textit{The controller cannot infinitely often receive water level readings}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{3004} & \multirow{2}{*}{3} \\
@@ -36,20 +38,70 @@ The mCRL2 implementation creates an LTS with parametrized actions, the parameter
 		 \multirow{3}{*}{$\varphi_7$} & \textit{The controller can always eventually receive/read a message, i.e. it can return to its initial state from any state} &  \multirow{3}{*}{$128/0$} & \multirow{3}{*}{5285} &  \multirow{3}{*}{3}\\
 		& $[\textbf{true}^*]\langle \textbf{true}^*.\textit{receiveMsg}\rangle \top$& & &\\ \hline
 		
-		\multirow{2}{*}{$\varphi_8$}& \textit{Invariantly the pump is not started when the low water level signal fires}& \multirow{2}{*}{$128/0$} & \multirow{2}{*}{3902} & \multirow{2}{*}{1}\\
+		\multirow{2}{*}{$\varphi_8$}& \textit{Invariantly the pump is not started when the low water level signal fires}& \multirow{2}{*}{$128/0$} & \multirow{2}{*}{3902} & \multirow{2}{*}{2}\\
 		& $[\textbf{true}^*.\textit{lowLevel}.(\neg(\textit{normalLevel}+\textit{highLevel}))^*.\textit{pumpStart}]\bot$ & & &\\ \hline
 		
 		\multirow{2}{*}{$\varphi_9$} & \textit{Invariantly, when the level of methane rises, it inevitably decreases}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{5418} & \multirow{2}{*}{3}\\
 		& $[\textbf{true}^*.\textit{methaneRise}] \mu X.[\neg \textit{methaneLower}] X \wedge \langle \textbf{true} \rangle \top$ & & &\\ \hline
 	\end{tabularx}
-	\caption{Minepump properties with its partitioning and the size of the resulting VPG. Parts of the table is taken from \cite{FamBasedModelCheckingWithMCRL2}}
+	\caption{Minepump properties with their partitioning and the size of the resulting VPG. In the \textbf{t}/\textbf{f} columns the first number shows for how many products the property holds. Columns $n$ and $d$ shows the number of vertices and distinct priorities in the resulting VPG. A large part of the table is taken from \cite{FamBasedModelCheckingWithMCRL2}}
 	\label{tab_minepump_formulas}
 \end{table}
 
 
-Next we have the elevator example, described in \cite{PLATH200153}. This example models the behaviour of an elevator where five different features modify the behaviour of the model. All feature assignments are valid. Therefore we have $2^5 = 32$ feature assignments, i.e. products. Again an mCRL2 implementation\footnote{\label{note1}https://github.com/SjefvanLoo/VariabilityParityGames/blob/master/implementation/Elevator.tar.gz} (created by T.A.C. Willemse) is used to create seven VPGs. The FTS consists 95591 states and 622265 transitions. The resulting VPGs have on average 3659210 vertices per game. 
-
-Partitioning: 0/32 for all games
+Next we have the elevator example, described in \cite{PLATH200153}. This example models the behaviour of an elevator where five different features modify the behaviour of the model. All feature assignments are valid. Therefore, we have $2^5 = 32$ feature assignments, i.e. products. Again an mCRL2 implementation\footnote{\label{note1}https://github.com/SjefvanLoo/VariabilityParityGames/blob/master/implementation/Elevator.tar.gz} (created by T.A.C. Willemse) is used to create seven VPGs. The FTS consists 33738 states and 206290 transitions. Table \ref{tab_elevator_formulas} shows the different formula's, as well as the result of the verification and the size of the resulting games.
+\begin{table}[h]
+	\centering
+	\begin{tabularx}{\linewidth}{|c|L|c|c|c|}
+		\hline
+		& formula & \textbf{t}/\textbf{f} & $n$ & $d$ \\ \hline
+		
+		\multirow{4}{*}{$\varphi_1$} & \textit{If a landing button is pressed at Level i, the lift will inevitably open its doors on Level i}& \multirow{4}{*}{$2/30$} & \multirow{4}{*}{1379959} & \multirow{4}{*}{3}\\
+		& $[\textbf{true}^*]\forall i \in [1,5]. [\textit{landingButton}(i)](\mu X. ([\neg \textit{open}(i)]X \wedge \langle\textbf{true}\rangle\top)$ )
+		 &  & & \\ \hline
+		
+		
+		\multirow{3}{*}{$\varphi_2$} & \textit{If a lift button is pressed at Level i, the lift will inevitably open its doors on Level i}& \multirow{3}{*}{$4/28$} & \multirow{3}{*}{1381390} & \multirow{3}{*}{3}\\
+		& $[\textbf{true}^*]\forall i\in [1,5]. [\textit{liftButton}(i)](\mu X. ([\neg \textit{open}(i)]X \wedge \langle\textbf{true}\rangle\top) )$ &  & & \\ \hline
+		
+		\multirow{7}{*}{$\varphi_3$} & \textit{If the lift is travelling up while there are calls in that direction it will not change the direction it is travelling}& \multirow{7}{*}{$4/28$} & \multirow{7}{*}{1778065} & \multirow{7}{*}{3}\\
+		& $[\textbf{true}^*]($& & & \\
+		&\ \ \ $[\textit{direction}(\textit{up}).(\neg  (\textit{direction}(\textit{down}) + \exists k \in [1,5]. \textit{open}(k)))^*]$ & & &\\
+		&\ \ \ $\forall i\in [1,5].[\textit{open}(i)]\forall j \in [i+1,5].$ & & & \\
+		&\ \ \ \ \ \ $[\textit{liftButton}(j)]\mu Y. ($ & & & \\
+		&\ \ \ \ \ \ \ \ \ $ [\neg \textit{open}(j)]Y \wedge [\textit{direction}(\textit{down})]\textbf{false} \wedge \langle\textbf{true}\rangle\top )
+		)$ &  & & \\ \hline
+		
+		\multirow{7}{*}{$\varphi_4$} & \textit{If the lift is travelling down while there are calls in that direction it will not change the direction it is travelling}& \multirow{7}{*}{$4/28$} & \multirow{7}{*}{1853633} & \multirow{7}{*}{3}\\
+		& $[\textbf{true}^*]($ & & &\\
+		&\ \ \ $[\textit{direction}(\textit{down}).(\neg  (\textit{direction}(\textit{up}) + \exists k \in [1,5]. \textit{open}(k)))^*]$ & & &\\
+		&\ \ \ $\forall i:\in [1,5].[\textit{open}(i)]\forall j\in [1,i-1].$ & & & \\
+		&\ \ \ \ \ \ $[\textit{liftButton}(j)]\mu Y. ($ & & & \\
+		&\ \ \ \ \ \ \ \ \ $ [\neg \textit{open}(j)]Y \wedge [\textit{direction}(\textit{up})]\textbf{false} \wedge \langle\textbf{true}\rangle\top )
+	)$ &  & & \\ \hline
+		
+		\multirow{3}{*}{$\varphi_5$} & \textit{If the lift is idling on Level i, it can remain at Level i
+		}& \multirow{3}{*}{$16/16$} & \multirow{3}{*}{1282147} & \multirow{3}{*}{2}\\
+		& $(\forall i\in [1,5]. \langle\textbf{true}*. idling(i)\rangle\top )
+		\wedge$ & & & \\
+		& $[ \textbf{true}^*] \forall i\in [1,5]. [ idling(i) ] \nu Y. \langle idling(i)\rangle Y$ &  & & \\ \hline
+		
+		\multirow{4}{*}{$\varphi_6$} & \textit{The lift may stop at Levels 2,3 and 4 for landing calls when travelling upwards}& \multirow{4}{*}{$32/0$} & \multirow{4}{*}{443352} & \multirow{4}{*}{2}\\
+		& $\forall i \in [2,4].(\langle (\neg \textit{liftButton}(i))^*. \textit{direction}(\textit{up}).$ & & &\\
+		&\ \ \  $ (\neg (\textit{liftButton}(i) + \textit{direction}(\textit{down})  ))^*. \textit{open}(i)\rangle\top
+		)
+		$ &  & & \\ \hline
+		
+		\multirow{4}{*}{$\varphi_7$} & \textit{The lift may stop at Levels 2,3 and 4 for landing calls when travelling downwards}& \multirow{4}{*}{$32/0$} & \multirow{4}{*}{443012} & \multirow{4}{*}{2}\\
+		& $\forall i \in [2,4].
+		(
+		\langle (\neg \textit{liftButton}(i))^*. \textit{direction}(\textit{down}).$ & & &\\
+		&\ \ \ $ (\neg (\textit{liftButton}(i) + \textit{direction}(\textit{up})  ))^*. \textit{open}(i)\rangle\top
+		)$ &  & & \\ \hline
+	\end{tabularx}
+	\caption{Elevator properties with their partitioning and the size of the resulting VPG. In the \textbf{t}/\textbf{f} columns the first number shows for how many products the property holds. Columns $n$ and $d$ shows the number of vertices and distinct priorities in the resulting VPG.}
+	\label{tab_elevator_formulas}
+\end{table}
 \subsection{Random games}
 Random VPGs can be created by creating a random parity game and create sets of configurations that guard the edges. For these sets we need to consider two factors: how large are the sets guarding the edges and how are they constructed.
 
@@ -109,30 +161,30 @@ Figures \ref{fig:dist_lambda50}, \ref{fig:dist_lambda75} and \ref{fig:dist_lambd
 \label{fig:dist_lambda90}
 \end{figure}
 
-Once we have determined the size for a configuration set we need to consider how the set is constructed. We can simply create a random set of configurations without any notion of features, we call this a \textit{configuration based} approach. Alternatively we can use a \textit{feature based} approach where we create sets by looking at features. Consider features $f_0, \dots, f_m$, we can create a boolean function that is the conjunction of $k$ features where every feature in the conjunction has probability $0.5$ of being negated.  For example when using $k=3$ and $m=5$ we might get boolean formula $f_1 \wedge \neg f_2 \wedge \neg f_4$. Such a boolean formula corresponds to a set of configurations of size $2^{m-k}$ and a relative size $\frac{2^{m-k}}{2^m} = 2^{-k}$, so when creating a set with relative size $r$ we choose $k = \min(m, \lfloor -\log_2{r} \rfloor)$. When using a feature based approach we can only create sets that have a relative size of $\frac{1}{2^i}$ for some $i \in \mathbb{N}$.
+Once we have determined the size for a configuration set we need to consider how the set is constructed. We can simply create a random set of configurations without any notion of features, we call this a \textit{configuration based} approach. Alternatively we can use a \textit{feature based} approach where we create sets by looking at features. Consider features $f_0, \dots, f_m$, we can create a boolean function that is the conjunction of $k$ features where every feature in the conjunction has probability $\frac{1}{2}$ of being negated.  For example when using $k=3$ and $m=5$ we might get boolean formula $f_1 \wedge \neg f_2 \wedge \neg f_4$. Such a boolean formula corresponds to a set of configurations of size $2^{m-k}$ and a relative size $\frac{2^{m-k}}{2^m} = 2^{-k}$, so when creating a set with relative size $r$ we choose $k = \min(m, \lfloor -\log_2{r} \rfloor)$. When using a feature based approach we can only create sets that have a relative size of $2^{-i}$ for some $i \in \mathbb{N}$.
 
 We can create 4 types of games:
 \begin{enumerate}
 	\item Bernoulli distributed and feature based. These games are most similar to the model verification games.
 	\item Bernoulli distributed and configuration based. These games do have the characteristics of a model verification game in terms of set size but have unstructured sets guarding the edges. Furthermore with a configuration based approach less guard sets will be identical than with a feature based approach.
 	\item Beta distributed and configuration based. These games are most different from the model verification games.
-	\item Beta distributed and feature based. Games created in this way do not have the average relative set size of $\lambda$ because the feature based approach can only create sets of size $\frac{1}{2^i}$ for any $\lambda \geq \frac{1}{2}$ almost all the sets have either relative size $\frac{1}{2}$ or $1$, so  this creates almost the exact same games as using the Bernoulli distribution only with an incorrect average relative set size. Therefore we will not consider this category of games.
+	\item Beta distributed and feature based. Using a feature based approach we can only create sets of size $2^{-i}$ for any $\lambda \geq \frac{1}{2}$. So using a beta distribution we must round to such a size. Almost all the sets will get a relative size of either $\frac{1}{2}$ or $1$. So  this creates almost the exact same games as using the Bernoulli distribution, therefore we will not consider this category of games.
 \end{enumerate}
 
 We create four sets of random games. For random games of type 1,2 and 3 we create 25 games: game 75 to game 99, where game $i$ has $\lambda=\frac{i}{100}$ and a random number of features, nodes, edges and maximum priority. Furthermore we create 52 games to evaluate how the algorithm scales when the number of features becomes larger. For every $i \in [2,15]$ we create random games $i$a, $i$b, $i$c and $i$d of type 1 with $\lambda=0.92$, $i$ features and a random number of nodes, edges and maximum priority. 
 
-Besides the number of configurations and the value for $\lambda$ we need to choose the number of vertices for a game, the minimum number of successors of a vertex, the maximum number of successors of a vertex and the number of distinct priorities in the game. The number of minimum and maximum successor is decides per game. So if we pick $l$ and $h$ as the number of minimum and maximum respectively then for every vertex of the game we uniformly pick its number of successors between $l$ and $h$.
+Besides the number of configurations and the value for $\lambda$ we need to choose the number of vertices for a game, the minimum number of successors of a vertex, the maximum number of successors of a vertex and the number of distinct priorities in the game. The number of minimum and maximum successor is decides per game. So if we pick $l$ and $h$ as the number of minimum and maximum then for every vertex of the game we uniformly pick its number of successors between $l$ and $h$.
 
-Table \ref{tab_random_games} shows the different categories of games and the corresponding parameters. The minimum number of successors per vertex is always 1 so this value is omitted from the table.
+Table \ref{tab_random_games} shows the different categories of games and the corresponding parameters. The minimum number of successors per vertex is always 1 so this value is omitted from the table. The games that scale in $\lambda$ share the same random configuration per game number. So game $i$ of type 1 that scales in $\lambda$ has the same number of vertices, maximum successors, distinct priorities and configurations as game $i$ of type 2 and 3 that scale in $\lambda$.
 
 \begin{table}[]
 \centering
-	\begin{tabular}{|l|l|l|l|l|l|l|}
+	\begin{tabular}{|l|l|l|l|l|l|}
 		\hline
 		Category & \# vertices & \shortstack{Maximum \\\# successors} & \shortstack{\# distinct\\priorities} & \# confs  & $\lambda$ \\ \hline
-		Type 1, scale in $\lambda$ & $100-600$            & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
-		Type 2, scale in $\lambda$ & $100-600$            & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
-		Type 3, scale in $\lambda$ & $100-600$            & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \hline
+		Type 1, scale in $\lambda$ & & & & & \\ \cline{1-1}  
+		Type 2, scale in $\lambda$ &$100-600$  & $3-20$                   & $1-10$                          & $2^{4}-2^{12}$ & $\frac{\textit{game nr}}{100}$            \\ \cline{1-1} 
+		Type 3, scale in $\lambda$ & & & & & \\ \hline
 		Type 1, scale in \# confs          & $100-600$            &  $3-20$                   & $1-10$                          & $2^\textit{game nr}$                & $0.92$                   \\ \hline
 	\end{tabular}
 \caption{Categories of random games}
