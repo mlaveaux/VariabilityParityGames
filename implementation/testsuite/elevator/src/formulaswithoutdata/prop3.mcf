@@ -1,5 +1,4 @@
 [true*]
-  (
       [direction_up][!direction_down||open_1||open_2||open_3||open_4||open_5*] 
             ((([open_1](
                    [liftButton_2]
@@ -32,36 +31,3 @@
                    [liftButton_5]
                      mu Y. ( [!open_5]Y && ([direction_down]false && <true>true ))
             )
-  &&
-      [direction_down][!direction_up||open_1||open_2||open_3||open_4||open_5*] 
-            ((([open_2]
-                   [liftButton_1]
-                     mu Y. ( [!open_1]Y && ([direction_up]false && <true>true ))
-            &&
-            [open_3](
-                   [liftButton_1]
-                     mu Y. ( [!open_1]Y && ([direction_up]false && <true>true )) &&
-                   [liftButton_2]
-                     mu Y. ( [!open_2]Y && ([direction_up]false && <true>true ))
-                     )
-            ) &&
-            [open_4](
-                   [liftButton_1]
-                     mu Y. ( [!open_1]Y && ([direction_up]false && <true>true )) && (
-                   [liftButton_2]
-                     mu Y. ( [!open_2]Y && ([direction_up]false && <true>true )) &&
-                   [liftButton_3]
-                     mu Y. ( [!open_3]Y && ([direction_up]false && <true>true ))
-                     ) )
-            ) &&
-            [open_5](
-                   [liftButton_1]
-                     mu Y. ( [!open_1]Y && ([direction_up]false && <true>true )) && (
-                   [liftButton_2]
-                     mu Y. ( [!open_2]Y && ([direction_up]false && <true>true )) && (
-                   [liftButton_3]
-                     mu Y. ( [!open_3]Y && ([direction_up]false && <true>true )) &&
-                   [liftButton_4]
-                     mu Y. ( [!open_4]Y && ([direction_up]false && <true>true ))
-                     ) ) ) )
-  )
