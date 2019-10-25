@@ -647,7 +647,7 @@ An algorithm to perform the iteration is presented in \cite{FPITE} and shown in 
 \end{algorithm}
 
 \section{Symbolically representing sets}
-A set can straightforwardly be represented by a collection containing all the elements that are in the set. We call this an \textit{explicit} representation of a set. We can also represent sets \textit{symbolically} in which case the set of elements is represented by some sort of formula. A typical way to represent a set symbolically is through a boolean formula encoded in a \textit{binary decision diagram} \cite{BDD_book,Handbook_BDD_Chapter}. 
+A set can straightforwardly be represented by a collection containing all the elements that are in the set. We call this an \textit{explicit} representation of a set. We can also represent sets \textit{symbolically} in which case the set of elements is represented by some sort of formula. A typical way to represent a set symbolically is through a boolean formula encoded in a \textit{binary decision diagram} \cite{BDD_running_time,Handbook_BDD_Chapter}. 
 
 \begin{example}
 	\label{ex_boolform}
@@ -685,7 +685,7 @@ Given a set $S$ with arbitrary elements we can represent subsets $S' \subseteq S
 
 \subsection{Binary decision diagrams}
 \label{sec_prelim_bdd}
-A boolean function can efficiently be represented as a binary decision diagram (BDD). For a comprehensive treatment of BDDs we refer to \cite{BDD_book,Handbook_BDD_Chapter}.
+A boolean function can efficiently be represented as a binary decision diagram (BDD). For a comprehensive treatment of BDDs we refer to \cite{BDD_running_time,Handbook_BDD_Chapter}.
 
 BDDs represent boolean formula's as a directed graph where every vertex represents a boolean variable and has two outgoing edges labelled 0 and 1. Furthermore the graph contains special vertices $0$ and $1$ that have no outgoing edges. We decide if a boolean variable assignment satisfies the formula by starting in the initial vertex of the graph and following a path until we get to either vertex 0 or 1. Since every vertex represents a boolean formula, we can create a path from the initial vertex by choosing edge 0 at a vertex if the boolean variable represented by that vertex is false in the variable assignment and choosing edge 1 if is true. Eventually we end up in either vertex 0 or 1. In the former case the boolean variable assignment does not satisfy the formula, in the latter it does.
 

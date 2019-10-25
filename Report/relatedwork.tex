@@ -1,0 +1,14 @@
+Previous work has been done to verify SPL, we discuss four notable contributions.
+
+In \cite{CheckingLotsOfSystems} a method is introduced to verify for which products in an FTS an LTL property holds. It does so by constructing a B{\"u}chi automaton representing the complement of the LTL property and checking if the synchronous product of the automaton and the transition system has an empty language \cite{LTLusingAutomata}. When applying this method to verify LTSs the reachability of the synchronous product is explored. For FTSs \cite{CheckingLotsOfSystems} introduces a reachability definition that determines for every product if a state is reachable. It is observed that a symbolic representation of the sets of products is advantageous when keeping track of the reachability. The paper uses the minepump \cite{Kramer1983CONICAI} example to perform an experimental evaluation and find a substantial gain using verifying a family of products collectively as opposed to independently.
+
+This work is expended upon in \cite{FTSLTL}. The performance of such an approach is further elaborated upon and it is confirmed that a collective approach indeed outperforms an independent approach. Furthermore an extension to LTL is presented, namely featured LTL (fLTL). fLTL parametrizes LTL to be able to express properties in terms of features. Using this language one can distinguish between products when expressing temporal requirements.
+
+In \cite{FTSCTL} 
+
+Todo:
+\begin{itemize}
+	\item Featured languages: fLTL \cite{FTSLTL}, fCTL \cite{FTSCTL} and feature $\mu$-calculus \cite{FTSMu} and associated verification work.
+	\item Modal transition systems
+	\item I/O automata
+\end{itemize}
