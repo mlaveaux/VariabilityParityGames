@@ -160,7 +160,7 @@ From the experimental results we observe that the symbolic variant of the recurs
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
 		Minepump& 46\%\\ \hline
-		Elevator& 76\%\\ \hline
+		Elevator& 51\%\\ \hline
 		Type 1, scaling in $\lambda$& 61\%\\ \hline
 		Type 2, scaling in $\lambda$& 55\%\\ \hline
 		Type 3, scaling in $\lambda$& 22\%\\ \hline
@@ -180,12 +180,12 @@ First we compare the independent algorithms. Table \ref{tab_compare_independent_
 		& Recursive &Recursive & Fixed-point & Fixed-point\\
 		& global & local & global & local \\
 		\hline
-		Minepump& 113 ms& 97 ms& 4606 ms& 4474 ms\\ \hline
-		Elevator& 35062 ms& 28399 ms& 9733571 ms& 1707949 ms\\ \hline
-		Type 1, scaling in $\lambda$& 75 ms& 69 ms& 3241 ms& 3108 ms\\ \hline
-		Type 2, scaling in $\lambda$& 75 ms& 71 ms& 4626 ms& 4502 ms\\ \hline
-		Type 3, scaling in $\lambda$& 74 ms& 77 ms& 3866 ms& 3213 ms\\ \hline
-		Type 1, scaling in \# confs& 590 ms& 529 ms& 11641 ms& 7295 ms\\ \hline
+		Minepump& 113 ms& 97 ms& 1852 ms& 1775 ms\\ \hline
+		Elevator& 11374 ms& 9420 ms& 1061198 ms& 301363 ms\\ \hline
+		Type 1, scaling in $\lambda$& 75 ms& 69 ms& 2147 ms& 2056 ms\\ \hline
+		Type 2, scaling in $\lambda$& 75 ms& 71 ms& 2986 ms& 2900 ms\\ \hline
+		Type 3, scaling in $\lambda$& 74 ms& 77 ms& 2496 ms& 2048 ms\\ \hline
+		Type 1, scaling in \# confs& 590 ms& 529 ms& 7857 ms& 5359 ms\\ \hline
 	\end{tabular}
 	\caption{Comparison of independent algorithms}
 	\label{tab_compare_independent_algs}
@@ -201,15 +201,15 @@ In table \ref{tab_compare_collective_algs} we compare the performance of the col
 		& explicit &explicit & symbolic &symbolic & pre-solve &pre-solve\\
 		& global & local &global  & local & global & local
 		\\ \hline
-		Minepump& 112 ms& 103 ms& 16 ms& 15 ms& 1153 ms& 671 ms\\ \hline
-		Elevator& 105856 ms& 36380 ms& 6674 ms& 5337 ms& 1065377 ms& 378460 ms\\ \hline
-		Type 1, & \multirow{2}{*}{7 ms}& \multirow{2}{*}{6 ms} & \multirow{2}{*}{4 ms} & \multirow{2}{*}{4 ms} & \multirow{2}{*}{455 ms} & \multirow{2}{*}{267 ms}\\
+		Minepump& 112 ms& 103 ms& 16 ms& 15 ms& 658 ms& 359 ms\\ \hline
+		Elevator& 11542 ms& 11327 ms& 3706 ms& 3701 ms& 230301 ms& 183465 ms\\ \hline
+		Type 1, & \multirow{2}{*}{7 ms}& \multirow{2}{*}{6 ms} & \multirow{2}{*}{4 ms} & \multirow{2}{*}{4 ms} & \multirow{2}{*}{324 ms} & \multirow{2}{*}{541 ms}\\
 		scaling in $\lambda$& & & & & &\\ \hline
-		Type 2,& \multirow{2}{*}{9 ms} & \multirow{2}{*}{8 ms} & \multirow{2}{*}{109 ms} & \multirow{2}{*}{104 ms} & \multirow{2}{*}{3164 ms} & \multirow{2}{*}{833 ms} \\
+		Type 2,& \multirow{2}{*}{9 ms} & \multirow{2}{*}{8 ms} & \multirow{2}{*}{109 ms} & \multirow{2}{*}{104 ms} & \multirow{2}{*}{2695 ms} & \multirow{2}{*}{833 ms} \\
 		scaling in $\lambda$& & & & & &\\ \hline
-		Type 3,& \multirow{2}{*}{26 ms} & \multirow{2}{*}{26 ms} & \multirow{2}{*}{624 ms} & \multirow{2}{*}{630 ms} & \multirow{2}{*}{9238 ms} & \multirow{2}{*}{5423 ms}\\ 
+		Type 3,& \multirow{2}{*}{26 ms} & \multirow{2}{*}{26 ms} & \multirow{2}{*}{624 ms} & \multirow{2}{*}{630 ms} & \multirow{2}{*}{7742 ms} & \multirow{2}{*}{4131 ms}\\ 
 		scaling in $\lambda$& & & & & &\\ \hline
-		Type 1,& \multirow{3}{*}{20 ms} & \multirow{3}{*}{18 ms} & \multirow{3}{*}{2 ms} & \multirow{3}{*}{2 ms} & \multirow{3}{*}{1009 ms} & \multirow{3}{*}{15 ms} \\
+		Type 1,& \multirow{3}{*}{20 ms} & \multirow{3}{*}{18 ms} & \multirow{3}{*}{2 ms} & \multirow{3}{*}{2 ms} & \multirow{3}{*}{967 ms} & \multirow{3}{*}{12 ms} \\
 		scaling& & & & & &\\
 		in \# confs& & & & & &\\ \hline
 	\end{tabular}

@@ -19,7 +19,8 @@ public class Label {
         if(!parseFE || s == -1)
         {
             this.text = text;
-            this.featureExpression = FeatureDiagram.PrimaryFD.factory.one();
+            if(FeatureDiagram.PrimaryFD != null)
+                this.featureExpression = FeatureDiagram.PrimaryFD.factory.one();
         } else {
             int e = text.lastIndexOf(')');
             this.text = text.substring(0, s);

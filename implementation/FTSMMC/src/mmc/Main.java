@@ -144,21 +144,21 @@ public class Main {
         SVPG svpg = new SVPG(c.counter * fts.getStates().length + 2);
         formula.accept(new CreateSVPG(svpg, fts, fts.getStart(),null));
         svpg.makeInfinite();
-        for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
-        {
-            BDD product = FeatureDiagram.PrimaryFD.products.get(i);
-            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
-            String proj = svpg.projectToPG(product);
-            ArrayList<String> a = new ArrayList<String>();
-            a.add(proj);
-            try {
-                Files.write(Paths.get(directory, "sSVPG"+productString),
-                        a,
-                        Charset.forName("UTF-8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        for(int i = 0;i<FeatureDiagram.PrimaryFD.products.size();i++)
+//        {
+//            BDD product = FeatureDiagram.PrimaryFD.products.get(i);
+//            String productString = FeatureDiagram.PrimaryFD.productStrings.get(i);
+//            String proj = svpg.projectToPG(product);
+//            ArrayList<String> a = new ArrayList<String>();
+//            a.add(proj);
+//            try {
+//                Files.write(Paths.get(directory, "sSVPG"+productString),
+//                        a,
+//                        Charset.forName("UTF-8"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         try {
             Files.write(Paths.get(directory, "SVPG"),
