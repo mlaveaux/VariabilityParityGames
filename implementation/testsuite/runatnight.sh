@@ -1,9 +1,6 @@
 echo "Collect singles"
-data/singles/collect.sh  randomgames
+data/singles/collect.sh
 echo "Collect fam"
-data/family/collect.sh randomgames
-echo "Collect singles"
-data/singles/collect.sh  randomscalegames
-echo "Collect fam"
-data/family/collect.sh randomscalegames
+data/family/collect.sh
 
+echo done
