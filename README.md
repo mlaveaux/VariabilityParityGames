@@ -21,6 +21,7 @@ The algorithms and data structures used to solve the VPGs are implemented neatly
   * VPG-Collection.tar.gz contains the VPGs of all the experiments. Most of these VPGs can also be found in testsuite, however for convenience they are collected in this single file
   * Elevator.tar.gz contains the mcrl2 implementation of the Elevator example used in the experiments
 
+The VPG-Collection.tar.gz only contains the VPGs, use `VPGSolver_bdd VPGfile Qdirectory` to project *VPGfile* to all its configurations and store them in *directory*.
 ## Binaries
 The toolset to create VPGs is build in a single binary: FTSMMC.jar.
 
