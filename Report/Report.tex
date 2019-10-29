@@ -67,7 +67,6 @@
 \newcolumntype{L}{>{\raggedright\arraybackslash}X}
 \usepackage{multirow}
 
-
 \begin{document}
 	
 	\include{Titlepage}
@@ -88,21 +87,26 @@
 	\input{introduction}
 	
 	\chapter{Related work}
+	\label{chap_related}
 	\input{relatedwork}
 	
 	\chapter{Preliminaries}
+	\label{chap_prelim}
 	\input{preliminatires_solving}
 	
 	
 	\chapter{Problem statement}
+	\label{chap_problem}
 	\input{problem_statement}
 	
 	\chapter{Variability parity games}
 	\label{part:verifying}
+	\label{chap_VPGs}
 	\input{vpg}
 	
 	
 	\chapter{Solving variability parity games}
+	\label{chap_solving}
 	\input{prod_fam_solving}
 	
 	\section{Recursive algorithm for variability parity games}
@@ -113,10 +117,12 @@
 	
 	
 	\chapter{Locally solving (variability) parity games}
+	\label{chap_local_solving}
 	\input{locally_solving_VPGs}
 	
 	
 	\chapter{Experimental evaluation}
+	\label{chap_experiments}
 	\input{experimental_evaluation_intro}
 	
 	\section{Implementation}
@@ -137,7 +143,7 @@
 	\newpage
 	
 	\appendix
-	\addcontentsline{toc}{chapter}{Appendix}
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
 	\chapter{Running time results}
 	\label{appendix:resultsexact}
 	\input{appendixResults}

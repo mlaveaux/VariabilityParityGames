@@ -532,7 +532,7 @@ Next we present an algorithm to calculate the function-wise attractor, the pseud
 				\State $A^\lambda(\hat{v}) \gets A^\lambda(\hat{v}) \cup a$\label{line:fattr:add_to_A}
 				\State $Q.push(\hat{v})$\label{line:fattr:add_to_Q}
 			\EndIf
-		\EndFor
+		\EndFor\label{line:fattr:while_iter_end}
 		\EndWhile
 		\State \Return $A^\lambda$
 	\end{algorithmic}
@@ -544,29 +544,61 @@ We prove that the result calculated by $\alpha\textsc{-Fattractor}$ is equal to 
 Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$, represented function-wise, and $U^\lambda \subseteq V^\lambda$, the algorithm $\alpha$-\textsc{FAttractor}$(G, U^\lambda)$ correctly calculates $\alpha\textit{-FAttr}(G,U^\lambda)$.
 	\begin{proof}\ 
 		
-		\textit{Termination}. First note that the algorithm terminates. This follows from the fact that only vertices are added to $Q$ (line \ref{line:fattr:add_to_Q}) when something is added to $A^\lambda$ (lines \ref{line:fattr:if_something_attracted} - \ref{line:fattr:add_to_A}). This can only happen finitely many times before $A^\lambda(\hat{v}) = \mathfrak{C}$ for every $\hat{v}$, so $Q$ is empty after finitely many steps.
+		\textit{Termination}. First note that the algorithm terminates. This follows from the fact that only vertices are added to $Q$ (line \ref{line:fattr:add_to_Q}) when something is added to $A^\lambda$ (lines \ref{line:fattr:if_something_attracted} - \ref{line:fattr:add_to_A}). Consider
+		\[ \textit{dec}(A^\lambda) = |\hat{V}|*|\mathfrak{C}| - \sum_{\hat{v}}|A^\lambda(\hat{v})| \]
+		At every iteration either $\textit{dec}(A^\lambda)$ decreases or stays in the same. In the latter case the size of $Q$ decreases. After finitely many iterations $\textit{dec}(A^\lambda)$ can not decrease any more so $Q$ decreases until $Q$ is empty and the algorithm terminates.
 		
 		\textit{Soundness}. To prove the soundness of the algorithm we must show that at the end of the algorithm we have for every $c\in A^\lambda(\hat{w})$ that $c \in \alpha$-\textsc{FAttractor}$(G, U^\lambda)(\hat{w})$. This property actually holds throughout the entire algorithm. Before the while loop (line \ref{line:fattr:while}) we have $A^\lambda = U^\lambda$ and the property holds trivially. Consider the beginning of a while loop iteration (the algorithm is on line \ref{line:fattr:pop}) and assume that the property holds. The algorithm considers a number of vertices in the first for loop (line \ref{line:fattr:firstfor}), let $\hat{v}$ be such a vertex. The algorithm calculates $a \subseteq \mathfrak{C}$, which is added to $A^\lambda(\hat{v})$ on line \ref{line:fattr:add_to_A}. Note that this is the only place in the while loop where $A^\lambda$ is modified. The value calculated for $a$ on lines \ref{line:fattr:if_owner_alpha}-\ref{line:fattr:if_owner_alpha_end} exactly reflects the definition of $\alpha\textit{-FAttr}$ (Definition \ref{def_Uattr}). Because we assumed that the property holds at the beginning of the while loop iteration we can conclude that $a \subseteq \alpha\textit{-FAttr}(G,U^\lambda)(\hat{v})$. We conclude that the property is maintained during the while loop and that it holds at the end of the algorithm.
 		
-		\textit{Completeness}. To prove completeness we consider $c \in \alpha\textit{-FAttr}(G,U^\lambda)(\hat{w})$ and show that $c \in \alpha$-\textsc{FAttractor}$(G, U^\lambda)(\hat{w})$.
+		\textit{Completeness}. Consider the values for $U^\lambda_i$ for $\alpha\textit{-FAttr}(G,U^\lambda)$ as defined in Definition \ref{def_Uattr}.
 		
-		Consider the values for $U^\lambda_i$ for $\alpha\textit{-FAttr}(G,U^\lambda)$ as defined in Definition \ref{def_Uattr}. It is clear that for some $i \geq 0$ we have $c \in U^\lambda_i(\hat{w})$, however not necessarily for all $i \geq 0$.	Let $i \geq 0$ such that $c \in U^\lambda_i(\hat{w})$ and either $i=0$ or $c \notin U^\lambda_{i-1}(\hat{w})$.
+		For attractor set $\alpha\textit{-FAttr}(G,U^\lambda)$ we fix strategy $\sigma_\alpha^c$ such that for every $i>0$ and $\hat{v} \in \hat{V}_\alpha$ with $c\in U^\lambda_i(\hat{v})$ and $c\notin U^\lambda_{i-1}(\hat{v})$ we have $\sigma_\alpha^c(\hat{v}) = \hat{w}$ with $c \in U^\lambda_{i-1}(\hat{w})$.  It follows from Definition \ref{def_Uattr} that this strategy exists and is valid for $c$. Furthermore, if the token is on $\hat{v}$ with $c \in (\alpha\textit{-Fattr}(G,U^\lambda)(\hat{v}) \backslash U^\lambda(\hat{v}))$ then the token ends up in a vertex $\hat{w}$ with $c \in U^\lambda(\hat{w})$ for all paths that conform to $\sigma_\alpha^c$ and are valid for configuration $c$. 
 		
-		We apply induction on $i$, to show that at some point during the algorithm we have $c \in A^\lambda(\hat{w})$ and $\hat{w} \in Q$. Note that $A^\lambda(\hat{w})$ never decreases during the algorithm, so by proving this we get completeness.
-		
-		\textbf{Base} $i=0$: In this case $c \in U^\lambda(\hat{w})$ and in the first two lines of the algorithm we find $c \in A^\lambda(\hat{w})$ and $\hat{w}$ in $Q$.
-		
-		\textbf{Step} $i > 0$: We distinguish two cases:
+		We introduce the following predicate to help with the proof of completeness.
+		Predicate $\psi(c,\hat{v},\hat{q})$ holds if and only if we have the following conditions:
 		\begin{itemize}
-			\item If $\hat{w} \in \hat{V}_\alpha$ then there exists a $\hat{w}'$ such that $c \in E^\lambda(\hat{w},\hat{w}')$ and $c \in U^\lambda_{i-1}(\hat{w}')$. We apply induction on $w'$ to find that at some point $c \in A^\lambda(\hat{w}')$ and $\hat{w}'$ is in $Q$. So at some point, the algorithm pops $\hat{w}'$ from $Q$ (line \ref{line:fattr:pop}) and we have $c \in A^\lambda(\hat{w}')$. Because $c \in E^\lambda(\hat{w},\hat{w}')$ the first for loop (line \ref{line:fattr:firstfor}) considers vertex $\hat{w}$ and on line \ref{line:fattr:attract_owner_alpha} we get $c \in a$. 
-		
-			If at this point we do not already have $c \in A^\lambda(\hat{w})$ then we get $c \in A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} and $\hat{w}$ is added to $Q$ on line \ref{line:fattr:add_to_Q}. If we already had $c \in A^\lambda(\hat{w})$ then $c$ had to be added to $A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} (because $i > 0$ this could not have been done in the first two lines) and $\hat{w}$ would also be added to $Q$ on line \ref{line:fattr:add_to_Q}. So the induction hypothesis holds in this case.
-			
-			\item If $\hat{w} \in \hat{V}_{\overline{\alpha}}$ then for every $\hat{w}'$ with $c \in E^\lambda(\hat{w},\hat{w}')$ we get $c \in U^\lambda_{i-1}(\hat{w}')$, we call these vertices the successors of $\hat{w}$ for configuration $c$. We apply induction on every successor $\hat{w}'$ of $\hat{w}$ for $c$ to find that at some point $c \in A^\lambda(\hat{w}')$ and $\hat{w}'$ is in $Q$. So at some point, the algorithm pops successor $\hat{w}''$ from $Q$ (line \ref{line:fattr:pop}) and we have $c \in A^\lambda(\hat{w}')$ for all successor $\hat{w}'$ of $\hat{w}$ for $c$. Because $c \in E^\lambda(\hat{w},\hat{w}'')$ the first for loop (line \ref{line:fattr:firstfor}) considers vertex $\hat{w}$ and on lines \ref{line:fattr:attract_owner_not_alpha_start}-\ref{line:fattr:attract_owner_not_alpha_end} we get $c \in a$. 
-			
-			If at this point we do not already have $c \in A^\lambda(\hat{w})$ then we get $c \in A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} and $\hat{w}$ is added to $Q$ on line \ref{line:fattr:add_to_Q}. If we already had $c \in A^\lambda(\hat{w})$ then $c$ had to be added to $A^\lambda(\hat{w})$ on line \ref{line:fattr:add_to_A} (because $i > 0$ this could not have been done in the first two lines) and $\hat{w}$ would also be added to $Q$ on line \ref{line:fattr:add_to_Q}. So the induction hypothesis holds in this case.
+			\item $\hat{q} \in Q$,
+			\item $c \in A^\lambda(\hat{q})$ and
+			\item there exists a path $\pi$ from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$ such that every vertex $\hat{w}$ between $\hat{v}$ and $\hat{q}$ in $\pi$ has $c \notin A^\lambda(\hat{w})$
 		\end{itemize}
+	
+		We prove the following loop invariant over the while loop: For all $c \in \alpha\textit{-FAttr}(G,U^\lambda)(\hat{v})$ we have either $c \in A^\lambda(\hat{v})$ or $\exists_{\hat{q}}:\psi(c,\hat{v},\hat{q})$.
 		
+		When the while loop terminates $Q$ is empty so $\psi(c,\hat{v},\hat{q})$ never holds and therefore we have $c \in A^\lambda(\hat{v})$ which shows completeness.
+		
+		\begin{itemize}[\ \ ]
+			\item \textbf{Initialization}:
+			Consider the values for $U^\lambda_i$ for $\alpha\textit{-FAttr}(G,U^\lambda)$ as defined in Definition \ref{def_Uattr}. We show by induction on $i$ that the loop invariant holds for all $c \in \alpha\textit{-FAttr}(G,U^\lambda)(\hat{v})$ before the while loop starts.
+			\begin{itemize}[\ \ ]
+				\item \textbf{Base} $i = 0$: Before the while loop we get $A^\lambda = U^\lambda$. So the loop invariant holds for all $c \in U^\lambda_0(\hat{v})$, furthermore $\hat{v}$ is placed in $Q$.				
+				\item \textbf{Step} $i > 0$: Consider $c \in U^\lambda_i(\hat{v})$. If $c \in U^\lambda_{i-1}(\hat{v})$ then we apply induction on $i-1$ to find that the loop invariant is satisfied.
+				
+				If $c \notin U^\lambda_{i-1}$ then we distinguish two cases:
+				\begin{itemize}
+					\item If $\hat{v} \in \hat{V}_\alpha$ then we choose $\hat{w} = \sigma_\alpha^c(\hat{v})$. By the way we constructed $\sigma_\alpha^c$ we find $c \in U^\lambda_{i-1}(\hat{w})$. We apply induction on ${i-1}$ to find that either $c \in A^\lambda(\hat{w})$ or $\psi(c,\hat{w},\hat{q})$ with path $\pi$. In the former case we also find $\hat{w} \in Q$ and the path $\hat{v}\hat{w}$ satisfies $\psi(c,\hat{v},\hat{w})$. In the latter case we construct path $\hat{v}\pi$, which satisfies $\psi(c,\hat{v},\hat{q})$. In both cases the loop invariant is satisfied.
+					\item If $\hat{v} \in \hat{V}_{\overline{\alpha}}$ then we pick $\hat{w}$ such that $c \in E^\lambda(\hat{v},\hat{w})$. Using Definition \ref{def_Uattr} we find that $c \in U^\lambda_{i-1}(\hat{w})$. We apply induction on ${i-1}$ to find that either $c \in A^\lambda(\hat{w})$ or $\psi(c,\hat{w},\hat{q})$ with path $\pi$. In the former case we also find $\hat{w} \in Q$ and the path $\hat{v}\hat{w}$ satisfies $\psi(c,\hat{v},\hat{w})$. In the latter case we construct path $\hat{v}\pi$, which satisfies $\psi(c,\hat{v},\hat{q})$. In both cases the loop invariant is satisfied.
+				\end{itemize}
+			\end{itemize}
+			
+			
+			\item \textbf{Maintenance}: Assume the invariant holds at the beginning of the while loop iteration (line \ref{line:fattr:pop}), we prove that the invariant also holds at the end of the while loop iteration (line \ref{line:fattr:while_iter_end}).
+			
+			Consider $c \in \alpha\textit{-FAttr}(G,U^\lambda)(\hat{v})$. If $c \in A^\lambda(\hat{v})$ by the end of the iteration then the loop invariant is maintained. Assume $c \notin A^\lambda(\hat{v})$ by the end of the iteration.
+			
+			We find $\psi(c,\hat{v},\hat{q})$ with path $\pi$. If $\hat{q}$ is not popped during this iteration then we can only get $\neg\exists_{\hat{q}'}:\psi(c,\hat{v},\hat{q}')$ if we find a vertex $\hat{w}$ between $\hat{v}$ and $\hat{q}$ in $\pi$ such that $c \in A^\lambda(\hat{w})$. Let $\hat{w}$ be the vertex closest to $\hat{v}$ in $\pi$ such that $c \in A^\lambda(\hat{w})$. By the beginning of the iteration we had $c \notin A^\lambda(\hat{w})$. So $c$ is added to $A^\lambda(\hat{w})$ during this iteration on line \ref{line:fattr:add_to_A}. In this case we find $\hat{w} \in Q$ because line \ref{line:fattr:add_to_Q} and $\psi(c,\hat{v},\hat{w})$. So if $\hat{q}$ is not popped during the iteration the loop invariant holds. Assume $\hat{q}$ is popped during the iteration.
+			
+			If by the beginning of the iteration we had $\psi(c,\hat{v},\hat{q})$ and $\psi(c,\hat{v},\hat{q}')$ with path $\pi'$ such that $\hat{q} \neq \hat{q}'$ then by the end of the iteration we either have $\psi(c,\hat{v},\hat{q}')$ or $\psi(c,\hat{v},\hat{w})$ where $\hat{w}$ is a vertex between $\hat{v}$ and $\hat{q}'$ in $\pi'$. In either case the loop invariants holds. Assume that by the beginning of the iteration there is a single $\hat{q}$ for which $\psi(c,\hat{v},\hat{q})$.
+			
+			Consider path $\pi$ from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$. If by the end of the iteration there is a vertex $\hat{w}$ between $\hat{v}$ and $\hat{q}$ such that $c \in A^\lambda(\hat{w})$ then we have $\psi(c,\hat{v},\hat{w})$ and the loop invariant holds. Assume for any valid path from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$ that there is no $\hat{w}$ between $\hat{v}$ and $\hat{q}$ such that $c \in A^\lambda(\hat{w})$ by the end of the iteration.
+			
+			Let $\pi$ be the path satisfying $\psi(c,\hat{v},\hat{q})$ by the beginning of the iteration. Let $\pi = \dots\hat{x}\hat{q}$ (note that it is possible that $\hat{x} = \hat{v}$). If $\hat{x} \in \hat{V}_\alpha$ then we find $c \in A^\lambda(\hat{x})$ by the end of the iteration which is a contradiction. We find $\hat{x} \in \hat{V}_{\overline{\alpha}}$.
+			
+			If we get $\neg \exists_{\hat{q}'}: \psi(c,\hat{x},\hat{q}')$ by the end of the iteration then player 1 must be able to move the token from $\hat{x}$ to a vertex $\hat{w}$ such that $\neg \exists_{\hat{q}'}: \psi(c,\hat{w},\hat{q}')$.
+			
+			We have shown that the only way the loop invariant does not hold for the pair $(c,\hat{v})$ is when there exists an $\hat{x}$ owned by player $\overline{\alpha}$ such that the token can go from  $\hat{x}$ to $\hat{q}$ for configuration $c$ but also from $\hat{x}$ to some $\hat{v}'$ for which the loop invariant also not holds. Similarly to $\hat{v}$ we find that the invariant does not hold for $\hat{v}'$ when there exists a $\hat{x}'$ owned by player $\overline{\alpha}$ such that the token can go from $\hat{x}'$ to $\hat{q}$ for configuration $c$ but also from $\hat{x}'$ to some $\hat{v}''$ for which the loop invariant also not holds. For $\hat{v}''$ we find the same property.
+			
+			This induces a set of vertices $\hat{X}$ such that every $\hat{x} \in \hat{X}$ is owned by player $\overline{\alpha}$ and there is a path from $\hat{x}$ to $\hat{x}'\in \hat{X}$ valid for $c$ and conforming to $\sigma_\alpha^c$. We also find that for no $\hat{x} \in \hat{X}$ do we have $c \in U^\lambda(\hat{x})$ and finally that for all $\hat{x} \in \hat{X}$ we have $c \in \alpha\textit{-FAttr}(G,U^\lambda)(\hat{x})$. From this we conclude that player $\overline{\alpha}$ has a strategy to keep the play in $\hat{X}$, this contradicts the properties of an attractor set. Therefore we find that the loop invariant holds for pair $(c,\hat{v})$ by the end of the iteration.
+		\end{itemize}		
 	\end{proof}
 \end{theorem}
 

@@ -1,15 +1,7 @@
 ==== Report ====
- - Intro SPL & variablitity, algemeen: sectie 3 met intro aan sluiten
 Algs:
- - Check dat overal total wordt gebruikt bij zlnk
- - nalopen of ik altijd de term function gebruik bij function-wis
 Implementatie:
-
 - independent VPG is hetzelfde als independent SPL verifye
-- cites intro en conclusie
-- upload resulting games
-- distributions naar tikz
-- elevator measure
 
 VPGs generalize PGs (niet extend)
 union of functions is defined point-wise

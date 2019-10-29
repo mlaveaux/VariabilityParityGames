@@ -4,20 +4,20 @@ In this section the experimental results are presented. We evaluate the performa
 	\item the elevator games,
 	\item random games of type 1 with an increasing $\lambda$,
 	\item random games of type 2 with an increasing $\lambda$,
-	\item random games of type 3 with an increasing $\lambda$ and
+	\item random games of type 3 with an increasing $\lambda$, and
 	\item random games of type 1 with an increasing number of configuration.
 \end{itemize}
 
-We present the times it took to solve a VPG. For an independent approach this means the sum of the times it taken to solve every projection of the VPG. For a collective approach this means simply means the solve time for the VPG. In either case we only measure the solve time; parsing, projecting and solution printing is excluded from the evaluation.
+We present the times it took to solve a VPG. For an independent approach this means the sum of the times it taken to solve every projection of the VPG. For a collective approach simply means the solve time for the VPG. In either case we only measure the solve time; parsing, projecting and solution printing is excluded from the evaluation.
 
-The exact times can be found in appendix \ref{appendix:resultsexact}, in this section the results are visualized and presented in a way such that we can easily compare independent and collective approaches. We have four independent approaches:
+The exact times can be found in appendix \ref{appendix:resultsexact}; in this section the results are visualized and presented in a way such that we can easily compare independent and collective approaches. We have four independent approaches:
 \begin{itemize}
 	\item Recursive algorithm (global),
 	\item Recursive algorithm (local),
 	\item fixed-point iteration (global) and
 	\item fixed-point iteration (local).
 \end{itemize}
-For every set of problems we present four charts; for every independent approaches we present a chart where its performance is compared to one or two collective algorithms. We compare the performance of the recursive algorithm for VPGs with the performance of the original recursive algorithm and the performance of the incremental pre-solve algorithm with the performance of the fixed-point iteration algorithm. In every chart the solve times are divided by the independent solve times to visualize how much better or worse the collective variants perform.
+For every set of problems we present four charts; for every independent approaches we present a chart where its performance is compared to one or two collective algorithms. We compare the performance of the recursive algorithm for VPGs with the performance of the original recursive algorithm and the performance of the incremental pre-solve algorithm with the performance of the fixed-point iteration algorithm. In some of the charts the solve times are divided by the independent solve times to visualize how much better or worse the collective variants perform.
 
 The following legend holds for all charts presented in this section:
 \begin{itemize}[\ ]
@@ -59,8 +59,8 @@ The following legend holds for all charts presented in this section:
 \end{itemize}
 \end{itemize}
 All the experiments are ran on a Linux x64 operating system with an Intel i5-4570 @ 3.20 GHz processor and 8GB of DDR3 RAM.
-\subsection{Model checking examples}
-Figures \ref{fig:results_minepump} and \ref{fig:results_elevator} show the solving times of the algorithms when applied to the model checking examples.
+\subsection{SPL examples}
+Figures \ref{fig:results_minepump} and \ref{fig:results_elevator} show the solving times (in ms) of the algorithms when applied to the SPL examples.
 \begin{figure}[H]
 	\centering
 	\begin{multicols}{2}
@@ -69,10 +69,10 @@ Figures \ref{fig:results_minepump} and \ref{fig:results_elevator} show the solvi
 		\input{"results/minepump/Fixed-point product based_Incremental pre-solve_"}\\\vfill
 		\input{"results/minepump/Fixed-point local product based_Incremental pre-solve local_"}
 	\end{multicols}
-	\caption{Running times on the minepump games, times are normalized}
+	\caption{Running times on the minepump games. The x-axis shows the game numbers, these correspond with the formulas described in Table \ref{tab_minepump_formulas}. The y-axis shows, on a logarithmic scale, the number of milliseconds required to solve the VPG.}
 	\label{fig:results_minepump}
 \end{figure}%
-For the minepump example we see that the recursive algorithm for VPGs using a symbolic representation of configurations performs particularly well. For the elevator example we find a similar result, however for these games we also find a good performance for the incremental pre-solve algorithm. There is no clear difference between the relative performances of the global algorithms and the local algorithms.
+For the minepump example we see that the recursive algorithm for VPGs using a symbolic representation performs particularly well; about a 3 to 18 times increase in performance compared to the independent approach. For the elevator example we also find an increase in performance for the symbolic recursive algorithm compared to the independent algorithm; about a 2 to 6 times increase. The difference is most likely because the minepump games have twice as many features as the elevator games have. Notably, for the elevator games we also find a good performance for the incremental pre-solve algorithm, which we do not find for the minepump games. Finally,  we observe that there is no clear difference between the relative performances of the global algorithms and the local algorithms.
 \begin{figure}[H]
 	\centering
 	\begin{multicols}{2}
@@ -81,14 +81,14 @@ For the minepump example we see that the recursive algorithm for VPGs using a sy
 		\input{"results/elevator/Fixed-point product based_Incremental pre-solve_"}\\\vfill
 		\input{"results/elevator/Fixed-point local product based_Incremental pre-solve local_"}
 	\end{multicols}
-	\caption{Running times on the elevator games, times are normalized}
+	\caption{Running times on the elevator games. The x-axis shows the game numbers, these correspond with the formulas described in Table \ref{tab_elevator_formulas}. The y-axis shows, on a logarithmic scale, the number of milliseconds required to solve the VPG.}
 	\label{fig:results_elevator}
 \end{figure}%
 
 \subsection{Random games}
-Figure \ref{fig:results_type1} shows the performance of the algorithms on type 1 games. The recursive algorithms for VPGs performh quite well, even though there are a few instances where the performance is worse that the independent approach. The symbolic variant performs quite a bit better than the explicit variant. The relative performance of the local variants of the recursive algorithms is about the same as the relative performance of the global variants. 
+Figure \ref{fig:results_type1} shows the performance of the algorithms on type 1 games. The recursive algorithms for VPGs perform quite well, even though there are a few instances where the performance is worse than the independent approach. The symbolic variant performs quite a bit better than the explicit variant. The relative performance of the local variants of the recursive algorithms is about the same as the relative performance of the global variants. 
 
-For the incremental pre-solve algorithm we do see a big difference between a local and global approach. The global variant performs well only for games 90 and up. The local variant, however, performs well for nearly all the games. Furthermore, even for the games where the global variant performs well does the local variant perform even better.
+For the incremental pre-solve algorithm we do see a big difference between a local and global approach. The global variant performs well only for games 90 and up. The local variant, however, performs well for nearly all the games. Furthermore, even for the games where the global variant performs well relative to the independent global approach does the local variant performs even better relative to the independent local approach.
 \begin{figure}[H]
 	\centering
 	\begin{multicols}{2}
@@ -97,12 +97,12 @@ For the incremental pre-solve algorithm we do see a big difference between a loc
 		\input{"results/FF_randomgames/Fixed-point product based_Incremental pre-solve_"}\\
 		\input{"results/FF_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
 	\end{multicols}
-	\caption{Running times on random games of type 1 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
+	\caption{Running times on random games of type 1 with $\lambda = \frac{\textit{game nr}}{100}$. The x-axis shows the game numbers. The y-axis shows how much faster the algorithms solved a VPG compared to the independent algorithm. Clearly the independent algorithm always has value of 1 for every VPG. If an algorithm has a value above 1 for a VPG then it performed worse than the independent algorithm; if the value is below 1 then it performed better than the independent algorithm. The y-axis is logarithmic.}
 	\label{fig:results_type1}
 \end{figure}%
 
 
-Figure \ref{fig:results_type2} shows the performance of the algorithms on type 1 games. For the recursive algorithms we see that the explicit variant takes over from the symbolic variant. This is to be expected since these games have edge guards that are not created from features but created by picking random configurations. Both variants still perform somewhat better than the independent approach. Again we do not find a significant difference between the global and local approach.
+Figure \ref{fig:results_type2} shows the performance of the algorithms on type 1 games. For the recursive algorithms we see that the explicit variant takes over from the symbolic variant. This is to be expected since these games have edge guards that are not created from features but created by picking random configurations. This decreases the performance of symbolic set operations but has no effect the performance of explicit set operations. Both variants still perform somewhat better than the independent approach. Again we do not find a significant difference between the global and local approach.
 
 For the incremental pre-solve algorithm we find a similar result as with type 1 games. The global variant performs well only when $\lambda$ is high. The local variant performs significantly better and performs well for almost all games.
 \begin{figure}[H]
@@ -113,15 +113,15 @@ For the incremental pre-solve algorithm we find a similar result as with type 1 
 		\input{"results/FC_randomgames/Fixed-point product based_Incremental pre-solve_"}\\
 		\input{"results/FC_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
 	\end{multicols}
-	\caption{Running times on random games of type 2 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
+	\caption{Running times on random games of type 2 with $\lambda = \frac{\textit{game nr}}{100}$ The x-axis shows the game numbers. The y-axis shows how much faster the algorithms solved a VPG compared to the independent algorithm.}
 	\label{fig:results_type2}
 \end{figure}%
 
-Figure \ref{fig:results_type3} shows the performance of the algorithms on type 3 games. For these games we see the symbolic variant of the recursive algorithm performing worse that the independent approach for almost all games. The explicit variant still performs significantly better that the symbolic variant and performs somewhat better than the independent approach. Again we do not find a significant difference between the global and local approach.
+Figure \ref{fig:results_type3} shows the performance of the algorithms on type 3 games. For these games we see the symbolic variant of the recursive algorithm performing worse than the independent approach for almost all games. The explicit variant still performs significantly better than the symbolic variant and performs somewhat better than the independent approach. This is similar to type 2 games, which is to be expected because both types of games use configuration sets not based on features. Again we do not find a significant difference between the global and local approach.
 
 The global incremental pre-solve algorithm performs worse than the independent approach for almost all games. Notably for these games we do not find a significant increase in relative performance when using a local variant.
 
-Notably, the explicit recursive algorithm seems to be the only algorithm unaffected by the fact that the guard sets of type 3 games vary wildly (they are distributed using a beta distribution). Maybe surprisingly, the incremental pre-solve algorithm is affected heavily by this. This is most likely because there are a lot fewer edges that admit all configurations and therefore player $\alpha$ will probably win less vertices in a pessimistic game for player $\alpha$.
+Notably, the explicit recursive algorithm seems to be the only algorithm unaffected by the fact that the guard sets of type 3 games vary wildly (they are distributed using a beta distribution). Maybe surprisingly, the incremental pre-solve algorithm is affected heavily by this. This is most likely because there are a lot fewer edges that admit all configurations and therefore player $\alpha$ will probably win fewer vertices in a pessimistic game for player $\alpha$.
 
 \begin{figure}[H]
 	\centering
@@ -131,7 +131,7 @@ Notably, the explicit recursive algorithm seems to be the only algorithm unaffec
 		\input{"results/BC_randomgames/Fixed-point product based_Incremental pre-solve_"}\\\vfill
 		\input{"results/BC_randomgames/Fixed-point local product based_Incremental pre-solve local_"}
 	\end{multicols}
-	\caption{Running times on random games of type 3 with $\lambda = \frac{\textit{game nr}}{100}$, times are normalized}
+	\caption{Running times on random games of type 3 with $\lambda = \frac{\textit{game nr}}{100}$ The x-axis shows the game numbers. The y-axis shows how much faster the algorithms solved a VPG compared to the independent algorithm.}
 	\label{fig:results_type3}
 \end{figure}%
 
@@ -148,16 +148,16 @@ The global incremental pre-solve algorithms does not increase notably in relativ
 		\input{"results/randomscalegames/Fixed-point product based_Incremental pre-solve_"}\\\vfill
 		\input{"results/randomscalegames/Fixed-point local product based_Incremental pre-solve local_"}
 	\end{multicols}
-	\caption{Running times on random games of type 1 with $\lambda = 0.92$ and the number of features equal to the $\textit{game nr}$, times are normalized}
+	\caption{Running times on random games of type 1 with $\lambda = 0.92$ and the number of features equal to $\lfloor \textit{game nr}\rfloor$. The x-axis shows the game numbers. The y-axis shows how much faster the algorithms solved a VPG compared to the independent algorithm.}
 	\label{fig:results_scalegames}
 \end{figure}%
 
-\subsection{Comparison}
-From the experimental results we observe that the symbolic variant of the recursive algorithms for VPGs performs well for the model verification problems. For type 1 random games it also performs well and particularly scales very well in the number of configurations. For type 2 and 3 games the sets of configurations can no longer be efficiently represented symbolically. Earlier we hypothesised that the recursive algorithm for VPGs could perform well if we can attract many configurations simultaneously. For every VPG we measure the average number of configurations that were attracted simultaneously. We measure this relative to the total number of configurations in the VPG. This gives a number for every VPG. For every set of VPGs we average this number to get an average set size for every problem set. These values indicate how many configuration were attracted simultaneously, they are presented in Table \ref{tab_attracted_set_size}. We see that this number somewhat predicts the performance of the recursive algorithms.
+\subsection{Internal metrics}
+Earlier we hypothesised that the recursive algorithm for VPGs could perform well if we can attract many configurations simultaneously. For every VPG we measure the average number of configurations that were attracted simultaneously. We measure this relative to the total number of configurations in the VPG. This gives a number for every VPG. For every set of VPGs we average this number to get an average set size for every problem set. These values indicate how many configurations were attracted simultaneously. In Table \ref{tab_attracted_set_size} these values are presented for the different problems being globally solved, note that whether the sets are represented explicitly or symbolically is irrelevant. We see that this number somewhat predicts the performance of the recursive algorithms.
 
 \begin{table}[h]
 	\centering
-	\begin{tabular}{|l|l|l|l|l|}
+	\begin{tabular}{|l|l|}
 		\hline
 		Minepump& 46\%\\ \hline
 		Elevator& 51\%\\ \hline
@@ -170,9 +170,33 @@ From the experimental results we observe that the symbolic variant of the recurs
 	\label{tab_attracted_set_size}
 \end{table}
 
+The incremental pre-solve algorithm tries to outperform its independent counterpart by growing the set of pre-solved vertices. We measured how many vertices are pre-solved for the different sets of problems. For every VPG we measure the average number of pre-solved vertices for every (pessimistic) parity game solved. We measure this relative to the number of vertices in the VPG. This gives a number for every VPG. For every set of VPGs we average this number to get an average vertex size for every problem set. These values indicate how many vertices were pre-solved on average. In Table \ref{tab_mean_presolved} these values are presented for the different problems. The algorithm recurses into two branches every time a pessimistic parity game is solved. The further we go down the tree the higher the number of pre-solved vertices. So the average numbers presented in the table are somewhat distorted because there are exponentially more parity games that are further down the recursion tree.
+
+For the global variant the number presented in Table \ref{tab_mean_presolved} somewhat predicts the performance of the incremental pre-solve algorithm compared to the fixed-point iteration algorithm. For the local variant this is not the case. The local variant performs well when parts of the recursion tree are not calculated because we have terminated early. However, if the recursion tree is less deep then the numbers in the table decrease. Therefore, for the local algorithm the numbers do not predict the performance.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		& Global & Local \\ \hline
+		Minepump& 58\%& 29\%\\ \hline
+		Elevator& 84\% & 38\%\\ \hline
+		Type 1, scaling in $\lambda$& 87\%& 9\%\\ \hline
+		Type 2, scaling in $\lambda$& 82\%& 9\%\\ \hline
+		Type 3, scaling in $\lambda$& 57\%& 19\%\\ \hline
+		Type 1, scaling in \# confs& 91\%& 12\%\\ \hline
+	\end{tabular}
+	\caption{Relative number of pre-solved vertices}
+	\label{tab_mean_presolved}
+\end{table}
+
+\subsection{Discussion}
+From the experimental results we observe that the symbolic variant of the recursive algorithms for VPGs performs well for the model verification problems. For type 1 random games it also performs well and particularly scales very well in the number of configurations. For type 2 and 3 games the sets of configurations can no longer be efficiently represented symbolically. 
+
+
 After comparing independent and collective approaches we compare the performances of the algorithms overall.
 
-First we compare the independent algorithms. Table \ref{tab_compare_independent_algs} shows for every set of VPGs how long on average it took each algorithm to solve a VPG in that set.
+First we compare the independent algorithms. Table \ref{tab_compare_independent_algs} shows for every set of VPGs how long it took each algorithm to solve all the VPGs in that set.
 \begin{table}[h]
 	\centering
 	\begin{tabular}{|l|l|l|l|l|}
@@ -180,19 +204,20 @@ First we compare the independent algorithms. Table \ref{tab_compare_independent_
 		& Recursive &Recursive & Fixed-point & Fixed-point\\
 		& global & local & global & local \\
 		\hline
-		Minepump& 113 ms& 97 ms& 1852 ms& 1775 ms\\ \hline
-		Elevator& 11374 ms& 9420 ms& 1061198 ms& 301363 ms\\ \hline
-		Type 1, scaling in $\lambda$& 75 ms& 69 ms& 2147 ms& 2056 ms\\ \hline
-		Type 2, scaling in $\lambda$& 75 ms& 71 ms& 2986 ms& 2900 ms\\ \hline
-		Type 3, scaling in $\lambda$& 74 ms& 77 ms& 2496 ms& 2048 ms\\ \hline
-		Type 1, scaling in \# confs& 590 ms& 529 ms& 7857 ms& 5359 ms\\ \hline
+		Minepump& 1032 ms& 788 ms& 16713 ms& 15989 ms\\ \hline
+		Elevator& 79468 ms& 65588 ms& 7393468 ms& 2108539 ms\\ \hline
+		Type 1, scaling in $\lambda$& 1830 ms& 1730 ms& 53677 ms& 51506 ms\\ \hline
+		Type 2, scaling in $\lambda$& 1936 ms& 1721 ms& 74710 ms& 72536 ms\\ \hline
+		Type 3, scaling in $\lambda$& 1892 ms& 1680 ms& 62568 ms& 51231 ms\\ \hline
+		Type 1, scaling in \# confs& 32903 ms& 29393 ms& 439199 ms& 274201 ms\\ \hline
 	\end{tabular}
-	\caption{Comparison of independent algorithms}
+	\caption{Comparison of independent algorithms. The times shown are the times it took an algorithm to solve all the VPGs in a problem set independently.}
 	\label{tab_compare_independent_algs}
 \end{table}
 We observe that the recursive algorithm performs significantly better than the fixed-point algorithm across all problems. We also see that the local variants perform somewhat better across the board. Notably the elevator problem seems to lend itself well for local solving.
 
 In table \ref{tab_compare_collective_algs} we compare the performance of the collective algorithms.
+We observe that the recursive symbolic variant performs the best for model-checking problems and for type 1 games. On average  Furthermore, most likely the algorithm will scale well for models with a large number of features. The local variant of the incremental pre-solve algorithm also performs well relative to its independent counterpart. However, because the fixed-point iteration is heavily outperformed by the recursive algorithm its overall performance is worse that the recursive variants. On average, the global variant of the incremental pre-solve algorithm also outperforms its independent counterpart. However, we have seen in the comparison charts that it does so less consistently and significantly than the local variant and the symbolic recursive algorithm do.
 \begin{table}[h]
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
@@ -201,23 +226,22 @@ In table \ref{tab_compare_collective_algs} we compare the performance of the col
 		& explicit &explicit & symbolic &symbolic & pre-solve &pre-solve\\
 		& global & local &global  & local & global & local
 		\\ \hline
-		Minepump& 112 ms& 103 ms& 16 ms& 15 ms& 658 ms& 359 ms\\ \hline
-		Elevator& 11542 ms& 11327 ms& 3706 ms& 3701 ms& 230301 ms& 183465 ms\\ \hline
-		Type 1, & \multirow{2}{*}{7 ms}& \multirow{2}{*}{6 ms} & \multirow{2}{*}{4 ms} & \multirow{2}{*}{4 ms} & \multirow{2}{*}{324 ms} & \multirow{2}{*}{541 ms}\\
+		Minepump& 1019 ms& 942 ms& 148 ms& 133 ms& 5900 ms& 3223 ms\\ \hline
+		Elevator& 81225 ms& 78635 ms& 25764 ms& 25602 ms& 1634659 ms& 1278387 ms\\ \hline
+		Type 1, & \multirow{2}{*}{209 ms}& \multirow{2}{*}{158 ms} & \multirow{2}{*}{91 ms} & \multirow{2}{*}{86 ms} & \multirow{2}{*}{8040 ms} & \multirow{2}{*}{3801 ms}\\
 		scaling in $\lambda$& & & & & &\\ \hline
-		Type 2,& \multirow{2}{*}{9 ms} & \multirow{2}{*}{8 ms} & \multirow{2}{*}{109 ms} & \multirow{2}{*}{104 ms} & \multirow{2}{*}{2695 ms} & \multirow{2}{*}{833 ms} \\
+		Type 2,& \multirow{2}{*}{234 ms} & \multirow{2}{*}{199 ms} & \multirow{2}{*}{2741 ms} & \multirow{2}{*}{2585 ms} & \multirow{2}{*}{67458 ms} & \multirow{2}{*}{13459 ms} \\
 		scaling in $\lambda$& & & & & &\\ \hline
-		Type 3,& \multirow{2}{*}{26 ms} & \multirow{2}{*}{26 ms} & \multirow{2}{*}{624 ms} & \multirow{2}{*}{630 ms} & \multirow{2}{*}{7742 ms} & \multirow{2}{*}{4131 ms}\\ 
+		Type 3,& \multirow{2}{*}{677 ms} & \multirow{2}{*}{665 ms} & \multirow{2}{*}{15891 ms} & \multirow{2}{*}{15897 ms} & \multirow{2}{*}{196328 ms} & \multirow{2}{*}{102182 ms}\\ 
 		scaling in $\lambda$& & & & & &\\ \hline
-		Type 1,& \multirow{3}{*}{20 ms} & \multirow{3}{*}{18 ms} & \multirow{3}{*}{2 ms} & \multirow{3}{*}{2 ms} & \multirow{3}{*}{967 ms} & \multirow{3}{*}{12 ms} \\
+		Type 1,& \multirow{3}{*}{1088 ms} & \multirow{3}{*}{1048 ms} & \multirow{3}{*}{114 ms} & \multirow{3}{*}{104 ms} & \multirow{3}{*}{53460 ms} & \multirow{3}{*}{683 ms} \\
 		scaling& & & & & &\\
 		in \# confs& & & & & &\\ \hline
 	\end{tabular}
-	\caption{Comparison of collective algorithms}
+	\caption{Comparison of collective algorithms. The times shown are the times it took an algorithm to solve all the VPGs in a problem set collectively.}
 	\label{tab_compare_collective_algs}
 \end{table}
-We observe that the recursive symbolic variant performs the best for model-checking problems and for type 1 games. Furthermore, most likely the algorithm will scale well for models with a large number of features. The local variant of the incremental pre-solve algorithm also performs well relative to its independent counterpart. However, because the fixed-point iteration is heavily outperformed by the recursive algorithm its overall performance is worse that the recursive variants.
 
-Furthermore, we observe that the explicit variant of the recursive algorithm performs decent across most games. We conclude from this that the efficiency of the symbolic algorithm does not only come from representing sets of configurations efficiently; using a collective approach even without this representation seems to be efficient.
+Furthermore, we observe that the explicit variant of the recursive algorithm performs decent across most games. We conclude from this that the efficiency of the symbolic algorithm does not only come from representing sets of configurations efficiently; using a collective approach even without this representation seems to be efficient. It seems that, for the games we experimented with, using the explicit recursive algorithm never significantly hurts performance but in some cases can significantly increase performance compared to the independent approach.
 
 Earlier we hypothesized that a local-collective approach would increase performance more compared to a global-collective approach than a local-independent approach would compared to a global-independent approach. We observe that this is very much the case for the incremental pre-solve algorithm but not at all the case for the recursive algorithms. We conclude that local solving has the potential to greatly increase performance, however this is not a given for just any algorithm.

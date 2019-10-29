@@ -1,1 +1,1729 @@
-\small
+\footnotesize 
+\section{Minepump}
+\begin{multicols}{2}
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive \\ \hline
+		1 & 32.244785 ms \\ \hline
+		2 & 57.142866 ms \\ \hline
+		3 & 177.300524 ms \\ \hline
+		4 & 133.978037 ms \\ \hline
+		5 & 146.279183 ms \\ \hline
+		6 & 226.548281 ms \\ \hline
+		7 & 130.892825 ms \\ \hline
+		8 & 19.238491 ms \\ \hline
+		9 & 107.901228 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive local \\ \hline
+		1 & 16.516449 ms \\ \hline
+		2 & 56.678234 ms \\ \hline
+		3 & 166.261729 ms \\ \hline
+		4 & 106.755556 ms \\ \hline
+		5 & 109.640023 ms \\ \hline
+		6 & 143.138385 ms \\ \hline
+		7 & 104.86387 ms \\ \hline
+		8 & 8.027416 ms \\ \hline
+		9 & 76.519869 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration \\ \hline
+		1 & 29.264917 ms \\ \hline
+		2 & 40.674684 ms \\ \hline
+		3 & 137.869316 ms \\ \hline
+		4 & 14726.550907 ms \\ \hline
+		5 & 625.375016 ms \\ \hline
+		6 & 329.514887 ms \\ \hline
+		7 & 356.932852 ms \\ \hline
+		8 & 4.185899 ms \\ \hline
+		9 & 462.522931 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration local \\ \hline
+		1 & 29.151388 ms \\ \hline
+		2 & 40.714354 ms \\ \hline
+		3 & 137.886107 ms \\ \hline
+		4 & 14727.598255 ms \\ \hline
+		5 & 403.33502 ms \\ \hline
+		6 & 241.624277 ms \\ \hline
+		7 & 357.023658 ms \\ \hline
+		8 & 4.211994 ms \\ \hline
+		9 & 47.330273 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit \\ \hline
+		1 & 21.105355 ms \\ \hline
+		2 & 43.435309 ms \\ \hline
+		3 & 184.89286 ms \\ \hline
+		4 & 249.706248 ms \\ \hline
+		5 & 81.458676 ms \\ \hline
+		6 & 290.469176 ms \\ \hline
+		7 & 78.83509 ms \\ \hline
+		8 & 15.117246 ms \\ \hline
+		9 & 53.835425 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit local \\ \hline
+		1 & 12.970156 ms \\ \hline
+		2 & 43.580676 ms \\ \hline
+		3 & 185.462523 ms \\ \hline
+		4 & 193.083871 ms \\ \hline
+		5 & 81.18502 ms \\ \hline
+		6 & 290.545893 ms \\ \hline
+		7 & 77.43355 ms \\ \hline
+		8 & 11.307562 ms \\ \hline
+		9 & 46.51709 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic \\ \hline
+		1 & 3.933221 ms \\ \hline
+		2 & 6.762879 ms \\ \hline
+		3 & 25.027742 ms \\ \hline
+		4 & 37.363271 ms \\ \hline
+		5 & 12.63568 ms \\ \hline
+		6 & 42.715093 ms \\ \hline
+		7 & 11.664699 ms \\ \hline
+		8 & 1.07143 ms \\ \hline
+		9 & 6.86998 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic local \\ \hline
+		1 & 1.726035 ms \\ \hline
+		2 & 6.785146 ms \\ \hline
+		3 & 24.711643 ms \\ \hline
+		4 & 27.177316 ms \\ \hline
+		5 & 12.641605 ms \\ \hline
+		6 & 42.53417 ms \\ \hline
+		7 & 11.653422 ms \\ \hline
+		8 & 0.574656 ms \\ \hline
+		9 & 5.629393 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve \\ \hline
+		1 & 301.939317 ms \\ \hline
+		2 & 249.815426 ms \\ \hline
+		3 & 863.458598 ms \\ \hline
+		4 & 2101.13278 ms \\ \hline
+		5 & 729.301981 ms \\ \hline
+		6 & 532.095869 ms \\ \hline
+		7 & 609.091435 ms \\ \hline
+		8 & 1.075446 ms \\ \hline
+		9 & 511.882915 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve local \\ \hline
+		1 & 301.278774 ms \\ \hline
+		2 & 1.272113 ms \\ \hline
+		3 & 129.359424 ms \\ \hline
+		4 & 1483.78104 ms \\ \hline
+		5 & 392.239293 ms \\ \hline
+		6 & 300.501929 ms \\ \hline
+		7 & 611.020332 ms \\ \hline
+		8 & 1.063772 ms \\ \hline
+		9 & 2.727468 ms \\ \hline
+	\end{tabular}\\
+\end{multicols}\pagebreak
+\section{Elevator}
+\begin{multicols}{2}
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive \\ \hline
+		1 & 14466.302056 ms \\ \hline
+		2 & 14915.141763 ms \\ \hline
+		3 & 15915.937528 ms \\ \hline
+		4 & 16807.44934 ms \\ \hline
+		5 & 8897.951572 ms \\ \hline
+		6 & 4209.467145 ms \\ \hline
+		7 & 4256.189379 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive local \\ \hline
+		1 & 11838.428495 ms \\ \hline
+		2 & 12506.151312 ms \\ \hline
+		3 & 13098.469679 ms \\ \hline
+		4 & 13802.101726 ms \\ \hline
+		5 & 8183.027254 ms \\ \hline
+		6 & 3065.580388 ms \\ \hline
+		7 & 3094.191485 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration \\ \hline
+		1 & 1401628.67246 ms \\ \hline
+		2 & 1067460.29847 ms \\ \hline
+		3 & 2332354.10185 ms \\ \hline
+		4 & 2424947.16972 ms \\ \hline
+		5 & 102844.054783 ms \\ \hline
+		6 & 32238.619157 ms \\ \hline
+		7 & 31994.798117 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration local \\ \hline
+		1 & 199995.861137 ms \\ \hline
+		2 & 181748.74947 ms \\ \hline
+		3 & 545209.245758 ms \\ \hline
+		4 & 1069414.76658 ms \\ \hline
+		5 & 78133.171755 ms \\ \hline
+		6 & 13345.84391 ms \\ \hline
+		7 & 20690.864052 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit \\ \hline
+		1 & 15983.614369 ms \\ \hline
+		2 & 16555.489895 ms \\ \hline
+		3 & 16789.886104 ms \\ \hline
+		4 & 17433.006986 ms \\ \hline
+		5 & 8948.312123 ms \\ \hline
+		6 & 2773.313927 ms \\ \hline
+		7 & 2741.204448 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit local \\ \hline
+		1 & 14872.319637 ms \\ \hline
+		2 & 16197.062632 ms \\ \hline
+		3 & 16679.869784 ms \\ \hline
+		4 & 17439.30272 ms \\ \hline
+		5 & 8826.895628 ms \\ \hline
+		6 & 2318.720608 ms \\ \hline
+		7 & 2300.391218 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic \\ \hline
+		1 & 5378.403412 ms \\ \hline
+		2 & 5684.740647 ms \\ \hline
+		3 & 5039.525624 ms \\ \hline
+		4 & 5295.952172 ms \\ \hline
+		5 & 2872.894073 ms \\ \hline
+		6 & 766.722225 ms \\ \hline
+		7 & 725.489882 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic local \\ \hline
+		1 & 5060.426053 ms \\ \hline
+		2 & 5777.377482 ms \\ \hline
+		3 & 5184.639277 ms \\ \hline
+		4 & 5428.615541 ms \\ \hline
+		5 & 2925.932923 ms \\ \hline
+		6 & 631.693549 ms \\ \hline
+		7 & 593.154428 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve \\ \hline
+		1 & 469686.601635 ms \\ \hline
+		2 & 288973.070041 ms \\ \hline
+		3 & 402712.387165 ms \\ \hline
+		4 & 420408.603193 ms \\ \hline
+		5 & 25793.497523 ms \\ \hline
+		6 & 13467.418415 ms \\ \hline
+		7 & 13617.735125 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve local \\ \hline
+		1 & 339790.3129 ms \\ \hline
+		2 & 223654.225843 ms \\ \hline
+		3 & 347841.546228 ms \\ \hline
+		4 & 356190.556856 ms \\ \hline
+		5 & 8342.778568 ms \\ \hline
+		6 & 1258.440146 ms \\ \hline
+		7 & 1308.733329 ms \\ \hline
+	\end{tabular}\\
+\end{multicols}\pagebreak
+\section{Random games of type 1, scaling in $\lambda$}
+\begin{multicols}{2}
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive \\ \hline
+		75 & 5.783399 ms \\ \hline
+		76 & 3.507118 ms \\ \hline
+		77 & 68.609542 ms \\ \hline
+		78 & 4.307716 ms \\ \hline
+		79 & 171.997666 ms \\ \hline
+		80 & 3.473343 ms \\ \hline
+		81 & 20.470233 ms \\ \hline
+		82 & 43.836144 ms \\ \hline
+		83 & 10.754656 ms \\ \hline
+		84 & 291.048354 ms \\ \hline
+		85 & 34.906948 ms \\ \hline
+		86 & 105.089482 ms \\ \hline
+		87 & 52.09508 ms \\ \hline
+		88 & 217.12306 ms \\ \hline
+		89 & 6.753343 ms \\ \hline
+		90 & 499.414706 ms \\ \hline
+		91 & 66.743923 ms \\ \hline
+		92 & 19.052549 ms \\ \hline
+		93 & 3.431335 ms \\ \hline
+		94 & 3.383136 ms \\ \hline
+		95 & 60.166179 ms \\ \hline
+		96 & 68.754161 ms \\ \hline
+		97 & 55.764131 ms \\ \hline
+		98 & 8.832847 ms \\ \hline
+		99 & 4.415689 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive local \\ \hline
+		75 & 4.517718 ms \\ \hline
+		76 & 3.349256 ms \\ \hline
+		77 & 60.562244 ms \\ \hline
+		78 & 4.157373 ms \\ \hline
+		79 & 168.280489 ms \\ \hline
+		80 & 2.656416 ms \\ \hline
+		81 & 19.806984 ms \\ \hline
+		82 & 43.172386 ms \\ \hline
+		83 & 10.726911 ms \\ \hline
+		84 & 280.660021 ms \\ \hline
+		85 & 30.78568 ms \\ \hline
+		86 & 105.265016 ms \\ \hline
+		87 & 47.11039 ms \\ \hline
+		88 & 213.383031 ms \\ \hline
+		89 & 5.910715 ms \\ \hline
+		90 & 466.893468 ms \\ \hline
+		91 & 60.137594 ms \\ \hline
+		92 & 17.647992 ms \\ \hline
+		93 & 2.539196 ms \\ \hline
+		94 & 3.181258 ms \\ \hline
+		95 & 56.683168 ms \\ \hline
+		96 & 63.162656 ms \\ \hline
+		97 & 47.249534 ms \\ \hline
+		98 & 8.310182 ms \\ \hline
+		99 & 3.762845 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration \\ \hline
+		75 & 19.627751 ms \\ \hline
+		76 & 2.14961 ms \\ \hline
+		77 & 314.44995 ms \\ \hline
+		78 & 105.881319 ms \\ \hline
+		79 & 9147.908303 ms \\ \hline
+		80 & 6.795065 ms \\ \hline
+		81 & 67.508151 ms \\ \hline
+		82 & 35.756278 ms \\ \hline
+		83 & 76.968366 ms \\ \hline
+		84 & 3205.297742 ms \\ \hline
+		85 & 59.952406 ms \\ \hline
+		86 & 528.268287 ms \\ \hline
+		87 & 41.405433 ms \\ \hline
+		88 & 36154.141433 ms \\ \hline
+		89 & 5.312185 ms \\ \hline
+		90 & 1734.147577 ms \\ \hline
+		91 & 214.862985 ms \\ \hline
+		92 & 38.540643 ms \\ \hline
+		93 & 16.448299 ms \\ \hline
+		94 & 0.814891 ms \\ \hline
+		95 & 188.552178 ms \\ \hline
+		96 & 933.268529 ms \\ \hline
+		97 & 581.380477 ms \\ \hline
+		98 & 184.611497 ms \\ \hline
+		99 & 12.650092 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration local \\ \hline
+		75 & 10.478241 ms \\ \hline
+		76 & 1.66616 ms \\ \hline
+		77 & 150.873986 ms \\ \hline
+		78 & 94.269122 ms \\ \hline
+		79 & 9152.663811 ms \\ \hline
+		80 & 3.13701 ms \\ \hline
+		81 & 67.256277 ms \\ \hline
+		82 & 35.863347 ms \\ \hline
+		83 & 76.960887 ms \\ \hline
+		84 & 2585.838483 ms \\ \hline
+		85 & 37.120349 ms \\ \hline
+		86 & 528.651148 ms \\ \hline
+		87 & 34.945019 ms \\ \hline
+		88 & 36241.631034 ms \\ \hline
+		89 & 2.324323 ms \\ \hline
+		90 & 604.389592 ms \\ \hline
+		91 & 214.881639 ms \\ \hline
+		92 & 38.737549 ms \\ \hline
+		93 & 7.405805 ms \\ \hline
+		94 & 0.81029 ms \\ \hline
+		95 & 189.256045 ms \\ \hline
+		96 & 932.433677 ms \\ \hline
+		97 & 304.747583 ms \\ \hline
+		98 & 184.646778 ms \\ \hline
+		99 & 4.620931 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit \\ \hline
+		75 & 13.179941 ms \\ \hline
+		76 & 5.045615 ms \\ \hline
+		77 & 6.336736 ms \\ \hline
+		78 & 9.772348 ms \\ \hline
+		79 & 14.215647 ms \\ \hline
+		80 & 4.898211 ms \\ \hline
+		81 & 9.771256 ms \\ \hline
+		82 & 8.075173 ms \\ \hline
+		83 & 3.630777 ms \\ \hline
+		84 & 34.836531 ms \\ \hline
+		85 & 3.598688 ms \\ \hline
+		86 & 4.393503 ms \\ \hline
+		87 & 1.743596 ms \\ \hline
+		88 & 15.101981 ms \\ \hline
+		89 & 1.528683 ms \\ \hline
+		90 & 22.885089 ms \\ \hline
+		91 & 6.176384 ms \\ \hline
+		92 & 1.976313 ms \\ \hline
+		93 & 8.196764 ms \\ \hline
+		94 & 1.971804 ms \\ \hline
+		95 & 4.259683 ms \\ \hline
+		96 & 8.133055 ms \\ \hline
+		97 & 4.606805 ms \\ \hline
+		98 & 9.784656 ms \\ \hline
+		99 & 5.056011 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit local \\ \hline
+		75 & 13.200242 ms \\ \hline
+		76 & 4.425631 ms \\ \hline
+		77 & 4.606634 ms \\ \hline
+		78 & 9.009662 ms \\ \hline
+		79 & 14.223333 ms \\ \hline
+		80 & 2.603217 ms \\ \hline
+		81 & 3.365161 ms \\ \hline
+		82 & 4.929775 ms \\ \hline
+		83 & 3.564961 ms \\ \hline
+		84 & 20.384742 ms \\ \hline
+		85 & 2.905875 ms \\ \hline
+		86 & 3.191562 ms \\ \hline
+		87 & 1.644649 ms \\ \hline
+		88 & 13.847766 ms \\ \hline
+		89 & 1.049236 ms \\ \hline
+		90 & 18.964289 ms \\ \hline
+		91 & 6.147093 ms \\ \hline
+		92 & 1.962646 ms \\ \hline
+		93 & 3.024402 ms \\ \hline
+		94 & 1.515896 ms \\ \hline
+		95 & 1.801201 ms \\ \hline
+		96 & 5.530923 ms \\ \hline
+		97 & 4.290898 ms \\ \hline
+		98 & 9.632382 ms \\ \hline
+		99 & 2.472193 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic \\ \hline
+		75 & 6.942651 ms \\ \hline
+		76 & 2.46779 ms \\ \hline
+		77 & 3.948197 ms \\ \hline
+		78 & 5.674459 ms \\ \hline
+		79 & 8.810585 ms \\ \hline
+		80 & 2.776076 ms \\ \hline
+		81 & 3.996077 ms \\ \hline
+		82 & 4.821725 ms \\ \hline
+		83 & 3.773631 ms \\ \hline
+		84 & 14.074491 ms \\ \hline
+		85 & 2.593924 ms \\ \hline
+		86 & 0.861131 ms \\ \hline
+		87 & 0.797176 ms \\ \hline
+		88 & 4.577257 ms \\ \hline
+		89 & 1.197462 ms \\ \hline
+		90 & 3.340015 ms \\ \hline
+		91 & 5.222941 ms \\ \hline
+		92 & 1.08472 ms \\ \hline
+		93 & 2.707787 ms \\ \hline
+		94 & 0.339749 ms \\ \hline
+		95 & 0.453768 ms \\ \hline
+		96 & 2.956694 ms \\ \hline
+		97 & 2.951662 ms \\ \hline
+		98 & 4.460949 ms \\ \hline
+		99 & 0.652745 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic local \\ \hline
+		75 & 9.684677 ms \\ \hline
+		76 & 2.348568 ms \\ \hline
+		77 & 3.455208 ms \\ \hline
+		78 & 5.663252 ms \\ \hline
+		79 & 8.707741 ms \\ \hline
+		80 & 1.524961 ms \\ \hline
+		81 & 4.0165 ms \\ \hline
+		82 & 4.820994 ms \\ \hline
+		83 & 3.768966 ms \\ \hline
+		84 & 9.240854 ms \\ \hline
+		85 & 2.363849 ms \\ \hline
+		86 & 0.859659 ms \\ \hline
+		87 & 0.749002 ms \\ \hline
+		88 & 4.490098 ms \\ \hline
+		89 & 1.135063 ms \\ \hline
+		90 & 3.203913 ms \\ \hline
+		91 & 5.210439 ms \\ \hline
+		92 & 1.068052 ms \\ \hline
+		93 & 2.270763 ms \\ \hline
+		94 & 0.341987 ms \\ \hline
+		95 & 0.453611 ms \\ \hline
+		96 & 2.834343 ms \\ \hline
+		97 & 2.868619 ms \\ \hline
+		98 & 4.468894 ms \\ \hline
+		99 & 0.609133 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve \\ \hline
+		75 & 24.10313 ms \\ \hline
+		76 & 11.218956 ms \\ \hline
+		77 & 245.581084 ms \\ \hline
+		78 & 79.38162 ms \\ \hline
+		79 & 729.210486 ms \\ \hline
+		80 & 12.009477 ms \\ \hline
+		81 & 80.603635 ms \\ \hline
+		82 & 221.42212 ms \\ \hline
+		83 & 39.769917 ms \\ \hline
+		84 & 3906.57147 ms \\ \hline
+		85 & 115.230275 ms \\ \hline
+		86 & 158.678762 ms \\ \hline
+		87 & 47.751048 ms \\ \hline
+		88 & 760.61273 ms \\ \hline
+		89 & 12.159277 ms \\ \hline
+		90 & 1171.34907 ms \\ \hline
+		91 & 235.925567 ms \\ \hline
+		92 & 34.046692 ms \\ \hline
+		93 & 8.460347 ms \\ \hline
+		94 & 0.131598 ms \\ \hline
+		95 & 3.280932 ms \\ \hline
+		96 & 82.014619 ms \\ \hline
+		97 & 39.518362 ms \\ \hline
+		98 & 11.305339 ms \\ \hline
+		99 & 9.764942 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve local \\ \hline
+		75 & 12.429163 ms \\ \hline
+		76 & 7.00983 ms \\ \hline
+		77 & 1.076886 ms \\ \hline
+		78 & 44.26665 ms \\ \hline
+		79 & 17.488957 ms \\ \hline
+		80 & 0.498895 ms \\ \hline
+		81 & 1.032711 ms \\ \hline
+		82 & 0.618111 ms \\ \hline
+		83 & 2.150437 ms \\ \hline
+		84 & 3652.819939 ms \\ \hline
+		85 & 0.492338 ms \\ \hline
+		86 & 0.9242 ms \\ \hline
+		87 & 0.208906 ms \\ \hline
+		88 & 39.231847 ms \\ \hline
+		89 & 0.22777 ms \\ \hline
+		90 & 1.332649 ms \\ \hline
+		91 & 1.409215 ms \\ \hline
+		92 & 0.542712 ms \\ \hline
+		93 & 1.535109 ms \\ \hline
+		94 & 0.117479 ms \\ \hline
+		95 & 0.466705 ms \\ \hline
+		96 & 4.859004 ms \\ \hline
+		97 & 2.771066 ms \\ \hline
+		98 & 6.767962 ms \\ \hline
+		99 & 0.554674 ms \\ \hline
+	\end{tabular}\\
+\end{multicols}\pagebreak
+\section{Random games of type 2, scaling in $\lambda$}
+\begin{multicols}{2}
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive \\ \hline
+		75 & 5.572237 ms \\ \hline
+		76 & 3.886284 ms \\ \hline
+		77 & 71.522315 ms \\ \hline
+		78 & 2.304195 ms \\ \hline
+		79 & 175.527 ms \\ \hline
+		80 & 3.462186 ms \\ \hline
+		81 & 19.904324 ms \\ \hline
+		82 & 49.190906 ms \\ \hline
+		83 & 9.397631 ms \\ \hline
+		84 & 370.173095 ms \\ \hline
+		85 & 33.034355 ms \\ \hline
+		86 & 101.017842 ms \\ \hline
+		87 & 54.011849 ms \\ \hline
+		88 & 277.018051 ms \\ \hline
+		89 & 7.332896 ms \\ \hline
+		90 & 482.92123 ms \\ \hline
+		91 & 61.479266 ms \\ \hline
+		92 & 17.699253 ms \\ \hline
+		93 & 3.155225 ms \\ \hline
+		94 & 3.254518 ms \\ \hline
+		95 & 56.647944 ms \\ \hline
+		96 & 58.454469 ms \\ \hline
+		97 & 55.691609 ms \\ \hline
+		98 & 9.093579 ms \\ \hline
+		99 & 4.250813 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive local \\ \hline
+		75 & 4.993032 ms \\ \hline
+		76 & 2.777006 ms \\ \hline
+		77 & 51.969796 ms \\ \hline
+		78 & 2.145411 ms \\ \hline
+		79 & 166.831989 ms \\ \hline
+		80 & 2.625606 ms \\ \hline
+		81 & 19.594841 ms \\ \hline
+		82 & 48.034131 ms \\ \hline
+		83 & 8.562243 ms \\ \hline
+		84 & 366.608514 ms \\ \hline
+		85 & 25.455226 ms \\ \hline
+		86 & 73.522082 ms \\ \hline
+		87 & 47.168199 ms \\ \hline
+		88 & 261.574307 ms \\ \hline
+		89 & 5.020165 ms \\ \hline
+		90 & 368.893109 ms \\ \hline
+		91 & 66.534406 ms \\ \hline
+		92 & 18.584134 ms \\ \hline
+		93 & 2.570556 ms \\ \hline
+		94 & 3.267228 ms \\ \hline
+		95 & 51.163045 ms \\ \hline
+		96 & 56.701722 ms \\ \hline
+		97 & 53.53649 ms \\ \hline
+		98 & 8.846735 ms \\ \hline
+		99 & 4.164454 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration \\ \hline
+		75 & 13.248044 ms \\ \hline
+		76 & 4.904823 ms \\ \hline
+		77 & 212.49508 ms \\ \hline
+		78 & 29.021233 ms \\ \hline
+		79 & 11100.371072 ms \\ \hline
+		80 & 6.147743 ms \\ \hline
+		81 & 52.954776 ms \\ \hline
+		82 & 34.200157 ms \\ \hline
+		83 & 94.732149 ms \\ \hline
+		84 & 14663.811045 ms \\ \hline
+		85 & 94.903842 ms \\ \hline
+		86 & 678.222564 ms \\ \hline
+		87 & 38.267891 ms \\ \hline
+		88 & 43620.52326 ms \\ \hline
+		89 & 4.121256 ms \\ \hline
+		90 & 1494.600774 ms \\ \hline
+		91 & 225.48317 ms \\ \hline
+		92 & 44.600972 ms \\ \hline
+		93 & 15.181433 ms \\ \hline
+		94 & 4.081361 ms \\ \hline
+		95 & 210.571513 ms \\ \hline
+		96 & 992.03064 ms \\ \hline
+		97 & 963.018774 ms \\ \hline
+		98 & 105.644549 ms \\ \hline
+		99 & 7.015923 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration local \\ \hline
+		75 & 12.470087 ms \\ \hline
+		76 & 1.470259 ms \\ \hline
+		77 & 95.511138 ms \\ \hline
+		78 & 27.627334 ms \\ \hline
+		79 & 11093.380929 ms \\ \hline
+		80 & 2.364584 ms \\ \hline
+		81 & 53.370789 ms \\ \hline
+		82 & 33.992381 ms \\ \hline
+		83 & 46.078413 ms \\ \hline
+		84 & 14230.865929 ms \\ \hline
+		85 & 40.219652 ms \\ \hline
+		86 & 235.093898 ms \\ \hline
+		87 & 25.92723 ms \\ \hline
+		88 & 43606.352352 ms \\ \hline
+		89 & 2.162115 ms \\ \hline
+		90 & 585.769655 ms \\ \hline
+		91 & 224.934857 ms \\ \hline
+		92 & 44.599862 ms \\ \hline
+		93 & 4.075561 ms \\ \hline
+		94 & 3.437583 ms \\ \hline
+		95 & 98.24308 ms \\ \hline
+		96 & 992.33474 ms \\ \hline
+		97 & 963.997442 ms \\ \hline
+		98 & 105.2284 ms \\ \hline
+		99 & 6.975608 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit \\ \hline
+		75 & 11.582399 ms \\ \hline
+		76 & 5.557129 ms \\ \hline
+		77 & 5.882631 ms \\ \hline
+		78 & 3.56182 ms \\ \hline
+		79 & 18.407353 ms \\ \hline
+		80 & 4.50393 ms \\ \hline
+		81 & 3.715213 ms \\ \hline
+		82 & 5.772085 ms \\ \hline
+		83 & 5.68015 ms \\ \hline
+		84 & 61.428437 ms \\ \hline
+		85 & 3.011144 ms \\ \hline
+		86 & 11.129041 ms \\ \hline
+		87 & 2.04068 ms \\ \hline
+		88 & 23.852764 ms \\ \hline
+		89 & 3.053057 ms \\ \hline
+		90 & 20.924669 ms \\ \hline
+		91 & 6.294277 ms \\ \hline
+		92 & 3.608108 ms \\ \hline
+		93 & 5.046793 ms \\ \hline
+		94 & 1.609743 ms \\ \hline
+		95 & 1.899699 ms \\ \hline
+		96 & 6.603682 ms \\ \hline
+		97 & 4.909781 ms \\ \hline
+		98 & 10.970918 ms \\ \hline
+		99 & 2.646825 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit local \\ \hline
+		75 & 12.371467 ms \\ \hline
+		76 & 3.326987 ms \\ \hline
+		77 & 3.581174 ms \\ \hline
+		78 & 4.136829 ms \\ \hline
+		79 & 17.425269 ms \\ \hline
+		80 & 2.178803 ms \\ \hline
+		81 & 3.366602 ms \\ \hline
+		82 & 5.695551 ms \\ \hline
+		83 & 2.455281 ms \\ \hline
+		84 & 61.029529 ms \\ \hline
+		85 & 1.862928 ms \\ \hline
+		86 & 3.866284 ms \\ \hline
+		87 & 1.950294 ms \\ \hline
+		88 & 23.496673 ms \\ \hline
+		89 & 0.736546 ms \\ \hline
+		90 & 13.178012 ms \\ \hline
+		91 & 6.20594 ms \\ \hline
+		92 & 2.287151 ms \\ \hline
+		93 & 4.422565 ms \\ \hline
+		94 & 1.394032 ms \\ \hline
+		95 & 1.238352 ms \\ \hline
+		96 & 4.873597 ms \\ \hline
+		97 & 4.63077 ms \\ \hline
+		98 & 10.86504 ms \\ \hline
+		99 & 2.670858 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic \\ \hline
+		75 & 8.590814 ms \\ \hline
+		76 & 6.154989 ms \\ \hline
+		77 & 85.029403 ms \\ \hline
+		78 & 4.249487 ms \\ \hline
+		79 & 454.203139 ms \\ \hline
+		80 & 3.51584 ms \\ \hline
+		81 & 10.555987 ms \\ \hline
+		82 & 35.00474 ms \\ \hline
+		83 & 5.56905 ms \\ \hline
+		84 & 1557.613182 ms \\ \hline
+		85 & 8.732898 ms \\ \hline
+		86 & 35.374897 ms \\ \hline
+		87 & 9.563621 ms \\ \hline
+		88 & 264.682693 ms \\ \hline
+		89 & 1.904499 ms \\ \hline
+		90 & 214.847173 ms \\ \hline
+		91 & 12.082922 ms \\ \hline
+		92 & 3.388263 ms \\ \hline
+		93 & 2.774365 ms \\ \hline
+		94 & 0.5237 ms \\ \hline
+		95 & 1.53478 ms \\ \hline
+		96 & 4.988797 ms \\ \hline
+		97 & 4.497413 ms \\ \hline
+		98 & 4.880229 ms \\ \hline
+		99 & 0.642964 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic local \\ \hline
+		75 & 12.884992 ms \\ \hline
+		76 & 2.628672 ms \\ \hline
+		77 & 42.703954 ms \\ \hline
+		78 & 4.302818 ms \\ \hline
+		79 & 457.175236 ms \\ \hline
+		80 & 1.612656 ms \\ \hline
+		81 & 10.656932 ms \\ \hline
+		82 & 35.11936 ms \\ \hline
+		83 & 5.11544 ms \\ \hline
+		84 & 1567.519498 ms \\ \hline
+		85 & 5.046267 ms \\ \hline
+		86 & 15.793766 ms \\ \hline
+		87 & 9.364436 ms \\ \hline
+		88 & 270.137893 ms \\ \hline
+		89 & 1.01092 ms \\ \hline
+		90 & 108.909367 ms \\ \hline
+		91 & 12.10892 ms \\ \hline
+		92 & 3.452279 ms \\ \hline
+		93 & 2.920813 ms \\ \hline
+		94 & 0.578589 ms \\ \hline
+		95 & 1.153317 ms \\ \hline
+		96 & 4.919032 ms \\ \hline
+		97 & 4.535802 ms \\ \hline
+		98 & 4.890286 ms \\ \hline
+		99 & 0.64128 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve \\ \hline
+		75 & 40.864312 ms \\ \hline
+		76 & 24.04339 ms \\ \hline
+		77 & 2125.279617 ms \\ \hline
+		78 & 74.18574 ms \\ \hline
+		79 & 10548.586273 ms \\ \hline
+		80 & 21.25207 ms \\ \hline
+		81 & 230.552061 ms \\ \hline
+		82 & 891.771734 ms \\ \hline
+		83 & 77.268964 ms \\ \hline
+		84 & 15161.231952 ms \\ \hline
+		85 & 413.975688 ms \\ \hline
+		86 & 804.467899 ms \\ \hline
+		87 & 360.230714 ms \\ \hline
+		88 & 6193.263862 ms \\ \hline
+		89 & 29.984868 ms \\ \hline
+		90 & 28914.631371 ms \\ \hline
+		91 & 694.84558 ms \\ \hline
+		92 & 71.502263 ms \\ \hline
+		93 & 15.43645 ms \\ \hline
+		94 & 6.294129 ms \\ \hline
+		95 & 91.693459 ms \\ \hline
+		96 & 323.904371 ms \\ \hline
+		97 & 296.481792 ms \\ \hline
+		98 & 36.927466 ms \\ \hline
+		99 & 9.060785 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve local \\ \hline
+		75 & 35.812991 ms \\ \hline
+		76 & 19.939048 ms \\ \hline
+		77 & 11.267082 ms \\ \hline
+		78 & 73.497531 ms \\ \hline
+		79 & 45.171472 ms \\ \hline
+		80 & 0.82058 ms \\ \hline
+		81 & 3.454883 ms \\ \hline
+		82 & 7.587814 ms \\ \hline
+		83 & 3.10014 ms \\ \hline
+		84 & 13126.034303 ms \\ \hline
+		85 & 3.565127 ms \\ \hline
+		86 & 4.315561 ms \\ \hline
+		87 & 2.283749 ms \\ \hline
+		88 & 52.009152 ms \\ \hline
+		89 & 0.493271 ms \\ \hline
+		90 & 38.726892 ms \\ \hline
+		91 & 5.756349 ms \\ \hline
+		92 & 1.065428 ms \\ \hline
+		93 & 1.30138 ms \\ \hline
+		94 & 5.638633 ms \\ \hline
+		95 & 1.014387 ms \\ \hline
+		96 & 5.851124 ms \\ \hline
+		97 & 5.45393 ms \\ \hline
+		98 & 4.119885 ms \\ \hline
+		99 & 0.43048 ms \\ \hline
+	\end{tabular}\\
+\end{multicols}\pagebreak
+\section{Random games of type 3, scaling in $\lambda$}
+\begin{multicols}{2}
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive \\ \hline
+		75 & 5.151231 ms \\ \hline
+		76 & 3.604603 ms \\ \hline
+		77 & 70.708286 ms \\ \hline
+		78 & 2.329638 ms \\ \hline
+		79 & 196.596803 ms \\ \hline
+		80 & 4.219329 ms \\ \hline
+		81 & 21.676263 ms \\ \hline
+		82 & 47.541397 ms \\ \hline
+		83 & 9.635504 ms \\ \hline
+		84 & 347.51953 ms \\ \hline
+		85 & 34.52527 ms \\ \hline
+		86 & 119.458258 ms \\ \hline
+		87 & 53.553651 ms \\ \hline
+		88 & 223.079026 ms \\ \hline
+		89 & 6.848982 ms \\ \hline
+		90 & 480.2348 ms \\ \hline
+		91 & 58.862406 ms \\ \hline
+		92 & 17.289855 ms \\ \hline
+		93 & 2.896246 ms \\ \hline
+		94 & 3.320768 ms \\ \hline
+		95 & 45.185803 ms \\ \hline
+		96 & 67.472313 ms \\ \hline
+		97 & 57.18095 ms \\ \hline
+		98 & 8.827342 ms \\ \hline
+		99 & 4.352249 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive local \\ \hline
+		75 & 4.321471 ms \\ \hline
+		76 & 3.36463 ms \\ \hline
+		77 & 67.045277 ms \\ \hline
+		78 & 2.463787 ms \\ \hline
+		79 & 179.7972 ms \\ \hline
+		80 & 4.226262 ms \\ \hline
+		81 & 22.061602 ms \\ \hline
+		82 & 41.275329 ms \\ \hline
+		83 & 10.009246 ms \\ \hline
+		84 & 342.845079 ms \\ \hline
+		85 & 26.856433 ms \\ \hline
+		86 & 121.77033 ms \\ \hline
+		87 & 55.439681 ms \\ \hline
+		88 & 224.774085 ms \\ \hline
+		89 & 7.276428 ms \\ \hline
+		90 & 343.94985 ms \\ \hline
+		91 & 58.962511 ms \\ \hline
+		92 & 16.825969 ms \\ \hline
+		93 & 2.460236 ms \\ \hline
+		94 & 3.214327 ms \\ \hline
+		95 & 37.36455 ms \\ \hline
+		96 & 55.541583 ms \\ \hline
+		97 & 38.940735 ms \\ \hline
+		98 & 5.902098 ms \\ \hline
+		99 & 3.167523 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration \\ \hline
+		75 & 25.575229 ms \\ \hline
+		76 & 5.925763 ms \\ \hline
+		77 & 243.831927 ms \\ \hline
+		78 & 109.736644 ms \\ \hline
+		79 & 11020.561653 ms \\ \hline
+		80 & 6.065144 ms \\ \hline
+		81 & 77.810369 ms \\ \hline
+		82 & 37.962145 ms \\ \hline
+		83 & 112.963567 ms \\ \hline
+		84 & 10825.315091 ms \\ \hline
+		85 & 93.401165 ms \\ \hline
+		86 & 683.16394 ms \\ \hline
+		87 & 33.900335 ms \\ \hline
+		88 & 35623.490809 ms \\ \hline
+		89 & 4.028757 ms \\ \hline
+		90 & 1495.140344 ms \\ \hline
+		91 & 198.317844 ms \\ \hline
+		92 & 29.820193 ms \\ \hline
+		93 & 20.077013 ms \\ \hline
+		94 & 3.824404 ms \\ \hline
+		95 & 251.811213 ms \\ \hline
+		96 & 730.404449 ms \\ \hline
+		97 & 663.050439 ms \\ \hline
+		98 & 264.842467 ms \\ \hline
+		99 & 7.13727 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration local \\ \hline
+		75 & 6.447583 ms \\ \hline
+		76 & 3.937245 ms \\ \hline
+		77 & 86.499632 ms \\ \hline
+		78 & 107.420124 ms \\ \hline
+		79 & 4505.261921 ms \\ \hline
+		80 & 6.09288 ms \\ \hline
+		81 & 77.817817 ms \\ \hline
+		82 & 16.59241 ms \\ \hline
+		83 & 113.320589 ms \\ \hline
+		84 & 10658.541404 ms \\ \hline
+		85 & 43.264458 ms \\ \hline
+		86 & 684.641534 ms \\ \hline
+		87 & 34.090233 ms \\ \hline
+		88 & 32877.686634 ms \\ \hline
+		89 & 4.090678 ms \\ \hline
+		90 & 534.077027 ms \\ \hline
+		91 & 199.14394 ms \\ \hline
+		92 & 29.995618 ms \\ \hline
+		93 & 7.908287 ms \\ \hline
+		94 & 3.828793 ms \\ \hline
+		95 & 156.78394 ms \\ \hline
+		96 & 638.498578 ms \\ \hline
+		97 & 332.57441 ms \\ \hline
+		98 & 99.536863 ms \\ \hline
+		99 & 2.512545 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit \\ \hline
+		75 & 12.902371 ms \\ \hline
+		76 & 15.140991 ms \\ \hline
+		77 & 18.717939 ms \\ \hline
+		78 & 11.013356 ms \\ \hline
+		79 & 77.8986 ms \\ \hline
+		80 & 9.891766 ms \\ \hline
+		81 & 9.0947 ms \\ \hline
+		82 & 14.099915 ms \\ \hline
+		83 & 7.211647 ms \\ \hline
+		84 & 183.074633 ms \\ \hline
+		85 & 7.353104 ms \\ \hline
+		86 & 29.286211 ms \\ \hline
+		87 & 4.941745 ms \\ \hline
+		88 & 121.480495 ms \\ \hline
+		89 & 2.922741 ms \\ \hline
+		90 & 63.375097 ms \\ \hline
+		91 & 12.290787 ms \\ \hline
+		92 & 10.663925 ms \\ \hline
+		93 & 12.072567 ms \\ \hline
+		94 & 2.519906 ms \\ \hline
+		95 & 7.509088 ms \\ \hline
+		96 & 11.690614 ms \\ \hline
+		97 & 8.799267 ms \\ \hline
+		98 & 15.079385 ms \\ \hline
+		99 & 7.514165 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit local \\ \hline
+		75 & 7.104126 ms \\ \hline
+		76 & 7.483722 ms \\ \hline
+		77 & 14.410184 ms \\ \hline
+		78 & 7.374659 ms \\ \hline
+		79 & 52.12921 ms \\ \hline
+		80 & 7.179271 ms \\ \hline
+		81 & 8.931317 ms \\ \hline
+		82 & 12.31199 ms \\ \hline
+		83 & 5.816688 ms \\ \hline
+		84 & 196.619454 ms \\ \hline
+		85 & 9.118515 ms \\ \hline
+		86 & 29.225048 ms \\ \hline
+		87 & 4.979079 ms \\ \hline
+		88 & 156.352514 ms \\ \hline
+		89 & 1.860649 ms \\ \hline
+		90 & 65.152861 ms \\ \hline
+		91 & 12.285151 ms \\ \hline
+		92 & 7.372765 ms \\ \hline
+		93 & 4.875889 ms \\ \hline
+		94 & 2.525663 ms \\ \hline
+		95 & 14.717426 ms \\ \hline
+		96 & 13.9454 ms \\ \hline
+		97 & 11.64738 ms \\ \hline
+		98 & 8.958566 ms \\ \hline
+		99 & 2.744124 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic \\ \hline
+		75 & 18.54137 ms \\ \hline
+		76 & 18.296847 ms \\ \hline
+		77 & 476.01134 ms \\ \hline
+		78 & 7.939144 ms \\ \hline
+		79 & 2959.308729 ms \\ \hline
+		80 & 7.872336 ms \\ \hline
+		81 & 55.342337 ms \\ \hline
+		82 & 273.237373 ms \\ \hline
+		83 & 20.358435 ms \\ \hline
+		84 & 6615.501783 ms \\ \hline
+		85 & 48.054967 ms \\ \hline
+		86 & 519.476449 ms \\ \hline
+		87 & 36.730716 ms \\ \hline
+		88 & 2886.350328 ms \\ \hline
+		89 & 6.518033 ms \\ \hline
+		90 & 1710.51928 ms \\ \hline
+		91 & 88.979346 ms \\ \hline
+		92 & 35.9586 ms \\ \hline
+		93 & 9.854976 ms \\ \hline
+		94 & 2.611188 ms \\ \hline
+		95 & 24.157741 ms \\ \hline
+		96 & 31.650372 ms \\ \hline
+		97 & 23.72306 ms \\ \hline
+		98 & 11.150034 ms \\ \hline
+		99 & 2.903731 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic local \\ \hline
+		75 & 8.698159 ms \\ \hline
+		76 & 15.287062 ms \\ \hline
+		77 & 404.360803 ms \\ \hline
+		78 & 7.927143 ms \\ \hline
+		79 & 2045.078 ms \\ \hline
+		80 & 7.938775 ms \\ \hline
+		81 & 54.964416 ms \\ \hline
+		82 & 250.826435 ms \\ \hline
+		83 & 20.280726 ms \\ \hline
+		84 & 6554.989919 ms \\ \hline
+		85 & 59.498466 ms \\ \hline
+		86 & 513.878872 ms \\ \hline
+		87 & 36.316144 ms \\ \hline
+		88 & 3821.29137 ms \\ \hline
+		89 & 6.040122 ms \\ \hline
+		90 & 1821.926626 ms \\ \hline
+		91 & 88.742239 ms \\ \hline
+		92 & 36.185988 ms \\ \hline
+		93 & 8.150113 ms \\ \hline
+		94 & 2.62318 ms \\ \hline
+		95 & 49.1887 ms \\ \hline
+		96 & 40.688449 ms \\ \hline
+		97 & 33.738615 ms \\ \hline
+		98 & 6.778539 ms \\ \hline
+		99 & 1.288989 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve \\ \hline
+		75 & 73.734811 ms \\ \hline
+		76 & 28.641868 ms \\ \hline
+		77 & 3754.799599 ms \\ \hline
+		78 & 123.479098 ms \\ \hline
+		79 & 29096.679104 ms \\ \hline
+		80 & 33.534004 ms \\ \hline
+		81 & 459.50578 ms \\ \hline
+		82 & 2065.343313 ms \\ \hline
+		83 & 172.782392 ms \\ \hline
+		84 & 31559.535147 ms \\ \hline
+		85 & 859.952952 ms \\ \hline
+		86 & 3885.281168 ms \\ \hline
+		87 & 1055.404786 ms \\ \hline
+		88 & 34179.411694 ms \\ \hline
+		89 & 56.631884 ms \\ \hline
+		90 & 84285.964489 ms \\ \hline
+		91 & 1855.988683 ms \\ \hline
+		92 & 188.596517 ms \\ \hline
+		93 & 31.280134 ms \\ \hline
+		94 & 13.42136 ms \\ \hline
+		95 & 369.221645 ms \\ \hline
+		96 & 1124.808958 ms \\ \hline
+		97 & 948.932646 ms \\ \hline
+		98 & 89.644036 ms \\ \hline
+		99 & 15.072768 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve local \\ \hline
+		75 & 43.558063 ms \\ \hline
+		76 & 27.014061 ms \\ \hline
+		77 & 2196.073022 ms \\ \hline
+		78 & 107.994854 ms \\ \hline
+		79 & 22233.181687 ms \\ \hline
+		80 & 7.830664 ms \\ \hline
+		81 & 271.692867 ms \\ \hline
+		82 & 1071.624026 ms \\ \hline
+		83 & 60.29467 ms \\ \hline
+		84 & 26370.072606 ms \\ \hline
+		85 & 303.293351 ms \\ \hline
+		86 & 1325.389916 ms \\ \hline
+		87 & 343.330116 ms \\ \hline
+		88 & 33579.322758 ms \\ \hline
+		89 & 9.660728 ms \\ \hline
+		90 & 13009.351329 ms \\ \hline
+		91 & 307.125961 ms \\ \hline
+		92 & 76.306882 ms \\ \hline
+		93 & 21.666715 ms \\ \hline
+		94 & 7.713631 ms \\ \hline
+		95 & 207.979102 ms \\ \hline
+		96 & 363.974039 ms \\ \hline
+		97 & 191.276935 ms \\ \hline
+		98 & 42.050393 ms \\ \hline
+		99 & 4.143319 ms \\ \hline
+	\end{tabular}\\
+\end{multicols}\pagebreak
+\section{Random games of type 1, scaling in the number of features}
+\begin{multicols}{2}
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive \\ \hline
+		2.0 & 0.831682 ms \\ \hline
+		2.25 & 0.787779 ms \\ \hline
+		2.5 & 0.630085 ms \\ \hline
+		2.75 & 0.768894 ms \\ \hline
+		3.0 & 1.808512 ms \\ \hline
+		3.25 & 0.873079 ms \\ \hline
+		3.5 & 1.303374 ms \\ \hline
+		3.75 & 0.847835 ms \\ \hline
+		4.0 & 1.681708 ms \\ \hline
+		4.25 & 3.279441 ms \\ \hline
+		4.5 & 3.66918 ms \\ \hline
+		4.75 & 1.558638 ms \\ \hline
+		5.0 & 4.309323 ms \\ \hline
+		5.25 & 2.893653 ms \\ \hline
+		5.5 & 5.59452 ms \\ \hline
+		5.75 & 5.736842 ms \\ \hline
+		6.0 & 12.759288 ms \\ \hline
+		6.25 & 6.920441 ms \\ \hline
+		6.5 & 12.602162 ms \\ \hline
+		6.75 & 8.326259 ms \\ \hline
+		7.0 & 12.128731 ms \\ \hline
+		7.25 & 14.289059 ms \\ \hline
+		7.5 & 16.616108 ms \\ \hline
+		7.75 & 14.929757 ms \\ \hline
+		8.0 & 51.708592 ms \\ \hline
+		8.25 & 29.056171 ms \\ \hline
+		8.5 & 38.009515 ms \\ \hline
+		8.75 & 65.541624 ms \\ \hline
+		9.0 & 83.306977 ms \\ \hline
+		9.25 & 77.116324 ms \\ \hline
+		9.5 & 88.795178 ms \\ \hline
+		9.75 & 104.625002 ms \\ \hline
+		10.0 & 109.839213 ms \\ \hline
+		10.25 & 201.184011 ms \\ \hline
+		10.5 & 71.639255 ms \\ \hline
+		10.75 & 173.372201 ms \\ \hline
+		11.0 & 278.696424 ms \\ \hline
+		11.25 & 190.420726 ms \\ \hline
+		11.5 & 166.337719 ms \\ \hline
+		11.75 & 212.147761 ms \\ \hline
+		12.0 & 446.367466 ms \\ \hline
+		12.25 & 411.10256 ms \\ \hline
+		12.5 & 611.590006 ms \\ \hline
+		12.75 & 376.966971 ms \\ \hline
+		13.0 & 1048.267745 ms \\ \hline
+		13.25 & 1460.488019 ms \\ \hline
+		13.5 & 1159.976893 ms \\ \hline
+		13.75 & 1428.482043 ms \\ \hline
+		14.0 & 1319.015823 ms \\ \hline
+		14.25 & 2558.800215 ms \\ \hline
+		14.5 & 2547.022879 ms \\ \hline
+		14.75 & 1702.58316 ms \\ \hline
+		15.0 & 3637.486788 ms \\ \hline
+		15.25 & 3077.368185 ms \\ \hline
+		15.5 & 4212.603012 ms \\ \hline
+		15.75 & 4828.130663 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent recursive local \\ \hline
+		2.0 & 0.845191 ms \\ \hline
+		2.25 & 0.767179 ms \\ \hline
+		2.5 & 0.53975 ms \\ \hline
+		2.75 & 0.572876 ms \\ \hline
+		3.0 & 1.332794 ms \\ \hline
+		3.25 & 0.708959 ms \\ \hline
+		3.5 & 1.291144 ms \\ \hline
+		3.75 & 0.843332 ms \\ \hline
+		4.0 & 1.614021 ms \\ \hline
+		4.25 & 3.231037 ms \\ \hline
+		4.5 & 2.814344 ms \\ \hline
+		4.75 & 1.333007 ms \\ \hline
+		5.0 & 3.510366 ms \\ \hline
+		5.25 & 2.605022 ms \\ \hline
+		5.5 & 5.960058 ms \\ \hline
+		5.75 & 6.280421 ms \\ \hline
+		6.0 & 12.824149 ms \\ \hline
+		6.25 & 6.878454 ms \\ \hline
+		6.5 & 8.105308 ms \\ \hline
+		6.75 & 7.782662 ms \\ \hline
+		7.0 & 10.466472 ms \\ \hline
+		7.25 & 13.976853 ms \\ \hline
+		7.5 & 13.401955 ms \\ \hline
+		7.75 & 15.546727 ms \\ \hline
+		8.0 & 47.294253 ms \\ \hline
+		8.25 & 26.072257 ms \\ \hline
+		8.5 & 38.181981 ms \\ \hline
+		8.75 & 51.229874 ms \\ \hline
+		9.0 & 58.960801 ms \\ \hline
+		9.25 & 77.765224 ms \\ \hline
+		9.5 & 91.086372 ms \\ \hline
+		9.75 & 106.955251 ms \\ \hline
+		10.0 & 105.642766 ms \\ \hline
+		10.25 & 149.697167 ms \\ \hline
+		10.5 & 59.093611 ms \\ \hline
+		10.75 & 161.967224 ms \\ \hline
+		11.0 & 260.206377 ms \\ \hline
+		11.25 & 188.520127 ms \\ \hline
+		11.5 & 148.423159 ms \\ \hline
+		11.75 & 211.188823 ms \\ \hline
+		12.0 & 329.366103 ms \\ \hline
+		12.25 & 326.42036 ms \\ \hline
+		12.5 & 617.843715 ms \\ \hline
+		12.75 & 377.525177 ms \\ \hline
+		13.0 & 1062.828274 ms \\ \hline
+		13.25 & 1193.730158 ms \\ \hline
+		13.5 & 879.727791 ms \\ \hline
+		13.75 & 1365.846105 ms \\ \hline
+		14.0 & 1337.705727 ms \\ \hline
+		14.25 & 2004.668309 ms \\ \hline
+		14.5 & 1998.261304 ms \\ \hline
+		14.75 & 1701.711136 ms \\ \hline
+		15.0 & 3586.237182 ms \\ \hline
+		15.25 & 2993.832268 ms \\ \hline
+		15.5 & 3772.95595 ms \\ \hline
+		15.75 & 3938.494334 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration \\ \hline
+		2.0 & 1.222122 ms \\ \hline
+		2.25 & 1.133871 ms \\ \hline
+		2.5 & 0.526085 ms \\ \hline
+		2.75 & 1.256012 ms \\ \hline
+		3.0 & 10.007389 ms \\ \hline
+		3.25 & 0.653871 ms \\ \hline
+		3.5 & 1.128714 ms \\ \hline
+		3.75 & 6.658314 ms \\ \hline
+		4.0 & 1.222348 ms \\ \hline
+		4.25 & 4.570886 ms \\ \hline
+		4.5 & 9.554861 ms \\ \hline
+		4.75 & 2.521594 ms \\ \hline
+		5.0 & 74.04515 ms \\ \hline
+		5.25 & 8.378165 ms \\ \hline
+		5.5 & 28.951916 ms \\ \hline
+		5.75 & 45.63253 ms \\ \hline
+		6.0 & 1884.595558 ms \\ \hline
+		6.25 & 4.029901 ms \\ \hline
+		6.5 & 176.488428 ms \\ \hline
+		6.75 & 230.247336 ms \\ \hline
+		7.0 & 6.192419 ms \\ \hline
+		7.25 & 9.909952 ms \\ \hline
+		7.5 & 155.378584 ms \\ \hline
+		7.75 & 10.296701 ms \\ \hline
+		8.0 & 876.484578 ms \\ \hline
+		8.25 & 57.978683 ms \\ \hline
+		8.5 & 172.483793 ms \\ \hline
+		8.75 & 1186.537532 ms \\ \hline
+		9.0 & 62.05414 ms \\ \hline
+		9.25 & 450.213645 ms \\ \hline
+		9.5 & 271.981159 ms \\ \hline
+		9.75 & 6887.116 ms \\ \hline
+		10.0 & 124.2075 ms \\ \hline
+		10.25 & 31039.306543 ms \\ \hline
+		10.5 & 30.166836 ms \\ \hline
+		10.75 & 8019.228783 ms \\ \hline
+		11.0 & 2837.548451 ms \\ \hline
+		11.25 & 123.43605 ms \\ \hline
+		11.5 & 60.914666 ms \\ \hline
+		11.75 & 111.798733 ms \\ \hline
+		12.0 & 3111.775565 ms \\ \hline
+		12.25 & 209.116113 ms \\ \hline
+		12.5 & 584.160629 ms \\ \hline
+		12.75 & 193.744241 ms \\ \hline
+		13.0 & 35438.150725 ms \\ \hline
+		13.25 & 69412.506047 ms \\ \hline
+		13.5 & 50077.86549 ms \\ \hline
+		13.75 & 27055.392409 ms \\ \hline
+		14.0 & 403.672671 ms \\ \hline
+		14.25 & 2860.536252 ms \\ \hline
+		14.5 & 37655.061565 ms \\ \hline
+		14.75 & 786.531295 ms \\ \hline
+		15.0 & 6134.357818 ms \\ \hline
+		15.25 & 2955.288551 ms \\ \hline
+		15.5 & 118306.907779 ms \\ \hline
+		15.75 & 29027.486125 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Independent fixed-point iteration local \\ \hline
+		2.0 & 1.221726 ms \\ \hline
+		2.25 & 1.122385 ms \\ \hline
+		2.5 & 0.33584 ms \\ \hline
+		2.75 & 0.472064 ms \\ \hline
+		3.0 & 5.498123 ms \\ \hline
+		3.25 & 0.314695 ms \\ \hline
+		3.5 & 1.111351 ms \\ \hline
+		3.75 & 6.665386 ms \\ \hline
+		4.0 & 1.226083 ms \\ \hline
+		4.25 & 4.582422 ms \\ \hline
+		4.5 & 3.885753 ms \\ \hline
+		4.75 & 1.623997 ms \\ \hline
+		5.0 & 32.555541 ms \\ \hline
+		5.25 & 4.824165 ms \\ \hline
+		5.5 & 28.753541 ms \\ \hline
+		5.75 & 45.750097 ms \\ \hline
+		6.0 & 1585.701822 ms \\ \hline
+		6.25 & 4.08783 ms \\ \hline
+		6.5 & 67.935102 ms \\ \hline
+		6.75 & 230.142028 ms \\ \hline
+		7.0 & 4.958423 ms \\ \hline
+		7.25 & 9.922013 ms \\ \hline
+		7.5 & 71.667973 ms \\ \hline
+		7.75 & 10.286904 ms \\ \hline
+		8.0 & 630.285925 ms \\ \hline
+		8.25 & 43.19819 ms \\ \hline
+		8.5 & 173.03034 ms \\ \hline
+		8.75 & 562.239159 ms \\ \hline
+		9.0 & 30.276466 ms \\ \hline
+		9.25 & 359.964972 ms \\ \hline
+		9.5 & 273.467268 ms \\ \hline
+		9.75 & 6883.883355 ms \\ \hline
+		10.0 & 124.974115 ms \\ \hline
+		10.25 & 13847.918176 ms \\ \hline
+		10.5 & 13.333751 ms \\ \hline
+		10.75 & 8027.709909 ms \\ \hline
+		11.0 & 2840.919689 ms \\ \hline
+		11.25 & 123.803546 ms \\ \hline
+		11.5 & 32.688601 ms \\ \hline
+		11.75 & 111.654487 ms \\ \hline
+		12.0 & 1491.764149 ms \\ \hline
+		12.25 & 103.405101 ms \\ \hline
+		12.5 & 588.127372 ms \\ \hline
+		12.75 & 195.841903 ms \\ \hline
+		13.0 & 35425.29469 ms \\ \hline
+		13.25 & 34923.642069 ms \\ \hline
+		13.5 & 21415.153714 ms \\ \hline
+		13.75 & 27084.473 ms \\ \hline
+		14.0 & 403.123418 ms \\ \hline
+		14.25 & 2700.289123 ms \\ \hline
+		14.5 & 9553.674124 ms \\ \hline
+		14.75 & 789.869555 ms \\ \hline
+		15.0 & 6135.838701 ms \\ \hline
+		15.25 & 1845.041556 ms \\ \hline
+		15.5 & 74896.828066 ms \\ \hline
+		15.75 & 20444.306506 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit \\ \hline
+		2.0 & 3.689382 ms \\ \hline
+		2.25 & 3.421375 ms \\ \hline
+		2.5 & 1.321109 ms \\ \hline
+		2.75 & 2.18316 ms \\ \hline
+		3.0 & 4.987218 ms \\ \hline
+		3.25 & 0.983535 ms \\ \hline
+		3.5 & 1.607078 ms \\ \hline
+		3.75 & 1.423996 ms \\ \hline
+		4.0 & 1.740855 ms \\ \hline
+		4.25 & 9.460022 ms \\ \hline
+		4.5 & 9.151982 ms \\ \hline
+		4.75 & 1.586286 ms \\ \hline
+		5.0 & 4.564488 ms \\ \hline
+		5.25 & 2.189078 ms \\ \hline
+		5.5 & 6.413069 ms \\ \hline
+		5.75 & 6.948876 ms \\ \hline
+		6.0 & 3.662662 ms \\ \hline
+		6.25 & 1.214467 ms \\ \hline
+		6.5 & 6.181864 ms \\ \hline
+		6.75 & 6.432064 ms \\ \hline
+		7.0 & 1.070284 ms \\ \hline
+		7.25 & 1.480217 ms \\ \hline
+		7.5 & 2.620133 ms \\ \hline
+		7.75 & 2.205924 ms \\ \hline
+		8.0 & 5.118212 ms \\ \hline
+		8.25 & 3.582384 ms \\ \hline
+		8.5 & 4.342961 ms \\ \hline
+		8.75 & 8.397231 ms \\ \hline
+		9.0 & 7.123557 ms \\ \hline
+		9.25 & 4.121446 ms \\ \hline
+		9.5 & 6.071836 ms \\ \hline
+		9.75 & 7.492039 ms \\ \hline
+		10.0 & 3.968228 ms \\ \hline
+		10.25 & 16.948431 ms \\ \hline
+		10.5 & 1.864118 ms \\ \hline
+		10.75 & 15.662477 ms \\ \hline
+		11.0 & 13.343244 ms \\ \hline
+		11.25 & 9.390556 ms \\ \hline
+		11.5 & 5.05927 ms \\ \hline
+		11.75 & 5.823042 ms \\ \hline
+		12.0 & 18.187711 ms \\ \hline
+		12.25 & 16.342897 ms \\ \hline
+		12.5 & 21.5048 ms \\ \hline
+		12.75 & 10.785761 ms \\ \hline
+		13.0 & 35.854223 ms \\ \hline
+		13.25 & 48.255687 ms \\ \hline
+		13.5 & 37.936213 ms \\ \hline
+		13.75 & 34.426066 ms \\ \hline
+		14.0 & 27.098822 ms \\ \hline
+		14.25 & 80.789609 ms \\ \hline
+		14.5 & 108.803807 ms \\ \hline
+		14.75 & 54.611687 ms \\ \hline
+		15.0 & 107.030578 ms \\ \hline
+		15.25 & 45.12552 ms \\ \hline
+		15.5 & 111.968127 ms \\ \hline
+		15.75 & 124.825594 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive explicit local \\ \hline
+		2.0 & 2.348458 ms \\ \hline
+		2.25 & 2.902567 ms \\ \hline
+		2.5 & 1.277929 ms \\ \hline
+		2.75 & 1.322573 ms \\ \hline
+		3.0 & 2.258321 ms \\ \hline
+		3.25 & 0.573683 ms \\ \hline
+		3.5 & 1.592866 ms \\ \hline
+		3.75 & 1.074024 ms \\ \hline
+		4.0 & 1.246714 ms \\ \hline
+		4.25 & 3.953101 ms \\ \hline
+		4.5 & 3.315987 ms \\ \hline
+		4.75 & 0.991203 ms \\ \hline
+		5.0 & 2.639893 ms \\ \hline
+		5.25 & 2.348003 ms \\ \hline
+		5.5 & 5.33634 ms \\ \hline
+		5.75 & 6.770864 ms \\ \hline
+		6.0 & 3.722354 ms \\ \hline
+		6.25 & 1.217468 ms \\ \hline
+		6.5 & 1.967965 ms \\ \hline
+		6.75 & 3.643114 ms \\ \hline
+		7.0 & 1.624517 ms \\ \hline
+		7.25 & 1.481051 ms \\ \hline
+		7.5 & 1.409988 ms \\ \hline
+		7.75 & 1.724534 ms \\ \hline
+		8.0 & 6.181395 ms \\ \hline
+		8.25 & 3.130761 ms \\ \hline
+		8.5 & 3.732697 ms \\ \hline
+		8.75 & 4.951618 ms \\ \hline
+		9.0 & 2.317672 ms \\ \hline
+		9.25 & 4.256602 ms \\ \hline
+		9.5 & 6.089713 ms \\ \hline
+		9.75 & 7.518627 ms \\ \hline
+		10.0 & 3.889302 ms \\ \hline
+		10.25 & 5.623036 ms \\ \hline
+		10.5 & 1.731465 ms \\ \hline
+		10.75 & 8.713679 ms \\ \hline
+		11.0 & 8.556716 ms \\ \hline
+		11.25 & 5.561564 ms \\ \hline
+		11.5 & 4.815343 ms \\ \hline
+		11.75 & 5.759282 ms \\ \hline
+		12.0 & 8.295555 ms \\ \hline
+		12.25 & 6.372578 ms \\ \hline
+		12.5 & 21.595398 ms \\ \hline
+		12.75 & 10.797121 ms \\ \hline
+		13.0 & 35.756249 ms \\ \hline
+		13.25 & 85.921009 ms \\ \hline
+		13.5 & 22.788833 ms \\ \hline
+		13.75 & 34.238522 ms \\ \hline
+		14.0 & 24.262727 ms \\ \hline
+		14.25 & 69.111176 ms \\ \hline
+		14.5 & 161.253008 ms \\ \hline
+		14.75 & 54.125483 ms \\ \hline
+		15.0 & 101.85229 ms \\ \hline
+		15.25 & 40.104211 ms \\ \hline
+		15.5 & 109.339547 ms \\ \hline
+		15.75 & 122.412531 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic \\ \hline
+		2.0 & 3.262736 ms \\ \hline
+		2.25 & 3.854871 ms \\ \hline
+		2.5 & 1.814205 ms \\ \hline
+		2.75 & 3.178633 ms \\ \hline
+		3.0 & 4.480284 ms \\ \hline
+		3.25 & 1.007125 ms \\ \hline
+		3.5 & 1.653495 ms \\ \hline
+		3.75 & 1.176028 ms \\ \hline
+		4.0 & 1.00418 ms \\ \hline
+		4.25 & 2.88306 ms \\ \hline
+		4.5 & 3.737277 ms \\ \hline
+		4.75 & 1.301316 ms \\ \hline
+		5.0 & 2.344471 ms \\ \hline
+		5.25 & 0.530157 ms \\ \hline
+		5.5 & 2.207829 ms \\ \hline
+		5.75 & 3.078832 ms \\ \hline
+		6.0 & 2.665448 ms \\ \hline
+		6.25 & 1.391205 ms \\ \hline
+		6.5 & 1.386358 ms \\ \hline
+		6.75 & 2.07436 ms \\ \hline
+		7.0 & 0.815236 ms \\ \hline
+		7.25 & 1.202583 ms \\ \hline
+		7.5 & 1.919336 ms \\ \hline
+		7.75 & 1.494987 ms \\ \hline
+		8.0 & 4.263079 ms \\ \hline
+		8.25 & 1.262287 ms \\ \hline
+		8.5 & 1.984775 ms \\ \hline
+		8.75 & 5.37509 ms \\ \hline
+		9.0 & 1.876328 ms \\ \hline
+		9.25 & 1.941336 ms \\ \hline
+		9.5 & 3.968792 ms \\ \hline
+		9.75 & 3.593196 ms \\ \hline
+		10.0 & 1.476037 ms \\ \hline
+		10.25 & 1.898132 ms \\ \hline
+		10.5 & 0.556618 ms \\ \hline
+		10.75 & 2.581225 ms \\ \hline
+		11.0 & 1.116342 ms \\ \hline
+		11.25 & 0.891594 ms \\ \hline
+		11.5 & 1.062457 ms \\ \hline
+		11.75 & 1.371136 ms \\ \hline
+		12.0 & 1.555298 ms \\ \hline
+		12.25 & 1.145364 ms \\ \hline
+		12.5 & 2.259401 ms \\ \hline
+		12.75 & 1.16684 ms \\ \hline
+		13.0 & 2.010952 ms \\ \hline
+		13.25 & 2.045104 ms \\ \hline
+		13.5 & 2.090693 ms \\ \hline
+		13.75 & 1.513717 ms \\ \hline
+		14.0 & 0.311262 ms \\ \hline
+		14.25 & 1.851603 ms \\ \hline
+		14.5 & 5.755441 ms \\ \hline
+		14.75 & 1.625853 ms \\ \hline
+		15.0 & 1.560027 ms \\ \hline
+		15.25 & 0.486548 ms \\ \hline
+		15.5 & 1.175458 ms \\ \hline
+		15.75 & 1.356144 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Collective recursive symbolic local \\ \hline
+		2.0 & 3.258418 ms \\ \hline
+		2.25 & 3.882941 ms \\ \hline
+		2.5 & 1.664378 ms \\ \hline
+		2.75 & 1.686219 ms \\ \hline
+		3.0 & 2.449441 ms \\ \hline
+		3.25 & 0.518552 ms \\ \hline
+		3.5 & 1.737923 ms \\ \hline
+		3.75 & 1.191066 ms \\ \hline
+		4.0 & 1.016765 ms \\ \hline
+		4.25 & 2.89878 ms \\ \hline
+		4.5 & 2.043714 ms \\ \hline
+		4.75 & 0.695672 ms \\ \hline
+		5.0 & 1.209631 ms \\ \hline
+		5.25 & 0.85079 ms \\ \hline
+		5.5 & 2.20691 ms \\ \hline
+		5.75 & 3.098205 ms \\ \hline
+		6.0 & 2.692335 ms \\ \hline
+		6.25 & 1.387245 ms \\ \hline
+		6.5 & 0.492061 ms \\ \hline
+		6.75 & 2.08924 ms \\ \hline
+		7.0 & 1.536968 ms \\ \hline
+		7.25 & 1.206975 ms \\ \hline
+		7.5 & 1.185762 ms \\ \hline
+		7.75 & 1.490256 ms \\ \hline
+		8.0 & 4.162072 ms \\ \hline
+		8.25 & 2.033141 ms \\ \hline
+		8.5 & 2.011455 ms \\ \hline
+		8.75 & 2.991366 ms \\ \hline
+		9.0 & 0.921848 ms \\ \hline
+		9.25 & 1.948832 ms \\ \hline
+		9.5 & 3.939665 ms \\ \hline
+		9.75 & 3.552001 ms \\ \hline
+		10.0 & 1.490848 ms \\ \hline
+		10.25 & 1.212432 ms \\ \hline
+		10.5 & 0.525402 ms \\ \hline
+		10.75 & 2.566581 ms \\ \hline
+		11.0 & 1.104146 ms \\ \hline
+		11.25 & 0.889719 ms \\ \hline
+		11.5 & 1.027237 ms \\ \hline
+		11.75 & 1.348293 ms \\ \hline
+		12.0 & 0.827223 ms \\ \hline
+		12.25 & 0.630874 ms \\ \hline
+		12.5 & 2.271923 ms \\ \hline
+		12.75 & 1.166266 ms \\ \hline
+		13.0 & 1.996657 ms \\ \hline
+		13.25 & 4.203315 ms \\ \hline
+		13.5 & 1.258266 ms \\ \hline
+		13.75 & 1.530374 ms \\ \hline
+		14.0 & 0.315723 ms \\ \hline
+		14.25 & 1.606094 ms \\ \hline
+		14.5 & 8.342462 ms \\ \hline
+		14.75 & 1.65994 ms \\ \hline
+		15.0 & 1.553522 ms \\ \hline
+		15.25 & 0.500135 ms \\ \hline
+		15.5 & 1.062274 ms \\ \hline
+		15.75 & 1.276518 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve \\ \hline
+		2.0 & 3.027823 ms \\ \hline
+		2.25 & 3.056003 ms \\ \hline
+		2.5 & 2.420596 ms \\ \hline
+		2.75 & 2.903228 ms \\ \hline
+		3.0 & 8.968049 ms \\ \hline
+		3.25 & 2.66567 ms \\ \hline
+		3.5 & 3.25113 ms \\ \hline
+		3.75 & 3.013486 ms \\ \hline
+		4.0 & 5.42656 ms \\ \hline
+		4.25 & 12.377157 ms \\ \hline
+		4.5 & 14.507135 ms \\ \hline
+		4.75 & 4.765442 ms \\ \hline
+		5.0 & 18.986578 ms \\ \hline
+		5.25 & 5.661775 ms \\ \hline
+		5.5 & 15.943753 ms \\ \hline
+		5.75 & 22.621107 ms \\ \hline
+		6.0 & 77.486745 ms \\ \hline
+		6.25 & 19.285423 ms \\ \hline
+		6.5 & 28.655507 ms \\ \hline
+		6.75 & 40.345489 ms \\ \hline
+		7.0 & 28.69868 ms \\ \hline
+		7.25 & 35.097079 ms \\ \hline
+		7.5 & 51.9112 ms \\ \hline
+		7.75 & 52.303305 ms \\ \hline
+		8.0 & 45.751888 ms \\ \hline
+		8.25 & 82.996192 ms \\ \hline
+		8.5 & 134.40839 ms \\ \hline
+		8.75 & 269.843533 ms \\ \hline
+		9.0 & 121.9773 ms \\ \hline
+		9.25 & 204.60547 ms \\ \hline
+		9.5 & 262.423825 ms \\ \hline
+		9.75 & 301.717134 ms \\ \hline
+		10.0 & 121.304941 ms \\ \hline
+		10.25 & 594.192081 ms \\ \hline
+		10.5 & 8.949736 ms \\ \hline
+		10.75 & 860.301552 ms \\ \hline
+		11.0 & 158.94577 ms \\ \hline
+		11.25 & 113.17543 ms \\ \hline
+		11.5 & 0.159143 ms \\ \hline
+		11.75 & 602.142005 ms \\ \hline
+		12.0 & 156.559805 ms \\ \hline
+		12.25 & 944.023468 ms \\ \hline
+		12.5 & 434.253602 ms \\ \hline
+		12.75 & 1196.079578 ms \\ \hline
+		13.0 & 2445.847367 ms \\ \hline
+		13.25 & 4712.871414 ms \\ \hline
+		13.5 & 4129.468355 ms \\ \hline
+		13.75 & 1190.968878 ms \\ \hline
+		14.0 & 0.143011 ms \\ \hline
+		14.25 & 4019.764436 ms \\ \hline
+		14.5 & 6998.876242 ms \\ \hline
+		14.75 & 2540.239206 ms \\ \hline
+		15.0 & 3314.935058 ms \\ \hline
+		15.25 & 2982.548442 ms \\ \hline
+		15.5 & 1379.077967 ms \\ \hline
+		15.75 & 12668.325032 ms \\ \hline
+	\end{tabular}\\
+	\begin{tabular}{|l|l|}
+		\hline
+		& Incremental pre-solve local \\ \hline
+		2.0 & 0.798992 ms \\ \hline
+		2.25 & 2.494454 ms \\ \hline
+		2.5 & 0.483175 ms \\ \hline
+		2.75 & 0.740626 ms \\ \hline
+		3.0 & 2.077046 ms \\ \hline
+		3.25 & 0.274311 ms \\ \hline
+		3.5 & 0.421767 ms \\ \hline
+		3.75 & 0.870524 ms \\ \hline
+		4.0 & 0.260408 ms \\ \hline
+		4.25 & 0.72037 ms \\ \hline
+		4.5 & 1.196638 ms \\ \hline
+		4.75 & 0.330133 ms \\ \hline
+		5.0 & 3.168872 ms \\ \hline
+		5.25 & 0.449824 ms \\ \hline
+		5.5 & 1.352182 ms \\ \hline
+		5.75 & 1.725661 ms \\ \hline
+		6.0 & 63.53004 ms \\ \hline
+		6.25 & 0.248895 ms \\ \hline
+		6.5 & 3.852187 ms \\ \hline
+		6.75 & 3.642727 ms \\ \hline
+		7.0 & 10.454824 ms \\ \hline
+		7.25 & 0.250003 ms \\ \hline
+		7.5 & 1.462712 ms \\ \hline
+		7.75 & 0.275768 ms \\ \hline
+		8.0 & 4.069187 ms \\ \hline
+		8.25 & 1.050522 ms \\ \hline
+		8.5 & 1.035266 ms \\ \hline
+		8.75 & 5.397 ms \\ \hline
+		9.0 & 0.382111 ms \\ \hline
+		9.25 & 3.839694 ms \\ \hline
+		9.5 & 1.096205 ms \\ \hline
+		9.75 & 19.257683 ms \\ \hline
+		10.0 & 0.264334 ms \\ \hline
+		10.25 & 37.33974 ms \\ \hline
+		10.5 & 0.12137 ms \\ \hline
+		10.75 & 9.524515 ms \\ \hline
+		11.0 & 2.748464 ms \\ \hline
+		11.25 & 0.196986 ms \\ \hline
+		11.5 & 0.153325 ms \\ \hline
+		11.75 & 0.20295 ms \\ \hline
+		12.0 & 1.377195 ms \\ \hline
+		12.25 & 0.21173 ms \\ \hline
+		12.5 & 0.431508 ms \\ \hline
+		12.75 & 0.187851 ms \\ \hline
+		13.0 & 5.65634 ms \\ \hline
+		13.25 & 444.761634 ms \\ \hline
+		13.5 & 6.973845 ms \\ \hline
+		13.75 & 16.897137 ms \\ \hline
+		14.0 & 0.147741 ms \\ \hline
+		14.25 & 0.479535 ms \\ \hline
+		14.5 & 4.16456 ms \\ \hline
+		14.75 & 0.249741 ms \\ \hline
+		15.0 & 0.364773 ms \\ \hline
+		15.25 & 7.931287 ms \\ \hline
+		15.5 & 4.174871 ms \\ \hline
+		15.75 & 1.291211 ms \\ \hline
+	\end{tabular}\\
+\end{multicols}\pagebreak

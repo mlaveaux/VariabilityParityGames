@@ -148,7 +148,7 @@ We create a VPG from an FTS by choosing the set of configurations to be equal to
 		\end{tabular}
 	\end{center}
 	
-	Since the Fischer-Ladner formula's are closed we never get a vertex $(s,X)$.
+	Since the Fischer-Ladner formulas are closed we never get a vertex $(s,X)$.
 \end{definition}
 Similar to a parity game, a VPG can be made total by creating sink vertices $l_0$ and $l_1$ with priority 1 and 0 respectively and each having an edge to itself with guard set $\mathfrak{C}$. When the VPG is played for configuration $c$ and the token ends up in $l_\alpha$ then clearly player $\alpha$ looses. We make a VPG total by adding vertices $l_0$ and $l_1$ and adding an edge from every vertex $v \in V_\alpha$ that has $\bigcup \{ \theta(v,w)\ |\ (v,w) \in E \} \neq \mathfrak{C}$ to $l_\alpha$ with guard set $\mathfrak{C} \backslash \bigcup \{ \theta(v,w)\ |\ (v,w) \in E \}$. Any vertex $v_\alpha$ where player $\alpha$ could not have made a move in the original game played for configuration $c$ now has an edge admitting $c$ to $l_\alpha$ where player $\alpha$ still looses. An edge admitting $c$ is only added if there was no outgoing edge admitting $c$ so the winner of vertex $v$ for configuration $c$ in the original game is the same as in the total game.
 

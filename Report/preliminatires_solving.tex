@@ -305,7 +305,7 @@ Next we define the transformation from an LTS and a formula to a parity game.
 		\end{tabular}
 	\end{center}
 
-	Since the Fischer-Ladner formula's are closed we never get a vertex $(s,X)$.
+	Since the Fischer-Ladner formulas are closed we never get a vertex $(s,X)$.
 \end{definition}
 \begin{example}
 	Consider LTS $M$ in Figure \ref{fig:exverltsprojempty} and formula $\varphi = \mu X.([a]X \vee \langle b \rangle \top)$ expressing that on any path reached by $a$'s we can eventually do a $b$ action.
@@ -594,7 +594,7 @@ The fixed-point variables are all elements of $2^V$, therefore we have for every
 \[ S^i(Z_i) : 2^V \rightarrow 2^V \]
 Furthermore, since $V$ is finite, the partially ordered set $\langle 2^V, \subseteq \rangle$ is a complete lattice; for every subset $X \subseteq 2^V$ we have infimum $\bigcap_{x \in X} x$ and supremum $\bigcup_{x \in X} x$. Finally every sub-formula $S^i(Z_i)$ is monotonic, i.e. if $S^i(Z_i) \geq S^i(Z_i')$ then $Z_i \geq Z_i'$.
 
-Fixed-point formula's can be solved by \textit{fixed-point iteration}. As shown in \cite{Emerson:1986:MCP:900378} we can calculate $\mu X.f(X)$, where $f$ is monotonic in $X$ and $X \in 2^V$, by iterating $X$:
+Fixed-point formulas can be solved by \textit{fixed-point iteration}. As shown in \cite{Emerson:1986:MCP:900378} we can calculate $\mu X.f(X)$, where $f$ is monotonic in $X$ and $X \in 2^V$, by iterating $X$:
 \[ \mu X.f(X) = \bigcup_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \subseteq \mu X.f(X)$. So picking the smallest value possible for $X_0$ will always correctly calculate $\mu X. f(X)$.
 
@@ -602,7 +602,7 @@ Similarly we can calculate fixed-point $\nu X.f(X)$ when $f$ is monotonic in $X$
 \[ \nu X.f(X) = \bigcap_{i \geq 0} X^i \]
 where $X^i = f(X^{i-1})$ for $i > 0$ and $X^0 \supseteq \nu X.f(X)$. So picking the largest value possible for $X_0$ will always correctly calculate $\nu X. f(X)$.
 
-Since every subformula is monotonic and maps from a value in $2^V$ to another value in $2^V$ we can apply fixed-point iteration to solve the subformula's, we choose initial values $\emptyset$ for least fixed-point variables and $V$ for greatest fixed-point variables.
+Since every subformula is monotonic and maps from a value in $2^V$ to another value in $2^V$ we can apply fixed-point iteration to solve the subformulas, we choose initial values $\emptyset$ for least fixed-point variables and $V$ for greatest fixed-point variables.
 
 An algorithm to perform the iteration is presented in \cite{FPITE} and shown in Algorithm \ref{alg_FPITEorg}. This algorithm has a worst-case time complexity of $O(e * n ^d)$ where $e$ is the number of edges, $n$ the number of vertices and $d$ the number of distinct priorities.
 \begin{algorithm}
@@ -679,15 +679,15 @@ A set can straightforwardly be represented by a collection containing all the el
 	\end{center}
 	The function $F$ defines set $S'$ in the following way: $S' = \{x_2x_1x_0\ |\ F(x_2,x_1,x_0) = 1 \}$. As we can see set $S'$ contains the same numbers as $S$, represented in binary format.
 \end{example}
-We can perform set operations on sets represented as boolean functions by performing logical operations on the functions. For example, given boolean formula's $f$ and $g$ representing sets $V$ and $W$ the formula $f \wedge g$ represents set $V \cap W$.
+We can perform set operations on sets represented as boolean functions by performing logical operations on the functions. For example, given boolean formulas $f$ and $g$ representing sets $V$ and $W$ the formula $f \wedge g$ represents set $V \cap W$.
 
-Given a set $S$ with arbitrary elements we can represent subsets $S' \subseteq S$ as boolean formula's by assigning a number to every element in $S$ and creating a boolean formula that maps boolean variables to true if and only if they represent a number such that the element associated with this number in $S$ is also in $S'$.
+Given a set $S$ with arbitrary elements we can represent subsets $S' \subseteq S$ as boolean formulas by assigning a number to every element in $S$ and creating a boolean formula that maps boolean variables to true if and only if they represent a number such that the element associated with this number in $S$ is also in $S'$.
 
 \subsection{Binary decision diagrams}
 \label{sec_prelim_bdd}
 A boolean function can efficiently be represented as a binary decision diagram (BDD). For a comprehensive treatment of BDDs we refer to \cite{BDD_running_time,Handbook_BDD_Chapter}.
 
-BDDs represent boolean formula's as a directed graph where every vertex represents a boolean variable and has two outgoing edges labelled 0 and 1. Furthermore the graph contains special vertices $0$ and $1$ that have no outgoing edges. We decide if a boolean variable assignment satisfies the formula by starting in the initial vertex of the graph and following a path until we get to either vertex 0 or 1. Since every vertex represents a boolean formula, we can create a path from the initial vertex by choosing edge 0 at a vertex if the boolean variable represented by that vertex is false in the variable assignment and choosing edge 1 if is true. Eventually we end up in either vertex 0 or 1. In the former case the boolean variable assignment does not satisfy the formula, in the latter it does.
+BDDs represent boolean formulas as a directed graph where every vertex represents a boolean variable and has two outgoing edges labelled 0 and 1. Furthermore the graph contains special vertices $0$ and $1$ that have no outgoing edges. We decide if a boolean variable assignment satisfies the formula by starting in the initial vertex of the graph and following a path until we get to either vertex 0 or 1. Since every vertex represents a boolean formula, we can create a path from the initial vertex by choosing edge 0 at a vertex if the boolean variable represented by that vertex is false in the variable assignment and choosing edge 1 if is true. Eventually we end up in either vertex 0 or 1. In the former case the boolean variable assignment does not satisfy the formula, in the latter it does.
 
 \begin{example}
 	Consider the boolean formula in Example \ref{ex_boolform}. This formula can be represented as the BDD shown in Figure \ref{fig:ex_simplebdd}. The vertices representing boolean variables are shown as circles and the boolean variables they represent are indicated inside them. The special vertices are represented as squares and the initial vertex is represented by an edge with that has no origin vertex.
