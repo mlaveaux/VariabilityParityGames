@@ -232,13 +232,22 @@
 	author={Oliver Friedmann and Martin Lange},
 	year={2010}
 }
-@book{BDDSolvingPG,
-	title = "BDD-based parity game solving: a comparison of Zielonka's recursive algorithm, priority promotion and fixpoint iteration",
-	author = "L. Sanchez and J.W. Wesselink and T.A.C. Willemse",
-	year = "2018",
-	language = "English",
-	series = "Computer science reports",
-	publisher = "Technische Universiteit Eindhoven",
+@inproceedings{BDDSolvingPG,
+	author    = {Lisette Sanchez and
+	Wieger Wesselink and
+	Tim A. C. Willemse},
+	title     = {A Comparison of BDD-Based Parity Game Solvers},
+	booktitle = {Proceedings Ninth International Symposium on Games, Automata, Logics,
+	and Formal Verification, GandALF 2018, Saarbr{\"{u}}cken, Germany,
+	26-28th September 2018.},
+	pages     = {103--117},
+	year      = {2018},
+	crossref  = {DBLP:journals/corr/abs-1809-02416},
+	url       = {https://doi.org/10.4204/EPTCS.277.8},
+	doi       = {10.4204/EPTCS.277.8},
+	timestamp = {Tue, 16 Oct 2018 10:05:10 +0200},
+	biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1809-03097},
+	bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 @InProceedings{Oink,
 	author="van Dijk, Tom",
@@ -277,7 +286,7 @@
 	doi = {10.1051/ita/2011124}
 }
 @article{JURDZINSKI_complexity_1998119,
-title = "Deciding the winner in parity games is in UP ∩ co-UP",
+title = "Deciding the winner in parity games is in UP $\cap$ co-UP",
 journal = "Information Processing Letters",
 volume = "68",
 number = "3",
@@ -291,9 +300,19 @@ keywords = "Games on graphs, Computational complexity",
 abstract = "We observe that the problem of deciding the winner in mean payoff games is in the complexity class UP ∩ co-UP. We also show a simple reduction from parify games to mean payoff games. From this it follows that deciding the winner in parity games and the modal μ-calculus model checking are in UP ∩ co-UP."
 }
 @inproceedings{Kant2013PracticalIT,
-	title={Practical Improvements to Parity Game Solving},
-	author={Gijs Kant},
-	year={2013}
+           month = {December},
+title = {Practical improvements to parity game solving},
+author = {Maks {Verver}},
+year = {2013},
+url = {http://essay.utwente.nl/64985/},
+abstract = {The aim of this thesis is to investigate how parity game problems may be solved efficiently in practice. Parity games are a worthwhile research topic because their simultaneous simplicity and expressiveness makes them a useful formalism to represent the problems that occur when formal methods are applied to software and hardware
+engineering.
+In this thesis, first an overview of the state of the art, both theoretical and practical, will be presented. Second, algorithms and data structures will be described which were
+used to develop a new parity game solving tool. These include a mix of well-known, relative obscure, previously undocumented, and completely novel techniques. The
+most valuable contributions are the introduction of novel preprocessing operations and improved heuristics for the Small Progress Measures solution algorithm. Third, the
+results of an empirical evaluation will be presented to demonstrate which of these techniques work best in practice.
+The empirical results will support the conclusion that considerable improvements over the state of the art are possible using a combination of careful tool design and
+implementation, application of powerful preprocessing operations, and the use of advanced heuristics in the implementation of the Small Progress Measures algorithm.}
 }
 @INPROCEEDINGS{OnTheNotionOfVariability, 
 	author={J. {van Gurp} and J. {Bosch} and M. {Svahnberg}}, 
@@ -498,22 +517,44 @@ abstract = "We observe that the problem of deciding the winner in mean payoff ga
 	url="https://doi.org/10.1007/s100090050046"
 }
 @InProceedings{mCRL2Toolset,
-	author="Cranen, Sjoerd
-	and Groote, Jan Friso
-	and Keiren, Jeroen J. A.
-	and Stappers, Frank P. M.
-	and de Vink, Erik P.
-	and Wesselink, Wieger
-	and Willemse, Tim A. C.",
-	editor="Piterman, Nir
-	and Smolka, Scott A.",
-	title="An Overview of the mCRL2 Toolset and Its Recent Advances",
-	booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
-	year="2013",
-	publisher="Springer Berlin Heidelberg",
-	address="Berlin, Heidelberg",
-	pages="199--213",
-	abstract="The analysis of complex distributed systems requires dedicated software tools. The mCRL language and toolset have been developed to support such analysis. We highlight changes and improvements made to the toolset in recent years. On the one hand, these affect the scope of application, which has been broadened with extended support for data structures like infinite sets and functions. On the other hand, considerable progress has been made regarding the performance of our tools for state space generation and model checking, due to improvements in symbolic reduction techniques and due to a shift towards parity game-based solving. We also discuss the software architecture of the toolset, which was well suited to accommodate the above changes, and we address a number of case studies to illustrate the approach.",
-	isbn="978-3-642-36742-7"
+author="Bunte, Olav
+and Groote, Jan Friso
+and Keiren, Jeroen J. A.
+and Laveaux, Maurice
+and Neele, Thomas
+and de Vink, Erik P.
+and Wesselink, Wieger
+and Wijs, Anton
+and Willemse, Tim A. C.",
+editor="Vojnar, Tom{\'a}{\v{s}}
+and Zhang, Lijun",
+title="The mCRL2 Toolset for Analysing Concurrent Systems",
+booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
+year="2019",
+publisher="Springer International Publishing",
+address="Cham",
+pages="21--39",
+abstract="Reasoning about the correctness of parallel and distributed systems requires automated tools. By now, the mCRL2 toolset and language have been developed over a course of more than fifteen years. In this paper, we report on the progress and advancements over the past six years. Firstly, the mCRL2 language has been extended to support the modelling of probabilistic behaviour. Furthermore, the usability has been improved with the addition of refinement checking, counterexample generation and a user-friendly GUI. Finally, several performance improvements have been made in the treatment of behavioural equivalences. Besides the changes to the toolset itself, we cover recent applications of mCRL2 in software product line engineering and the use of domain specific languages (DSLs).",
+isbn="978-3-030-17465-1"
 }
 
+@book{buddy,
+	title = "BuDDy : A binary decision diagram package.",
+	author = "J{\o}rn Lind-Nielsen",
+	year = "1999",
+	language = "English",
+}
+
+@inproceedings{dullweaksolitaire,
+	title = "Zielonka's recursive algorithm : dull, weak and solitaire games and tighter bounds",
+	abstract = "Dull, weak and nested solitaire games are important classes of parity games, capturing, among others, alternation-free mu-calculus and ECTL* model checking problems. These classes can be solved in polynomial time using dedicated algorithms. We investigate the complexity of Zielonka's Recursive algorithm for solving these special games, showing that the algorithm runs in O(d (n + m)) on weak games, and, somewhat surprisingly, that it requires exponential time to solve dull games and (nested) solitaire games. For the latter classes, we provide a family of games G, allowing us to establish a lower bound of 2^(n/3). We show that an optimisation of Zielonka's algorithm permits solving games from all three classes in polynomial time. Moreover, we show that there is a family of (non-special) games M that permits us to establish a lower bound of 2^(n/3), improving on the previous lower bound for the algorithm.",
+	author = "M.W. Gazda and T.A.C. Willemse",
+	year = "2013",
+	doi = "10.4204/EPTCS.119.4",
+	language = "English",
+	series = "Electronic Proceedings in Theoretical Computer Science",
+	publisher = "EPTCS",
+	pages = "7--20",
+	editor = "G. Puppis and T. Villa",
+	booktitle = "Fourth International Symposium on Games, Automata, Logics and Formal Verification (Borca di Cadore, Dolomites, Italy, August 29-31, 2013)",
+}

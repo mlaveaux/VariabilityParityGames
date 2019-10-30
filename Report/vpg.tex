@@ -1,4 +1,4 @@
-In the preliminaries we have seen how parity games can be used to verify if a modal $\mu$-calculus formula is satisfied by an LTS. A parity game can be constructed such that it contains the information needed to determine if an LTS satisfies a  modal $\mu$-calculus formula. We have also seen how an LTS can be extended with transition guards to model the behaviour of multiple LTSs. In this section we introduce \textit{variability parity games} (VPGs); a VPG extends the definition of a parity game much like an FTS extends the definition of an LTS. Similar as to how an FTS expresses multiple LTSs does a VPG express multiple parity games. Moreover we introduce a way of creating VPGs such that every parity game it expresses contains the information needed to determine if a product in an FTS satisfies a modal $\mu$-calculus formula.
+In the preliminaries we have seen how parity games can be used to check if a modal $\mu$-calculus formula is satisfied by an LTS. A parity game can be constructed such that it contains the information needed to determine if an LTS satisfies a  modal $\mu$-calculus formula. We have also seen how an LTS can be extended with transition guards to model the behaviour of multiple LTSs. In this section we introduce \textit{variability parity games} (VPGs); a VPG extends the definition of a parity game much like an FTS extends the definition of an LTS. Similar as to how an FTS expresses multiple LTSs does a VPG express multiple parity games. Moreover we introduce a way of creating VPGs such that every parity game it expresses contains the information needed to determine if a product in an FTS satisfies a modal $\mu$-calculus formula.
 
 We extend parity games such that edges in the game are guarded. Instead of using features, feature expressions and products we choose a syntactically simpler representation and introduce \textit{configurations}. A VPG has a set of configurations and is played for a single configuration. Edges are guarded by sets of configurations; if the VPG is played for a configuration that is in the guard set then the edge is enabled, otherwise it is disabled.
 
@@ -11,7 +11,7 @@ We extend parity games such that edges in the game are guarded. Instead of using
 		\item $\theta : E \rightarrow 2^\mathfrak{C}\ \backslash\ \emptyset$ is a total function mapping every edge to a set of configurations guarding that edge.
 	\end{itemize}
 \end{definition}
-VPGs are considered total when every vertex has at least one outgoing edge. Since edges are guarded with sets of configurations we also require that for every configuration $c \in \mathfrak{C}$ every vertex has at least one outgoing edge that admits configuration $c$. Formally a VPG is total if and only if for all $v \in V$:
+VPGs are considered total when for every configuration $c \in \mathfrak{C}$ every vertex has at least one outgoing edge that admits configuration $c$. Formally, a VPG is total if and only if for all $v \in V$:
 \[ \bigcup\{\theta(v,w)\ |\ (v,w) \in E\} = \mathfrak{C} \]
 
 VPGs are depicted as parity games with labelled edges that represent the sets of configurations guarding them.
@@ -59,23 +59,9 @@ VPGs are depicted as parity games with labelled edges that represent the sets of
 
 A VPG can be played for a vertex-configuration pair. When playing a VPG for $v\in V$ and $c \in \mathfrak{C}$ we start by placing a token on vertex $v$. We proceed with the game similar as with a parity game, however player $\alpha$ can only move the token from $v \in V_\alpha$ to $w \in V$ if $(v,w) \in E$ and $c \in \theta(v,w)$. Similar as in a parity game this results in a path. Again the winner is determined by the highest priority occurring infinitely often in the path or, in case of a finite path, the winner is the opponent of the player that cannot make a move any more. Paths might be valid for some configurations but not valid for others, we call a path valid for configuration $c$ if and only if for every $i > 0$ such that $\pi_i$ exists we have $(\pi_{i-1},\pi_{i}) \in E$ and $c \in \theta(\pi_{i-1},\pi_{i})$.
 
-Moves made by the players can again be determined by strategies, however for different configurations for which the game is played different strategies might be needed. So we define a strategy not only for a player but also for a configuration. We define a strategy for player $\alpha$ and configuration $c \in \mathfrak{C}$ as a partial function $\sigma_\alpha^c : V^*V_\alpha \rightarrow V$ that maps a series of vertices ending with a vertex owned by player $\alpha$ to the next vertex such that for any $\sigma_\alpha^c(w_0\dots w_m) = w$ we have $(w_m,w) \in E$ and $c \in \theta(w_m,w)$. A path $\pi$ conforms to strategy $\sigma_\alpha^c$ if for every $i > 0$ such that $\pi_i$ exists and $\pi_{i-1}\in V_\alpha$ we have $\pi_i = \sigma_\alpha^c(\pi_0\pi_1\dots\pi_{i-1})$.
+Moves made by the players are again determined by strategies, however for different configurations for which the game is played different strategies might be needed. So we define a strategy not only for a player but also for a configuration. We define a strategy for player $\alpha$ and configuration $c \in \mathfrak{C}$ as a partial function $\sigma_\alpha^c : V^*V_\alpha \rightarrow V$ that maps a series of vertices ending with a vertex owned by player $\alpha$ to the next vertex such that for any $\sigma_\alpha^c(w_0\dots w_m) = w$ we have $(w_m,w) \in E$ and $c \in \theta(w_m,w)$. A path $\pi$ conforms to strategy $\sigma_\alpha^c$ if for every $i > 0$ such that $\pi_i$ exists and $\pi_{i-1}\in V_\alpha$ we have $\pi_i = \sigma_\alpha^c(\pi_0\pi_1\dots\pi_{i-1})$.
 
-A strategy $\sigma_\alpha^c$ is winning in configuration $c$ for player $\alpha$ from vertex $v$ if and only if $\alpha$ is the winner of every valid path for $c$ starting in $v$ that conforms to $\sigma_\alpha^c$. If such a strategy exists for player $\alpha$ and configuration $c$ starting from vertex $v$ then vertex $v$ is winning for player $\alpha$ and configuration $c$.
-
-\begin{example}
-	Consider the VPG in Figure \ref{fig:vpg_basicex}. When playing the game for vertex $v_5$ and configuration $c_1$ we can define strategy 
-	\[ \sigma_1^{c_1} = \{ v_5 \mapsto v_7, v_7\mapsto v_6,v_6\mapsto v_7, \dots \}\]
-	This always results in the path $v_5(v_7v_6)^\omega$ where the highest priority occurring infinitely often is 3, so player 1 wins. Since this is the only valid path vertex $v_5$ is won by player 1 in configuration $c_1$.
-	
-	If the game is played for vertex $v_5$ and configuration $c_2$ the strategy $\sigma_1^{c_1}$ is not valid because the edge $(v_5,v_7)$ is not enabled. For player $0$ we can define strategy
-	\[ \sigma_0^{c_2} = \{ v_2 \mapsto v_4, v_4 \mapsto v_1,\dots\}\]
-	Player 1 can only play from $v_5$ to $v_2$ so the only path that conforms to $\sigma_0^{c_2}$ is $v_5(v_2v_4v_1)^\omega$ which is winning for player 0. So vertex $v_5$ is won by player 0 in configuration $c_2$.
-	
-	If the game is played for vertex $v_5$ and configuration $c_3$ then player $0$ can win $v_5$ using the strategy
-	\[ \sigma_0^{c_3} = \{ v_2 \mapsto v_6, v_3 \mapsto v_2, v_4 \mapsto v_5 \}\]
-	Player 1 can play to $v_2$ or $v_7$. If the play goes to $v_2$ then player 0 plays to $v_6$ from where play can only go to $v_3$ and $v_2$ next. We get path $v_5(v_2v_6v_3)^\omega$, which is won by player 0. If player 1 plays to $v_7$ then play can only go to $v_4$ where player 0 plays to $v_5$. If play stays in this loop then player 0 wins because the highest priority occurring infinitely often is 2. If play eventually goes to $v_2$ then player 0 wins as well.
-\end{example}
+A strategy $\sigma_\alpha^c$ is winning in configuration $c$ for player $\alpha$ from vertex $v$ if and only if $\alpha$ is the winner of every path valid for $c$ starting in $v$ that conforms to $\sigma_\alpha^c$. If such a strategy exists for player $\alpha$ and configuration $c$ starting from vertex $v$ then vertex $v$ is winning for player $\alpha$ and configuration $c$.
 
 A VPG is solved if for every configuration $c$ the vertices are partitioned in two sets, namely $W_0^c$ and $W_1^c$, such that every vertex in $W_\alpha^c$ is winning for player $\alpha$ in configuration $c$. We call these sets the winning sets of a VPG.
 
@@ -117,7 +103,21 @@ A VPG contains multiple parity games, in fact playing a VPG $G$ for configuratio
 	\end{proof}
 \end{theorem}
 
-Parity games have a unique winner for every vertex, from Theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we can conclude that a VPG player for a configuration also has a unique winner for every vertex. Moreover since it is decidable who wins a vertex in a parity game it is also decidable who wins a vertex in a VPG for configuration $c$. Finally, in a parity game there exists a positional strategy for player $\alpha$ that is winning for all the vertices won by player $\alpha$ in the game. In Theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we argued that a strategy that is winning for player $\alpha$ starting in vertex $v$ in a projection of $G$ onto $c$ is also winning in $G$ for player $\alpha$ and configuration $c$ starting in vertex $v$. So we can conclude that VPGs are also positionally determined and we can consider a strategy for player $\alpha$ and configuration $c$ as a function $\sigma_\alpha^c : V_\alpha \rightarrow V$.
+Parity games have a unique winner for every vertex, from Theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we can conclude that a VPG played for a configuration also has a unique winner for every vertex. Moreover since it is decidable who wins a vertex in a parity game it is also decidable who wins a vertex in a VPG for configuration $c$. Finally, in a parity game there exists a positional strategy for player $\alpha$ that is winning for all the vertices won by player $\alpha$ in the game. In Theorem \ref{the_winning_set_is_equal_to_proj_winning_set} we argued that a strategy that is winning for player $\alpha$ starting in vertex $v$ in a projection of $G$ onto $c$ is also winning in $G$ for player $\alpha$ and configuration $c$ starting in vertex $v$. So we can conclude that VPGs are also positionally determined and we can consider a strategy for player $\alpha$ and configuration $c$ as a function $\sigma_\alpha^c : V_\alpha \rightarrow V$.
+
+\begin{example}
+	Consider the VPG in Figure \ref{fig:vpg_basicex}. When playing the game for vertex $v_5$ and configuration $c_1$ we can define strategy 
+	\[ \sigma_1^{c_1} = \{ v_5 \mapsto v_7, v_7\mapsto v_6,v_6\mapsto v_7, \dots \}\]
+	This always results in the path $v_5(v_7v_6)^\omega$ where the highest priority occurring infinitely often is 3, so player 1 wins. Since this is the only valid path vertex $v_5$ is won by player 1 in configuration $c_1$.
+	
+	If the game is played for vertex $v_5$ and configuration $c_2$ the strategy $\sigma_1^{c_1}$ is not valid because the edge $(v_5,v_7)$ is not enabled. For player $0$ we can define strategy
+	\[ \sigma_0^{c_2} = \{ v_2 \mapsto v_4, v_4 \mapsto v_1,\dots\}\]
+	Player 1 can only play from $v_5$ to $v_2$ so the only path that conforms to $\sigma_0^{c_2}$ is $v_5(v_2v_4v_1)^\omega$, which is winning for player 0. So vertex $v_5$ is won by player 0 in configuration $c_2$.
+	
+	If the game is played for vertex $v_5$ and configuration $c_3$ then player $0$ can win $v_5$ using the strategy
+	\[ \sigma_0^{c_3} = \{ v_2 \mapsto v_6, v_3 \mapsto v_2, v_4 \mapsto v_5 \}\]
+	Player 1 can play to $v_2$ or $v_7$. If the play goes to $v_2$ then player 0 plays to $v_6$ from where play can only go to $v_3$ and $v_2$ next. We get path $v_5(v_2v_6v_3)^\omega$, which is won by player 0. If player 1 plays to $v_7$ then play can only go to $v_4$ where player 0 plays to $v_5$. If play stays in this loop then player 0 wins because the highest priority occurring infinitely often is 2. If play eventually goes to $v_2$ then player 0 wins as well.
+\end{example}
 
 \section{Verifying featured transition systems}
 Given an LTS and a modal $\mu$-calculus formula we can construct a parity game such that solving this parity game tells us if the LTS satisfies the formula. Similarly we can construct a VPG from an FTS and a modal $\mu$-calculus in such a way that solving the VPG tells us what products satisfy the formula.
@@ -243,7 +243,7 @@ In the following lemma we prove that in fact parity game $G$ and $\hat{G}_{|p}$ 
 	\label{lem_VPG_proj_is_FTS_proj}
 	Given FTS $M = (S, Act, trans, s_0, N, P, \gamma)$, closed modal $\mu$-calculus formula $\varphi$ and product $p \in P$ it holds that parity games LTS2PG$(M_{|p}, \varphi)$ and FTS2VPG$(M, \varphi)_{|p}$ are identical.
 	\begin{proof}
-		Let $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ be the VPG created from \textit{FTS2VPG}$(M,\varphi)$ and let $G = (V,V_0,V_1,E,\Omega)$ be the parity game created from \textit{LTS2PG}$(M_{|p},\varphi)$. Let the projection of $\hat{G}$ onto $p$ (using Definition \ref{def_vpg_proj}) be the parity game $G_{|p} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E}',\hat{\Omega})$. We will prove that $\hat{G}_{|p} = G$.
+		Let $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ be the VPG created from \textit{FTS2VPG}$(M,\varphi)$ and let $G = (V,V_0,V_1,E,\Omega)$ be the parity game created from \textit{LTS2PG}$(M_{|p},\varphi)$. Let the projection of $\hat{G}$ onto $p$ (using Definition \ref{def_vpg_proj}) be the parity game $\hat{G}_{|p} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E}',\hat{\Omega})$. We prove that $\hat{G}_{|p} = G$.
 		
 		First observe that when an FTS is projected onto a product (using Definition \ref{def_fts_proj}) the FTS has the same states as the projection, we find that $M$ has the same states as $M_{|p}$. The vertices created by \textit{LTS2PG} and \textit{FTS2VPG} rely only on the formula and the states in the LTS and FTS respectively. Similarly the owner and priority of these vertices is only determined by the states and the formula. Given that $M$ and $M_{|p}$ have the same states we find that $\hat{V} = V$, $\hat{V}_0 = V_0$, $\hat{V}_1 = V_1$ and $\hat{\Omega} = \Omega$.
 		

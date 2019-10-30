@@ -117,7 +117,7 @@ So instead of considering unified parity game $(V,V_0,V_1,E,\Omega)$ we consider
 Next we consider how we represent vertices and edges in a unified parity game. A set $X \subseteq (\mathfrak{C} \times \hat{V})$ can be represented as a total function $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$. The set $X$ and function $X^\lambda$ are equivalent, denoted by the operator $=_\lambda: 2^{\mathfrak{C} \times \hat{V}} \times (\hat{V} \rightarrow 2^\mathfrak{C}) \rightarrow \mathbb{B}$, such that
 \[ X =_\lambda X^\lambda \text{ if and only if } (c,\hat{v}) \in X \iff c \in X^\lambda(\hat{v})\text{ for all }c \in \mathfrak{C}\text{ and }\hat{v} \in \hat{V} \]
 We can also represent edges as a total function $E^\lambda : \hat{E} \rightarrow 2^\mathfrak{C}$. The set $E$ and function $E^\lambda$ are equivalent, denoted by the operator $=_\lambda 2^{(\mathfrak{C} \times \hat{V}) \times(\mathfrak{C} \times \hat{V})} \times (\hat{E} \rightarrow 2^\mathfrak{C}) \rightarrow \mathbb{B}$, such that:
-\[ E =_\lambda E^\lambda \text{ if and only if } ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in f(\hat{v},\hat{v}')\text{ for all }c \in \mathfrak{C}\text{ and }\hat{v},\hat{v}' \in \hat{V} \]
+\[ E =_\lambda E^\lambda \text{ if and only if } ((c,\hat{v}),(c,\hat{v}')) \in E \iff c \in E^\lambda(\hat{v},\hat{v}')\text{ for all }c \in \mathfrak{C}\text{ and }\hat{v},\hat{v}' \in \hat{V} \]
 We use the $=_\lambda$ operator to indicate that a set and a function represent the same vertices or edges. For convenience of notation we denote equality for edges and vertices both using the $=_\lambda$ operator. We define $\lambda^\emptyset$ to be the function that maps every element to $\emptyset$, clearly $\lambda^\emptyset =_\lambda \emptyset$. 
 
 We call using a set of pairs to represent vertices and edges a \textit{set-wise} representation and using functions a \textit{function-wise} representation.
@@ -202,11 +202,11 @@ We call using a set of pairs to represent vertices and edges a \textit{set-wise}
 	\[ V^\lambda = \lambda^\emptyset, E^\lambda = \lambda^\emptyset \]
 \end{example}
 
-We define the union of two functions $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ and $Y^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ as
+We define the union of two functions $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ and $Y^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ point-wise:
 \[ (X^\lambda \cup Y^\lambda)(\hat{v}) = X^\lambda(\hat{v}) \cup Y^\lambda(\hat{v})\]
-Given $X^\lambda =_\lambda X$ and $Y^\lambda =_\lambda Y$, then clearly $X^\lambda \cup Y^\lambda =_\lambda X \cup Y$. We also define the subset or equal operator for two functions $X^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ and $Y^\lambda : \hat{V} \rightarrow 2^\mathfrak{C}$ as
+We also define the subset or equal relation point-wise:
 \[ X^\lambda \subseteq Y^\lambda\text{ if and only if } X^\lambda(\hat{v}) \subseteq Y^\lambda(\hat{v})\text{ for all }\hat{v} \in \hat{V} \]
-Given $X^\lambda =_\lambda X$ and $Y^\lambda =_\lambda Y$, then clearly $X^\lambda \subseteq Y^\lambda$ if and only if $X \subseteq Y$.
+Given $X^\lambda =_\lambda X$ and $Y^\lambda =_\lambda Y$, then clearly $X^\lambda \subseteq Y^\lambda \iff X \subseteq Y$ and $X^\lambda \cup Y^\lambda =_\lambda X \cup Y$.
 
 \subsection{Algorithms}
 Using the recursive algorithm as a basis we can solve a VPG in numerous ways. First of all we can solve the projections, i.e. solve the VPG independently. Alternatively we can solve it collectively using a set-wise representation or a function-wise representation. For the function-wise representation we are working with functions mapping vertices and edges to sets of configurations. These sets of configurations can either be represented explicitly or symbolically. The following diagram shows the different algorithms:
@@ -230,7 +230,7 @@ The independent approach uses the original algorithm repeatedly; once for every 
 \label{sec:symrepconfs}
 For VPGs originating from an FTS, the configuration sets guarding the edges either admit all configurations or originate from boolean functions over the features. These boolean functions will most likely be relatively simple and are therefore specifically appropriate to represent as BDDs.
 
-Set operations $\cap,\cup,\backslash$ over two explicit sets can be performed in $O(m)$ where $m$ is the maximum size of the sets. This is better than the time complexity of a set operation using BDDs, which is $O(m^2)$ (as explained in preliminary section \ref{sec_prelim_bdd}). However if the BDDs are small then the set size can still be large but the set operations are performed very quickly. This is a trade-off between worst-case time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however if the sets are not structures in a way that the BDDs are small then the running time is worse than with an explicit representation.
+Set operations $\cap,\cup,\backslash$ over two explicit sets can be performed in $O(m)$ where $m$ is the maximum size of the sets. This is better than the time complexity of a set operation using BDDs, which is $O(m^2)$ (as explained in preliminary section \ref{sec_prelim_bdd}). However if the BDDs are small then the set size can still be large but the set operations are performed very quickly. This is a trade-off between worst-case time complexity and actual running time; using a symbolic representation might yield better results if the sets are structured in such a way that the BDDs are small, however if the sets are not structured in a way that the BDDs are small then the running time is worse than with an explicit representation.
 
 We hypothesize that since the collective function-wise symbolic recursive algorithm relies heavily on set operations over sets of configurations this algorithm will perform well when solving VPGs originating from FTSs.
 
@@ -272,7 +272,7 @@ The recursive algorithm can be modified to work with the function-wise represent
 
 We introduce a modified attractor definition to work with the function-wise representation.
 \begin{definition}
-		\label{def_Uattr}Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$ and a non-empty set $U^\lambda \subseteq V^\lambda$, both represented function-wise, we define $\alpha\textit{-FAttr}(G^\lambda,U^\lambda)$ such that
+		\label{def_Uattr}Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$, represented function-wise, and a function $U^\lambda \subseteq V^\lambda$, with $U^\lambda \neq \lambda^\emptyset$, we inductively define $\alpha\textit{-FAttr}(G^\lambda,U^\lambda)$ such that
 	\[U^\lambda_0(\hat{v}) = U^\lambda(\hat{v}) \]
 	For $i \geq 0$:
 	\[
@@ -289,7 +289,7 @@ This attractor definition relies heavily on performing set operations on sets of
 We also introduce a modified subgame definition to work with the function-wise representation.
 \begin{definition}
 	\label{def_Usubgame}
-	For unified parity game $G = (V^\lambda,\hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$ and set $X^\lambda \subseteq V^\lambda$, both represented function-wise, we define the subgame $G \backslash X^\lambda = ({V^\lambda}',\hat{V}_0,\hat{V}_1,{E^\lambda}',\hat{\Omega})$ such that:
+	For unified parity game $G = (V^\lambda,\hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$, represented function-wise, and function $X^\lambda \subseteq V^\lambda$ we define the subgame $G \backslash X^\lambda = ({V^\lambda}',\hat{V}_0,\hat{V}_1,{E^\lambda}',\hat{\Omega})$ such that:
 	\begin{itemize}
 		\item ${V^\lambda}'(\hat{v}) = V^\lambda(\hat{v}) \backslash X^\lambda(\hat{v})$
 		\item ${E^\lambda}'(\hat{v},\hat{v}') = E^\lambda(\hat{v},\hat{v}') \cap {V^\lambda}'(\hat{v}) \cap {V^\lambda}'(\hat{v}')$
@@ -298,7 +298,7 @@ We also introduce a modified subgame definition to work with the function-wise r
 Note that we can omit the modification to the partition ($V_0$ and $V_1$) because, as we have seen, we can use the partitioning from the VPG in the representation of unified parity games. As we will show later, this definition is equal to the original subgame definition (Definition \ref{def_org_subgame}).
 
 \begin{example}
-	Consider unified parity game $G = (V^\lambda,\hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$, originating from a VPG with configurations $\mathfrak{C} = \{c_1,c_2,c_3\}$, represented function-wise in Figure \ref{fig:upg}. We depict every $(v,w)$ for which $E^\lambda(v,w) \neq \emptyset$ with an edge annotated by the set $E^\lambda(v,w)$. All the origin vertices are depicted and for every origin vertex $\hat{v}$ we annotate the square or diamond with a label $\hat{v}\ |\ C$ where $C = V^\lambda(\hat{v})$.
+	Consider unified parity game $G = (V^\lambda,\hat{V}_0,\hat{V}_1,E^\lambda,\hat{\Omega})$, originating from a VPG with configurations $\mathfrak{C} = \{c_1,c_2,c_3\}$, represented function-wise in Figure \ref{fig:upg}. We annotated every edge $(v,w)$ with the set $E^\lambda(v,w)$. All the origin vertices are depicted and for every origin vertex $\hat{v}$ we annotate the square or diamond with a label $\hat{v}\ |\ C$ where $C = V^\lambda(\hat{v})$.
 	\begin{figure}[h]
 		\centering
 		\begin{tikzpicture}[->]
@@ -333,7 +333,7 @@ Note that we can omit the modification to the partition ($V_0$ and $V_1$) becaus
 			\path (v7) edge[bend left] node[fill=white]{$\{c_1,c_2\}$} (v6);
 			\path (v6) edge[bend left] node[fill=white]{$\{c_1,c_2\}$} (v7);
 		\end{tikzpicture}
-		\caption{Unified parity game originating from a VPG with configuration $\mathfrak{C} = \{c_1,c_2,c_3\}$}
+		\caption{Unified parity game originating from a VPG with configurations $\mathfrak{C} = \{c_1,c_2,c_3\}$}
 		\label{fig:upg}
 	\end{figure}
 We calculate the function-wise attractor set for player 0 from origin vertex $\hat{v}_2$ with all configuration, we have
@@ -355,11 +355,21 @@ Next iterations result in the same function, so $0\textit{-FAttr}(G,U^\lambda) =
 		\node[even,label={north:$\hat{v}_2\ |\ \emptyset$}] (v2) at (23,20) {6};
 		\node[even,label={north:$\hat{v}_3\ |\ \emptyset$}] (v3) at (26,20) {4};
 		
-		\node[even,label={north:$\hat{v}_4\ |\ \{c_3\}$}]  (v4) at (20,17) {1};
-		\node[odd, label={north:$\hat{v}_5\ |\ \{c_1,c_3\}$}] (v5) at (23,17) {2};
-		\node[odd, label={north:$\hat{v}_6\ |\ \{c_1,c_2\}$}] (v6) at (26,17) {3};
+		\node[even,label={west:$\hat{v}_4\ |\ \{c_3\}$}]  (v4) at (20,17) {1};
+		\node[odd, label={north east:$\hat{v}_5|\{c_1,c_3\}$}] (v5) at (23,17) {2};
+		\node[odd, label={east:$\hat{v}_6\ |\ \{c_1,c_2\}$}] (v6) at (26,17) {3};
 		
 		\node[odd, label={south:$\hat{v} _7\ |\ \mathfrak{C}$}] (v7) at (23,14) {2};
+		
+		
+		\path (v1) edge node[above]{$\emptyset$} (v2);
+		\path (v3) edge node[above]{$\emptyset$} (v2);
+		
+		\path (v4) edge node[left]{$\emptyset$} (v1);
+		\path (v2) edge node[fill=white]{$\emptyset$} (v4);
+		\path (v5) edge node[left]{$\emptyset$} (v2);
+		\path (v2) edge node[fill=white]{$\emptyset$} (v6);
+		\path (v6) edge node[right]{$\emptyset$} (v3);
 		
 		\path (v4) edge node[fill=white]{$\{c_3\}$} (v5);
 		
@@ -427,7 +437,7 @@ it holds that the function-wise attractor $\alpha\textit{-FAttr}(G,{U^\lambda})$
 			Because $\hat{v} \in \hat{V}_{\overline{\alpha}}$ we get
 			\[ U^\lambda_{i+1} =V^\lambda(\hat{v}) \cap \bigcap_{\hat{v'}}((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \cup U^\lambda_i(\hat{v}') \]
 			
-			Assume $c \notin U^\lambda_{i+1}(\hat{v})$. Because $c \in V^\lambda(\hat{v})$ there must exist an $\hat{v}$ such that
+			Assume $c \notin U^\lambda_{i+1}(\hat{v})$. Because $c \in V^\lambda(\hat{v})$ there must exist an $\hat{v}'$ such that
 			\[ c \notin ((\mathfrak{C} \backslash E^\lambda(\hat{v},\hat{v}')) \text{ and } c \notin U^\lambda_i(\hat{v}') \]
 			which is equal to
 			\[ c \in E^\lambda(\hat{v},\hat{v}') \text{ and } c \notin U^\lambda_i(\hat{v}') \]
@@ -457,31 +467,31 @@ it holds that the function-wise attractor $\alpha\textit{-FAttr}(G,{U^\lambda})$
 	\label{lem_subgame_eq}
 	Given:
 	\begin{itemize}
-		\item unified parity game $G = ({V},\hat{V}_0,\hat{V}_1, \mathcal{E}, \hat{\Omega})$,
+		\item unified parity game $G = ({V},\hat{V}_0,\hat{V}_1, {E}, \hat{\Omega})$,
 		\item set ${U} \subseteq V$ and
 		\item function $U^\lambda$ such that $U =_\lambda U^\lambda$
 	\end{itemize}
 it holds that the subgame $G \backslash {U} = ({V}',\hat{V}_0,\hat{V}_1,{E}',\hat{\Omega})$ represented set-wise is equal to the subgame $G\backslash U^\lambda$ represented function-wise.
 	\begin{proof}
-		Let  $V^\lambda,{V'}^\lambda, E^\lambda, {E^\lambda}'$ the function-wise representations of $V,V',E,E'$ respectively. We know $V =_\lambda V^\lambda$, $E =_\lambda E^\lambda$ and $U =_\lambda U^\lambda$. To prove: $V' =_\lambda {V'}^\lambda$ and $E' =_\lambda {E^\lambda}'$.
+		Let  $V^\lambda$ and $E^\lambda$ denote the function-wise representations of $V$ and $E$ respectively. Let $G\backslash U^\lambda = ({V^\lambda}',\hat{V}_0,\hat{V}_1, {E^\lambda}', \hat{\Omega})$. We know $V =_\lambda V^\lambda$, $E =_\lambda E^\lambda$ and $U =_\lambda U^\lambda$. To prove: $V' =_\lambda {V^\lambda}'$ and $E' =_\lambda {E^\lambda}'$.
 		
 		\begin{enumerate}
 			\item Let $(c,\hat{v}) \in V$.
 			
-			If $(c,\hat{v}) \in U$ then $c \in U^\lambda(\hat{v})$, also $(c,\hat{v}) \notin V'$ (by Definition \ref{def_org_subgame}) and $c \notin {V'}^\lambda(\hat{v})$ (by Definition \ref{def_Usubgame}).
+			If $(c,\hat{v}) \in U$ then $c \in U^\lambda(\hat{v})$, also $(c,\hat{v}) \notin V'$ (by Definition \ref{def_org_subgame}) and $c \notin {V^\lambda}'(\hat{v})$ (by Definition \ref{def_Usubgame}).
 			
-			If $(c,\hat{v}) \notin U$ then $c \notin U^\lambda(\hat{v})$, also $(c,\hat{v}) \in V'$ (by Definition \ref{def_org_subgame}) and $c \in {V'}^\lambda(\hat{v})$ (by Definition \ref{def_Usubgame}).
+			If $(c,\hat{v}) \notin U$ then $c \notin U^\lambda(\hat{v})$, also $(c,\hat{v}) \in V'$ (by Definition \ref{def_org_subgame}) and $c \in {V^\lambda}'(\hat{v})$ (by Definition \ref{def_Usubgame}).
 			
-			We conclude that $V' =_\lambda {V'}^\lambda$.
+			We conclude that $V' =_\lambda {V^\lambda}'$.
 			\item 
 			
 			Let $((c,\hat{v}),(c,\hat{w})) \in E$.
 			
-			If $(c,\hat{v}) \in U$ then $(c,\hat{v}) \notin V'$ and $c \notin {V'}^\lambda(\hat{v})$ (as shown above). We get $((c,\hat{v}),(c,\hat{w})) \notin V' \times V'$ so $((c,\hat{v}),(c,\hat{w})) \notin E'$ (by Definition \ref{def_org_subgame}). Also $c \notin {E^\lambda}'(\hat{v},\hat{w})$ (by Definition \ref{def_Usubgame}).
+			If $(c,\hat{v}) \in U$ then $(c,\hat{v}) \notin V'$ and $c \notin {V^\lambda}'(\hat{v})$ (as shown above). We get $((c,\hat{v}),(c,\hat{w})) \notin V' \times V'$ so $((c,\hat{v}),(c,\hat{w})) \notin E'$ (by Definition \ref{def_org_subgame}). Also $c \notin {E^\lambda}'(\hat{v},\hat{w})$ (by Definition \ref{def_Usubgame}).
 			
 			If $(c,\hat{w}) \in U$ then we apply the same logic.
 			
-			If neither is in $U$ then both are in $V'$ and in $V' \times V'$ and therefore the $((c,\hat{v}),(c,\hat{w})) \in E'$. Also we get $c \in {V'}^\lambda(\hat{v})$ and $c \in {V'}^\lambda(\hat{w})$ so we get $c \in {E^\lambda}'(\hat{v},\hat{w})$ (by Definition \ref{def_Usubgame}).
+			If neither is in $U$ then both are in $V'$ and in $V' \times V'$ and therefore the $((c,\hat{v}),(c,\hat{w})) \in E'$. Also we get $c \in {V^\lambda}'(\hat{v})$ and $c \in {V^\lambda}'(\hat{w})$ so we get $c \in {E^\lambda}'(\hat{v},\hat{w})$ (by Definition \ref{def_Usubgame}).
 			
 			We conclude that $E' =_\lambda {E^\lambda}'$.
 		\end{enumerate}
@@ -490,7 +500,7 @@ it holds that the subgame $G \backslash {U} = ({V}',\hat{V}_0,\hat{V}_1,{E}',\ha
 
 Next we prove the correctness of the algorithm by showing that the winning sets of the function-wise algorithm are equal to the winning sets of the set-wise algorithm.
 \begin{theorem}
-	Given unified parity game ${G} = ({V},\hat{V}_0,\hat{V}_1, {E}, \hat{\Omega})$ and $G^\lambda = (V^\lambda, \hat{V}_0, \hat{V}_1, E^\lambda,\hat{\Omega})$ which is the functional representation of $G$. It holds that the winning sets resulting from \textsc{RecursiveUPG(${G}^\lambda$)} are equal to the winning sets resulting from \textsc{RecursivePG(${G}$)}.
+	Given unified parity game ${G} = ({V},\hat{V}_0,\hat{V}_1, {E}, \hat{\Omega})$ and $G^\lambda = (V^\lambda, \hat{V}_0, \hat{V}_1, E^\lambda,\hat{\Omega})$ which is the functional representation of $G$. It holds that the winning sets resulting from $\textsc{RecursiveUPG}({G}^\lambda)$ are equal to the winning sets resulting from $\textsc{RecursivePG}({G})$.
 	\begin{proof}
 		Proof by induction on $G$.
 		
@@ -546,7 +556,7 @@ Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\O
 		
 		\textit{Termination}. First note that the algorithm terminates. This follows from the fact that only vertices are added to $Q$ (line \ref{line:fattr:add_to_Q}) when something is added to $A^\lambda$ (lines \ref{line:fattr:if_something_attracted} - \ref{line:fattr:add_to_A}). Consider
 		\[ \textit{dec}(A^\lambda) = |\hat{V}|*|\mathfrak{C}| - \sum_{\hat{v}}|A^\lambda(\hat{v})| \]
-		At every iteration either $\textit{dec}(A^\lambda)$ decreases or stays in the same. In the latter case the size of $Q$ decreases. After finitely many iterations $\textit{dec}(A^\lambda)$ can not decrease any more so $Q$ decreases until $Q$ is empty and the algorithm terminates.
+		At every iteration either $\textit{dec}(A^\lambda)$ decreases or stays the same. In the latter case the size of $Q$ decreases. After finitely many iterations $\textit{dec}(A^\lambda)$ can not decrease any more so $Q$ decreases until $Q$ is empty and the algorithm terminates.
 		
 		\textit{Soundness}. To prove the soundness of the algorithm we must show that at the end of the algorithm we have for every $c\in A^\lambda(\hat{w})$ that $c \in \alpha$-\textsc{FAttractor}$(G, U^\lambda)(\hat{w})$. This property actually holds throughout the entire algorithm. Before the while loop (line \ref{line:fattr:while}) we have $A^\lambda = U^\lambda$ and the property holds trivially. Consider the beginning of a while loop iteration (the algorithm is on line \ref{line:fattr:pop}) and assume that the property holds. The algorithm considers a number of vertices in the first for loop (line \ref{line:fattr:firstfor}), let $\hat{v}$ be such a vertex. The algorithm calculates $a \subseteq \mathfrak{C}$, which is added to $A^\lambda(\hat{v})$ on line \ref{line:fattr:add_to_A}. Note that this is the only place in the while loop where $A^\lambda$ is modified. The value calculated for $a$ on lines \ref{line:fattr:if_owner_alpha}-\ref{line:fattr:if_owner_alpha_end} exactly reflects the definition of $\alpha\textit{-FAttr}$ (Definition \ref{def_Uattr}). Because we assumed that the property holds at the beginning of the while loop iteration we can conclude that $a \subseteq \alpha\textit{-FAttr}(G,U^\lambda)(\hat{v})$. We conclude that the property is maintained during the while loop and that it holds at the end of the algorithm.
 		
@@ -589,11 +599,11 @@ Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\O
 			
 			If by the beginning of the iteration we had $\psi(c,\hat{v},\hat{q})$ and $\psi(c,\hat{v},\hat{q}')$ with path $\pi'$ such that $\hat{q} \neq \hat{q}'$ then by the end of the iteration we either have $\psi(c,\hat{v},\hat{q}')$ or $\psi(c,\hat{v},\hat{w})$ where $\hat{w}$ is a vertex between $\hat{v}$ and $\hat{q}'$ in $\pi'$. In either case the loop invariants holds. Assume that by the beginning of the iteration there is a single $\hat{q}$ for which $\psi(c,\hat{v},\hat{q})$.
 			
-			Consider path $\pi$ from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$. If by the end of the iteration there is a vertex $\hat{w}$ between $\hat{v}$ and $\hat{q}$ such that $c \in A^\lambda(\hat{w})$ then we have $\psi(c,\hat{v},\hat{w})$ and the loop invariant holds. Assume for any valid path from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$ that there is no $\hat{w}$ between $\hat{v}$ and $\hat{q}$ such that $c \in A^\lambda(\hat{w})$ by the end of the iteration.
+			Consider path $\pi$ from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$. If by the end of the iteration there is a vertex $\hat{w}$ between $\hat{v}$ and $\hat{q}$ such that $c \in A^\lambda(\hat{w})$ then we have $\psi(c,\hat{v},\hat{w})$ and the loop invariant holds. Assume for any path from $\hat{v}$ to $\hat{q}$ valid for $c$ and conforming to $\sigma_\alpha^c$ that there is no $\hat{w}$ between $\hat{v}$ and $\hat{q}$ such that $c \in A^\lambda(\hat{w})$ by the end of the iteration.
 			
 			Let $\pi$ be the path satisfying $\psi(c,\hat{v},\hat{q})$ by the beginning of the iteration. Let $\pi = \dots\hat{x}\hat{q}$ (note that it is possible that $\hat{x} = \hat{v}$). If $\hat{x} \in \hat{V}_\alpha$ then we find $c \in A^\lambda(\hat{x})$ by the end of the iteration which is a contradiction. We find $\hat{x} \in \hat{V}_{\overline{\alpha}}$.
 			
-			If we get $\neg \exists_{\hat{q}'}: \psi(c,\hat{x},\hat{q}')$ by the end of the iteration then player 1 must be able to move the token from $\hat{x}$ to a vertex $\hat{w}$ such that $\neg \exists_{\hat{q}'}: \psi(c,\hat{w},\hat{q}')$.
+			If we get $\neg \exists_{\hat{q}'}: \psi(c,\hat{x},\hat{q}')$ by the end of the iteration then player $\overline{\alpha}$ must be able to move the token from $\hat{x}$ to a vertex $\hat{w}$ such that $\neg \exists_{\hat{q}'}: \psi(c,\hat{w},\hat{q}')$.
 			
 			We have shown that the only way the loop invariant does not hold for the pair $(c,\hat{v})$ is when there exists an $\hat{x}$ owned by player $\overline{\alpha}$ such that the token can go from  $\hat{x}$ to $\hat{q}$ for configuration $c$ but also from $\hat{x}$ to some $\hat{v}'$ for which the loop invariant also not holds. Similarly to $\hat{v}$ we find that the invariant does not hold for $\hat{v}'$ when there exists a $\hat{x}'$ owned by player $\overline{\alpha}$ such that the token can go from $\hat{x}'$ to $\hat{q}$ for configuration $c$ but also from $\hat{x}'$ to some $\hat{v}''$ for which the loop invariant also not holds. For $\hat{v}''$ we find the same property.
 			
@@ -605,7 +615,7 @@ Given unified parity game $G = (V^\lambda, \hat{V}_0,\hat{V}_1,E^\lambda,\hat{\O
 \subsection{Running time}
 We consider the running time for solving VPG $\hat{G} = (\hat{V},\hat{V}_0,\hat{V}_1,\hat{E},\hat{\Omega},\mathfrak{C},\theta)$ independently and collectively using the different types of representations. We use $n$ to denote the number of vertices, $e$ the number of edges, $d$ the number of distinct priorities and $c$ the number of configurations.
 
-The original algorithm runs in $O(e * n^d)$ \cite{friedmanPG}, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified parity game (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges. which gives a time complexity of $O(c*e*(c*n)^d)$. However, as we show next, this upper bound can be improved by using the property that a unified parity game consists of $c$ disconnected graphs.
+The original algorithm runs in $O(e * n^d)$ \cite{friedmanPG}, if we run $c$ parity games independently we get $O(c * e * n ^d)$. We can also apply the original algorithm to a unified parity game (represented set-wise) for a collective approach, in this case we get a parity game with $c*n$ vertices and $c*e$ edges, which gives a time complexity of $O(c*e*(c*n)^d)$. However, as we show next, this upper bound can be improved by using the property that a unified parity game consists of $c$ disconnected graphs.
 
 We have introduced three types of collective algorithms: set-wise, function-wise with explicit configuration sets and function-wise with symbolic configuration sets. In all three algorithms the running time of the attractor set dominates the other operations performed, so we need three things: analyse the running time of the base cases, analyse the running time of the attractor set and analyse the recursion.
 
@@ -699,6 +709,6 @@ We dissect the running time of the function-wise algorithms. The running time co
 
 The number of vertices in the queue during attracting is at most $c*n$, however this number will only be large if we attract a very small number of configurations per time we evaluate an edge. As argued earlier we can most likely attract multiple configurations at the same time. This will decrease the number of vertices in the queue.
 
-The time complexity of set operations is $O(c)$ when using an explicit representation and $O(c^2)$ when using a symbolic one. However, as shown in \cite{BDD_running_time}, we can implement BDDs to keeps a table of already computed results. This allows us to get already calculated results in sublinear time. In total there are $2^c$ possible sets and therefore $2^{2c}$ possible set combinations and $O(2^c)$ possible set operations that can be computed. However when solving a VPG originating from an FTS there will most likely be a relatively small number of different edge guards, in which case the number of unique sets considered in the algorithm will be small and we can often retrieve a set calculation from the computed table.
+The time complexity of set operations is $O(c)$ when using an explicit representation and $O(c^2)$ when using a symbolic one. However, as shown in \cite{BDD_running_time}, we can implement BDDs to keep a table of already computed results. This allows us to get already calculated results in sublinear time. In total there are $2^c$ possible sets and therefore $2^{2c}$ possible set combinations and $O(2^c)$ possible set operations that can be computed. However when solving a VPG originating from an FTS there will most likely be a relatively small number of different edge guards, in which case the number of unique sets considered in the algorithm will be small and we can often retrieve a set calculation from the computed table.
 
 We can see that even though the running time of the collective symbolic algorithm is the worse, its practical running time might be good when we are able to attract multiple configurations at the same time and have a small number of different edge guards.

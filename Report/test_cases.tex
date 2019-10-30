@@ -7,7 +7,7 @@ We use two SPL examples. First, the minepump example as described in \cite{Krame
 
 The mCRL2 implementation creates an LTS with parametrized actions where the parameters describe the boolean formulas guarding the transitions, effectively making it an FTS consisting of 582 states and 1376 transitions. This FTS is interpreted in combination with nine different $\mu$-calculus formulas to create nine VPGs.
 
-We choose to represent the sets of configurations using 10 boolean variables even though 128 configurations could be represented using only 7 boolean variables. By using the same number of variables as there are features the boolean formulas from the FTS are left intact when using them in the VPG. Table \ref{tab_minepump_formulas} shows the different formulas, as well as the result of the verification and the size of the resulting games. All the properties can be expressed in the modal $\mu$-calculus we introduced in Definition \ref{def_mu_syntax},. However, for readability, we present them using action formulas, regular formulas and universal quantifiers  \cite{Groote}.
+We choose to represent the sets of configurations using 10 boolean variables even though 128 configurations could be represented using only 7 boolean variables. By using the same number of variables as there are features the boolean formulas from the FTS are left intact when using them in the VPG. Table \ref{tab_minepump_formulas} shows the different formulas, as well as the result of the verification and the size of the resulting games. All the properties can be expressed in the modal $\mu$-calculus we introduced in Definition \ref{def_mu_syntax}. However, for readability, we present them using action formulas, regular formulas and universal quantifiers  \cite{Groote}.
 
 \begin{table}
 	\centering
@@ -19,7 +19,7 @@ We choose to represent the sets of configurations using 10 boolean variables eve
 		& $[\textbf{true}^*]\langle \textbf{true} \rangle \top$ &  & & \\ \hline
 		
 		\multirow{2}{*}{$\varphi_2$}& \textit{The controller cannot infinitely often receive water level readings}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{3004} & \multirow{2}{*}{3} \\
-		& $\mu X. [ (\neg \textit{levelMsg}^*.\textit{levelMsg}]X$ & & &\\ \hline
+		& $\mu X. [ (\neg \textit{levelMsg})^*.\textit{levelMsg}]X$ & & &\\ \hline
 		
 		\multirow{2}{*}{$\varphi_3$} & \textit{The controller cannot fairly receive each of the three message types}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{9156} & \multirow{2}{*}{3}\\
 		& $\mu X. ([\textbf{true}^*.\textit{commandMsg}]X \vee [\textbf{true}^*.\textit{alarmMsg}]X \vee [\textbf{true}^*.\textit{levelMsg}]X)$ & & &\\ \hline
@@ -33,7 +33,7 @@ We choose to represent the sets of configurations using 10 boolean variables eve
 		& for $R=\neg (\textit{pumpStop}+\textit{methaneLower})$ & & &\\ \hline
 		
 		 \multirow{6}{*}{$\varphi_6$} & \textit{Assuming fairness ($\varphi_3$), the system cannot be in a situation in which the pump runs indefinitely in the presence of methane ($\varphi_5$)} & \multirow{6}{*}{$112/16$} & \multirow{6}{*}{9224} & \multirow{6}{*}{4}\\
-		& $[\textbf{true}^*] (( [\textit{pumpStart}.(\neg\textit{pumpStop})^*.\textit{methaneRise}] \Psi) \wedge ([\textit{methaneRise}.(\neg\textit{methaneLower})^*.\textit{pumpStart}] \Psi)$ & & &\\
+		& $[\textbf{true}^*] (( [\textit{pumpStart}.(\neg\textit{pumpStop})^*.\textit{methaneRise}] \Psi) \wedge ([\textit{methaneRise}.(\neg\textit{methaneLower})^*.\textit{pumpStart}] \Psi))$ & & &\\
 		& for $\Psi = \mu X.([R^*.\textit{commandMsg}]X \vee [R^*.\textit{alarmMsg}] X \vee [R^*.\textit{levelMsg}]X)$ & & &\\
 		& and $R=\neg (\textit{pumpStop}+\textit{methaneLower})$ & & &\\ \hline
 		
@@ -46,7 +46,7 @@ We choose to represent the sets of configurations using 10 boolean variables eve
 		\multirow{2}{*}{$\varphi_9$} & \textit{Invariantly, when the level of methane rises, it inevitably decreases}& \multirow{2}{*}{$0/128$} & \multirow{2}{*}{5418} & \multirow{2}{*}{3}\\
 		& $[\textbf{true}^*.\textit{methaneRise}] \mu X.[\neg \textit{methaneLower}] X \wedge \langle \textbf{true} \rangle \top$ & & &\\ \hline
 	\end{tabularx}
-	\caption{Minepump properties with their partitioning and the size of the resulting VPG. In the \textbf{t}/\textbf{f} columns the first number shows for how many products the property holds. Columns $n$ and $d$ shows the number of vertices and distinct priorities in the resulting VPG. The of the formula column is taken verbatim from \cite{FamBasedModelCheckingWithMCRL2}}.
+	\caption{Minepump properties with their partitioning and the size of the resulting VPG. In the \textbf{t}/\textbf{f} columns the first number shows for how many products the property holds. Columns $n$ and $d$ shows the number of vertices and distinct priorities in the resulting VPG. The formula column is taken verbatim from \cite{FamBasedModelCheckingWithMCRL2}}.
 	\label{tab_minepump_formulas}
 \end{table}
 
@@ -109,13 +109,13 @@ We create a set of random VPGs such that some games are very similar to the VPGs
 
 The guard sets in the minepump and elevator games have a very specific distribution where nearly all of the sets admit either $100\%$ or $50\%$ of the configurations. This is because an edge requiring the presence or absence of one specific feature results in a set admitting $50\%$. On average the edges in the examples admit $92\%$ of the configurations. Most likely VPGs originating from FTSs will have such a distribution.
 
-Random VPGs can be created by creating a random parity game and create sets of configurations that guard the edges. For these sets we need to consider two factors: how large are the sets guarding the edges and how are they constructed.
+Random VPGs can be created by creating a random parity game and creating sets of configurations that guard the edges. For these sets we need to consider two factors: how large are the sets guarding the edges and how are they constructed.
 
 We use $\lambda$ to denote the average relative size of guard sets in a VPG. So for every guard set in a VPG we divide its size by the total number of configurations to get the relative size of the guard set. Taking the average of all these relative sizes calculates $\lambda$.
 
 For every random game we create, we pick a specific $\lambda$. This allows us to create games that have a $\lambda$ similar to those observed in the minepump and elevator example, i.e. $\lambda = 0.92$, and games that have a $\lambda$ very different from the SPL games.
 
-Once we decided a value for $\lambda$ we need to decide the sizes of the individual guard set. We do so by using a probabilistic distribution ranging from $0$ to $1$ with a mean equal to $\lambda$. We consider two distributions, namely a modified Bernoulli distribution which will create guard sets of only relative size $0.5$ and $1$ and a beta distribution which creates guard sets with a more varying range of relative sizes. We can use the former to create random games that are similar to the SPL games and use the latter to create random games that are different to the SPL games.
+Once we decided a value for $\lambda$ we need to decide the sizes of the individual guard set. We do so by using a probabilistic distribution ranging from $0$ to $1$ with a mean equal to $\lambda$. We consider two distributions, namely a modified Bernoulli distribution which creates guard sets of only relative size $0.5$ and $1$ and a beta distribution which creates guard sets with a more varying range of relative sizes. We can use the former to create random games that are similar to the SPL games and use the latter to create random games that are different to the SPL games.
 \begin{itemize}
 	\item A modified Bernoulli distribution; in a Bernoulli distribution there is a probability of $p$ to get an outcome of $1$ and a probability of $1-p$ to get an outcome of $0$. We modify this such that there is a probability of $p$ to get $1$ and a probability of $1-p$ to get $0.5$. This gives a mean of $1p + 0.5(1-p) = 0.5p + 0.5$. So to get a mean of $\lambda$ we choose $p = 2\lambda - 1$. Note that we cannot use this distribution when $\lambda < 0.5$ because $p$ becomes less than $0$.
 	\item A beta distribution; a beta distribution ranges from $0$ to $1$ and is curved such that it has a specific mean. The beta distribution has two parameters: $\alpha$ and $\beta$ and a mean of $\frac{\alpha}{\alpha+\beta}$. We pick $\beta=1$ and $\alpha = \frac{\lambda\beta}{1-\lambda}$ to get a mean of $\lambda$.
@@ -198,7 +198,7 @@ Figures \ref{fig:dist_lambda50}, \ref{fig:dist_lambda75} and \ref{fig:dist_lambd
 \label{fig:dist_lambda90}
 \end{figure}
 
-Consider the creation of a random game that has $2^m$ configurations and where some $\lambda$ is decided upon and one of the above distribution is chosen. For an individual guard set we use the random distribution to decide how large this guard set should be. Consider the creation of a specific guard set and let $r$ denote the relative size of this guard set, decided using the random distribution we chose.
+Consider the creation of a random game that has $2^m$ configurations, some $\lambda$ is decided upon and one of the above distribution is chosen. For an individual guard set we use the random distribution to decide how large this guard set should be. Consider the creation of a specific guard set and let $r$ denote the relative size of this guard set, decided using the random distribution we chose.
 
 We now need to consider how to create a guard set of relative size $r$. We can simply create a random set of configurations without any notion of features; we call this a \textit{configuration based} approach. Using this approach we can easily create a guard set of relative size $r$ by simply picking $\lfloor 2^m*r\rfloor$ configurations randomly.
 
@@ -214,7 +214,7 @@ When creating a random game for some $\lambda$ we have considered how we can cho
 
 We create four sets of random games. For random games of type 1,2 and 3 we create 25 games: game 75 to game 99, where game $i$ has $\lambda=\frac{i}{100}$ and a random number of features, nodes, edges and maximum priority. Furthermore we create 52 games to evaluate how the algorithm scales when the number of features becomes larger. For every $i \in [2,15]$ we create random games $i$, $i.25$, $i.50$ and $i.75$ of type 1 with $\lambda=0.92$, $\lfloor i\rfloor$ features and a random number of nodes, edges and maximum priority. 
 
-Besides the number of configurations and the value for $\lambda$ we need to choose the number of vertices for a game, the minimum number of successors of a vertex, the maximum number of successors of a vertex and the number of distinct priorities in the game. The number of minimum and maximum successor is decided per game. So if we pick $l$ and $h$ as the number of minimum and maximum then for every vertex of the game we uniformly pick its number of successors between $l$ and $h$.
+Besides the number of configurations and the value for $\lambda$ we need to choose the number of vertices for a game, the minimum number of successors of a vertex, the maximum number of successors of a vertex and the number of distinct priorities in the game. The number of minimum and maximum successor is decided per game. So if we pick $l$ and $h$ as the number of minimum and maximum then for every vertex in the game we uniformly pick its number of successors between $l$ and $h$.
 
 Table \ref{tab_random_games} shows the different categories of games and the corresponding parameters. The minimum number of successors per vertex is always 1 so this value is omitted from the table. The games that scale in $\lambda$ share the same random configuration per game number. So game $i$ of type 1 that scales in $\lambda$ has the same number of vertices, maximum successors, distinct priorities and configurations as game $i$ of type 2 and 3 that scale in $\lambda$.
 

@@ -1,10 +1,10 @@
 If we have an SPL with certain requirements that must hold for every product then we want to apply verification techniques to formally verify that indeed every product satisfies the requirements. We could verify every product individually, however verification is expensive in terms of computing time and the number of different products can grow large. Differences in behaviour between products might be very small; large parts of the different products might behave similar. In this thesis we aim to exploit commonalities between products to find a method that verifies an SPL in a more efficient way than verifying every product independently.
 
-First we take a look at a method of modelling the behaviour of the different products in an SPL, namely \textit{featured transition systems} (FTSs). An FTS extends the definition an LTS to express variability, it does so by introducing \textit{features} and \textit{products}. Features are options that can be enabled or disabled for the system. A product is a feature assignments, i.e. a set of features that is enabled for that product. Not all products are valid; some features might be mutually exclusive for example. To express the relation between features one can use feature diagrams as explained in \cite{Classen2013FeaturedTS}. Feature diagrams offer a nice way of expressing which feature assignments are valid, however for simplicity we represent the collection of valid products simply as a set of feature assignments. 
+First we take a look at a method of modelling the behaviour of the different products in an SPL, namely \textit{featured transition systems} (FTSs). An FTS extends an LTS to express variability, it does so by introducing \textit{features} and \textit{products}. Features are options that can be enabled or disabled for the system. A product is a feature assignments, i.e. a set of features that is enabled for that product. Not all products are valid; some features might be mutually exclusive for example. To express the relation between features one can use feature diagrams as explained in \cite{Classen2013FeaturedTS}. Feature diagrams offer a nice way of expressing which feature assignments are valid, however for simplicity we represent the collection of valid products simply as a set of feature assignments. 
 
 An FTS models the behaviour of multiple products by guarding transitions with boolean expressions over the features such that the transition is only enabled for products that satisfy the guard.
 
-Let $\mathbb{B}(A)$ denote the set of all boolean expressions over the set of boolean variables $A$, a boolean expression is a function that maps a boolean assignment to either true of false. A boolean expression over a set of features is called a feature expression, it maps a feature assignment, i.e. a product, to either true or false. Given boolean expression $f$ and boolean variable assignment $p$ we write $p \models f$ if and only if $f$ is true for $p$ and write $p \not\models f$ otherwise. Boolean expression $\top$ denotes the boolean expression that is satisfied by all boolean assignments.
+Let $\mathbb{B}(A)$ denote the set of all boolean expressions over the set of boolean variables $A$; a boolean expression is a function that maps a boolean assignment to either true of false. A boolean expression over a set of features is called a feature expression, it maps a feature assignment, i.e. a product, to either true or false. Given boolean expression $f$ and boolean variable assignment $p$ we write $p \models f$ if and only if $f$ is true for $p$ and write $p \not\models f$ otherwise. Boolean expression $\top$ denotes the boolean expression that is satisfied by all boolean assignments.
 \begin{definition}[\cite{Classen2013FeaturedTS}]
 	\label{def_fts} A featured transition system (FTS) is a tuple $M = (S, Act, trans, s_0, N, P, \gamma)$, where:
 	\begin{itemize}
@@ -14,7 +14,7 @@ Let $\mathbb{B}(A)$ denote the set of all boolean expressions over the set of bo
 		\item $\gamma : trans \rightarrow \mathbb{B}(N)$ is a total function, labelling each transition with a feature expression.
 	\end{itemize}
 \end{definition}
-A transition $s \xrightarrow a s'$ and $\gamma(s,a,s') = f$ is denoted by $s \xrightarrow {a\ |\ f} s'$. FTSs are presented similarly as LTSs, the labels of the transition are expanded to represent both the action and the feature expression associated with it.
+A transition $s \xrightarrow a s'$ with $\gamma(s,a,s') = f$ is denoted by $s \xrightarrow {a\ |\ f} s'$. FTSs are presented similarly as LTSs, the labels of the transition are expanded to represent both the action and the feature expression associated with it.
 
 \begin{example}[\cite{FamBasedModelCheckingWithMCRL2}]
 	Consider a coffee machine that has two variants: in the first variant it takes a single coin and serves a standard coffee, in the second variant the machine either serves a standard coffee after a coin is inserted or it takes another coin after which it serves an xxl coffee. Note that there is no variant that only serves xxl coffees. We introduce two features: $\$$ which, if enabled, allows the coffee machine to serve xxl coffees and $\officialeuro$ which, if enabled, allows the coffee machine to serve standard coffees. The valid products are: $\{\{\officialeuro\},\{\officialeuro,\$\}\}$. This FTS is depicted in Figure \ref{fig:coffeemachinefts}.
@@ -92,7 +92,7 @@ An FTS expresses the behaviour of multiple products. The behaviour of a single p
 \end{example}
 
 \paragraph{Problem statement}
-Given an FTS $M$, that models the behaviour of an SPL, with products $P$ and modal $\mu$-calculus formula $\varphi$ we want to verify that $\varphi$ holds for every product in $P$. Formally we want to find set $P_s$ such that:
+Given an FTS $M$, that models the behaviour of an SPL, with products $P$ and modal $\mu$-calculus formula $\varphi$ we want to find the products in $P$ that satisfy $\varphi$. Formally we want to find set $P_s$ such that:
 \begin{itemize}
 	\item for every $p \in P_s$ we have $M_{|p} \models \varphi$ and
 	\item for every $p \in P \backslash P_s$ we have $M_{|p} \not\models \varphi$.
