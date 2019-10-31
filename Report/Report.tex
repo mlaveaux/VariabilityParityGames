@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt]{report}
+\documentclass[a4paper,10pt,twoside]{report}
 
 \usepackage{Packages}
 
@@ -66,13 +66,13 @@
 \usepackage{tabularx}
 \newcolumntype{L}{>{\raggedright\arraybackslash}X}
 \usepackage{multirow}
+\def\scalegraphs{0.9}
 
 \begin{document}
 	
 	\include{Titlepage}
 	
 	\normalsize
-	
 	\chapter*{Abstract}\label{chapter:Abstract}
 	\setcounter{page}{0}
 	\pagenumbering{roman}
@@ -80,7 +80,7 @@
 	\input{abstract}
 	
 	\tableofcontents
-	
+	\cleardoublepage
 	\chapter{Introduction}\label{chapter:Introduction}
 	\setcounter{page}{0}
 	\pagenumbering{arabic}
