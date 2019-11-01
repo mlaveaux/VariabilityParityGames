@@ -1,6 +1,9 @@
-\documentclass[handout,aspectratio=169]{beamer}
+\documentclass[aspectratio=169]{beamer}
+\setbeamercovered{dynamic}
+
 \usetheme{default}
 
+\usepackage{ wasysym }
 \usepackage{geometry}
 \usepackage{amsthm}
 \usepackage{xcolor}
@@ -14,11 +17,15 @@
 \usetikzlibrary{arrows,automata,shapes,calc,matrix}
 \definecolor{bgTUE}{HTML}{f1efef}
 \definecolor{fgTUE}{HTML}{000000}
+\definecolor{tokencolor}{HTML}{6792d6}
+\definecolor{highlightgraph}{HTML}{aedb81}
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
 \title{Verifying SPLs using parity games expressing variability} % The short title appears at the bottom of every slide, the full title is only on the title page
+\newcounter{picite}
+\newcounter{piciteb}
 
 \institute[TU/e] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
@@ -151,33 +158,63 @@ Supervised by T.A.C. Willemse}\\
 %------------------------------------------------
 
 \begin{frame}[t]
-\frametitle{Verification \& SPLs}
-\begin{columns}[t]
-	\begin{column}{0.5\textwidth}
-		\begin{itemize}
-			\item Formally verify software by modelling its behaviour and expressing a requirement
-			\item SPLs describe multiple software products, it does so by using features
-			\item TODO: LTS en FTS uitleggen? Wellicht noemen maar niet uitleggen...
-		\end{itemize}
-	\end{column}
-	\begin{column}{0.5\textwidth}
-	\end{column}
-\end{columns}
+\frametitle{Verification}
+	\begin{itemize}
+		\item Creating correct software is difficult
+		\item Even when testing is done rigorously errors can slip in\pause
+		\item Mathematically \textit{model the behaviour} of software (LTS)
+		\item Mathematically \textit{specify a requirement} (modal $\mu$-calculus)\pause
+		\item Check if the model satisfies the requirement
+	\end{itemize}
+\begin{center}
+	\begin{tikzpicture}[->]
+	\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+	\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+	
+	\node (lts) at (1,3.5)  {LTS $M$};
+	\node (form)at (5,3.5)  {Modal $\mu$-calculus formula $\varphi$};
+	\node (check)at (3,1.5){$M$ satisfies $\varphi$?};
+	
+	\path[-] (lts) edge (3,2.5);
+	\path[-] (form)edge (3,2.5);
+	\path (3,2.5)  edge (check);
+	\end{tikzpicture}
+\end{center}
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}[t]
+\frametitle{Software product lines}
+\begin{itemize}
+	\item Software product lines are configurable systems
+	\item Many variants of the same system, i.e. \textit{software products}
+	\item FTSs express multiple LTSs using \textit{features}
+\end{itemize}
 \end{frame}
 %------------------------------------------------
 
 \begin{frame}[t]
 \frametitle{Problem statement}
-\begin{columns}[t]
-\begin{column}{0.5\textwidth}
 	\begin{itemize}
-		\item Verify all the products in an SPL
-		\item Do so more efficiently than verifying them independently
+		\item Find all the products in an SPL that satisfy a requirement
 	\end{itemize}
-\end{column}
-\begin{column}{0.5\textwidth}
-\end{column}
-\end{columns}
+	\begin{center}
+		\begin{tikzpicture}[->]
+		\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+		\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+		
+		\node (lts) at (1,3.5)  {FTS $M$};
+		\node (form)at (5,3.5)  {Modal $\mu$-calculus formula $\varphi$};
+		\node (check)at (3,1.5) {Which products in $M$ satisfy $\varphi$?};
+		
+		\path[-] (lts) edge (3,2.5);
+		\path[-] (form)edge (3,2.5);
+		\path (3,2.5)  edge (check);
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item Do so more efficiently than verifying every product independently
+	\end{itemize}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -186,17 +223,69 @@ Supervised by T.A.C. Willemse}\\
 \frametitle{Variability parity game}
 \begin{columns}[t]
 	\begin{column}{0.5\textwidth}
+		\large Parity game.\small\\
+		Players 0 (even,$\Diamond$) and 1 (odd,$\square$)\\
+		\begin{center}
+			\setcounter{picite}{0}%
+			\def\showprio{0}
+			\def\token{0}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{1}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{3}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{4}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{5}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{2}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{4}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{5}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\token{2}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}\pause%
+			\def\showprio{1}%
+			\def\token{-1}%
+			\setcounter{piciteb}{\thepicite}\stepcounter{piciteb}%
+			\stepcounter{picite}\only<\thepicite-\thepiciteb>{\input{tikz_pg_example}}%
+			\def\token{1}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}%
+			\def\token{3}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}%
+			\def\token{1}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_example}}%
+			\def\token{-1}%
+			\stepcounter{picite}\only<\thepicite-|handout:0>{\input{tikz_pg_example}}%
+		\end{center}
 		\begin{itemize}
-			\item Explain Parity Games using an example
-			\item What does solving a PG mean
-			\item PGs can be used to check software products
+			\item The winner is determined by the parity of the priority occurring infinitely often\pause
+			\pause\pause\pause%display game
+			\item Player 1 wins $\{v_1,v_3\}$, using $v_3 \mapsto v_1$\pause
+			\item Player 0 wins $\{v_2,v_4,v_5\}$, using $v_2 \mapsto v_4$\pause\stepcounter{picite}
+			\item \textit{Solving}: Partition the vertices in $W_0,W_1$\pause\stepcounter{picite}
 		\end{itemize}
 	\end{column}
 	\begin{column}{0.5\textwidth}
-		\begin{itemize}
-			\item Explain VPGs using an example
-			\item What does solving a VPG mean
-			\item VPGs can be used to check SPLs
+		\large Variability parity game.\small\\
+		Configurations $\mathfrak{C} = \{c_1,c_2\}$\\
+		\begin{center}
+			\def\showprio{1}%
+			\def\token{-1}%%%
+			\def\playconf{0}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_vpg_example}}%
+			\def\playconf{1}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_vpg_example}}%
+			\def\playconf{2}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_vpg_example}}%
+			\def\playconf{0}%
+			\stepcounter{picite}\only<\thepicite>{\input{tikz_vpg_example}}%
+		\end{center}
+		\begin{itemize}\pause
+			\item $W_0^{c_1} = \emptyset$,$W_1^{c_1} = \{v_1,\dots,v_5\}$\pause
+			\item $W_0^{c_2} = \{v_1,v_3\}$,$W_1^{c_2} = \{v_2,v_4,v_5\}$\pause
+			\item \textit{Solving}: Partition the vertices in $W_0^c,W_1^c$, for every $c \in \mathfrak{C}$
 		\end{itemize}
 	\end{column}
 \end{columns}
@@ -204,13 +293,128 @@ Supervised by T.A.C. Willemse}\\
 %----------------------------------------------------------------------------------------
 
 \begin{frame}[t]
+\frametitle{Variability parity game}
+\begin{columns}[t]
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+			\setcounter{picite}{0}%
+			\stepcounter{picite}\only<\thepicite>{\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node (lts) at (1,3.5)  {LTS $M$};
+			\node (form)at (5,3.5)  {Modal $\mu$-calculus formula $\varphi$};
+			\node (check)at (3,1.5){$M$ satisfies $\varphi$?};
+			
+			\path[-] (lts) edge (3,2.5);
+			\path[-] (form)edge (3,2.5);
+			\path (3,2.5)  edge (check);
+			\end{tikzpicture}}\pause
+			\setcounter{piciteb}{\thepicite}%
+			\stepcounter{piciteb}\stepcounter{piciteb}\stepcounter{piciteb}%
+			\stepcounter{picite}\only<\thepicite-\thepiciteb>{\begin{tikzpicture}[->]
+				\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+				\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+				
+				\node (lts) at (1,3.5)  {LTS $M$};
+				\node (form)at (5,3.5)  {Modal $\mu$-calculus formula $\varphi$};
+				\node (PG)at (3,2.5) {PG};
+				\node (check)at (3,1.5){$M$ satisfies $\varphi$?};
+				
+				\path[-] (lts) edge (PG);
+				\path[-] (form)edge (PG);
+				\path (PG)  edge (check);
+			\end{tikzpicture}}
+			\begin{theorem}
+				A parity game can be constructed from an LTS and a modal $\mu$-calculus formula $\varphi$ such that $M$ satisfies $\varphi$ iff special vertex $v_0 \in W_0$ in the resulting parity game.
+			\end{theorem}
+		\end{center}
+	\end{column}
+	\begin{column}{0.5\textwidth}\pause
+		\begin{center}
+			\stepcounter{picite}\only<\thepicite>{\begin{tikzpicture}[->]
+				\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+				\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+				
+				\node (lts) at (1,3.5)  {FTS $M$};
+				\node (form)at (5,3.5)  {Modal $\mu$-calculus formula $\varphi$};
+				\node (check)at (3,1.5){Which products in $M$ satisfy $\varphi$?};
+				
+				\path[-] (lts) edge (3,2.5);
+				\path[-] (form)edge (3,2.5);
+				\path (3,2.5)  edge (check);
+			\end{tikzpicture}}\pause
+			\setcounter{piciteb}{\thepicite}%
+			\stepcounter{piciteb}%
+			\stepcounter{picite}\only<\thepicite>{\begin{tikzpicture}[->]
+			\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+			\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.75cm]
+			
+			\node (lts) at (1,3.5)  {FTS $M$};
+			\node (form)at (5,3.5)  {Modal $\mu$-calculus formula $\varphi$};
+			\node (VPG)at (3,2.5) {VPG};
+			\node (check)at (3,1.5){Which products in $M$ satisfy $\varphi$?};
+			
+			\path[-] (lts) edge (VPG);
+			\path[-] (form)edge (VPG);
+			\path (VPG)  edge (check);
+			\end{tikzpicture}}
+			\begin{theorem}
+				A VPG can be constructed from an FTS and a modal $\mu$-calculus formula $\varphi$ such that $M$ satisfies $\varphi$ for product $p$ iff special vertex $v_0 \in W_0^p$ in the resulting VPG.
+			\end{theorem}\pause
+			\stepcounter{piciteb}\only<\thepiciteb>{\begin{tikzpicture}
+				\node (FTSM) at (10,10) {FTS};
+				\node[opacity=0] (VPGG) at (15,10) {VPG};
+				\node (LTSMp) at (10,8) {LTS};
+				\node (PGGp) at (15,8) {PG};
+				
+				\path[->,opacity=0] (FTSM) edge node[above]{$\varphi$} (VPGG);
+				\path[->] (LTSMp) edge node[above]{$\varphi$} (PGGp);
+				\path[->,dashed] (FTSM) edge node[left]{$\Pi_p$} (LTSMp);
+				\path[->,dashed,opacity=0] (VPGG) edge node[right]{$\Pi_p$} (PGGp);
+			\end{tikzpicture}}
+			\stepcounter{piciteb}\only<\thepiciteb>{\begin{tikzpicture}
+				\node (FTSM) at (10,10) {FTS};
+				\node (VPGG) at (15,10) {VPG};
+				\node (LTSMp) at (10,8) {LTS};
+				\node (PGGp) at (15,8) {PG};
+				
+				\path[->] (FTSM) edge node[above]{$\varphi$} (VPGG);
+				\path[->] (LTSMp) edge node[above]{$\varphi$} (PGGp);
+				\path[->,dashed] (FTSM) edge node[left]{$\Pi_p$} (LTSMp);
+				\path[->,dashed] (VPGG) edge node[right]{$\Pi_p$} (PGGp);
+			\end{tikzpicture}}
+		\end{center}
+	\end{column}
+\end{columns}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[t]
 \frametitle{VPG algorithms - Recursive algorithm}
 \begin{columns}[t]
 	\begin{column}{0.5\textwidth}
 		\begin{itemize}
 			\item The recursive algorithm reasons about sets of vertices
-			\item Attractor calculation example
 		\end{itemize}
+		\def\highlighteda{0}%
+		\def\highlightedb{0}%
+		\def\highlightedc{0}%
+		\def\highlightedd{1}%
+		\def\highlightede{0}%
+		\def\highlightedf{0}%
+		\def\highlightedg{0}%
+		\def\highlightedh{1}%
+		
+		\setcounter{picite}{0}%
+		\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_attr}}\pause%
+		\def\highlightede{1}%
+		\def\highlightedc{1}%
+		\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_attr}}\pause%
+		\def\highlightedf{1}%
+		\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_attr}}\pause%
+		\def\highlightedg{1}%
+		\stepcounter{picite}\only<\thepicite->{\input{tikz_pg_attr}}\pause%
 	\end{column}
 	\begin{column}{0.5\textwidth}
 		\begin{itemize}
@@ -231,7 +435,7 @@ Supervised by T.A.C. Willemse}\\
 \begin{columns}[t]
 	\begin{column}{0.5\textwidth}
 		\begin{itemize}
-			\item Introduce algorithm
+			\item Introduce algorithm;, idea of pre-solving
 			\item Introduce pessimistic PGs
 			\item We need an alg to solve PGs using pre-solved vertices for efficiency
 		\end{itemize}
