@@ -1,0 +1,49 @@
+\if\highlighteda2\def\fillva{highlightgraph}\else\def\fillva{bgTUE}\fi%
+\if\highlightedb2\def\fillvb{highlightgraph}\else\def\fillvb{bgTUE}\fi%
+\if\highlightedc2\def\fillvc{highlightgraph}\else\def\fillvc{bgTUE}\fi%
+\if\highlightedd2\def\fillvd{highlightgraph}\else\def\fillvd{bgTUE}\fi%
+\if\highlightede2\def\fillve{highlightgraph}\else\def\fillve{bgTUE}\fi%
+\if\highlightedf2\def\fillvf{highlightgraph}\else\def\fillvf{bgTUE}\fi%
+\if\highlightedg2\def\fillvg{highlightgraph}\else\def\fillvg{bgTUE}\fi%
+\if\highlightedh2\def\fillvh{highlightgraph}\else\def\fillvh{bgTUE}\fi%
+
+\if\highlighteda1\def\fillva{semihighlightgraph}\fi%
+\if\highlightedb1\def\fillvb{semihighlightgraph}\fi%
+\if\highlightedc1\def\fillvc{semihighlightgraph}\fi%
+\if\highlightedd1\def\fillvd{semihighlightgraph}\fi%
+\if\highlightede1\def\fillve{semihighlightgraph}\fi%
+\if\highlightedf1\def\fillvf{semihighlightgraph}\fi%
+\if\highlightedg1\def\fillvg{semihighlightgraph}\fi%
+\if\highlightedh1\def\fillvh{semihighlightgraph}\fi%
+\begin{tikzpicture}[->,scale=0.9, every node/.style={scale=0.8}]
+	\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
+	\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.6cm]
+	
+	\node[even,label=center:1,fill=\fillva,label=north:${v_1}$] (v1) at (10,11)	{};
+	\node[odd, label=center:3,fill=\fillvb,label=north:${v_2}$] (v2) at (11.5,11)	{};
+	\node[odd, label=center:3,fill=\fillvc,label=north:${v_3}$] (v3) at (13,11)	{};
+	\node[even,label=center:4,fill=\fillvd,label=north:${v_4}$] (v4) at (15,11)	{};
+	\node[even,label=center:2,fill=\fillve,label=north:${v_5}$] (v5) at (16.5,11)	{};
+	
+	\node[even,label=center:1,fill=\fillvf,label=south:${v_6}$] (v6) at (11.5,8.5){};
+	\node[odd, label=center:0,fill=\fillvg,label=south:${v_7}$] (v7) at (13,8.5)	{};
+	\node[even,label=center:0,fill=\fillvh,label=south:${v_8}$] (v8) at (15,8.5){};
+	
+	\path (v1) edge [bend right] node[fill=bgTUE]{$\mathfrak{C}$} (v2);
+	\path (v2) edge [bend right] node[fill=bgTUE]{$\mathfrak{C}$} (v1);
+	\path (v2) edge node[fill=bgTUE]{$\mathfrak{C}$} (v3);
+	\path (v3) edge node[fill=bgTUE]{$\mathfrak{C}$} (v4);
+	\path (v4) edge [bend left] node[fill=bgTUE]{$\mathfrak{C}$} (v5);
+	\path (v5) edge [bend left] node[fill=bgTUE]{$\mathfrak{C}$} (v4);
+	
+	\path (v6) edge node[fill=bgTUE]{$\mathfrak{C}$} (v1);
+	\path (v2) edge node[fill=bgTUE]{$\mathfrak{C}$} (v6);
+	\path (v6) edge node[fill=bgTUE]{$\mathfrak{C}$} (v3);
+	\path (v7) edge node[fill=bgTUE,near start]{$\{c_2\}$} (v3);
+	\path (v7) edge node[fill=bgTUE]{$\mathfrak{C}$} (v8);
+	\path (v7) edge node[fill=bgTUE]{$\mathfrak{C}$} (v6);
+	\path (v3) edge node[fill=bgTUE]{$\{c_1\}$} (v8);
+	\path (v8) edge [bend left] node[fill=bgTUE,near end]{$\{c_1\}$} (v4);
+	\path (v4) edge [bend left] node[fill=bgTUE]{$\mathfrak{C}$} (v8);
+	\path (v8) edge [loop right] node[fill=bgTUE]{$\mathfrak{C}$} (v8);
+\end{tikzpicture}

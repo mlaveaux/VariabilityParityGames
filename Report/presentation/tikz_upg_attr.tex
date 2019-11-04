@@ -10,15 +10,15 @@
 	\tikzstyle{even} = [diamond,draw,minimum size=0.75cm]
 	\tikzstyle{odd}  = [rectangle,draw,shape aspect=1,minimum size=0.6cm]
 	
-	\node[even,label=center:1,fill=\fillva,label=north:$v_1$] (v1) at (10,10)	{};
-	\node[odd, label=center:3,fill=\fillvb,label=north:$v_2$] (v2) at (11.5,10)	{};
-	\node[odd, label=center:3,fill=\fillvc,label=north:$v_3$] (v3) at (13,10)	{};
-	\node[even,label=center:4,fill=\fillvd,label=north:$v_4$] (v4) at (14.5,10)	{};
-	\node[even,label=center:2,fill=\fillve,label=north:$v_5$] (v5) at (16,10)	{};
+	\node[even,label=center:1,fill=\fillva,label=north:${(c_\ccc,v_1)}$] (v1) at (10,10)	{};
+	\node[odd, label=center:3,fill=\fillvb,label=north:${(c_\ccc,v_2)}$] (v2) at (11.5,10)	{};
+	\node[odd, label=center:3,fill=\fillvc,label=north:${(c_\ccc,v_3)}$] (v3) at (13,10)	{};
+	\node[even,label=center:4,fill=\fillvd,label=north:${(c_\ccc,v_4)}$] (v4) at (14.5,10)	{};
+	\node[even,label=center:2,fill=\fillve,label=north:${(c_\ccc,v_5)}$] (v5) at (16,10)	{};
 	
-	\node[even,label=center:1,fill=\fillvf,label=south:$v_6$] (v6) at (11.5,8.5){};
-	\node[odd, label=center:0,fill=\fillvg,label=south:$v_7$] (v7) at (13,8.5)	{};
-	\node[even,label=center:0,fill=\fillvh,label=south:$v_8$] (v8) at (14.5,8.5){};
+	\node[even,label=center:1,fill=\fillvf,label=south:${(c_\ccc,v_6)}$] (v6) at (11.5,8.5){};
+	\node[odd, label=center:0,fill=\fillvg,label=south:${(c_\ccc,v_7)}$] (v7) at (13,8.5)	{};
+	\node[even,label=center:0,fill=\fillvh,label=south:${(c_\ccc,v_8)}$] (v8) at (14.5,8.5){};
 	
 	\path (v1) edge [bend right] (v2);
 	\path (v2) edge [bend right] (v1);
@@ -30,11 +30,11 @@
 	\path (v6) edge (v1);
 	\path (v2) edge (v6);
 	\path (v6) edge (v3);
-	\path (v7) edge (v3);
+	\if\ccc2\path (v7) edge (v3);\fi
 	\path (v7) edge (v8);
 	\path (v7) edge (v6);
-	\path (v3) edge (v8);
+	\if\ccc1\path (v3) edge (v8);\fi
+	\if\ccc1\path (v8) edge [bend left] (v4);\fi
 	\path (v4) edge [bend left] (v8);
-	\path (v8) edge [bend left] (v4);
 	\path (v8) edge [loop right] (v8);
 \end{tikzpicture}
