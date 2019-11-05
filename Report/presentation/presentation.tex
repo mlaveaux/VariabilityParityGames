@@ -1,5 +1,4 @@
 \documentclass[aspectratio=169]{beamer}
-\setbeamercovered{dynamic}
 
 \usetheme{default}
 
@@ -16,13 +15,26 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{tikz,pgfplots}
+\usetikzlibrary{patterns}
 \tikzset{>=latex}
 \usetikzlibrary{arrows,automata,shapes,calc,matrix}
 \definecolor{bgTUE}{HTML}{f1efef}
 \definecolor{fgTUE}{HTML}{000000}
 \definecolor{tokencolor}{HTML}{6792d6}
 \definecolor{highlightgraph}{HTML}{aedb81}
-\definecolor{semihighlightgraph}{HTML}{d7EDC0}
+\definecolor{semihighlightgraph}{HTML}{c9e7ab}
+
+\pgfdeclarepatternformonly{softcrosshatch}{\pgfqpoint{-1pt}{-1pt}}{\pgfqpoint{4pt}{4pt}}{\pgfqpoint{3pt}{3pt}}%
+{
+	\pgfsetstrokecolor{highlightgraph}
+	\pgfsetstrokeopacity{1}
+	\pgfsetlinewidth{0.7pt}
+	\pgfpathmoveto{\pgfqpoint{3.1pt}{0pt}}
+	\pgfpathlineto{\pgfqpoint{0pt}{3.1pt}}
+	\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+	\pgfpathlineto{\pgfqpoint{3.1pt}{3.1pt}}
+	\pgfusepath{stroke}
+}
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -411,9 +423,18 @@ Supervised by T.A.C. Willemse}\\
 %----------------------------------------------------------------------------------------
 \begin{frame}[t]
 \frametitle{VPG algorithms - Recursive algorithm}
+\begin{itemize}
+	\item Existing parity game algorithm
+	\item Spends most time performing the \textit{attractor} calculation
+	\item Introduce an efficient attractor calculation for VPGs
+\end{itemize}
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[t]
+\frametitle{VPG algorithms - Recursive algorithm}
 \begin{columns}[T]
 	\begin{column}{0.5\textwidth}
-		\textit{Attractor} calculation: Find all vertices from where player $\alpha$ can force the play to a vertex in $U$.\\\pause
+		\textit{Attractor} calculation: Given player $\alpha$ and vertex set $U$: Find all vertices from where player $\alpha$ can force the play to $U$.\\\pause
 		\small Example: $\alpha = 0$,$U = \{v_4\}$
 		\def\highlighteda{0}%
 		\def\highlightedb{0}%
@@ -435,7 +456,6 @@ Supervised by T.A.C. Willemse}\\
 		\stepcounter{picite}\only<\thepicite>{\input{tikz_pg_attr}}%
 		\def\highlightedg{1}%
 		\stepcounter{picite}\only<\thepicite->{\input{tikz_pg_attr}}%
-		\bigskip\bigskip
 	\end{column}
 	\begin{column}{0.5\textwidth}
 		\setcounter{picite}{0}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}%
@@ -471,10 +491,9 @@ Supervised by T.A.C. Willemse}\\
 
 \begin{frame}[t]
 \frametitle{VPG algorithms - Recursive algorithm}
+For every vertex $v$, find a set of configurations $C$ such that player $\alpha$ can force the play from $v$ to $U$ when the VPG is played for configuration $c \in C$. Example, $\mathfrak{C} = \{c_1,c_2\}$:\\
 \begin{columns}[T]
 	\begin{column}{0.48\textwidth}
-		Find a set of configurations for every vertex.\\
-		\small $\mathfrak{C} = \{c_1,c_2\}$
 		\setcounter{picite}{0}%
 		\def\highlighteda{0}%
 		\def\highlightedb{0}%
@@ -484,6 +503,12 @@ Supervised by T.A.C. Willemse}\\
 		\def\highlightedf{0}%
 		\def\highlightedg{0}%
 		\def\highlightedh{0}%
+		\stepcounter{picite}\only<\thepicite>{%
+			\input{tikz_vpg_attr}%
+		}%
+		\stepcounter{picite}\only<\thepicite>{%
+			\input{tikz_vpg_attr}%
+		}%
 		\stepcounter{picite}\only<\thepicite>{%
 			\input{tikz_vpg_attr}%
 		}%
@@ -529,12 +554,12 @@ Supervised by T.A.C. Willemse}\\
 			\hline
 			&$v_1$ &$v_2$ &$v_3$ &$v_4$ &$v_5$ &$v_6$ &$v_7$ &$v_8$ \\ \hline
 			$A_0$ & & & &$\mathfrak{C}$& & & &  
-			\stepcounter{picite}\only<\thepicite->{\\ \hline$A_1$ & & &$\{c_2\}$ &$\mathfrak{C}$&$\mathfrak{C}$ & & &$\{c_1\}$}%
+			\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}\only<\thepicite->{\\ \hline$A_1$ & & &$\{c_2\}$ &$\mathfrak{C}$&$\mathfrak{C}$ & & &$\{c_1\}$}%
 			\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}\only<\thepicite->{\\ \hline$A_2$ & & &$\mathfrak{C}$ &$\mathfrak{C}$&$\mathfrak{C}$ &$\{c_2\}$& &$\{c_1\}$}%
 			\stepcounter{picite}\only<\thepicite->{\\ \hline$A_3$ & & &$\mathfrak{C}$ &$\mathfrak{C}$&$\mathfrak{C}$ &$\mathfrak{C}$& &$\{c_1\}$}%
 			\stepcounter{picite}\only<\thepicite->{\\ \hline$A_4$ & & &$\mathfrak{C}$ &$\mathfrak{C}$&$\mathfrak{C}$ &$\mathfrak{C}$&$\{c_1\}$ &$\{c_1\}$ }\\ \hline
 		\end{tabular}}
-	\setcounter{picite}{0}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}%
+	\setcounter{picite}{0}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}\stepcounter{picite}%
 \only<\thepicite>{
 	\begin{align*}
 	A_1(v_5) &= A_0(v_5) \cup (\theta(v_5,v_4) \cap A_0(v_4))\\
@@ -554,16 +579,61 @@ Supervised by T.A.C. Willemse}\\
 }
 	\end{column}
 \end{columns}
+\setcounter{picite}{0}\stepcounter{picite}\stepcounter{picite}%
+\stepcounter{picite}\only<\thepicite>{%
+\mbox{}\vfill
 \begin{align*}
-A_{i+1}(v) = A_i(v) \cup \begin{cases}
+A_{i+1}(v) = A_i(v) &\cup \begin{cases}
 \bigcup_{(v,w)\in E}\ (\theta(v,w) \cap A_i(w)) & \text{if }v \in V_\alpha\\
 \bigcap_{(v,w)\in E}\ ((\mathfrak{C}\backslash \theta(v,w)) \cup A_i(w)) & \text{if }v \notin V_\alpha
 \end{cases}^*
 \end{align*}
-\tiny$^*$: Simplified version of the attractor definition presented in the report\pause\pause\pause\pause
+\tiny$^*$: Simplified version of the attractor definition presented in the report}\pause
+\stepcounter{picite}\only<\thepicite>{%
+\mbox{}\vfill
+If $v \in V_\alpha$: Find for every outgoing edge which configurations play to $A_i$, add them all to $A_i(v)$
+\begin{align*}
+A_{i+1}(v) = A_i(v) &\cup \begin{cases}
+\bigcup_{(v,w)\in E}\ (\theta(v,w) \cap A_i(w)) & \text{if }v \in V_\alpha\\
+\bigcap_{(v,w)\in E}\ ((\mathfrak{C}\backslash \theta(v,w)) \cup A_i(w)) & \text{if }v \notin V_\alpha
+\end{cases}^*
+\end{align*}
+\tiny$^*$: Simplified version of the attractor definition presented in the report}\pause
+\stepcounter{picite}\only<\thepicite>{%
+\mbox{}\vfill
+If $v \notin V_\alpha$: Find for every outgoing edge through which configurations player $1 - \alpha$ cannot escape $A_i$, add the intersection to $A_i(v)$
+\begin{align*}
+A_{i+1}(v) = A_i(v) &\cup \begin{cases}
+\bigcup_{(v,w)\in E}\ (\theta(v,w) \cap A_i(w)) & \text{if }v \in V_\alpha\\
+\bigcap_{(v,w)\in E}\ ((\mathfrak{C}\backslash \theta(v,w)) \cup A_i(w)) & \text{if }v \notin V_\alpha
+\end{cases}^*
+\end{align*}
+\tiny$^*$: Simplified version of the attractor definition presented in the report}\pause
+\stepcounter{picite}\only<\thepicite->{%
+\mbox{}\vfill
+\begin{align*}
+A_{i+1}(v) = A_i(v) &\cup \begin{cases}
+\bigcup_{(v,w)\in E}\ (\theta(v,w) \cap A_i(w)) & \text{if }v \in V_\alpha\\
+\bigcap_{(v,w)\in E}\ ((\mathfrak{C}\backslash \theta(v,w)) \cup A_i(w)) & \text{if }v \notin V_\alpha
+\end{cases}^*
+\end{align*}
+\tiny$^*$: Simplified version of the attractor definition presented in the report}\pause
+
+\pause\pause\pause
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\begin{frame}[t]
+\frametitle{VPG algorithms - Recursive algorithm}
+\begin{itemize}
+	\item Solve VPG by solving every parity game independently using the original recursive algorithm
+	\item Solve VPG collectively using the modified attractor calculation\pause
+	\item Modified attractor calculation relies on set operations betweens sets of configurations
+	\item Can we perform these operations efficiently?
+\end{itemize}
+\end{frame}
+%----------------------------------------------------------------------------------------
+
 
 \begin{frame}[t]
 \frametitle{VPG algorithms - Recursive algorithm - Symbolically representing sets}
@@ -614,7 +684,6 @@ A_{i+1}(v) = A_i(v) \cup \begin{cases}
 \end{columns}
 \end{frame}
 %----------------------------------------------------------------------------------------
-
 \begin{frame}[t]
 \frametitle{VPG algorithms - Recursive algorithm - Symbolically representing sets}
 	\begin{itemize}
@@ -632,30 +701,22 @@ A_{i+1}(v) = A_i(v) \cup \begin{cases}
 
 %----------------------------------------------------------------------------------------
 
-\begin{frame}[t]
-\frametitle{VPG algorithms - Recursive algorithm - Set operations}
-\begin{itemize}
-	\item Explicitly: $O(c)$
-	\item Symbolically: $O(c^2)$
-	\item In practice, if the BDDs are small then a symbolic representation outperforms an explicit representation
-\end{itemize}
-\end{frame}
-
-%----------------------------------------------------------------------------------------
-
 
 \begin{frame}[t]
 \frametitle{VPG algorithms - Recursive algorithm - Time complexities}
-\small$n$: \# vertices, $e$: \# edges, $d$: \# distinct priorities, $c$ \# configurations\normalsize
-\begin{itemize}
-	\item Original recursive algorithm: $O(e*n^d)$
-	\item Independently solving a VPG, \textit{i.e.} solve $c$ parity games: $O(c*e*n^d)$\pause
-	\item Collective recursive algorithm:
-	\begin{itemize}
-		\item with explicit configuration sets: $O(n*c^2*e*n^d)$
-		\item with symbolic configuration sets: $O(n*c^3*e*n^d)$
-	\end{itemize} 
-\end{itemize}
+\small$n$: \# vertices, $e$: \# edges, $d$: \# distinct priorities, $c$ \# configurations\normalsize\\
+\setcounter{picite}{0}\stepcounter{picite}%
+\begin{tabular}{|l|m{3cm}|}
+	\hline
+	\multicolumn{2}{|l|}{\textbf{Set operations}} \\\hline
+	Explicit sets & \stepcounter{picite}\only<\thepicite->{$O(c)$} \\\hline
+	Symbolic sets & \only<\thepicite->{$O(c^2)$} \\\hline\hline
+	\multicolumn{2}{|l|}{\textbf{Algorithms}} \\\hline
+	Original recursive algorithm & \stepcounter{picite}\only<\thepicite->{$O(e*n^d)$} \\\hline
+	Independent approach & \only<\thepicite->{$O(c * e * n ^d)$} \\\hline
+	Collective algorithm (explicit) & \stepcounter{picite}\only<\thepicite->{$O(n*c^2*e*n^d)$}\\\hline
+	Collective algorithm (symbolic) & \stepcounter{picite}\only<\thepicite->{$O(n*c^3*e*n^d)$}\\\hline
+\end{tabular}
 \end{frame}
 %----------------------------------------------------------------------------------------
 
@@ -695,14 +756,14 @@ A_{i+1}(v) = A_i(v) \cup \begin{cases}
 \begin{columns}[T]
 	\begin{column}{0.5\textwidth}
 		\begin{figure}[H]
-			\input{"../results/minepump/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+			\input{"Minepump - Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
 			\caption{Running times, in ms, on the minepump games.}
 			\label{fig:results_minepump}
 		\end{figure}%
 	\end{column}
 	\begin{column}{0.5\textwidth}
 		\begin{figure}[H]
-			\input{"../results/elevator/Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
+			\input{"Elevator - Zlnk product based_Zlnk fam based - explicit_Zlnk fam based - symbolic_"}
 			\caption{Running times, in ms, on the elevator games.}
 			\label{fig:results_elevator}
 		\end{figure}%
@@ -732,6 +793,7 @@ A_{i+1}(v) = A_i(v) \cup \begin{cases}
 	\end{itemize}\pause
 	\large Incremental pre-solve algorithm:\\
 	\begin{itemize}
+		\item Same time complexity as independent approach ($O(c*e*n^d)$)
 		\item Slightly increases performance of SPL games and random games
 		\item Not consistent or very significant
 	\end{itemize}
@@ -764,6 +826,34 @@ A_{i+1}(v) = A_i(v) \cup \begin{cases}
 	\item Collective approaches outperform independent approaches
 	\item Locally solving VPGs can increase performance (more so than locally solving parity games does)
 \end{itemize}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\begin{frame}[t]
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\begin{frame}[t]
+\frametitle{Extra - Incremental pre-solve}
+\def\scalegraphs{0.6}
+\begin{columns}[T]
+	\begin{column}{0.5\textwidth}
+		\begin{figure}[H]
+			\input{"../results/minepump/Fixed-point product based_Incremental pre-solve_"}
+			\caption{Running times, in ms, on the minepump games.}
+			\label{fig:results_minepump}
+		\end{figure}%
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}[H]
+			\input{"../results/elevator/Fixed-point product based_Incremental pre-solve_"}
+			\caption{Running times, in ms, on the elevator games.}
+			\label{fig:results_elevator}
+		\end{figure}%
+	\end{column}
+\end{columns}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
