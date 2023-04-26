@@ -1,2 +1,0 @@
-#!/bin/bash
-echo -n "Solving time: ";echo `oink --uzlk --workers -1 $1|grep  "solving time"|awk '{ print $6 }'`"*1000000000"|bc|awk -F'.' '{ print $1 }'

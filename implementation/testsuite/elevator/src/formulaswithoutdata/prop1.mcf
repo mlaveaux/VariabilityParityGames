@@ -1,7 +1,0 @@
-[true*](
-	[landingButton_1]mu X. ([!open_1]X && <true>true) &&
-	([landingButton_2]mu X. ([!open_2]X && <true>true) &&
-	([landingButton_3]mu X. ([!open_3]X && <true>true) &&
-	([landingButton_4]mu X. ([!open_4]X && <true>true) &&
-	[landingButton_5]mu X. ([!open_5]X && <true>true))))
-)

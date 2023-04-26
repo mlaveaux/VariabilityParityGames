@@ -1,7 +1,0 @@
-[true*](
-	[liftButton_1]mu Q. ([!open_1]Q && <true>true) && (
-	[liftButton_2]mu R. ([!open_2]R && <true>true) && (
-	[liftButton_3]mu S. ([!open_3]S && <true>true) && (
-	[liftButton_4]mu T. ([!open_4]T && <true>true) &&
-	[liftButton_5]mu U. ([!open_5]U && <true>true))))
-)
