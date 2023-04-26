@@ -5,7 +5,9 @@
 #ifndef VPGSOLVER_CONFSETEXPLICIT_H
 #define VPGSOLVER_CONFSETEXPLICIT_H
 #include <vector>
-#include "VectorBoolOptimized.h"
+
+#include "boost/dynamic_bitset.hpp"
+
 using namespace std;
 
 /**
@@ -49,7 +51,8 @@ public:
      * @return the number of elements in the set
      */
     int count();
-    VectorBoolOptimized items;
+
+    boost::dynamic_bitset<> items;
 };
 
 

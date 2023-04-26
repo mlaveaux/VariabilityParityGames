@@ -45,8 +45,11 @@ ConfSetExplicit::ConfSetExplicit(int bit) {
 
 int ConfSetExplicit::count() {
     int c = 0;
-    for(auto b : items)
-        if(b)
-            c++;
+    for (std::size_t i = 0; i < items.size(); ++i)
+    {
+      if (items.test(i)) {
+        c++;
+      }
+    }
     return c;
 }

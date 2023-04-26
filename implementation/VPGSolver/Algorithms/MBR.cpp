@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <queue>
 #include <chrono>
+
 #include "FPIte.h"
 
 vector<ConfSet> MBR::winningConf;
@@ -33,7 +34,7 @@ MBR::MBR(Game *game) {
     this->P0->resize(game->n_nodes);
     this->VP1 =  new VertexSetFPIte();
     this->VP1->resize(game->n_nodes);
-    fill(this->VP1->begin(), this->VP1->end(), true);
+    this->VP1->set(true);
     this->feature =  0;
 }
 
@@ -46,8 +47,8 @@ void MBR::solve() {
         (*this->measured->value)[4] = confstring;
 
 #ifdef subsetbdd
-        (*this->measured->value)[0] = std::count_if(P0->begin(), P0->end(), [](bool b){return b;});
-        (*this->measured->value)[1] = game->n_nodes - std::count_if(VP1->begin(), VP1->end(), [](bool b){return b;});
+        (*this->measured->value)[0] = P0->count();
+        (*this->measured->value)[1] = game->n_nodes - VP1->count();
 #endif
     }
     if(this->feature == game->bm_n_vars){

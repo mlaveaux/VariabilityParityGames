@@ -169,7 +169,6 @@ int Game::parseConfSet(const char *line, int i, ConfSet *result) {
     ConfSet entry = fullset;
     int var = 0;
     char c;
-    string * seq;
     do
     {
         c = line[i++];
