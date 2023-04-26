@@ -1,0 +1,111 @@
+-- Call completion is actually possible
+SPEC AG (EF (ph[1].st=talking & ph[1].dialled=2))
+-- SPEC AG (EF (ph[1].st=talking & ph[1].dialled=4))
+
+-- SPEC AG (EF (ph[2].st=talking & ph[2].dialled=1))
+SPEC AG (EF (ph[2].st=talking & ph[2].dialled=4))
+
+SPEC AG (EF (ph[3].st=talking & ph[3].dialled=1))
+-- SPEC AG (EF (ph[3].st=talking & ph[3].dialled=2))
+-- SPEC AG (EF (ph[3].st=talking & ph[3].dialled=4))
+
+SPEC AG ((ph[2].dialled=1 & ph[2].st=talking)
+      -> AF( (ph[2].st=idle & ph[1].st=ended)
+            |(ph[1].st=idle & ph[2].st=ended)))
+-- if ph[2] is talking to 1, the call will eventually end
+-- ... and it will do so `asymmetrically': one party hangs up
+-- true when "weak" FAIRNESS [!st=xxx] active
+
+-- trying is always directly followed by ringing- or busy-tone
+SPEC AG (ph[1].st=trying -> AX (ph[1].st=ringingt | ph[1].st=busyt))
+
+-- the correct phone will ring:
+SPEC AG (ph[1].st=trying & ph[1].dialled=2 
+        -> AX (ph[1].st=ringingt -> ph[2].st=ringing))
+SPEC AG (ph[2].st=trying & ph[2].dialled=4
+        -> AX (ph[2].st=ringingt -> ph[4].st=ringing))
+SPEC AG (ph[3].st=trying & ph[3].dialled=2
+        -> AX (ph[3].st=ringingt -> ph[2].st=ringing))
+
+-- -- A list of SPECs stating that if a phone is talking, the
+-- -- dialled phone must be talked to.
+--
+SPEC AG (ph[1].st=talking & ph[1].dialled=2 -> ph[2].st=talked)
+SPEC AG (ph[2].st=talking & ph[2].dialled=4 -> ph[4].st=talked)
+SPEC AG (ph[3].st=talking & ph[3].dialled=1 -> ph[1].st=talked)
+
+--------
+
+-- -- A list of SPECs stating that if a phone is talked to, there has
+-- -- to be one talking to it.  Two SPECs for each phone:
+-- --   * "ph[i] can be talked to" (negation of), and
+-- --   * "there is a ph[j] (j!=i) talking to ph[i]"
+-- 
+SPEC EF (ph[1].st=talked)
+SPEC AG( ((ph[2].st=talking & ph[2].dialled=1) |
+	     (ph[3].st=talking & ph[3].dialled=1) |
+	     (ph[4].st=talking & ph[4].dialled=1)) <->
+	    ph[1].st=talked)
+SPEC EF (ph[2].st=talked)
+SPEC AG( ((ph[3].st=talking & ph[3].dialled=2) |
+	     (ph[4].st=talking & ph[4].dialled=2) |
+	     (ph[1].st=talking & ph[1].dialled=2)) <->
+	    ph[2].st=talked)
+SPEC EF (ph[4].st=talked)
+SPEC AG( ((ph[1].st=talking & ph[1].dialled=4) |
+	     (ph[2].st=talking & ph[2].dialled=4) |
+	     (ph[3].st=talking & ph[3].dialled=4)) <->
+	    ph[4].st=talked)
+
+--------
+
+-- -- A list of SPECs stating that if a phone is ringing, there has
+-- -- to be one ringing it.  Two SPECs for each phone:
+-- --   * "ph[i] can be ringing" (negation of), and
+-- --   * "there is a ph[j] (j!=i) ringing ph[i]"
+SPEC EF (ph[1].st=ringing)
+SPEC AG( ((ph[2].st=ringingt & ph[2].dialled=1) |
+	     (ph[3].st=ringingt & ph[3].dialled=1) |
+	     (ph[4].st=ringingt & ph[4].dialled=1)) <->
+	    ph[1].st=ringing)
+-- SPEC EF (ph[2].st=ringing)
+-- SPEC AG( ((ph[3].st=ringingt & ph[3].dialled=2) |
+-- 		(ph[4].st=ringingt & ph[4].dialled=2) |
+-- 		(ph[1].st=ringingt & ph[1].dialled=2)) <->
+-- 	       ph[2].st=ringing)
+-- SPEC EF (ph[4].st=ringing)
+-- SPEC AG( ((ph[1].st=ringingt & ph[1].dialled=4) |
+-- 		(ph[2].st=ringingt & ph[2].dialled=4) |
+-- 		(ph[3].st=ringingt & ph[3].dialled=4)) <->
+-- 	       ph[4].st=ringing)
+
+--------
+
+-- two phone can never be talking to the same third phone
+SPEC AG !(ph[1].st=talking & ph[1].dialled=4 &
+	  ph[2].st=talking & ph[2].dialled=4 )
+SPEC AG !(ph[1].st=talking & ph[1].dialled=2 &
+	  ph[3].st=talking & ph[3].dialled=2 )
+-- SPEC AG !(ph[1].st=talking & ph[1].dialled=4 &
+-- 	  ph[3].st=talking & ph[3].dialled=4 )
+SPEC AG !(ph[2].st=talking & ph[2].dialled=1 &
+	  ph[3].st=talking & ph[3].dialled=1 )
+-- SPEC AG !(ph[2].st=talking & ph[2].dialled=4 &
+-- 	  ph[3].st=talking & ph[3].dialled=4 )
+
+--------
+
+-- the dialled number cannot change whithout replacing the hand-set
+SPEC AG ((ph[1].dialled=2 & ph[1].st=trying)
+         -> (A[ ph[1].dialled=2 U ph[1].st=idle]))
+-- SPEC AG ((ph[1].dialled=4 & ph[1].st=trying)
+--          -> (A[ ph[1].dialled=4 U ph[1].st=idle]))
+SPEC AG ((ph[2].dialled=1 & ph[2].st=trying)
+         -> (A[ ph[2].dialled=1 U ph[2].st=idle]))
+-- SPEC AG ((ph[2].dialled=4 & ph[2].st=trying)
+--          -> (A[ ph[2].dialled=4 U ph[2].st=idle]))
+SPEC AG ((ph[3].dialled=1 & ph[3].st=trying)
+         -> (A[ ph[3].dialled=1 U ph[3].st=idle]))
+-- needs weak fairness
+
+--------

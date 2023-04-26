@@ -1,0 +1,217 @@
+------------------------------------------------------------
+-- Call Waiting feature for the synchronous phone system
+--   (with ophone and tphone)
+-- Feature active for phone1, always on
+------------------------------------------------------------
+
+FEATURE cw-1
+REQUIRE
+  MODULE phone1 (X,B,C,D,p)
+  VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle, dialt, trying, busyt, ringingt, 
+             talking, ringing, talked, ended};
+  MODULE phone2 (X,B,C,D,p)
+  VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle, dialt, trying, busyt, ringingt, 
+             talking, ringing, talked, ended};
+  MODULE ophone (X,B,C,D,p)
+  VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle, dialt, trying, busyt, ringingt, 
+             talking, ringing, talked, ended};
+  MODULE tphone (X,B,C,D,p)
+  VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle, dialt, trying, busyt, ringingt, 
+             talking, ringing, talked, ended};
+
+INTRODUCE
+  MODULE phone1
+  VAR
+    -- which line is currently on hold (0: none)
+    onhold: {0,1,2,3,4};
+
+  ASSIGN
+    init(onhold):= 0;
+    next(onhold):= 
+      case
+        -- we have no call on hold
+        onhold=0 & st=talked & !next(st) in {idle,ended}: 
+          case
+            -- we are talking to a caller
+            -- and s.o. else is trying us
+            p[B].dialled=X & p[B].st=talking :
+              case  -- put that s.o. on hold (unfair)
+        	 p[C].st=trying & p[C].dialled=X : C;
+        	 p[D].st=trying & p[D].dialled=X : D;
+        	 1 : 0;
+              esac;
+            st=talked & p[C].dialled=X & p[C].st=talking :
+              case  -- put that s.o. on hold (unfair)
+        	 p[B].st=trying & p[B].dialled=X : B;
+        	 p[D].st=trying & p[D].dialled=X : D;
+        	 1 : 0;
+              esac;
+            st=talked & p[D].dialled=X & p[D].st=talking :
+              case  -- put that s.o. on hold (unfair)
+        	 p[B].st=trying & p[B].dialled=X : B;
+        	 p[C].st=trying & p[C].dialled=X : C;
+        	 1 : 0;
+              esac;
+          esac;
+        onhold=0 & st=talking & !dialled=0 & !next(st) in {idle,ended}:
+          case
+            -- we are talking to a callee
+            -- and s.o. else is trying us
+            -- put that s.o. on hold (unfair)
+            p[B].st=trying & p[B].dialled=X : B;
+            p[C].st=trying & p[C].dialled=X : C;
+            p[D].st=trying & p[D].dialled=X : D;
+            1 : 0;  -- just for safety
+          esac;
+        
+        -- we have a call on hold and the party onhold hangs up
+        ((onhold=B & next(p[B].st)=idle)
+        |(onhold=C & next(p[C].st)=idle)
+        |(onhold=D & next(p[D].st)=idle)) : 0;
+        ((party=B & next(p[B].st)=idle)
+        |(party=C & next(p[C].st)=idle)
+        |(party=D & next(p[D].st)=idle)) : 0;
+        !onhold=0 :
+          case
+            -- we are talking, i.e. we have dialled
+            st=talking & !dialled=0 & !next(st) in {idle,ended} :
+              {onhold, dialled};  -- may switch between calls
+            st=talking & !dialled=0 & next(st) in {idle,ended} :
+              case
+                (onhold=B & !next(p[B].st)=idle) : B;
+                (onhold=C & !next(p[C].st)=idle) : C;
+                (onhold=D & !next(p[D].st)=idle) : D;
+                1 : 0;
+              esac;
+            -- we are talked, i.e. we have a caller
+            st=talked & !next(st) in {idle,ended} :
+              {onhold, party};  -- may switch between calls
+            -- one side hangs up: pop call on-hold
+            st=talked & next(st) in {idle,ended} : 0;
+            1 : 0; -- remember to adjust party!!!
+          esac;
+        1 : 0;
+      esac;
+
+  MODULE phone2
+  VAR
+    cw-msg  : boolean;
+  
+  ASSIGN
+    init(cw-msg) := 0;
+    next(cw-msg) := 
+      case
+        !st in {idle,ended,ringing} & next(p[1].onhold)=X : 1;
+        1		                                  : 0;
+      esac;
+
+  MODULE ophone
+  VAR
+    cw-msg  : boolean;
+  
+  ASSIGN
+    init(cw-msg) := 0;
+    next(cw-msg) := 
+      case
+        -- switching between calls:
+        !st in {idle,ended,ringing} & next(p[1].onhold)=3 : 1;
+        1		                                  : 0;
+      esac;
+
+  MODULE tphone
+  VAR
+    cw-msg  : boolean;
+  ASSIGN
+    init(cw-msg) := 0;
+    next(cw-msg) := 
+      case
+        !st in {idle,ended,ringing} & next(p[1].onhold)=4 : 1;
+        1		                                  : 0;
+      esac;
+
+CHANGE
+  MODULE phone1
+  IF (!onhold=0 & !next(onhold)=0 & !next(onhold)=onhold)
+  THEN IMPOSE next(dialled):=onhold;
+
+  MODULE phone1
+  IF (!onhold=0 & next(onhold)=0 & !next(onhold)=onhold)
+  THEN IMPOSE next(dialled):=
+    case
+      (onhold=B & next(p[B].st)=talking & p[B].cw-msg) |
+      (onhold=C & next(p[C].st)=talking & p[C].cw-msg) |
+      (onhold=D & next(p[D].st)=talking & p[D].cw-msg) : 0;
+      (onhold=B & next(p[B].st)=talked & p[B].cw-msg) |
+      (onhold=C & next(p[C].st)=talked & p[C].cw-msg) |
+      (onhold=D & next(p[D].st)=talked & p[D].cw-msg) : onhold;
+      (onhold=B & next(p[B].st)=idle & p[B].cw-msg) |
+      (onhold=C & next(p[C].st)=idle & p[C].cw-msg) |
+      (onhold=D & next(p[D].st)=idle & p[D].cw-msg) : -- would be ended;
+        case
+          (party=B & next(p[B].st)=talking) |
+          (party=C & next(p[C].st)=talking) |
+          (party=D & next(p[D].st)=talking) : 0;
+          (party=B & next(p[B].st)=talked) |
+          (party=C & next(p[C].st)=talked) |
+          (party=D & next(p[D].st)=talked) : dialled;
+          (party=B & next(p[B].st)=idle) |
+          (party=C & next(p[C].st)=idle) |
+          (party=D & next(p[D].st)=idle) : 0;
+          1 : dialled;
+        esac;
+      1 : dialled;
+    esac;
+
+  MODULE phone1
+  IF (!onhold=0 & !next(onhold)=onhold) | st=ended
+  THEN IMPOSE next(st):=
+    case
+      (onhold=B & next(p[B].st)=talking & p[B].cw-msg) |
+      (onhold=C & next(p[C].st)=talking & p[C].cw-msg) |
+      (onhold=D & next(p[D].st)=talking & p[D].cw-msg) : talked;
+      (onhold=B & next(p[B].st)=talked & p[B].cw-msg) |
+      (onhold=C & next(p[C].st)=talked & p[C].cw-msg) |
+      (onhold=D & next(p[D].st)=talked & p[D].cw-msg) : talking;
+      (onhold=B & next(p[B].st)=idle & p[B].cw-msg) |
+      (onhold=C & next(p[C].st)=idle & p[C].cw-msg) |
+      (onhold=D & next(p[D].st)=idle & p[D].cw-msg) : -- would be ended;
+        case
+          (party=B & next(p[B].st)=talking) |
+          (party=C & next(p[C].st)=talking) |
+          (party=D & next(p[D].st)=talking) : talked;
+          (party=B & next(p[B].st)=talked) |
+          (party=C & next(p[C].st)=talked) |
+          (party=D & next(p[D].st)=talked) : talking;
+          (party=B & next(p[B].st)=idle) |
+          (party=C & next(p[C].st)=idle) |
+          (party=D & next(p[D].st)=idle) : ended;
+          1 : idle;
+        esac;
+      1 : idle;
+    esac;
+
+  MODULE phone1
+  TREAT p[B].st = (case p[B].cw-msg : busyt; 1: p[B].st; esac),
+	p[C].st = (case p[C].cw-msg : busyt; 1: p[C].st; esac),
+	p[D].st = (case p[D].cw-msg : busyt; 1: p[D].st; esac)
+  IN party
+
+  MODULE phone2
+  IF st in {trying,ringingt} & next(cw-msg)
+     & dialled=1 & next(p[1].onhold)=2
+  THEN IMPOSE next(st):=talking;
+
+  MODULE ophone
+  IF st in {trying,ringingt} & next(cw-msg)
+     & dialled=1 & next(p[1].onhold)=3
+  THEN IMPOSE next(st):=talking;
+
+END

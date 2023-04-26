@@ -1,0 +1,15 @@
+-- if a forwarding number is given and a call comes in when we're busy,
+-- that call is diverted.
+SPEC AG (ph[1].forw=2 & !ph[1].st=idle & ph[3].dialled=1 & ph[3].st=trying
+        -> AF(ph[3].dialled=2 & ph[3].st in {busyt,ringingt}
+              & (ph[3].st=ringingt -> ph[2].st=ringing)))
+
+SPEC AG (ph[1].forw=4 & !ph[1].st=idle & ph[2].dialled=1 & ph[2].st=trying
+        -> AF(ph[2].dialled=4 & ph[2].st in {busyt,ringingt}
+              & (ph[2].st=ringingt -> ph[4].st=ringing)))
+
+SPEC AG (ph[1].forw=4 & !ph[1].st=idle & ph[3].dialled=1 & ph[3].st=trying
+        -> AF(ph[3].dialled=4 & ph[3].st in {busyt,ringingt}
+              & (ph[3].st=ringingt -> ph[4].st=ringing)))
+
+----

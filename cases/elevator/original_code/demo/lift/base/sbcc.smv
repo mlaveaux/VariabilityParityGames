@@ -1,0 +1,176 @@
+--------------------------------------------------------
+--                      sbcc_5.smv                    --
+--                                                    --
+--   SINGLE BUTTON COLLECTIVE CONTROL FOR 5 FLOORS    --
+--                                                    --
+--  Author: Mark Berry  [small mods by MDR]           --
+--  Date  : 18 June 1996  [18 February 1997]          --
+--------------------------------------------------------
+
+MODULE main
+VAR
+  landingBut1 : button ((lift.floor=1) & (lift.door=open));
+  landingBut2 : button ((lift.floor=2) & (lift.door=open));
+  landingBut3 : button ((lift.floor=3) & (lift.door=open));
+  landingBut4 : button ((lift.floor=4) & (lift.door=open));
+  landingBut5 : button ((lift.floor=5) & (lift.door=open));
+
+  lift     : lift (landing_call, no_call);
+
+DEFINE
+ landing_call:=
+         case
+           lift.direction = down : 
+                   case
+                     landingBut5.pressed & lift.floor>4 : 5;
+                     landingBut4.pressed & lift.floor>3 : 4;
+                     landingBut3.pressed & lift.floor>2 : 3;
+                     landingBut2.pressed & lift.floor>1 : 2;
+                     landingBut1.pressed                : 1;
+                     1                               : 0;
+                   esac;
+           lift.direction = up   : 
+                   case
+                     landingBut1.pressed & lift.floor<2 : 1;
+                     landingBut2.pressed & lift.floor<3 : 2;
+                     landingBut3.pressed & lift.floor<4 : 3;
+                     landingBut4.pressed & lift.floor<5 : 4;
+                     landingBut5.pressed                : 5;
+                     1                               : 0;
+                   esac;
+         esac;
+
+  no_call := (!landingBut1.pressed &
+              !landingBut2.pressed &
+              !landingBut3.pressed &
+              !landingBut4.pressed &
+              !landingBut5.pressed);
+
+
+SPEC -- pressing a landing button guarantees service:
+  AG (landingBut2.pressed -> AF (lift.floor=2 & lift.door=open))
+
+SPEC -- but not necessarily in a down direction
+  !AG (landingBut2.pressed ->
+        AF (lift.floor=2 & lift.door=open & lift.direction=down))
+
+MODULE lift (landing_call, no_call)
+VAR
+  floor         : {1,2,3,4,5};
+  door          : {open,closed};
+  direction     : {up,down};
+
+  liftBut5      : button (floor=5 & door=open);
+  liftBut4      : button (floor=4 & door=open);
+  liftBut3      : button (floor=3 & door=open);
+  liftBut2      : button (floor=2 & door=open);
+  liftBut1      : button (floor=1 & door=open);
+
+
+DEFINE
+  idle         := (no_call &
+                   !liftBut1.pressed &
+                   !liftBut2.pressed &
+                   !liftBut3.pressed &
+                   !liftBut4.pressed &
+                   !liftBut5.pressed);
+
+  car_call := 
+         case
+            direction = down : 
+                case
+                   liftBut5.pressed & floor>4 : 5;
+                   liftBut4.pressed & floor>3 : 4;
+                   liftBut3.pressed & floor>2 : 3;
+                   liftBut2.pressed & floor>1 : 2;
+                   liftBut1.pressed           : 1;
+                   1                          : 0;
+                 esac;
+
+            direction = up   : 
+                case
+                   liftBut1.pressed & floor<2 : 1;
+                   liftBut2.pressed & floor<3 : 2;
+                   liftBut3.pressed & floor<4 : 3;
+                   liftBut4.pressed & floor<5 : 4;
+                   liftBut5.pressed           : 5;
+                   1                          : 0;
+                esac;
+         esac;
+
+ASSIGN
+  door         := case
+                    floor=car_call      : open;
+                    floor=landing_call  : open;
+                    1                   : closed;
+                  esac;
+
+  init (floor) := 1;
+  next (floor) := case
+                    door=open                   : floor;
+                    car_call=0 & landing_call=0 : floor;
+                    direction=up & floor<5      : floor +1;
+                    direction=down & floor>1    : floor -1;
+                    1                           : floor;
+                  esac;
+
+
+  init (direction) := down;
+  next (direction) := case
+                        idle         : direction;
+                        floor = 5    : down;
+                        floor = 1    : up;
+
+                        car_call=0 & landing_call=0 & direction=down : up;
+                        car_call=0 & landing_call=0 & direction=up   : down;
+
+                        1            : direction;
+                     esac;
+
+
+    
+SPEC -- once a door closes, it may remain closed (idle):
+  !AG (door=closed -> AF door=open)
+
+SPEC -- pressing a lift button guarantees service:
+  AG (liftBut3.pressed -> AF (floor=3 & door=open))
+
+SPEC -- doesn't change direction unexpectedly
+  AG (floor=2 & liftBut5.pressed & direction=up
+                    -> A[direction=up U floor=5])
+
+SPEC -- doesn't change direction unexpectedly
+  AG (floor=5 & liftBut1.pressed & direction=down
+                    -> A[direction=down U floor=1])
+
+SPEC  -- the lift can remain idle with its doors closed:
+  EF(floor=1 & door=closed & idle)
+SPEC
+  AG (floor=1 & idle & door=closed -> EG (floor=1 & door=closed))
+
+SPEC  -- the lift can remain idle with its doors closed:
+  EF(floor=3 & door=closed & idle)
+SPEC
+  AG (floor=3 & idle & door=closed -> EG (floor=3 & door=closed))
+
+SPEC -- the lift does not necessarily park at floor 1:
+  !AG(floor=4 & idle -> E [idle U floor=1])
+
+SPEC -- a lift travelling upwards may stop for landing calls:
+  !AG ((floor=3 & !liftBut3.pressed & direction=up) -> door=closed)
+SPEC -- a lift travelling downwards may stop for landing calls:
+  !AG ((floor=4 & !liftBut4.pressed & direction=down) -> door=closed)
+
+
+MODULE button (reset)
+VAR
+  pressed : boolean;
+ASSIGN
+  init (pressed) := 0;
+  next (pressed) := case
+                      reset     : 0;
+                      pressed   : 1;
+                      1         : {0,1};
+                    esac;
+
+---------

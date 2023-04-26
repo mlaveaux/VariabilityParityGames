@@ -1,0 +1,41 @@
+FEATURE tt-full  -- two-thirds full: restricted car-pref
+REQUIRE
+    MODULE main
+    VAR lift : lift;
+        landingBut1.pressed : boolean; landingBut2.pressed : boolean; 
+        landingBut3.pressed : boolean; landingBut4.pressed : boolean; 
+        landingBut5.pressed : boolean;
+    MODULE lift
+    VAR liftBut1.pressed : boolean; liftBut2.pressed : boolean; 
+        liftBut3.pressed : boolean; liftBut4.pressed : boolean;
+        liftBut5.pressed : boolean;
+
+INTRODUCE
+    MODULE lift
+    VAR tt-full : boolean;
+
+    ASSIGN
+      next(tt-full) :=
+        case
+          door = closed : tt-full;
+          1             : {0,1};
+        esac;
+
+    SPEC -- car calls have preference when 2/3-full
+      AG (tt-full & liftBut2.pressed & !liftBut3.pressed ->
+              A [!(floor=3 & door=open) 
+                U ((floor=2 & door=open) | !tt-full | liftBut3.pressed)])
+    -- etc....
+
+CHANGE
+    MODULE main
+    IF lift.tt-full & (lift.liftBut1.pressed |
+        lift.liftBut2.pressed | lift.liftBut3.pressed |
+        lift.liftBut4.pressed | lift.liftBut5.pressed)
+    THEN TREAT landingBut1.pressed = 0,
+        landingBut2.pressed = 0, landingBut3.pressed = 0,
+        landingBut4.pressed = 0, landingBut5.pressed = 0
+
+END
+--------
+

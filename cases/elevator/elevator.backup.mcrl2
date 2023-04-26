@@ -1,0 +1,119 @@
+sort
+  Door = struct open | closed;
+  Direction = struct up | down;
+  Buttons = Nat -> Bool;
+  Floor = Nat;
+
+map
+  no_landing_call : Buttons;
+  no_dest : Buttons; 
+  call : Direction # Floor # Buttons -> Floor;
+  door_function : Floor # Floor # Floor -> Door;
+  idle : Buttons # Buttons -> Bool;
+
+  next_floor     : Floor # Door # Direction # Buttons # Buttons -> Floor;
+  next_direction : Floor # Door # Direction # Buttons # Buttons -> Direction;
+  next_door      : Floor # Direction # Buttons # Buttons -> Door;
+  next_button    : Floor # Floor # Door # Buttons -> Bool;
+  
+eqn
+  no_landing_call = lambda n:Nat. false;
+  no_dest = lambda n:Nat. false;
+
+var
+  d:Direction;
+  f,f1,f2,f3:Floor;
+  l,l1,l2:Buttons;
+  d':Door;
+eqn
+  (d == down) -> call(d,f,l) =  if(l(5) && f > 4, 5,
+                                  if(l(4) && f > 3, 4,
+                                    if(l(3) && f > 2, 3,
+                                      if(l(2) && f > 1, 2,
+                                        if(l(1), 1, 0 ) ) ) ) );
+
+  (d == up)   -> call(d,f,l) =  if(l(1) && f < 2, 1,
+                                  if(l(2) && f < 3, 2,
+                                    if(l(3) && f < 4, 3,
+                                      if(l(4) && f < 5, 4,
+                                        if(l(5), 5, 0 ) ) ) ) );
+
+  f1 == f2 -> door_function(f1,f2,f3) = open;
+  f1 == f3 -> door_function(f1,f2,f3) = open;
+  f1 != f2 && f1 != f3 -> door_function(f1,f2,f3) = closed;
+
+  % more generic but slower...
+  %idle(l1,l2) = forall i:Nat. (l1(i) == false && l2(i) == false);
+
+  idle(l1,l2) = l1(1) == false && l1(2) == false && l1(3) == false && l1(4) == false && l1(5) == false &&
+                l2(1) == false && l2(2) == false && l2(3) == false && l2(4) == false && l2(5) == false;
+
+  % l1 is liftbuttons; l2 is landingbuttons
+  next_floor(f,d',d,l1,l2) = if(d' == open, f,
+                             if(call(d,f,l1) == 0 && call(d,f,l2) == 0, f,
+                                if(d == up && f < 5, f+1,
+                                  if(d == down && f > 1, Int2Nat(f-1), f)
+                                  )
+                                )
+                             );
+
+  next_direction(f,d',d,l1,l2) = if(idle(l1,l2), d,
+                                if(f == 5, down,
+                                  if(f == 1, up,
+                                    if(call(d,f,l1) == 0 && call(d,f,l2) == 0 && d == down, up,
+                                      if(call(d,f,l1) == 0 && call(d,f,l2) == 0 && d == up, down, d)
+                                      )
+                                    )
+                                  )
+                                );
+
+  next_button(f1,f2,d',l) = if(f1 == f2 && d' == open, false,
+                               if(l(f2), true, l(f2) ) );
+
+
+act
+ landingButton, liftButton : Floor;
+ move_down;
+ move_up;
+ open : Floor;
+ door: Floor # Door;
+
+
+proc Lift(floor:Floor, door:Door, direction:Direction,
+liftbuttons:Buttons, landingbuttons:Buttons)
+=
+
+% detecting buttons
+sum i: Nat. (1 <= i && i <= 5) -> 
+(
+  (!landingbuttons(i) && (landingbuttons(i) != next_button(floor,i,door,landingbuttons) ) )
+   -> landingButton(i) . Lift(landingbuttons = landingbuttons[i -> next_button(floor,i,door,landingbuttons)] )
++
+  (!liftbuttons(i) && (liftbuttons(i) != next_button(floor,i,door,liftbuttons) ) ) 
+   -> liftButton(i). Lift(liftbuttons = liftbuttons[i -> next_button(floor,i,door,liftbuttons)] )
++
+  (!landingbuttons(i) && floor != i )
+   -> landingButton(i) . Lift(landingbuttons = landingbuttons[i -> true] )
++
+  (!liftbuttons(i) && floor != i ) 
+   -> liftButton(i). Lift(liftbuttons = liftbuttons[i -> true] )
+)
++
+% moving and/or changing direction
+sum f:Floor, d:Direction.
+(
+ (f == next_floor(floor,door,direction,liftbuttons,landingbuttons) &&
+  d == next_direction(floor,door,direction,liftbuttons,landingbuttons) ) &&
+ !(floor == f && direction == d)
+) -> tau. Lift(floor = f, direction = d)
++
+% now for the opening of the door
+ (door_function(floor, call(direction,floor,liftbuttons), call(direction,floor,landingbuttons)  ) == open && door == closed) -> door(floor,open). Lift (door = open, liftbuttons = liftbuttons[floor -> false], landingbuttons = landingbuttons[floor -> false] )
++
+% and the closing of the door
+ (door_function(floor, call(direction,floor,liftbuttons), call(direction,floor,landingbuttons)  ) == closed && door == open) -> door(floor,closed). Lift (door = closed)
+
+
+;
+
+init Lift(1, closed, down,no_dest,no_landing_call);

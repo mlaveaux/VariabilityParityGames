@@ -1,0 +1,38 @@
+-- phone is picked up after the first ring or not at all
+SPEC AG( !ph[1].forw=0
+      -> AG( ph[1].st=ringing
+          -> AX( ph[1].st in {idle,talked}
+                | (ph[1].st=ringing & AX( !(ph[1].st in {talking,ringing}))))))
+
+-- if the phone is not picked up, the incoming call is forwarded
+SPEC AG( !ph[1].forw=0
+      -> AG( ph[1].st=ringing & ph[2].dialled=1 & ph[2].st=ringingt
+          -> AX( ph[1].st in {idle,talked}
+                | (ph[1].st=ringing & AX( !(ph[1].st in {talking,ringing})
+                                   & ph[2].dialled=ph[1].forw)))))
+SPEC AG( !ph[1].forw=0
+      -> AG( ph[1].st=ringing & ph[3].dialled=1 & ph[3].st=ringingt
+          -> AX( ph[1].st in {idle,talked}
+                | (ph[1].st=ringing & AX( !(ph[1].st in {talking,ringing})
+                                   & ph[3].dialled=ph[1].forw)))))
+
+-----
+-- phone is picked up after the first ring or not at all
+SPEC AG( !ph[2].forw=0
+      -> AG( ph[2].st=ringing
+          -> AX( ph[2].st in {idle,talked}
+                | (ph[2].st=ringing & AX( !(ph[2].st in {talking,ringing}))))))
+
+-- if the phone is not picked up, the incoming call is forwarded
+SPEC AG( !ph[2].forw=0
+      -> AG( ph[2].st=ringing & ph[1].dialled=2 & ph[1].st=ringingt
+          -> AX( ph[2].st in {idle,talked}
+                | (ph[2].st=ringing & AX( !(ph[2].st in {talking,ringing})
+                                   & ph[1].dialled=ph[2].forw)))))
+SPEC AG( !ph[2].forw=0
+      -> AG( ph[2].st=ringing & ph[3].dialled=2 & ph[3].st=ringingt
+          -> AX( ph[2].st in {idle,talked}
+                | (ph[2].st=ringing & AX( !(ph[2].st in {talking,ringing})
+                                   & ph[3].dialled=ph[2].forw)))))
+
+-----

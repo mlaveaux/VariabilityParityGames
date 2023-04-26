@@ -1,0 +1,22 @@
+This directory contains all the files for the demonstration of SFI,
+the SMV Feature Integrator, except for the binaries of SFI and SMV.
+These can be found in the archive sfi-smv.tar.gz.
+
+The subdirectories "lift/" and "phone/" contain the source files for
+the case studies.
+
+There is a useful script in "bin/bgsmv", and this should of course
+be installed somewhere in your $PATH along with `sfi' and `smv'.
+'bgsmv' invokes smv in the background and adds some admin info to 
+the output. Invoke bgsmv without parameters for usage information.
+
+The files distributed here should work fine with CMU SMV 2.4 and
+higher.  The files will not work with Cadence SMV or with NuSMV.  (The
+latter only requires syntactic changes - NuSMV doesn't accept the way
+we use arrays.)
+
+Please see the file "test/README" for details on how to test your
+installation.
+
+Malte Plath - Nov 1999
+

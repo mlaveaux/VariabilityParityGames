@@ -1,0 +1,96 @@
+% property 4
+% !AG ( door = closed -> AF door = open)
+% not invariantly, if a lift door is closed, it ultimately opens
+%
+%!(
+%nu X(doorx:Door).
+%  (
+%     [!close && !exists f:Floor. open(f)]X(doorx)
+%   &&
+%     [exists f:Floor.open(f)]X(open)
+%   &&
+%     [close]X(closed)
+%   &&
+%     (
+%       val(doorx == closed) =>
+%         mu Y(doory:Door = doorx).
+%           (
+%           val(doory == open)
+%           ||
+%             (
+%               [!exists f:Floor. open(f)]Y(doory)
+%             &&
+%              [exists f:Floor. open(f)]Y(open)
+%             &&
+%              <true>true
+%             )
+%           )
+%     )
+%  )
+%)
+
+forall Pf:FExpr.
+(val(Pf in [atom(P),neg(atom(P))] ) =>
+(mu X (Px:FExpr = normalise( Pf ), fx:Floor = 1, doorx:Door = closed).  % this one yields 'true'
+  ( 
+  %  translate <true>X
+    
+     <exists i:Floor. landingButton(i)> X(Px,fx,doorx)
+  || <exists i:Floor. liftButton(i)> X(Px,fx,doorx)
+  || <exists i:Floor.open(i)> X(Px,fx,open) 
+  || (exists i: Floor. <Level(i)> X(Px,i,doorx) )
+  || (exists d:Direction. <direction(d)> X(Px,fx,doorx) )
+  || <close> X(Px,fx,closed)
+  || (exists e:FExpr. <exists i:Floor. executive(e,on,i)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+  || (exists e:FExpr. <executive(e,off)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+  || (exists e:FExpr. <exists i:Floor. idling(e,i)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+  || (exists e:FExpr. <exists a:Signal. overload(e,a)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+  || (exists e:FExpr. <parking(e)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+  || (exists e:FExpr. <ttfull(e)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+  || (exists e:FExpr. <empty(e)> (val(normalise(or(neg(Px), e)) == tt) && X(Px,fx,doorx) ) )
+
+  || (val(doorx == closed) &&
+        (
+           nu Y(Py:FExpr = Px, fy:Floor = fx, doory:Door = doorx). 
+            (
+              !(val(doory == open) )
+            &&
+            (
+              (
+                <!landingButton(fy) && exists i:Floor. landingButton(i)> Y(Py,fy,doory)   % we ignore landing button presses on Level fy
+             || <exists i:Floor. liftButton(i)> Y(Py,fy,doory)
+             || (forall i:Floor. <open(i)> Y(Py,i,open) )
+             || <exists i:Floor. Level(i)> Y(Py,fy,doory)
+             || <exists d:Direction. direction(d)> Y(Py,fy,doory)
+             || <close> Y(Py,fy,closed)
+             || (exists e:FExpr. <exists i:Floor. executive(e,on,i)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy, doory ) ) )
+             || (exists e:FExpr. <executive(e,off)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy,  doory ) ) )
+             || (exists e:FExpr. <exists i:Floor. idling(e,i)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy, doory ) ) )
+             || (exists e:FExpr. <exists a:Signal. overload(e,a)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy, doory ) ) )
+             || (exists e:FExpr. <parking(e)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy, doory ) ) )
+             || (exists e:FExpr. <ttfull(e)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy, doory ) ) )
+             || (exists e:FExpr. <empty(e)> (val(normalise(or(neg(Py), e)) == tt) && Y(Py,fy, doory ) ) )
+              )
+            ||
+              (
+                [exists i:Floor. landingButton(i)] false
+             && [exists i:Floor. liftButton(i)] false
+             && [exists i:Floor. open(i)] false
+             && [exists i:Floor. Level(i)] false
+             && [exists d:Direction. direction(d)] false
+             && [close] false
+             && (forall e:FExpr. [exists i:Floor. executive(e,on,i)] (val(normalise(and(Py,e)) == ff)) )
+             && (forall e:FExpr. [executive(e,off)] (val(normalise(and(Py,e)) == ff)) )
+             && (forall e:FExpr. [exists i:Floor. idling(e,i)] (val(normalise(and(Py,e)) == ff)) ) 
+             && (forall e:FExpr. [exists a:Signal. overload(e,a)] (val(normalise(and(Py,e)) == ff)) ) 
+             && (forall e:FExpr. [parking(e)] (val(normalise(and(Py,e)) == ff)) ) 
+             && (forall e:FExpr. [ttfull(e)] (val(normalise(and(Py,e)) == ff)) ) 
+             && (forall e:FExpr. [empty(e)] (val(normalise(and(Py,e)) == ff)) ) 
+             )
+            )
+          )
+        )
+     )
+  )
+)
+)

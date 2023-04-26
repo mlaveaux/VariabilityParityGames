@@ -1,0 +1,92 @@
+------------------------------------------------------------
+-- Terminating Call Screening
+-- for reduced-phone.smv
+-- for phone1 and tphone
+------------------------------------------------------------
+
+FEATURE tcs-1t
+REQUIRE
+  MODULE phone1(X,B,C,D,p)
+  VAR
+    dialled : {0,1,2,3,4};
+    st      : {trying,busyt};
+
+  MODULE phone2(X,B,C,D,p)
+  VAR
+    dialled : {0,1,2,3,4};
+    st      : {trying,busyt};
+
+  MODULE ophone(X,B,C,D,p)
+  VAR
+    dialled : {0,1,2,3,4};
+    st      : {trying,busyt};
+  MODULE tphone
+  VAR
+    st      : {trying,busyt};
+
+INTRODUCE
+  MODULE phone1
+  VAR
+    tcs1 : boolean;
+    tcs2 : boolean;
+    tcs3 : boolean;
+    tcs4 : boolean;
+    tcs-msg : boolean;
+  ASSIGN
+    next(tcs1) := tcs1;
+    next(tcs2) := tcs2;
+    next(tcs3) := tcs3;
+    next(tcs4) := tcs4;
+    init(tcs-msg) := 0;
+    next(tcs-msg) :=
+      st=trying & dialled=4 & p[4].tcs1;
+
+  MODULE phone2
+  VAR
+    tcs-msg : boolean;
+  ASSIGN
+    init(tcs-msg) := 0;
+    next(tcs-msg) :=
+      st=trying
+      & ((dialled=1 & p[1].tcs2)
+        |(dialled=4 & p[4].tcs2));
+
+  MODULE ophone
+  VAR
+    tcs-msg : boolean;
+  ASSIGN
+    init(tcs-msg) := 0;
+    next(tcs-msg) :=
+      st=trying
+      & ((dialled=1 & p[1].tcs3)
+        |(dialled=4 & p[4].tcs3));
+
+  MODULE tphone  -- tphone can't make calls, hence doesn't need `tcs-msg'
+  VAR
+    tcs1 : boolean;
+    tcs2 : boolean;
+    tcs3 : boolean;
+    tcs4 : boolean;
+  ASSIGN
+    next(tcs1) := tcs1;
+    next(tcs2) := tcs2;
+    next(tcs3) := tcs3;
+    next(tcs4) := tcs4;
+
+CHANGE
+  MODULE phone1
+  IF next(tcs-msg)
+  THEN IMPOSE next(st) := busyt;
+
+  MODULE phone2
+  IF next(tcs-msg)
+  THEN IMPOSE next(st) := busyt;
+
+  MODULE ophone
+  IF next(tcs-msg)
+  THEN IMPOSE next(st) := busyt;
+
+END
+
+----------
+

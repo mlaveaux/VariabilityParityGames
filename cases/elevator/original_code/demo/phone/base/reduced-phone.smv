@@ -1,0 +1,332 @@
+-- phone4.smv:  Four phones, synchronous  
+
+
+MODULE tphone (X,B,C,D,p) -- terminating line only
+-- parameters: the 4 numbers, and the array of phones
+VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle,dialt,trying,busyt,ringingt,talking,ringing,talked,ended};
+
+ASSIGN
+  init(dialled) := 0;
+  next(dialled) := 0;
+
+  init(st) := idle;
+  next(st) := case
+      st=idle :
+        case
+          p[1].st=trying & p[1].dialled=4 & next(p[1].st)=ringingt : ringing;
+          p[2].st=trying & p[2].dialled=4 & next(p[2].st)=ringingt : ringing;
+          p[3].st=trying & p[3].dialled=4 & next(p[3].st)=ringingt : ringing;
+          1                                                        : idle;
+        esac;
+
+      st=ringing :
+        case
+          p[1].st=ringingt & p[1].dialled=4 & next(p[1].st)=idle : idle;
+          p[2].st=ringingt & p[2].dialled=4 & next(p[2].st)=idle : idle;
+          p[3].st=ringingt & p[3].dialled=4 & next(p[3].st)=idle : idle;
+          1				             : {ringing,talked};
+        esac;
+
+      st=talked :
+        case
+          p[1].st=talking & p[1].dialled=4 & next(p[1].st)=idle : ended;
+          p[2].st=talking & p[2].dialled=4 & next(p[2].st)=idle : ended;
+          p[3].st=talking & p[3].dialled=4 & next(p[3].st)=idle : ended;
+          1                                             : {idle,talked};
+        esac;
+
+      st=ended : {ended,idle};
+
+      1 : idle;  -- for exhaustiveness and safety
+    esac;
+
+DEFINE
+  party := 
+    case
+      p[B].st=talking & p[B].dialled=X : B;
+      p[C].st=talking & p[C].dialled=X : C;
+      p[D].st=talking & p[D].dialled=X : D;
+      st=talking                       : dialled;
+      1                                : 0;
+    esac;
+
+-- Fairness constraints to ensure that a phone does remain in a state
+-- indefinitely.  A phone may still alternate between, say, idle <-> dialt.
+-- It also seems to slow down smv a little.
+FAIRNESS    !st=idle
+FAIRNESS    !st=ringing
+FAIRNESS    !st=talked
+FAIRNESS    !st=ended
+
+
+MODULE ophone (X,B,C,D,p) -- originating line only
+-- parameters: the 4 numbers, and the array of phones
+VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle,dialt,trying,busyt,ringingt,talking,ringing,talked,ended};
+
+ASSIGN
+  init(dialled) := 0;
+  next(dialled) := case
+                    st=idle                : 0;
+                    st=dialt & dialled = 0 : {1,2,3,4};
+                    1                      : dialled;
+                   esac;
+
+  init(st) := idle;
+  next(st) := case
+      st=idle : {idle,dialt};
+
+      st=dialt : {dialt,trying};
+	       
+      st=busyt : {idle,busyt};
+
+      st=trying :
+        case
+          dialled=1 & p[1].st=idle & next(p[1].st)=ringing 
+          & ((p[2].st=trying & p[2].dialled=1)->next(p[2].st)=busyt) :ringingt;
+          dialled=2 & p[2].st=idle & next(p[2].st)=ringing 
+          & ((p[1].st=trying & p[1].dialled=2)->next(p[1].st)=busyt) :ringingt;
+          dialled=4 & p[4].st=idle & next(p[4].st)=ringing 
+          & ((p[1].st=trying & p[1].dialled=4)->next(p[1].st)=busyt)
+          & ((p[2].st=trying & p[2].dialled=4)->next(p[2].st)=busyt) :ringingt;
+          1							     :busyt;
+        esac;
+
+      st=ringingt :
+        case
+          dialled=1 & next(p[1].st)=talked : talking;
+          dialled=2 & next(p[2].st)=talked : talking;
+          dialled=4 & next(p[4].st)=talked : talking;
+          1                                : {ringingt,idle};
+        esac;
+
+      st=talking :
+        case
+          dialled=1 & p[1].st=talked & next(p[1].st)=idle : ended;
+          dialled=2 & p[2].st=talked & next(p[2].st)=idle : ended;
+          dialled=4 & p[4].st=talked & next(p[4].st)=idle : ended;
+          1                                               : {idle,talking};
+        esac;
+
+      st=ended : {ended,idle};
+
+      1 : idle;  -- for exhaustiveness and safety
+   esac;
+
+DEFINE
+  party := 
+    case
+      p[B].st=talking & p[B].dialled=X : B;
+      p[C].st=talking & p[C].dialled=X : C;
+      p[D].st=talking & p[D].dialled=X : D;
+      st=talking                       : dialled;
+      1                                : 0;
+    esac;
+
+-- Fairness constraints to ensure that a phone does remain in a state
+-- indefinitely.  A phone may still alternate between, say, idle <-> dialt.
+-- It also seems to slow down smv a little.
+FAIRNESS    !st=idle
+FAIRNESS    !st=dialt
+FAIRNESS    !st=trying
+FAIRNESS    !st=busyt
+FAIRNESS    !st=ringingt
+FAIRNESS    !st=talking
+FAIRNESS    !st=ended
+
+
+MODULE phone1 (X,B,C,D,p)
+-- parameters: the 4 numbers, and the array of phones
+VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle,dialt,trying,busyt,ringingt,talking,ringing,talked,ended};
+
+ASSIGN
+  init(dialled) := 0;
+  next(dialled) := case
+                    st=idle                : 0;
+                    st=dialt & dialled = 0 : {1,2,4};  -- 3 is `ophone'
+                    1                      : dialled;
+                   esac;
+
+  init(st) := idle;
+  next(st) := case
+      st=idle :
+        case
+          p[2].st=trying & p[2].dialled=1 & next(p[2].st)=ringingt : ringing;
+          p[3].st=trying & p[3].dialled=1 & next(p[3].st)=ringingt : ringing;
+          1                                                   : {idle,dialt};
+        esac;
+
+      st=ringing :
+        case
+          p[2].st=ringingt & p[2].dialled=1 & next(p[2].st)=idle : idle;
+          p[3].st=ringingt & p[3].dialled=1 & next(p[3].st)=idle : idle;
+          1				             : {ringing,talked};
+        esac;
+
+      st=dialt : {dialt,trying};
+	       
+      st=busyt : {idle,busyt};
+
+      st=trying :
+        case
+          dialled=2 & p[2].st=idle & next(p[2].st)=ringing 
+          & ((p[3].st=trying & p[3].dialled=2)->next(p[3].st)=busyt) :ringingt;
+          dialled=4 & p[4].st=idle & next(p[4].st)=ringing 
+          & ((p[2].st=trying & p[2].dialled=4)->next(p[2].st)=busyt)
+          & ((p[3].st=trying & p[3].dialled=4)->next(p[3].st)=busyt) :ringingt;
+          1							     :busyt;
+        esac;
+
+      st=ringingt :
+        case
+          dialled=2 & next(p[2].st)=talked : talking;
+          dialled=4 & next(p[4].st)=talked : talking;
+          1                                : {ringingt,idle};
+        esac;
+
+      st=talked :
+        case
+          p[2].st=talking & p[2].dialled=1 & next(p[2].st)=idle : ended;
+          p[3].st=talking & p[3].dialled=1 & next(p[3].st)=idle : ended;
+          1                                             : {idle,talked};
+        esac;
+
+      st=talking :
+        case
+          dialled=2 & p[2].st=talked & next(p[2].st)=idle : ended;
+          dialled=4 & p[4].st=talked & next(p[4].st)=idle : ended;
+          1                                               : {idle,talking};
+        esac;
+
+      st=ended : {ended,idle};
+   esac;
+
+DEFINE
+  party := 
+    case
+      st=talking                       : dialled;
+      p[B].st=talking & p[B].dialled=X : B;
+      p[C].st=talking & p[C].dialled=X : C;
+      p[D].st=talking & p[D].dialled=X : D;
+      1                                : 0;
+    esac;
+
+-- Fairness constraints to ensure that a phone does remain in a state
+-- indefinitely.  A phone may still alternate between, say, idle <-> dialt.
+-- It also seems to slow down smv a little.
+FAIRNESS    !st=idle
+FAIRNESS    !st=dialt
+FAIRNESS    !st=trying
+FAIRNESS    !st=busyt
+FAIRNESS    !st=ringingt
+FAIRNESS    !st=talking
+FAIRNESS    !st=ringing
+FAIRNESS    !st=talked
+FAIRNESS    !st=ended
+
+
+MODULE phone2 (X,B,C,D,p)
+-- parameters: the 4 numbers, and the array of phones
+VAR
+  dialled : {0,1,2,3,4};
+  st      : {idle,dialt,trying,busyt,ringingt,talking,ringing,talked,ended};
+
+ASSIGN
+  init(dialled) := 0;
+  next(dialled) := case
+                    st=idle                : 0;
+                    st=dialt & dialled = 0 : {1,2,4};  -- 3 is `ophone'
+                    1                      : dialled;
+                   esac;
+
+  init(st) := idle;
+  next(st) := case
+      st=idle :
+        case
+          p[1].st=trying & p[1].dialled=2 & next(p[1].st)=ringingt : ringing;
+          p[3].st=trying & p[3].dialled=2 & next(p[3].st)=ringingt : ringing;
+          1                                                   : {idle,dialt};
+        esac;
+
+      st=ringing :
+        case
+          p[1].st=ringingt & p[1].dialled=2 & next(p[1].st)=idle : idle;
+          p[3].st=ringingt & p[3].dialled=2 & next(p[3].st)=idle : idle;
+          1				             : {ringing,talked};
+        esac;
+
+      st=dialt : {dialt,trying};
+	       
+      st=busyt : {idle,busyt};
+
+      st=trying :
+        case
+          dialled=1 & p[1].st=idle & next(p[1].st)=ringing 
+          & ((p[3].st=trying & p[3].dialled=1)->next(p[3].st)=busyt) :ringingt;
+          dialled=4 & p[4].st=idle & next(p[4].st)=ringing 
+          & ((p[1].st=trying & p[1].dialled=4)->next(p[1].st)=busyt)
+          & ((p[3].st=trying & p[3].dialled=4)->next(p[3].st)=busyt) :ringingt;
+          1							     :busyt;
+        esac;
+
+      st=ringingt :
+        case
+          dialled=1 & next(p[1].st)=talked : talking;
+          dialled=4 & next(p[4].st)=talked : talking;
+          1                                : {ringingt,idle};
+        esac;
+
+      st=talked :
+        case
+          p[1].st=talking & p[1].dialled=2 & next(p[1].st)=idle : ended;
+          p[3].st=talking & p[3].dialled=2 & next(p[3].st)=idle : ended;
+          1                                             : {idle,talked};
+        esac;
+
+      st=talking :
+        case
+          dialled=1 & p[1].st=talked & next(p[1].st)=idle : ended;
+          dialled=4 & p[4].st=talked & next(p[4].st)=idle : ended;
+          1                                               : {idle,talking};
+        esac;
+
+      st=ended : {ended,idle};
+   esac;
+
+DEFINE
+  party := 
+    case
+      p[B].st=talking & p[B].dialled=X : B;
+      p[C].st=talking & p[C].dialled=X : C;
+      p[D].st=talking & p[D].dialled=X : D;
+      st=talking                       : dialled;
+      1                                : 0;
+    esac;
+
+-- Fairness constraints to ensure that a phone does remain in a state
+-- indefinitely.  A phone may still alternate between, say, idle <-> dialt.
+-- It also seems to slow down smv a little.
+FAIRNESS    !st=idle
+FAIRNESS    !st=dialt
+FAIRNESS    !st=trying
+FAIRNESS    !st=busyt
+FAIRNESS    !st=ringingt
+FAIRNESS    !st=talking
+FAIRNESS    !st=ringing
+FAIRNESS    !st=talked
+FAIRNESS    !st=ended
+
+
+MODULE main
+VAR
+  ph[1]	: phone1 (1,2,3,4,ph);
+  ph[2]	: phone2 (2,1,3,4,ph);
+  ph[3]	: ophone (3,1,2,4,ph);
+  ph[4]	: tphone (4,1,2,3,ph);
+
+-----------

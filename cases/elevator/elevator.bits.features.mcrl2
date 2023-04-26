@@ -1,0 +1,298 @@
+% 
+% Sort to represent all features
+% P: Parking
+% EC: Empty carriage detection
+% TTF: Two-thirds Full detection
+% O: Overload detection
+% Ex; Executive override functionality
+
+sort
+  Feature = struct P | EC | TTF | O | Ex;
+
+ %
+ % Sort to represent a set of products (feature expressions) as a
+ % ROBDD
+ %
+
+ FExpr = struct tt | ff | node(name:Feature, l:FExpr, h:FExpr);
+
+map
+  atom : Feature -> FExpr;        % casts a feature to a Feature expression
+  neg: FExpr -> FExpr;            % negation of Feature expression
+  and: FExpr # FExpr -> FExpr;    % conjunction of Feature expressions
+  or: FExpr # FExpr -> FExpr;     % disjunction of Feature expressions
+  xor: FExpr # FExpr -> FExpr;    % xor of Feature expressions
+
+  normalise: FExpr -> FExpr;      % reduce operation for sharing in ROBDDs
+  normalise_aux: Feature # FExpr # FExpr -> FExpr;      % reduce operation for sharing in ROBDDs
+
+
+var 
+  p,q:Feature;
+  x,y,z,w : FExpr;
+eqn
+  atom(p) = node(p,tt,ff);
+
+  normalise(tt) = tt;
+  normalise(ff) = ff;
+
+  normalise(node(p,x,y)) = normalise_aux(p,normalise(x),normalise(y));
+  x == y -> normalise_aux(p,x,y) = x;
+  x != y -> normalise_aux(p,x,y) = node(p,x,y);
+
+
+  neg( node(p,x,y)) = node(p, neg(x), neg(y));
+
+  and( node(p,x,y), node(p,z,w)) = node(p, and(x,z),and(y,w));
+  or( node(p,x,y), node(p,z,w)) = node(p, or(x,z),or(y,w));
+  xor( node(p,x,y), node(p,z,w)) = node(p, xor(x,z),xor(y,w));
+
+  p < q -> and( node(p,x,y), node(q,z,w)) = node(p, and(x,node(q,z,w)),and(y,node(q,z,w)));
+  p < q -> or( node(p,x,y), node(q,z,w)) = node(p, or(x,node(q,z,w)),or(y,node(q,z,w)));
+  p < q -> xor( node(p,x,y), node(q,z,w)) = node(p, xor(x,node(q,z,w)),xor(y,node(q,z,w)));
+
+  p < q -> and( node(q,x,y), node(p,z,w)) = node(p, and(node(q,x,y),z), and(node(q,x,y), w));
+  p < q -> or( node(q,x,y), node(p,z,w)) = node(p, or(node(q,x,y),z), or(node(q,x,y), w));
+  p < q -> xor( node(q,x,y), node(p,z,w)) = node(p, xor(node(q,x,y),z), xor(node(q,x,y), w));
+  
+
+  neg(tt) = ff;
+  neg(ff) = tt;
+  or(tt,x) = tt;
+  or(x,tt) = tt;
+  or(ff,x) = x;
+  or(x,ff) = x;
+  and(tt,x) = x;
+  and(x,tt) = x;
+  and(ff,x) = ff;
+  and(x,ff) = ff;
+  xor(tt,x) = neg(x);
+  xor(x,tt) = neg(x);
+  xor(ff,x) = x;
+  xor(x,ff) = x;
+
+%%%%% that was the end of the BDD structure for representing feature expressions
+
+
+sort
+  Door = struct open | closed;
+  Direction = struct up | down;
+  Floor = Nat;
+  Buttons = Nat;
+  Signal = struct on | off;
+
+map
+  no_dest : Buttons; 
+  call : Direction # Floor # Buttons -> Floor;
+  lift_call : Floor # Floor # Direction # Floor # Buttons -> Floor;
+  condition : Floor # Floor # Direction # Floor # Buttons -> Bool;
+  door_function : Floor # Floor # Floor -> Door;
+  idle : Buttons # Buttons -> Bool;
+  idle : Buttons -> Bool;
+  priority_call : Floor # Floor # Direction # Buttons -> Floor;
+
+  next_floor     : Floor # Floor # Door # Direction # Buttons # Buttons -> Floor;
+  next_direction : Floor # Floor # Direction # Buttons # Buttons -> Direction;
+
+  status : Buttons # Floor -> Bool;  % returns status(button,floor) = true iff button on floor 'floor' has been pressed
+
+var b:Buttons; f:Floor;
+eqn
+  status(b,1) = ((b div 2) mod 2) != 0;
+  status(b,2) = ((b div 4) mod 2) != 0;
+  status(b,3) = ((b div 8) mod 2) != 0;
+  status(b,4) = ((b div 16) mod 2) != 0;
+  status(b,5) = ((b div 32) mod 2) != 0;
+  %status(b,f) = ((b div (exp(2,f))) mod 2 != 0 );
+eqn
+  no_dest = 0;
+
+var
+  d:Direction;
+  ef,f,f1,f2,f3,lc:Floor;
+  l,l1,l2:Buttons;
+  d':Door;
+eqn
+  (d == down) -> call(d,f,l) =  if(status(l,5) && f > 4, 5,
+                                  if(status(l,4) && f > 3, 4,
+                                    if(status(l,3) && f > 2, 3,
+                                      if(status(l,2) && f > 1, 2,
+                                        if(status(l,1), 1, 0 ) ) ) ) );
+
+  (d == up)   -> call(d,f,l) =  if(status(l,1) && f < 2, 1,
+                                  if(status(l,2) && f < 3, 2,
+                                    if(status(l,3) && f < 4, 3,
+                                      if(status(l,4) && f < 5, 4,
+                                        if(status(l,5), 5, 0 ) ) ) ) );
+
+
+  lift_call(0,lc,d,f,l) = call(d,f,l);
+  (lc != ef) -> lift_call(ef,lc,d,f,l) = call(d,f,l);
+  (ef != 0 && lc == ef) -> lift_call(ef,lc,d,f,l) = 0;
+
+  f1 == f2 -> door_function(f1,f2,f3) = open;
+  f1 == f3 -> door_function(f1,f2,f3) = open;
+  f1 != f2 && f1 != f3 -> door_function(f1,f2,f3) = closed;
+
+  l == no_dest -> idle(l) = true;
+  l!= no_dest -> idle(l) = false;
+
+  idle(l1,l2) = idle(l1) && idle(l2);
+
+  % l1 is liftbuttons; l2 is landingbuttons
+
+  d' == open -> next_floor(f1,f2,d',d,l1,l2) = f2;
+  d' == closed  -> next_floor(f1,f2,d',d,l1,l2) = if(condition(f1,priority_call(f1,f2,d,l2),d,f2,l1), f2, 
+                                                     if(d == up && f2 < 5, f2+1, 
+                                                        if(d == down && f2 >1, Int2Nat(f2-1), f2)
+                                                       )
+                                                    );
+
+  condition(f1,f,d,f2,l1) = (lift_call(f1,f,d,f2,l1) == 0 && f == 0);
+
+  next_direction(f1,f2,d,l1,l2) = if(idle(l1,l2), d,
+                                     if(f2 == 5, down,
+                                       if(f2 == 1, up,
+                                         if(condition(f1,priority_call(f1,f2,d,l2),d,f2,l1),
+                                           if(d == down, up, down),
+                                           d
+                                           )
+                                         )
+                                       )
+                                     );
+
+
+priority_call(0,f2,d,l) = call(d,f2,l);
+(f1 > 0) ->  priority_call(f1,f2,d,l) = if(f1 == 1 && status(l,1), 1,
+                                          if(f1 == 2 && status(l,2), 2,
+                                            if(f1 == 3 && status(l,3), 3,
+                                              if(f1 == 4 && status(l,4), 4,
+                                                if(f1 == 5 && status(l,5), 5, call(d,f2,l)
+                                                  )
+                                                )
+                                              )
+                                            )
+                                          );
+
+map update : Buttons # Floor # Bool -> Buttons;
+var
+  l: Buttons;
+  f: Floor;
+  b,b': Bool;
+eqn
+
+%  update(l,f,true) = if(status(l,f), l, l + exp(2,f));
+
+  update(l,1,true) = if(status(l,1), l, l + 2);
+  update(l,2,true) = if(status(l,2), l, l + 4);
+  update(l,3,true) = if(status(l,3), l, l + 8);
+  update(l,4,true) = if(status(l,4), l, l + 16);
+  update(l,5,true) = if(status(l,5), l, l + 32);
+ 
+
+  %update(l,f,false) = if(status(l,f), Int2Nat(l - exp(2,f)), l);
+
+  update(l,1,false) = if(status(l,1), Int2Nat(l - 2), l);
+  update(l,2,false) = if(status(l,2), Int2Nat(l - 4), l);
+  update(l,3,false) = if(status(l,3), Int2Nat(l - 8), l);
+  update(l,4,false) = if(status(l,4), Int2Nat(l - 16), l);
+  update(l,5,false) = if(status(l,5), Int2Nat(l - 32), l);
+
+act
+ landingButton, liftButton, open,floor : Floor;
+ direction : Direction;
+ close;
+ executive : FExpr # Signal # Floor; executive : FExpr # Signal;
+ overload: FExpr # Signal;
+ parking, ttfull, empty : FExpr;
+ idling: FExpr # Floor; 
+
+
+proc Lift(floor:Floor, door:Door, direction:Direction, liftbuttons,landingbuttons:Buttons, parking:Bool, ttfull:Bool, overload:Bool, executive:Floor,empty:Bool)
+=
+
+% detecting buttons in case the executive mode is off
+sum i: Nat. (1 <= i && i <= 5) -> 
+  % first deal with the landing buttons
+( (!(status(landingbuttons,i)) && !ttfull) ->     % allow for button presses if 'floor' differs 'i'; note that property 1 is violated 
+                                         % if we weaken this to either 'floor' differs 'i', or the door is closed
+                                         % also, if the elevator is two-thirds full, ignore all landing button presses
+                                         % moreover, pressing the landing button on the executive floor treats the lift buttons as not pressed (sorry guys)
+                                         ( (floor != i || door == closed) -> landingButton(i) . Lift(landingbuttons = update(landingbuttons,i,true), parking = false ) 
+                                         )
++
+  % take care of the carriage buttons; only register these if there's no big chees on the executive floor
+  (!(status(liftbuttons,i)) && floor != i && !empty ) ->  % allow for lift button presses; alternatively, we could strengthen this to '!parking', but
+                                        ( liftButton(i). Lift(liftbuttons = update(liftbuttons,i, true), parking = false ) )
+
++ 
+  % designate floor i as executive floor; whenever a landing button on that floor is pressed, we
+  % need to cancel all lift buttons and rush to the designated floor;
+  (executive == 0) -> executive(atom(Ex),on,i). Lift(executive = i) 
+)
++
+
+  % now for the opening/closing of the door; this takes priority over changing direction
+  % or moving. If the door does not change, then we can check where to move to next, 
+  % or whether we must change direction
+  
+sum d':Door. ( d' == door_function(floor, lift_call(executive, call(direction,floor,landingbuttons),direction,floor,liftbuttons), priority_call(executive,floor,direction,landingbuttons)  ) ) ->
+(
+  (d' != door ) ->
+      ( % the new status  of the door is that it should open.
+        (d' == open) ->
+                     (
+                        (
+                          (executive == 0 || floor != executive) -> open(floor). Lift (door = d', liftbuttons = update(liftbuttons,floor, false), landingbuttons = update(landingbuttons,floor, false), parking = false, ttfull= false, empty = false )
+                                                                <> open(floor). Lift (door = d', liftbuttons = update(liftbuttons,floor, false), landingbuttons = update(landingbuttons,floor, false), parking = false, ttfull= false, empty = false, executive = 0 )
+                        )
+                      + % if the elevator is two-thirds full and some people remain in the carriage, it can remain two-thirds full
+                        (ttfull && !idle(update(liftbuttons,floor, false))) -> open(floor). Lift (door = d', liftbuttons = update(liftbuttons,floor, false), landingbuttons = update(landingbuttons,floor, false), parking = false, empty = false )
+                     )
+       <> % the new status of the door is that it should close.
+                     (
+                      % we can close the door if the lift is not in overload and some button was pressed
+                        (
+                          (!overload) -> 
+                                         close. Lift (door = d')
+                                       + % if the two-thirds full feature is enabled, we can even close the door and we cancel all landingbuttons
+                                         % provided, of course, that there is some button that was pressed in the carriage itself
+                                         (!idle(liftbuttons)) -> ttfull(atom(TTF)). close.  Lift (door = d', ttfull = true)
+                         )
+                    + % we have the empty detector, which cancels all carriage buttons in case there were only prank calls
+                      (!idle(liftbuttons) && !overload && !empty) -> empty(atom(EC)). Lift (liftbuttons = no_dest, empty = true)
+                    + % we have the overload detection, which toggles whether the carriage is too full
+                      (!idle(liftbuttons) && !overload) -> overload(atom(O),on). Lift(overload = !overload)
+                    + (!idle(liftbuttons) && overload) -> overload(atom(O),off). Lift(overload = !overload)
+                     )
+       )
+  <>  % there is no reason to change status of the door, so we can start moving
+     ( 
+      sum d:Direction. ( d == next_direction(executive,floor,direction,liftbuttons,landingbuttons) 
+                        || (floor != 1 && parking && d == next_direction(executive,floor,direction,liftbuttons,update(landingbuttons,1,true)) ) 
+                        || (ttfull && !idle(liftbuttons) && d == next_direction(executive,floor,direction,liftbuttons,no_dest) ) ) ->
+        ( % d is the next direction; if it differs from the current direction, we change
+          (d != direction) -> direction(d). Lift(direction = d)
+                           <> % apparently, we didn't change direction; perhaps we can change floors
+                           ( sum f:Floor.  (1 <= f && f <= 5 && ( f == next_floor(executive,floor,door,direction,liftbuttons,landingbuttons) 
+                                            || (floor != 1 && parking && (f == next_floor(executive,floor,door,direction,liftbuttons,update(landingbuttons,1,true)) ) ) ) 
+                                            || (ttfull && !idle(liftbuttons) && (f == next_floor(executive,floor,door,direction,liftbuttons,no_dest) ) ) 
+                                           ) ->
+                               ( % f is the next floor; if it differs from the current floor, we move there
+                                 (floor != f) -> floor(f). Lift(floor = f)
+                                              <> % nothing changed... so we idle
+                                                 (
+                                                  (floor == 1) -> idling(atom(P),floor). Lift (parking= false)
+                                                +
+                                                  (floor != 1 && !parking) -> parking(atom(P)). Lift ( parking = true)
+                                                +
+                                                  (!parking) -> idling(neg(atom(P)),floor). Lift ()
+                                                 )
+                               )
+                            )
+        )
+    )
+)
+;
+
+init Lift(1, closed, down,no_dest,no_dest,false,false,false,0,true);

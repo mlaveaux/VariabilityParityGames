@@ -1,0 +1,7 @@
+% property 5 for the parking feature
+% AG forall i =/= 1. ! EG (Level = i & door = closed)
+% invariantly, the lift will not remain idle indefinitely at any Level other than Level 1
+
+[true*] forall i:Floor.val(1 <i && i <=5) => !nu X. <idling(i)>X
+
+

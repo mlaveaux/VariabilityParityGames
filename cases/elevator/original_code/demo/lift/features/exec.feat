@@ -1,0 +1,59 @@
+FEATURE executive-floor  -- preference to executive floor (floor 5)
+REQUIRE
+    MODULE main
+    VAR lift : lift;
+        landingBut1.pressed : boolean; landingBut2.pressed : boolean; 
+        landingBut3.pressed : boolean; landingBut4.pressed : boolean; 
+        landingBut5.pressed : boolean;
+    MODULE lift
+    VAR liftBut1.pressed : boolean; liftBut2.pressed : boolean; 
+        liftBut3.pressed : boolean; liftBut4.pressed : boolean;
+        liftBut5.pressed : boolean;
+
+INTRODUCE
+    MODULE lift
+    VAR ef : {0,1,2,3,4,5}; -- 0 for feature off
+
+    SPEC -- pressing a landing button does not guarantee service:
+      !AG (liftBut4.pressed -> AF (floor=4 & door=open))
+
+    MODULE main
+    DEFINE
+      priority_call :=
+      case
+        lift.ef=1 & landingBut1.pressed : 1;
+        lift.ef=2 & landingBut2.pressed : 2;
+        lift.ef=3 & landingBut3.pressed : 3;
+        lift.ef=4 & landingBut4.pressed : 4;
+        lift.ef=5 & landingBut5.pressed : 5;
+        1                               : landing_call;
+      esac;
+
+---- pressing a landing button guarantees service for executive floor:
+----    sadly we cannot test if the doors open, since they won't if lift.ef 
+----    changes at the wrong moment -- and this we can't capture in CTL
+-- SPEC
+--   AG (lift.ef=3
+--     -> A[ (landingBut3.pressed -> AF(lift.floor=3)) W !lift.ef=3 ])
+SPEC
+  AG (lift.ef=3
+    -> !E[ lift.ef=3
+         U !( (landingBut3.pressed -> AF(lift.floor=3)) | !lift.ef=3) ])
+
+SPEC -- pressing a landing button does not guarantee service:
+  !AG (landingBut4.pressed -> AF (lift.floor=4 & lift.door=open))
+
+
+CHANGE
+    MODULE lift
+    IF !ef=0 & landing_call=ef
+    THEN TREAT liftBut1.pressed = 0,
+        liftBut2.pressed = 0, liftBut3.pressed = 0,
+        liftBut4.pressed = 0, liftBut5.pressed = 0
+
+    MODULE main
+    TREAT landing_call = priority_call IN lift
+
+END
+--------
+

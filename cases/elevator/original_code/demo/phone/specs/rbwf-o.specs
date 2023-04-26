@@ -1,0 +1,49 @@
+-- --  SPEC AG ((ph[3].rbwf-use & ph[3].rbwf-number=1)
+-- --	      -> A[ (ph[3].st=idle & ph[1].st=idle -> AX ph[3].dialled=1)
+-- --		  W !ph[3].rbwf-use ])
+SPEC AG ((ph[3].rbwf-use & ph[3].rbwf-number=1)
+       -> !E[ ph[3].rbwf-use
+            U !( (ph[3].st=idle & ph[1].st=idle -> AX ph[3].dialled=1)
+               | !ph[3].rbwf-use) ])
+-- if rbwf is active, then that number will be dialled if possible
+SPEC AG ((ph[3].rbwf-use & ph[3].rbwf-number=2)
+       -> !E[ ph[3].rbwf-use
+            U !( (ph[3].st=idle & ph[2].st=idle -> AX ph[3].dialled=2)
+               | !ph[3].rbwf-use) ])
+-- if rbwf is active, then that number will be dialled if possible
+  
+
+-- --  SPEC AG (ph[3].rbwf-number=1
+-- --	      -> A[ (ph[3].st=idle & ph[1].st=idle) -> AX ph[3].dialled=1)
+-- --		  W !ph[3].rbwf-number=1 ]
+SPEC AG (ph[3].rbwf-number=1
+	 -> !E[ ph[3].rbwf-number=1
+            U !((ph[3].st=idle & ph[1].st=idle -> AX ph[3].dialled=1)
+               | !ph[3].rbwf-number=1) ])
+-- a stored number has to be dialled when both phones are idle
+-- stored number cannot change before the call has been connected
+SPEC AG (ph[3].rbwf-number=2
+	 -> !E[ ph[3].rbwf-number=2
+            U !((ph[3].st=idle & ph[2].st=idle -> AX ph[3].dialled=2)
+               | !ph[3].rbwf-number=2) ])
+-- a stored number has to be dialled when both phones are idle
+-- stored number cannot change before the call has been connected
+
+SPEC AG (ph[3].rbwf-number=1 & ph[3].st=talking & ph[3].dialled=1
+       -> AF ph[3].rbwf-number=0)
+-- stored number is reset when call completed
+
+SPEC AG (!ph[3].rbwf-number=0 & ph[3].st=talking
+        & ph[3].dialled=ph[3].rbwf-number
+       -> AF ph[3].rbwf-number=0)
+-- stored number is reset when call completed
+
+SPEC AG (ph[3].rbwf-number=1 & ph[3].st=talked
+         & ph[1].dialled=3 & ph[1].st=talking
+       -> AF ph[3].rbwf-number=0)
+SPEC AG (ph[3].rbwf-number=2 & ph[3].st=talked
+         & ph[2].dialled=3 & ph[2].st=talking
+       -> AF ph[3].rbwf-number=0)
+-- stored number is also reset when the target party calls
+
+

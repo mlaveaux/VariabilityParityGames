@@ -1,0 +1,36 @@
+FEATURE park
+REQUIRE
+   MODULE main
+   VAR
+     landingBut1.pressed : boolean; landingBut2.pressed : boolean;
+     landingBut3.pressed : boolean; landingBut4.pressed : boolean;
+     landingBut5.pressed : boolean;
+   MODULE lift
+   VAR
+     floor            : {1,2,3,4,5};
+     liftBut1.pressed : boolean; liftBut2.pressed : boolean;
+     liftBut3.pressed : boolean; liftBut4.pressed : boolean;
+     liftBut5.pressed : boolean;
+
+INTRODUCE
+   MODULE lift
+   SPEC -- lift can park at floor 1:
+      AG (floor=4 & idle -> E [idle U floor=1])
+   SPEC -- lift cannot park at floor 3:
+      AG (!EG(floor=3 & door=closed))
+
+CHANGE
+   MODULE main
+   IF !lift.floor=1 &
+      !(landingBut1.pressed |
+        landingBut2.pressed |
+        landingBut3.pressed |
+        landingBut4.pressed |
+        landingBut5.pressed |
+        lift.liftBut1.pressed |
+        lift.liftBut2.pressed |
+        lift.liftBut3.pressed |
+        lift.liftBut4.pressed |
+        lift.liftBut5.pressed)
+      THEN TREAT landingBut1.pressed = 1
+END

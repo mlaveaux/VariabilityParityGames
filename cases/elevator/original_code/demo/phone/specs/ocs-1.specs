@@ -1,0 +1,13 @@
+-- we can never ring a number that's on the screening list
+SPEC AG (ph[1].ocs2 -> AG !(ph[1].dialled=2 & ph[1].st in {ringingt,talking}))
+SPEC AG (ph[1].ocs4 -> AG !(ph[1].dialled=4 & ph[1].st in {ringingt,talking}))
+
+-- ... but they can still ring us
+SPEC AG (ph[1].ocs2 -> EF (ph[2].dialled=1 & ph[2].st=talking))
+
+-- if a phone that's on the list is ringing, it must be from another phone
+SPEC AG (ph[1].ocs2 & ph[2].st=ringing -> ph[3].st=ringingt)
+SPEC AG ((ph[1].ocs4 & ph[4].st=ringing)
+       -> (ph[3].st=ringingt | ph[2].st=ringingt))
+
+-----

@@ -1,0 +1,42 @@
+-----------------------------------------------------
+-- Call Forward on Busy
+-- for reduced-phone.smv
+-- only phone2 gets CFB
+-----------------------------------------------------
+
+FEATURE cfb-1
+REQUIRE
+   MODULE phone1(X,B,C,D,p)
+   VAR
+     dialled : {0,1,2,3,4};
+     st      : {trying};
+   MODULE phone2(X,B,C,D,p)
+   VAR
+     dialled : {0,1,2,3,4};
+     st      : {idle};
+   MODULE ophone(X,B,C,D,p)
+   VAR
+     dialled : {0,1,2,3,4};
+     st      : {trying};
+
+INTRODUCE
+   MODULE phone2
+   VAR forw : {0,1,2,3,4};
+   ASSIGN
+     init(forw):={0,1,4};
+     next(forw):=forw;
+
+CHANGE
+     -- if we're trying someone who is busy, they forward
+   MODULE phone1
+     IF st=trying & dialled=2 & !p[2].st=idle & !p[2].forw=0
+        THEN IMPOSE next(dialled) := p[2].forw;
+                    next(st) := trying;
+
+   MODULE ophone
+     IF st=trying & dialled=2 & !p[2].st=idle & !p[2].forw=0
+        THEN IMPOSE next(dialled) := p[2].forw;
+                    next(st) := trying;
+
+END
+

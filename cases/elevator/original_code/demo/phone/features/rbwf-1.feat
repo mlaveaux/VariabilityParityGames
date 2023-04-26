@@ -1,0 +1,63 @@
+------------------------------------------------------------
+-- Ring Back When Free feature for the synchronous phone system
+--   the phone remembers (optionally) the last phone which
+--   it tried to reach but found busy and contacts it again
+--   as soon as it's idle.
+--   (rbwf may be activated only at busy-tone
+--            and cancelled only when phone is idle!)
+-- for phone1 in reduced-phone.smv
+------------------------------------------------------------
+
+FEATURE rbwf-1
+REQUIRE
+  MODULE phone1(X,B,C,D,p)
+  VAR
+    dialled : {0,2,4};
+    st      : {idle,trying,busyt,talking,talked};
+  MODULE phone2(X,B,C,D,p)
+  VAR
+    dialled : {0,1,4};
+    st      : {idle,talking};
+  MODULE ophone(X,B,C,D,p)
+  VAR
+    dialled : {0,1,2,3,4};
+    st      : {idle,talking};
+  MODULE tphone(X,B,C,D,p)
+  VAR
+    st      : {idle};
+
+INTRODUCE
+  MODULE phone1
+  VAR
+    rbwf-number : {0,1,2,3,4};
+    rbwf-use : boolean;
+  ASSIGN
+    init(rbwf-number) := 0;
+    next(rbwf-number) :=
+      case
+        st=busyt & rbwf-use & rbwf-number=0 : dialled; -- don't allow changing
+        !rbwf-use | (st=talking&dialled=rbwf-number)  : 0;  -- deactivation
+        1 : rbwf-number;
+      esac;
+    init(rbwf-use) := 0;
+    next(rbwf-use) :=
+      case
+        rbwf-use  -- only reset if call established (either way)
+        &((dialled=rbwf-number & st=talking)
+         |(st=talked
+          &(rbwf-number=2 & p[2].st=talking & p[2].dialled=1))) : 0;
+        !rbwf-use & st=busyt : {0,1};
+        1 : rbwf-use;
+      esac;
+
+CHANGE
+  MODULE phone1
+    IF (rbwf-use & st=idle
+       &((rbwf-number=2 & p[2].st=idle)
+        |(rbwf-number=4 & p[4].st=idle)))
+    THEN IMPOSE next(dialled) := rbwf-number;
+                next(st) := trying;
+
+END
+
+--------
