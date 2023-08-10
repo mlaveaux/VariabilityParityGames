@@ -31,14 +31,14 @@
 #endif
 
 #define VertexSetZlnkIsBitVector
-//#define VertexSetZlnkIsHashSet
+// #define VertexSetZlnkIsHashSet
 #ifdef VertexSetZlnkIsBitVector
-#define VertexSetZlnk  boost::dynamic_bitset<>
+#define VertexSetZlnk boost::dynamic_bitset<>
 #endif
 #ifdef VertexSetZlnkIsHashSet
 #include "Algorithms/Datastructures/UnorderedVertexSet.h"
-#define VertexSetZlnk  UnorderedVertexSet
+#define VertexSetZlnk UnorderedVertexSet
 #endif
 
 #define VertexSetFPIte boost::dynamic_bitset<>
-#endif //VPGSOLVER_CONF_H
+#endif // VPGSOLVER_CONF_H

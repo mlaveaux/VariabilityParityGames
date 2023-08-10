@@ -15,45 +15,45 @@ using namespace std;
  *
  * @todo: Instead of decorating, this class should extend VectorBoolOptimized.
  */
-class ConfSetExplicit {
+class ConfSetExplicit
+{
 public:
-    /**
-     * Maximum ize of the sets
-     */
-    static int size;
-    /**
-     * Instance of SubsetExplicit containing all elements
-     */
-    static ConfSetExplicit SetFullset;
-    /**
-     * Instance of SubsetExplicit containing no elements
-     */
-    static ConfSetExplicit SetEmptyset;
+  /**
+   * Maximum ize of the sets
+   */
+  static int size;
+  /**
+   * Instance of SubsetExplicit containing all elements
+   */
+  static ConfSetExplicit SetFullset;
+  /**
+   * Instance of SubsetExplicit containing no elements
+   */
+  static ConfSetExplicit SetEmptyset;
 
-    /**
-     * Initiate an explicit set containing no items
-     */
-    ConfSetExplicit();
-    /**
-     * Initiate an explicit set according to an integer such that for every i where the ith least significant bit of the
-     * integer is b we get items[i] = b
-     * @param bit integer representing the which elements are in and out
-     */
-    explicit ConfSetExplicit(int bit);
-    void operator&=(ConfSetExplicit &other);
-    void operator|=(ConfSetExplicit &other);
-    void operator-=(ConfSetExplicit &other);
-    int operator==(ConfSetExplicit &other);
-    ConfSetExplicit& operator=(ConfSetExplicit other);
+  /**
+   * Initiate an explicit set containing no items
+   */
+  ConfSetExplicit();
+  /**
+   * Initiate an explicit set according to an integer such that for every i where the ith least significant bit of the
+   * integer is b we get items[i] = b
+   * @param bit integer representing the which elements are in and out
+   */
+  explicit ConfSetExplicit(int bit);
+  void operator&=(ConfSetExplicit& other);
+  void operator|=(ConfSetExplicit& other);
+  void operator-=(ConfSetExplicit& other);
+  int operator==(ConfSetExplicit& other);
+  ConfSetExplicit& operator=(ConfSetExplicit other);
 
-    /**
-     * Return the number of elements in the set
-     * @return the number of elements in the set
-     */
-    int count();
+  /**
+   * Return the number of elements in the set
+   * @return the number of elements in the set
+   */
+  int count();
 
-    boost::dynamic_bitset<> items;
+  boost::dynamic_bitset<> items;
 };
 
-
-#endif //VPGSOLVER_CONFSETEXPLICIT_H
+#endif // VPGSOLVER_CONFSETEXPLICIT_H
