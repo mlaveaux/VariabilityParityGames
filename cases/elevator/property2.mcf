@@ -1,5 +1,0 @@
-% property 2
-% AG (liftBut_i.pressed -> AF (lift.Level = i & lift.door = open) )
-% invariantly, if a lift button is pressed at Level i, the lift will inevitably open its doors on Level i
-
-[true*]forall i:Floor. [liftButton(i)](mu X. ([!open(i)]X && <true>true) )

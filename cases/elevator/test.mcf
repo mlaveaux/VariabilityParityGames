@@ -1,5 +1,0 @@
-(
-val(true)
-&&
-val(true) => (forall j:Nat. ( ( val(j <= 5) => [a]( nu X. true) ) ) )
-)
