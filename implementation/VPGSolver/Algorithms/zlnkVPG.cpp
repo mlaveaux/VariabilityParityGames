@@ -39,7 +39,7 @@ void zlnkVPG::attr(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac)
   attrQueue(player, bigA, ac);
   auto end = std::chrono::high_resolution_clock::now();
 
-  auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   cout << "Attracting took " << elapsed.count() << "ns";
   attracting += elapsed.count();
 }
