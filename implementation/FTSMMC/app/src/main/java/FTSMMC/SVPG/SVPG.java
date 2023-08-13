@@ -41,7 +41,7 @@ public class SVPG {
 
     public Vertex findVertex(State originState, Formula originFormula)
     {
-        System.out.println("Finding, length: " + String.valueOf(n));
+        // System.out.println("Finding, length: " + String.valueOf(n));
         long start = System.nanoTime();
 //        for(Vertex v : vertices)
 //        {
@@ -54,10 +54,10 @@ public class SVPG {
 
         HashMap<Formula, Vertex> a  = mapje.get(originState);
         if(a != null){
-            System.out.println("Took: " + String.valueOf(start - System.nanoTime()) + " ns");
+            // System.out.println("Took: " + String.valueOf(System.nanoTime() - start) + " ns");
             return a.get(originFormula);
         }
-        System.out.println("Took: " + String.valueOf(start - System.nanoTime()) + " ns");
+        // System.out.println("Took: " + String.valueOf(System.nanoTime() - start) + " ns");
         return null;
     }
 
