@@ -23,7 +23,7 @@ public class Parser {
         assert(trans.length == this.transitions);
         for (int i = 0; i < this.transitions; i++) {
             this.parseTransition(trans[i]);
-            System.out.println("Parsed " + String.valueOf(i) + " out of " + this.transitions);
+            // System.out.println("Parsed " + String.valueOf(i) + " out of " + this.transitions);
         }
 
         return this.lts;
@@ -69,7 +69,8 @@ public class Parser {
         int lc = line.lastIndexOf(',');
         Label label =  new Label(line.substring(fc+2,lc-1));
 
-        State end = this.lts.getState(Integer.valueOf(line.substring(lc+1, line.length() - 1)));
+        int lr = line.lastIndexOf(')');
+        State end = this.lts.getState(Integer.valueOf(line.substring(lc+1, lr)));
 
         boolean success = start.addTransition(label, end);
         if (!success) {
