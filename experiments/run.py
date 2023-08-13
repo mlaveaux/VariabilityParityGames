@@ -116,7 +116,7 @@ def prepare(directory: str, tmp_directory: str, mcrl2_name: str, properties: Lis
         games.append(game_file)
         if is_newer(aut_renamed_file, game_file):
             logger.info(f'Generating parity game for {name}')
-            futures[executor.submit(subprocess.call, ['java', '-jar', '-Xss100M', '-Xmx6G', ftsmmc_jar, 'vpg', 
+            futures[executor.submit(subprocess.call, ['java', '-jar', '-Xss100M', '-Xmx6G', ftsmmc_jar, 'vpg',
                                                       featurediagram_file,
                                                       aut_renamed_file,
                                                       mcf_file,
@@ -151,7 +151,7 @@ def main():
         epilog=''
     )
 
-    parser.add_argument('-m', '--max_workers', action='store', default=1)
+    parser.add_argument('-m', '--max_workers', action='store', default=1, type=int)
 
     args = parser.parse_args()
 
@@ -198,23 +198,24 @@ def main():
             try:
                 games = future.result()
 
+                logging.info(logger.getvalue())
                 logging.info(f'Finished preparation for experiment \'{directory}\'')
                 logging.info(logger.getvalue())
 
                 # Execute the solvers to measure the solving time.
-            #    for tool in tools:
-            #        for game in games:
-            #            name = f'tool: {tool} and game: {game}'
-            #            print(f'Starting benchmarks for \'{name}\'')
-            #            future_benchmarks[executor.submit(run_benchmark, tool, game, executor)] = name
+                for tool in tools:
+                    for game in games:
+                        name = f'tool: {tool} and game: {game}'
+                        print(f'Starting benchmarks for \'{name}\'')
+                        future_benchmarks[executor.submit(run_benchmark, tool, game, executor)] = name
 
             except OSError as exp:
                 logging.info(f'Preparation \'{directory}\' failed with exception {exp}')
 
                 
-        #for future in concurrent.futures.as_completed(future_benchmarks):
-        #    name = future_benchmarks[future]
-        #    print(f'Finished preparation for experiment \'{name}\'')
+        for future in concurrent.futures.as_completed(future_benchmarks):
+            name = future_benchmarks[future]
+            print(f'Finished benchmarking for experiment \'{name}\'')
 
 if __name__ == "__main__":
 
