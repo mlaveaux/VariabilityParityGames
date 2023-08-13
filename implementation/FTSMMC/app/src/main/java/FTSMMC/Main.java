@@ -136,7 +136,7 @@ public class Main {
         }
     }
 
-    private static void createSVPG(Lts fts, Formula formula, String directory)
+    private static void createSVPG(Lts fts, Formula formula, String file)
     {
         Counter c = new Counter();
         formula.accept(c);
@@ -161,7 +161,7 @@ public class Main {
 //        }
 
         try {
-            Files.write(Paths.get(directory, "SVPG"),
+            Files.write(Paths.get(file),
                     svpg.toSVPG().getBytes(Charset.forName("UTF-8")),
                     StandardOpenOption.CREATE);
         } catch (IOException e) {
