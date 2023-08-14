@@ -36,7 +36,7 @@ void zlnkPG::attr(int player, VertexSetZlnk* bigA)
 
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-  cout << "Attracting took " << elapsed.count() << "ns";
+  // cout << "Attracting took " << elapsed.count() << "ns";
   attracting += elapsed.count();
 }
 
@@ -139,7 +139,7 @@ void zlnkPG::solve(VertexSetZlnk* W0bigV, VertexSetZlnk* W1bigV)
   zlnkPG subgame(game, subBigV);
   // attract bigA, everything that is attracted is removed from subBigV, thus creating the correct subgame
   subgame.attr(player, bigA);
-  cout << "\nDown1\n";
+  //cout << "\nDown1\n";
 
   // Everything won by player "1 - player" in the subgame is also won by "1 - player" in this game.
   // If we are allowed to terminate early when finding vertex 0 for "1 - player" then we are tell the subgame it is
@@ -155,7 +155,7 @@ void zlnkPG::solve(VertexSetZlnk* W0bigV, VertexSetZlnk* W1bigV)
 
   subgame.solve(W0bigV, W1bigV);
   attracting += subgame.attracting;
-  cout << "\nUp1\n";
+  //cout << "\nUp1\n";
   if (*WOpbigV == zlnkPG::emptyvertexset) {
     // The entire subgame is won by player "player" and therefore every vertex in this game is won by "player"
     unify(WMebigV, bigA);
@@ -190,11 +190,11 @@ void zlnkPG::solve(VertexSetZlnk* W0bigV, VertexSetZlnk* W1bigV)
       }
       else {
         // Calculate final winning sets.
-        cout << "\nDown2\n";
+        //cout << "\nDown2\n";
         subgame2.solvelocal = solvelocal;
         subgame2.solve(W0bigV, W1bigV);
         attracting += subgame.attracting;
-        cout << "\nUp2\n";
+        //cout << "\nUp2\n";
         unify(WOpbigV, bigA);
       }
     }

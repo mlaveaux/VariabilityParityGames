@@ -40,7 +40,7 @@ void zlnkVPG::attr(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac)
   auto end = std::chrono::high_resolution_clock::now();
 
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  cout << "Attracting took " << elapsed.count() << "ns";
+  //cout << "Attracting took " << elapsed.count() << "ns";
   attracting += elapsed.count();
 }
 
@@ -174,7 +174,7 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
   zlnkVPG subgame(game, subBigV, subvc);
   // attract (bigA, ac), everything that is attracted is removed from (subBigV, subvc) thus creating the correct subgame
   subgame.attr(player, bigA, ac);
-  cout << "\nDown1\n";
+  //cout << "\nDown1\n";
 
   // Everything won by player "1 - player" in the subgame is also won by "1 - player" in this game.
   // If we are allowed to terminate early when finding vertex 0 for "1 - player" then we are tell the subgame it is
@@ -190,7 +190,7 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
 
   subgame.solve(W0bigV, W0vc, W1bigV, W1vc);
   attracting += subgame.attracting;
-  cout << "\nUp1\n";
+  //cout << "\nUp1\n";
   if (*WOpbigV == zlnkVPG::emptyvertexset) {
     // The entire subgame is won by player "player" for all configurations
     // therefore every vertex in this game is won by "player" for all configurations
@@ -238,11 +238,11 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
       // remove the newly found confs from the game and only continue of something is left
       if (!inSolveLocal(1 - player) || removeCSet(bigV, vc, localconfs2)) {
         // Go into the second recursion for the remaining confs
-        cout << "\nDown2\n";
+        //cout << "\nDown2\n";
         subgame2.solvelocal = solvelocal;
         subgame2.solve(W0bigV, W0vc, W1bigV, W1vc);
         attracting += subgame.attracting;
-        cout << "\nUp2\n";
+        //cout << "\nUp2\n";
         unify(WOpbigV, WOpvc, bigA, ac);
       }
       if (!(localconfs == emptyset)) {
