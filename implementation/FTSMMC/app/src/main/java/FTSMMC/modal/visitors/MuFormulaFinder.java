@@ -6,7 +6,7 @@ import FTSMMC.modal.formulas.MuFormula;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MuFormulaFinder extends RecursiveVisitor implements FormulaVisitor {
+public class MuFormulaFinder extends RecursiveVisitor {
     private final List<MuFormula> muFormulas;
 
     private MuFormulaFinder() {

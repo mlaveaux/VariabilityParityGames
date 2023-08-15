@@ -4,7 +4,7 @@ import FTSMMC.modal.visitors.FormulaVisitor;
 
 import java.util.Objects;
 
-public class LogicAndFormula extends LogicFormula implements Formula {
+public class LogicAndFormula extends LogicFormula {
     public LogicAndFormula(Formula left, Formula right) {
         super(left, right);
     }
@@ -13,8 +13,9 @@ public class LogicAndFormula extends LogicFormula implements Formula {
     public void accept(FormulaVisitor visitor) {
         visitor.visit(this);
     }
+
     public int hashCode() {
-        return Objects.hash("or",super.hashCode());
+        return Objects.hash("or", super.hashCode());
     }
 
     @Override

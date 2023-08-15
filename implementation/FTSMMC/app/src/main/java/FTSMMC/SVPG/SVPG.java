@@ -1,13 +1,10 @@
 package FTSMMC.SVPG;
 
-import javafx.util.Pair;
 import FTSMMC.features.FeatureDiagram;
 import FTSMMC.modal.formulas.Formula;
 import FTSMMC.models.State;
 import net.sf.javabdd.BDD;
 
-import javax.management.Query;
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -41,7 +38,7 @@ public class SVPG {
 
     public Vertex findVertex(State originState, Formula originFormula) {
         // System.out.println("Finding, length: " + String.valueOf(n));
-        long start = System.nanoTime();
+        // long start = System.nanoTime();
         // for(Vertex v : vertices)
         // {
         // if(v.originFormula.equals(originFormula) &&
@@ -71,7 +68,7 @@ public class SVPG {
 
         HashMap<Formula, Vertex> a = mapje.get(originState);
         if (a == null) {
-            a = new HashMap();
+            a = new HashMap<Formula, Vertex>();
             mapje.put(originState, a);
         }
         a.put(originFormula, v);

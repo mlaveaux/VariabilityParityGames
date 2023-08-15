@@ -36,8 +36,10 @@ public abstract class LogicFormula implements Formula {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LogicFormula that = (LogicFormula) o;
         return Objects.equals(this.left, that.left) &&
                 Objects.equals(this.right, that.right);

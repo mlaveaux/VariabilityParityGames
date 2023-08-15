@@ -8,7 +8,8 @@ public class StrictParser extends Parser {
         int startIndex = super.parseStartIndex();
         if (startIndex != 0) {
             // http://cadp.inria.fr/man/aut.html
-            //throw new StrictParseException("Initial state must be 0 according to specification", this.getIndex());
+            // throw new StrictParseException("Initial state must be 0 according to
+            // specification", this.getIndex());
         }
 
         return startIndex;
@@ -46,6 +47,7 @@ public class StrictParser extends Parser {
 
         return label;
     }
+
     @Override
     protected boolean isLayout(Token token) {
         return token.getType() == TokenType.LAYOUT;

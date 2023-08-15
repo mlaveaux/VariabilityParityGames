@@ -3,7 +3,6 @@ package FTSMMC.modal.formulas;
 import FTSMMC.modal.visitors.VariableMatcher;
 
 import java.util.Objects;
-import java.util.Set;
 
 public abstract class FixedPointFormula implements Formula {
     private final RecursionVariable recursionVariable;

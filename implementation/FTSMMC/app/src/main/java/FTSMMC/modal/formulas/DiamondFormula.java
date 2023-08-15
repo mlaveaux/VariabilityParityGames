@@ -5,7 +5,7 @@ import FTSMMC.models.Label;
 
 import java.util.Objects;
 
-public class DiamondFormula extends ModalityFormula implements Formula {
+public class DiamondFormula extends ModalityFormula {
     public DiamondFormula(Label action, Formula formula) {
         super(action, formula);
     }

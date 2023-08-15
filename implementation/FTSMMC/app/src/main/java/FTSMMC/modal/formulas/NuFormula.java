@@ -4,7 +4,7 @@ import FTSMMC.modal.visitors.FormulaVisitor;
 import FTSMMC.modal.visitors.MuFormulaFinder;
 import FTSMMC.modal.visitors.MuxFormulaFinder;
 
-public class NuFormula extends FixedPointFormula implements Formula {
+public class NuFormula extends FixedPointFormula {
     public NuFormula(RecursionVariable recursionVariable, Formula formula) {
         super(recursionVariable, formula);
     }
@@ -20,12 +20,11 @@ public class NuFormula extends FixedPointFormula implements Formula {
     @Override
     public int getDependentAlternationDepth() {
         return Math.max(
-            this.getFormula().getDependentAlternationDepth(),
-            1 + MuxFormulaFinder.findMuxFormulas(this).stream()
-                .mapToInt(Formula::getDependentAlternationDepth)
-                .reduce(Integer::max)
-                .orElse(0)
-        );
+                this.getFormula().getDependentAlternationDepth(),
+                1 + MuxFormulaFinder.findMuxFormulas(this).stream()
+                        .mapToInt(Formula::getDependentAlternationDepth)
+                        .reduce(Integer::max)
+                        .orElse(0));
     }
 
     @Override

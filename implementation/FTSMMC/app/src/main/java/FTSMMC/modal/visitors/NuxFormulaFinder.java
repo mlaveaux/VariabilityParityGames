@@ -7,7 +7,7 @@ import FTSMMC.modal.formulas.RecursionVariable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NuxFormulaFinder extends RecursiveVisitor implements FormulaVisitor {
+public class NuxFormulaFinder extends RecursiveVisitor {
     private final RecursionVariable recursionVariable;
     private final List<NuFormula> nuFormulas;
 

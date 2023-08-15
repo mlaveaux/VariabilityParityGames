@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class VariableMatcher extends RecursiveVisitor implements FormulaVisitor {
+public class VariableMatcher extends RecursiveVisitor {
     private final RecursionVariable variable;
     private final Set<RecursionVariable> free;
     private final Set<RecursionVariable> bounded;

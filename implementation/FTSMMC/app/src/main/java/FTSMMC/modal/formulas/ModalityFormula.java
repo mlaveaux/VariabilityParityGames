@@ -40,11 +40,13 @@ public abstract class ModalityFormula implements Formula {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ModalityFormula that = (ModalityFormula) o;
         return Objects.equals(this.action, that.action) &&
-            Objects.equals(this.formula, that.formula);
+                Objects.equals(this.formula, that.formula);
     }
 
     @Override

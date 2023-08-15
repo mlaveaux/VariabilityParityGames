@@ -5,7 +5,7 @@ import FTSMMC.models.Lts;
 
 import java.util.HashSet;
 
-public class EmersonLeiAlgorithm extends NaiveAlgorithm implements FormulaCalculator, FormulaVisitor {
+public class EmersonLeiAlgorithm extends NaiveAlgorithm {
     private enum Bound {
         MU_BOUNDED,
         NU_BOUNDED,

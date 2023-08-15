@@ -5,7 +5,7 @@ import FTSMMC.models.Label;
 
 import java.util.Objects;
 
-public class BoxFormula extends ModalityFormula implements Formula {
+public class BoxFormula extends ModalityFormula {
     public BoxFormula(Label action, Formula formula) {
         super(action, formula);
     }

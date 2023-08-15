@@ -15,7 +15,7 @@ public class Lexer implements Iterator<Token> {
         this.input = input;
 
         this.matchers = new EnumMap<>(TokenType.class);
-        for (TokenType tokenType: TokenType.values()) {
+        for (TokenType tokenType : TokenType.values()) {
             this.matchers.put(tokenType, tokenType.getPattern().matcher(this.input));
         }
         this.eof = false;
@@ -48,8 +48,7 @@ public class Lexer implements Iterator<Token> {
         if (this.input.length() > 0) {
             nextToken = findLongestPrefixMatch();
             this.advance(nextToken.getData().length());
-        }
-        else {
+        } else {
             this.eof = true;
             nextToken = new Token(TokenType.EOF, "");
         }

@@ -2,8 +2,6 @@ package FTSMMC.modal.formulas;
 
 import FTSMMC.modal.visitors.FormulaVisitor;
 
-import java.util.Objects;
-
 public class LiteralTrue implements Formula {
     @Override
     public int getNestingDepth() {

@@ -1,8 +1,5 @@
 package FTSMMC.models;
 
-import FTSMMC.models.Label;
-import FTSMMC.models.State;
-
 public class IllegalTransitionException extends RuntimeException {
     private final State state;
     private final Label label;

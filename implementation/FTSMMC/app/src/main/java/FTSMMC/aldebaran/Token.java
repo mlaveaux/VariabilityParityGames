@@ -1,4 +1,4 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
 import java.util.Objects;
 
@@ -23,8 +23,8 @@ public class Token {
     @Override
     public String toString() {
         return "Token{" +
-            "type=" + this.type +
-            ", data='" + this.data + '\'' +
-            '}';
+                "type=" + this.type +
+                ", data='" + this.data + '\'' +
+                '}';
     }
 }
