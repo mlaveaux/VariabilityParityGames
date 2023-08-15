@@ -32,12 +32,12 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("mmc.Main")
+    mainClass.set("FTSMMC.Main")
 }
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Main-Class"] = "mmc.Main"
+        attributes["Main-Class"] = "FTSMMC.Main"
     }
     
     val dependencies = configurations
