@@ -199,7 +199,7 @@ public class Main {
     {
         String fdfile = readFile(filename);
         try {
-            FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(fdfile.split("\n")[0].split(","),
+            FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(fdfile.split(System.lineSeparator())[0].split(","),
                     fdfile.split("\n")[1]
             );
             FeatureDiagram.PrimaryFD = FD;
