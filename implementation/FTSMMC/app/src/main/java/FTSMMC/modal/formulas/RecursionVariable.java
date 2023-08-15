@@ -1,6 +1,6 @@
-package mmc.modal.formulas;
+package FTSMMC.modal.formulas;
 
-import mmc.modal.visitors.FormulaVisitor;
+import FTSMMC.modal.visitors.FormulaVisitor;
 
 import java.util.Objects;
 
@@ -8,21 +8,20 @@ public class RecursionVariable implements Formula {
     private final char n;
     private int identifier;
 
-    public RecursionVariable(char n)
-    {
+    public RecursionVariable(char n) {
         this.n = n;
         this.identifier = 0;
     }
 
-    public void setIdentifier(int identifier){
+    public void setIdentifier(int identifier) {
         this.identifier = identifier;
     }
 
-    public int getIdentifier(){
+    public int getIdentifier() {
         return this.identifier;
     }
 
-    public char getN(){
+    public char getN() {
         return n;
     }
 
@@ -48,8 +47,10 @@ public class RecursionVariable implements Formula {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         RecursionVariable that = (RecursionVariable) o;
         return this.identifier == that.identifier;
     }

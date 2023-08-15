@@ -1,6 +1,6 @@
-package mmc.modal.formulas;
+package FTSMMC.modal.formulas;
 
-import mmc.modal.visitors.VariableMatcher;
+import FTSMMC.modal.visitors.VariableMatcher;
 
 import java.util.Objects;
 import java.util.Set;
@@ -38,8 +38,10 @@ public abstract class FixedPointFormula implements Formula {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         FixedPointFormula that = (FixedPointFormula) o;
         return Objects.equals(this.recursionVariable, that.recursionVariable) &&
                 Objects.equals(this.formula, that.formula);

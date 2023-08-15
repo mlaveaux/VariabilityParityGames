@@ -1,8 +1,8 @@
-package mmc.modal.formulas;
+package FTSMMC.modal.formulas;
 
-import mmc.modal.visitors.FormulaVisitor;
-import mmc.modal.visitors.NuFormulaFinder;
-import mmc.modal.visitors.NuxFormulaFinder;
+import FTSMMC.modal.visitors.FormulaVisitor;
+import FTSMMC.modal.visitors.NuFormulaFinder;
+import FTSMMC.modal.visitors.NuxFormulaFinder;
 
 public class MuFormula extends FixedPointFormula implements Formula {
     public MuFormula(RecursionVariable recursionVariable, Formula formula) {

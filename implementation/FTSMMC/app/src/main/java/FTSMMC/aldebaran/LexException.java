@@ -1,4 +1,4 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
 public class LexException extends SyntaxException {
     public LexException(int index) {

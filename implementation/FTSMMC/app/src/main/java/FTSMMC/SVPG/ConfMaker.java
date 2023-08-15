@@ -1,42 +1,40 @@
-package mmc.SVPG;
+package FTSMMC.SVPG;
 
 import net.sf.javabdd.BDD;
 
 public class ConfMaker {
     private SetMaker setmaker;
     private SetSizer setsizer;
+
     public static ConfMaker getConfMaker(String type, float lambda) throws Exception {
-        switch (type){
+        switch (type) {
             case "FF":
                 return new ConfMaker(
                         new BernoulliSetSizer(lambda),
-                        new FeaturedSetMaker()
-                );
+                        new FeaturedSetMaker());
             case "FC":
                 return new ConfMaker(
                         new BernoulliSetSizer(lambda),
-                        new ConfigurationSetMaker()
-                );
+                        new ConfigurationSetMaker());
             case "BF":
                 return new ConfMaker(
                         new BetaSetSizer(lambda),
-                        new FeaturedSetMaker()
-                );
+                        new FeaturedSetMaker());
             case "BC":
                 return new ConfMaker(
                         new BetaSetSizer(lambda),
-                        new ConfigurationSetMaker()
-                );
+                        new ConfigurationSetMaker());
             default:
                 throw new Exception("Unknown random configuration: " + type);
         }
     }
-    private ConfMaker(SetSizer setsizer,SetMaker setmaker){
+
+    private ConfMaker(SetSizer setsizer, SetMaker setmaker) {
         this.setmaker = setmaker;
         this.setsizer = setsizer;
     }
 
-    public BDD getSet(){
+    public BDD getSet() {
         return setmaker.makeSet(setsizer.getSetSize());
     }
 }

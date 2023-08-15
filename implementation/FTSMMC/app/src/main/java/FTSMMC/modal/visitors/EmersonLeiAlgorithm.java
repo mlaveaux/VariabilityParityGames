@@ -1,7 +1,7 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.*;
-import mmc.models.Lts;
+import FTSMMC.modal.formulas.*;
+import FTSMMC.models.Lts;
 
 import java.util.HashSet;
 
@@ -24,12 +24,12 @@ public class EmersonLeiAlgorithm extends NaiveAlgorithm implements FormulaCalcul
         RecursionVariable recursionVariable = formula.getRecursionVariable();
         Formula subFormula = formula.getFormula();
 
-        if(!this.getFixedPointResults().containsKey(recursionVariable)) {
+        if (!this.getFixedPointResults().containsKey(recursionVariable)) {
             this.getFixedPointResults().put(recursionVariable, new HashSet<>());
         }
 
         if (this.bound == Bound.NU_BOUNDED) {
-            for (RecursionVariable boundedVariable: formula.getVariableMatcher().getBounded()) {
+            for (RecursionVariable boundedVariable : formula.getVariableMatcher().getBounded()) {
                 this.getFixedPointResults().put(boundedVariable, new HashSet<>());
             }
         }
@@ -45,12 +45,12 @@ public class EmersonLeiAlgorithm extends NaiveAlgorithm implements FormulaCalcul
         RecursionVariable recursionVariable = formula.getRecursionVariable();
         Formula subFormula = formula.getFormula();
 
-        if(!this.getFixedPointResults().containsKey(recursionVariable)) {
+        if (!this.getFixedPointResults().containsKey(recursionVariable)) {
             this.getFixedPointResults().put(recursionVariable, this.getStates());
         }
 
         if (this.bound == Bound.MU_BOUNDED) {
-            for (RecursionVariable boundedVariable: formula.getVariableMatcher().getBounded()) {
+            for (RecursionVariable boundedVariable : formula.getVariableMatcher().getBounded()) {
                 this.getFixedPointResults().put(boundedVariable, this.getStates());
             }
         }

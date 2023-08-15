@@ -1,20 +1,18 @@
-package mmc;
+package FTSMMC;
 
-import mmc.SVPG.ConfMaker;
-import mmc.SVPG.Edge;
-import mmc.SVPG.SVPG;
-import mmc.SVPG.Vertex;
-import mmc.features.FeatureDiagram;
-import mmc.aldebaran.LtsBuilder;
-import mmc.aldebaran.SyntaxException;
-import mmc.modal.visitors.*;
-import mmc.modal.formulas.Formula;
-import mmc.modal.ModalParser;
-import mmc.modal.ParseException;
-import mmc.models.Lts;
+import FTSMMC.SVPG.ConfMaker;
+import FTSMMC.SVPG.Edge;
+import FTSMMC.SVPG.SVPG;
+import FTSMMC.SVPG.Vertex;
+import FTSMMC.features.FeatureDiagram;
+import FTSMMC.aldebaran.LtsBuilder;
+import FTSMMC.aldebaran.SyntaxException;
+import FTSMMC.modal.visitors.*;
+import FTSMMC.modal.formulas.Formula;
+import FTSMMC.modal.ModalParser;
+import FTSMMC.modal.ParseException;
+import FTSMMC.models.Lts;
 import net.sf.javabdd.BDD;
-import org.apache.commons.math3.distribution.BetaDistribution;
-import org.apache.commons.math3.special.Beta;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -77,6 +75,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         Random r = new Random();
         Vertex[] vertices = new Vertex[n];
         for(int i = 0;i<n;i++){
@@ -200,7 +199,7 @@ public class Main {
         String fdfile = readFile(filename);
         try {
             FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(fdfile.split(System.lineSeparator())[0].split(","),
-                    fdfile.split("\n")[1]
+                    fdfile.split(System.lineSeparator())[1]
             );
             FeatureDiagram.PrimaryFD = FD;
         } catch (Exception e) {

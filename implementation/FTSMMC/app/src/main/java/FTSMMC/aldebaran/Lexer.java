@@ -1,4 +1,4 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
 import java.util.*;
 import java.util.regex.Matcher;

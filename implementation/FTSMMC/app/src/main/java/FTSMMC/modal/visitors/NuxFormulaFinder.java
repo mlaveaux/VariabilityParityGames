@@ -1,8 +1,8 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.FixedPointFormula;
-import mmc.modal.formulas.NuFormula;
-import mmc.modal.formulas.RecursionVariable;
+import FTSMMC.modal.formulas.FixedPointFormula;
+import FTSMMC.modal.formulas.NuFormula;
+import FTSMMC.modal.formulas.RecursionVariable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
 public class SyntaxException extends RuntimeException {
     private final int index;

@@ -1,9 +1,9 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.*;
-import mmc.models.Label;
-import mmc.models.Lts;
-import mmc.models.State;
+import FTSMMC.modal.formulas.*;
+import FTSMMC.models.Label;
+import FTSMMC.models.Lts;
+import FTSMMC.models.State;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,10 +39,10 @@ public class NaiveAlgorithm implements FormulaCalculator, FormulaVisitor {
         Set<State> formulaResult = this.getFormulaResult(formula.getFormula());
         Label action = formula.getAction();
         Set<State> result = Arrays.stream(this.lts.getStates())
-            .filter(startState -> !startState.getTransitionLabels().contains(action) ||
-                startState.transition(action).stream()
-                    .allMatch(formulaResult::contains))
-            .collect(Collectors.toSet());
+                .filter(startState -> !startState.getTransitionLabels().contains(action) ||
+                        startState.transition(action).stream()
+                                .allMatch(formulaResult::contains))
+                .collect(Collectors.toSet());
         this.putFormulaResult(formula, result);
     }
 
@@ -51,10 +51,10 @@ public class NaiveAlgorithm implements FormulaCalculator, FormulaVisitor {
         Set<State> formulaResult = this.getFormulaResult(formula.getFormula());
         Label action = formula.getAction();
         Set<State> result = Arrays.stream(this.lts.getStates())
-            .filter(startState -> startState.getTransitionLabels().contains(action) &&
-                startState.transition(action).stream()
-                    .anyMatch(formulaResult::contains))
-            .collect(Collectors.toSet());
+                .filter(startState -> startState.getTransitionLabels().contains(action) &&
+                        startState.transition(action).stream()
+                                .anyMatch(formulaResult::contains))
+                .collect(Collectors.toSet());
         this.putFormulaResult(formula, result);
     }
 
@@ -111,7 +111,7 @@ public class NaiveAlgorithm implements FormulaCalculator, FormulaVisitor {
             Set<State> previousResult = this.fixedPointResults.put(recursionVariable, result);
             equilibrium = result.equals(previousResult);
             i++;
-        } while(!equilibrium);
+        } while (!equilibrium);
         System.out.println(String.format("Calculated %s in %d iterations.", recursionVariable, i));
         return this.fixedPointResults.get(recursionVariable);
     }

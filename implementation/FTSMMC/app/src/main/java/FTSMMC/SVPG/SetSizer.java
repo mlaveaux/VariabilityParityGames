@@ -1,4 +1,4 @@
-package mmc.SVPG;
+package FTSMMC.SVPG;
 
 public interface SetSizer {
     float getSetSize();

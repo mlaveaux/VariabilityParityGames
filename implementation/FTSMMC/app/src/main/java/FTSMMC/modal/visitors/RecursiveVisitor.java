@@ -1,6 +1,6 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.*;
+import FTSMMC.modal.formulas.*;
 
 public abstract class RecursiveVisitor implements FormulaVisitor {
 

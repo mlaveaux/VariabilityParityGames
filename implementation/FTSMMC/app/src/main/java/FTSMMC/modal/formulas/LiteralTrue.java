@@ -1,6 +1,6 @@
-package mmc.modal.formulas;
+package FTSMMC.modal.formulas;
 
-import mmc.modal.visitors.FormulaVisitor;
+import FTSMMC.modal.visitors.FormulaVisitor;
 
 import java.util.Objects;
 

@@ -1,7 +1,7 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.Formula;
-import mmc.models.State;
+import FTSMMC.modal.formulas.Formula;
+import FTSMMC.models.State;
 
 import java.util.Set;
 

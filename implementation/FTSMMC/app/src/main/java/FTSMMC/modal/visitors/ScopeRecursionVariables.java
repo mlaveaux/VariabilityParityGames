@@ -1,16 +1,15 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.*;
+import FTSMMC.modal.formulas.*;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Assign a unique 
+ * Assign a unique
  */
-public class ScopeRecursionVariables extends RecursiveVisitor
-{
+public class ScopeRecursionVariables extends RecursiveVisitor {
     private final Map<Character, Integer> recursionMap;
     private int identifier_counter = 0;
 
@@ -37,8 +36,8 @@ public class ScopeRecursionVariables extends RecursiveVisitor
     @Override
     public void visit(RecursionVariable formula) {
         char n = formula.getN();
-        if(!recursionMap.containsKey(n)){
-            throw new InvalidParameterException("Recursion variable " + n +" used but not declared (in scope).");
+        if (!recursionMap.containsKey(n)) {
+            throw new InvalidParameterException("Recursion variable " + n + " used but not declared (in scope).");
         }
         formula.setIdentifier(recursionMap.get(n));
         super.visit(formula);

@@ -1,4 +1,4 @@
-package mmc.models;
+package FTSMMC.models;
 
 import net.sf.javabdd.BDD;
 
@@ -30,7 +30,7 @@ public class State {
 
         boolean stateAdded = possibleStates.add(next);
         boolean numberAddded = possibleStateNumbers.add(next.getNumber());
-        if(stateAdded != numberAddded) {
+        if (stateAdded != numberAddded) {
             throw new IllegalStateException("Added transition while object was in an illegal state");
         }
 
@@ -47,16 +47,17 @@ public class State {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         State state = (State) o;
         return this.number == state.number &&
-            Objects.equals(this.transitions, state.transitions) &&
-            Objects.equals(this.simpleTransitions, state.simpleTransitions);
+                Objects.equals(this.transitions, state.transitions) &&
+                Objects.equals(this.simpleTransitions, state.simpleTransitions);
     }
 
-    public boolean sameStateNr(State o)
-    {
+    public boolean sameStateNr(State o) {
         return this.number == o.number;
     }
 
@@ -68,18 +69,15 @@ public class State {
     @Override
     public String toString() {
         return "State{" +
-            "number=" + this.number +
-            //", transitions=" + this.simpleTransitions +
-            '}';
+                "number=" + this.number +
+                // ", transitions=" + this.simpleTransitions +
+                '}';
     }
-    public void projectToAlberant(BDD product, StringBuilder sb)
-    {
-        for(Label l : getTransitionLabels())
-        {
-            if(l.satisfies(product))
-            {
-                for(State s: transition(l))
-                {
+
+    public void projectToAlberant(BDD product, StringBuilder sb) {
+        for (Label l : getTransitionLabels()) {
+            if (l.satisfies(product)) {
+                for (State s : transition(l)) {
                     sb.append('(' + String.valueOf(this.number) + ",\"" + l.getText() + "\"," + s.getNumber() + ")\n");
                 }
             }

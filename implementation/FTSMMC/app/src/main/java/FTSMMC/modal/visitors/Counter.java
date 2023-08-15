@@ -1,8 +1,8 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.*;
+import FTSMMC.modal.formulas.*;
 
-public class Counter  extends RecursiveVisitor{
+public class Counter extends RecursiveVisitor {
     public int counter = 0;
 
     @Override
@@ -12,7 +12,7 @@ public class Counter  extends RecursiveVisitor{
     }
 
     @Override
-    public void visit(DiamondFormula formula){
+    public void visit(DiamondFormula formula) {
         counter++;
         super.visit(formula);
     }

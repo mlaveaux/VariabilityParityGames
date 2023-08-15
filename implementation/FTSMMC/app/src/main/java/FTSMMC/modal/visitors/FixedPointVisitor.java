@@ -1,7 +1,7 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.MuFormula;
-import mmc.modal.formulas.NuFormula;
+import FTSMMC.modal.formulas.MuFormula;
+import FTSMMC.modal.formulas.NuFormula;
 
 public class FixedPointVisitor extends RecursiveVisitor implements FormulaVisitor {
     @Override

@@ -1,6 +1,6 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.*;
+import FTSMMC.modal.formulas.*;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class VariableMatcher extends RecursiveVisitor implements FormulaVisitor 
     }
 
     public Set<RecursionVariable> getAll() {
-        return  this.all;
+        return this.all;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class VariableMatcher extends RecursiveVisitor implements FormulaVisitor 
     @Override
     public void visit(RecursionVariable formula) {
         this.all.add(formula);
-        if(this.variable.equals(formula)) {
+        if (this.variable.equals(formula)) {
             this.bounded.add(formula);
         } else {
             this.free.add(formula);

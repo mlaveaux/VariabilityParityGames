@@ -1,6 +1,6 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
-import mmc.models.Lts;
+import FTSMMC.models.Lts;
 
 public class LtsBuilder {
     public Lts build(CharSequence input) {

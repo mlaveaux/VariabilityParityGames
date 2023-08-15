@@ -1,8 +1,8 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
-import mmc.models.Label;
-import mmc.models.Lts;
-import mmc.models.State;
+import FTSMMC.models.Label;
+import FTSMMC.models.Lts;
+import FTSMMC.models.State;
 
 public class Parser {
     private Lexer lexer;

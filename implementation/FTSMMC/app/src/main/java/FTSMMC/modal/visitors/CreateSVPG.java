@@ -1,13 +1,13 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.SVPG.Edge;
-import mmc.SVPG.SVPG;
-import mmc.SVPG.Vertex;
-import mmc.features.FeatureDiagram;
-import mmc.modal.formulas.*;
-import mmc.models.Label;
-import mmc.models.Lts;
-import mmc.models.State;
+import FTSMMC.SVPG.Edge;
+import FTSMMC.SVPG.SVPG;
+import FTSMMC.SVPG.Vertex;
+import FTSMMC.features.FeatureDiagram;
+import FTSMMC.modal.formulas.*;
+import FTSMMC.models.Label;
+import FTSMMC.models.Lts;
+import FTSMMC.models.State;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,13 +20,12 @@ public class CreateSVPG extends RecursiveVisitor {
     private State currentState;
     private Map<RecursionVariable, FixedPointFormula> unfoldingMapping;
 
-    public CreateSVPG(SVPG sVPG, Lts fts,State currentState, Map<RecursionVariable, FixedPointFormula> unfoldingMapping)
-    {
+    public CreateSVPG(SVPG sVPG, Lts fts, State currentState,
+            Map<RecursionVariable, FixedPointFormula> unfoldingMapping) {
         this.sVPG = sVPG;
         this.fts = fts;
         this.currentState = currentState;
-        if(unfoldingMapping == null)
-        {
+        if (unfoldingMapping == null) {
             this.unfoldingMapping = new HashMap<>();
         } else {
             this.unfoldingMapping = unfoldingMapping;
@@ -36,18 +35,17 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(BoxFormula formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 1;
         v.prio = 0;
 
-        for(Label l : currentState.getTransitionLabels())
-        {
+        for (Label l : currentState.getTransitionLabels()) {
             List<String> actions = Arrays.asList(formula.getAction().getText().split("\\|\\|"));
-            if(!actions.contains(l.getText()))
+            if (!actions.contains(l.getText()))
                 continue;
-            for(State t : currentState.transition(l))
-            {
-                CreateSVPG cs = new CreateSVPG(sVPG, fts, t,unfoldingMapping);
+            for (State t : currentState.transition(l)) {
+                CreateSVPG cs = new CreateSVPG(sVPG, fts, t, unfoldingMapping);
                 formula.getFormula().accept(cs);
 
                 Vertex tv = sVPG.findVertex(t, formula.getFormula());
@@ -64,18 +62,17 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(DiamondFormula formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 0;
         v.prio = 0;
 
-        for(Label l : currentState.getTransitionLabels())
-        {
+        for (Label l : currentState.getTransitionLabels()) {
             List<String> actions = Arrays.asList(formula.getAction().getText().split("\\|\\|"));
-            if(!actions.contains(l.getText()))
+            if (!actions.contains(l.getText()))
                 continue;
-            for(State t : currentState.transition(l))
-            {
-                CreateSVPG cs = new CreateSVPG(sVPG, fts, t,unfoldingMapping);
+            for (State t : currentState.transition(l)) {
+                CreateSVPG cs = new CreateSVPG(sVPG, fts, t, unfoldingMapping);
                 formula.getFormula().accept(cs);
 
                 Vertex tv = sVPG.findVertex(t, formula.getFormula());
@@ -92,7 +89,8 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(LiteralFalse formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 0;
         v.prio = 0;
         super.visit(formula);
@@ -101,7 +99,8 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(LiteralTrue formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 1;
         v.prio = 0;
         super.visit(formula);
@@ -110,7 +109,8 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(LogicAndFormula formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 1;
         v.prio = 0;
         super.visit(formula);
@@ -131,7 +131,8 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(LogicOrFormula formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 0;
         v.prio = 0;
         super.visit(formula);
@@ -153,9 +154,10 @@ public class CreateSVPG extends RecursiveVisitor {
     public void visit(MuFormula formula) {
         this.unfoldingMapping.put(formula.getRecursionVariable(), formula);
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 0;
-        v.prio = ((int)formula.getAlternationDepth() / 2) * 2 + 1;
+        v.prio = ((int) formula.getAlternationDepth() / 2) * 2 + 1;
 
         super.visit(formula);
 
@@ -171,9 +173,10 @@ public class CreateSVPG extends RecursiveVisitor {
     public void visit(NuFormula formula) {
         this.unfoldingMapping.put(formula.getRecursionVariable(), formula);
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 0;
-        v.prio = ((int)formula.getAlternationDepth() / 2) * 2 ;
+        v.prio = ((int) formula.getAlternationDepth() / 2) * 2;
 
         super.visit(formula);
 
@@ -188,7 +191,8 @@ public class CreateSVPG extends RecursiveVisitor {
     @Override
     public void visit(RecursionVariable formula) {
         Vertex v = createVertexIfItDoesntExist(formula);
-        if(v==null)return;
+        if (v == null)
+            return;
         v.owner = 0;
         v.prio = 0;
 
@@ -196,8 +200,7 @@ public class CreateSVPG extends RecursiveVisitor {
 
         Vertex vt;
         vt = sVPG.findVertex(currentState, originFormula);
-        if(vt == null)
-        {
+        if (vt == null) {
             CreateSVPG cs = new CreateSVPG(sVPG, fts, currentState, unfoldingMapping);
             originFormula.accept(cs);
             vt = sVPG.findVertex(currentState, originFormula);
@@ -208,12 +211,10 @@ public class CreateSVPG extends RecursiveVisitor {
         v.addEdge(e);
     }
 
-    private Vertex createVertexIfItDoesntExist(Formula formula)
-    {
-        Vertex v = sVPG.findVertex(currentState,formula);
-        if(v == null)
-        {
-            v = sVPG.addVertex(currentState,formula);
+    private Vertex createVertexIfItDoesntExist(Formula formula) {
+        Vertex v = sVPG.findVertex(currentState, formula);
+        if (v == null) {
+            v = sVPG.addVertex(currentState, formula);
             return v;
         }
         return null;

@@ -1,4 +1,4 @@
-package mmc.modal.formulas;
+package FTSMMC.modal.formulas;
 
 import java.util.Objects;
 

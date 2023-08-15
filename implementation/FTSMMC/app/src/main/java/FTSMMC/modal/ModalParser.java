@@ -1,9 +1,9 @@
-package mmc.modal;
+package FTSMMC.modal;
 
-import mmc.modal.formulas.*;
-import mmc.modal.visitors.FixedPointVisitor;
-import mmc.modal.visitors.ScopeRecursionVariables;
-import mmc.models.Label;
+import FTSMMC.modal.formulas.*;
+import FTSMMC.modal.visitors.FixedPointVisitor;
+import FTSMMC.modal.visitors.ScopeRecursionVariables;
+import FTSMMC.models.Label;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;

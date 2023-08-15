@@ -1,7 +1,7 @@
-package mmc.models;
+package FTSMMC.models;
 
-import mmc.models.Label;
-import mmc.models.State;
+import FTSMMC.models.Label;
+import FTSMMC.models.State;
 
 public class IllegalTransitionException extends RuntimeException {
     private final State state;

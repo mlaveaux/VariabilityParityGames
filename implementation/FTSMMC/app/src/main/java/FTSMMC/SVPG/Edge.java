@@ -1,4 +1,4 @@
-package mmc.SVPG;
+package FTSMMC.SVPG;
 
 import net.sf.javabdd.BDD;
 

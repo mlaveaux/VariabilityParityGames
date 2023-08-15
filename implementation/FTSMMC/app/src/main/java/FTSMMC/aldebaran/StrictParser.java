@@ -1,6 +1,6 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
-import mmc.models.Label;
+import FTSMMC.models.Label;
 
 public class StrictParser extends Parser {
     @Override

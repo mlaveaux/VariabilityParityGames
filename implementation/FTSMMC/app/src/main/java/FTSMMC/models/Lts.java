@@ -1,4 +1,4 @@
-package mmc.models;
+package FTSMMC.models;
 
 import net.sf.javabdd.BDD;
 
@@ -43,17 +43,19 @@ public class Lts {
         return state;
     }
 
-    public State[] getStates(){
+    public State[] getStates() {
         return this.states;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Lts lts = (Lts) o;
         return this.startIndex == lts.startIndex &&
-            Arrays.equals(this.states, lts.states);
+                Arrays.equals(this.states, lts.states);
     }
 
     @Override
@@ -66,20 +68,18 @@ public class Lts {
     @Override
     public String toString() {
         return "Lts{" +
-            "states=" + Arrays.toString(this.states) +
-            ", startIndex=" + this.startIndex +
-            '}';
+                "states=" + Arrays.toString(this.states) +
+                ", startIndex=" + this.startIndex +
+                '}';
     }
 
-    public String projectToAlberant(BDD product)
-    {
+    public String projectToAlberant(BDD product) {
         StringBuilder sb = new StringBuilder();
-        for(State s : this.states)
-        {
+        for (State s : this.states) {
             s.projectToAlberant(product, sb);
         }
         String a = sb.toString();
         int nroftrans = a.split("\n").length;
-        return "des(0," + String.valueOf(nroftrans) +"," +String.valueOf(states.length)+")\n"+a;
+        return "des(0," + String.valueOf(nroftrans) + "," + String.valueOf(states.length) + ")\n" + a;
     }
 }

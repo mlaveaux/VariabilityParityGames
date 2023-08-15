@@ -1,4 +1,4 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
 public class StrictParseException extends ParseException {
     public StrictParseException(String message, int index) {

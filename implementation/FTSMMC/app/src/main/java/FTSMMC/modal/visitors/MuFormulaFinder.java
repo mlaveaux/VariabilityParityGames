@@ -1,13 +1,14 @@
-package mmc.modal.visitors;
+package FTSMMC.modal.visitors;
 
-import mmc.modal.formulas.FixedPointFormula;
-import mmc.modal.formulas.MuFormula;
+import FTSMMC.modal.formulas.FixedPointFormula;
+import FTSMMC.modal.formulas.MuFormula;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MuFormulaFinder extends RecursiveVisitor implements FormulaVisitor {
     private final List<MuFormula> muFormulas;
+
     private MuFormulaFinder() {
         this.muFormulas = new ArrayList<>();
     }

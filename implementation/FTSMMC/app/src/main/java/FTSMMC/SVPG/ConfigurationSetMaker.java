@@ -1,6 +1,6 @@
-package mmc.SVPG;
+package FTSMMC.SVPG;
 
-import mmc.features.FeatureDiagram;
+import FTSMMC.features.FeatureDiagram;
 import net.sf.javabdd.BDD;
 
 import java.util.ArrayList;
@@ -10,10 +10,10 @@ import java.util.List;
 public class ConfigurationSetMaker implements SetMaker {
     public List<BDD> collectionItems;
 
-    public ConfigurationSetMaker(){
+    public ConfigurationSetMaker() {
         int nrofconfs = (1 << FeatureDiagram.PrimaryFD.varCount());
         collectionItems = new ArrayList<>();
-        for(int i = 0;i<nrofconfs;i++) {
+        for (int i = 0; i < nrofconfs; i++) {
             BDD confbdd = FeatureDiagram.PrimaryFD.factory.one();
             int conf = i;
             for (int j = FeatureDiagram.PrimaryFD.varCount() - 1; j >= 0; j--) {
@@ -29,12 +29,13 @@ public class ConfigurationSetMaker implements SetMaker {
             collectionItems.add(confbdd);
         }
     }
+
     @Override
     public BDD makeSet(float r) {
         BDD result;
         int nrofconfs = (1 << FeatureDiagram.PrimaryFD.varCount());
         Collections.shuffle(collectionItems);
-        if(r < 0.5) {
+        if (r < 0.5) {
             result = FeatureDiagram.PrimaryFD.factory.zero();
             nrofconfs = (int) ((float) nrofconfs * r);
             nrofconfs = Math.max(nrofconfs, 1);

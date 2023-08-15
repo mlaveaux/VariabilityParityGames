@@ -1,7 +1,7 @@
-package mmc.SVPG;
+package FTSMMC.SVPG;
 
-import mmc.models.State;
-import mmc.modal.formulas.Formula;
+import FTSMMC.models.State;
+import FTSMMC.modal.formulas.Formula;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +14,11 @@ public class Vertex {
     public State originState;
     public Formula originFormula;
 
-
-    public Vertex(){
+    public Vertex() {
         this.edges = new HashSet<>();
     }
 
-    public void addEdge(Edge e)
-    {
+    public void addEdge(Edge e) {
         this.edges.add(e);
     }
 }

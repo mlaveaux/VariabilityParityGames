@@ -1,4 +1,4 @@
-package mmc.modal;
+package FTSMMC.modal;
 
 public class ParseException extends Exception {
     public ParseException(String message, int index)

@@ -1,4 +1,4 @@
-package mmc.aldebaran;
+package FTSMMC.aldebaran;
 
 public class ParseException extends SyntaxException {
     public ParseException(int index) {

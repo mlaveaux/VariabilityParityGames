@@ -1,6 +1,6 @@
-package mmc.modal.formulas;
+package FTSMMC.modal.formulas;
 
-import mmc.models.Label;
+import FTSMMC.models.Label;
 
 import java.util.Objects;
 
