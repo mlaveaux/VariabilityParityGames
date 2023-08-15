@@ -26,7 +26,7 @@ FTSMMC_JAR = '../implementation/FTSMMC/app/build/libs/app.jar'
 mapping_regex = re.compile(r'(.*)=(.*)')
 
 # A regex matching a transition in the aut format '(from, action, to)'
-transition_regex = re.compile(r'\(([0-9]*),\'(.*)\',([0-9]*)\)')
+transition_regex = re.compile(r'\(([0-9]*),\"(.*)\",([0-9]*)\)')
 
 class MyLogger(logging.Logger):
     '''My own logger that stores the log messages into a string stream'''
@@ -37,8 +37,8 @@ class MyLogger(logging.Logger):
 
         self.stream = StringIO()
         handler = logging.StreamHandler(self.stream)
-        handler.setFormatter(formatter)
         handler.terminator = terminator
+        handler.setFormatter(formatter)
 
         if filename is not None:
             self.addHandler(logging.FileHandler(filename, mode='w'))
@@ -62,7 +62,7 @@ def is_newer(inputfile: str, outputfile: str, ignore=False) -> bool:
         return os.path.getmtime(inputfile) > os.path.getmtime(outputfile)
     except OSError:
         return True
-    
+
 def run_program(cmds, logger):
     """ Runs the given program with sensible defaults, and logs the results to the logger """
 
@@ -111,26 +111,30 @@ def prepare(
     # Convert the actions in the .aut files to move features from the data into the action label.
     # File contains from=to per line for each action.
     mapping = {}
-    with open(os.path.join(directory, 'actionrename'), encoding='utf-8') as file:
-        for line in file.readlines():
-            result = mapping_regex.match(line)
-            if result is not None:
-                mapping[result.group(1)] = result.group(2)
 
-    logger.debug('renaming applied: %s', mapping)
-
-    # Rename the action labels in the aut file based on the mapping computed above
+    actionrename_file = os.path.join(directory, 'actionrename')
     aut_renamed_file = os.path.join(tmp_directory, base + '.renamed.aut')
-    with open(aut_renamed_file, 'w', encoding='utf-8') as outfile:
-        with open(aut_file, encoding='utf-8') as file:
+
+    if is_newer(actionrename_file, aut_renamed_file) or is_newer(aut_file, aut_renamed_file):
+        with open(actionrename_file, encoding='utf-8') as file:
             for line in file.readlines():
-                result = transition_regex.match(line)
+                result = mapping_regex.match(line)
                 if result is not None:
-                    action = result.group(2)
-                    action = mapping.get(action, action)
-                    outfile.write(f'({result.group(1)},\'{action}\',{result.group(3)})\n')
-                else:
-                    outfile.write(line)
+                    mapping[result.group(1)] = result.group(2)
+
+        logger.debug('renaming applied: %s', mapping)
+
+        # Rename the action labels in the aut file based on the mapping computed above
+        with open(aut_renamed_file, 'w', encoding='utf-8') as outfile:
+            with open(aut_file, encoding='utf-8') as file:
+                for line in file.readlines():
+                    result = transition_regex.match(line)
+                    if result is not None:
+                        action = result.group(2)
+                        action = mapping.get(action, action)
+                        outfile.write(f'({result.group(1)},\"{action}\",{result.group(3)})\n')
+                    else:
+                        outfile.write(line)
 
     # Generate the SVPG for every property
     futures = {}
@@ -172,7 +176,7 @@ def prepare(
                 )
             ] = (name, program_logger)
 
-    return futures, games
+    return (futures, games)
 
 def run_benchmark_single(tool: str, game: str, logger: MyLogger) -> float:
     '''Run a single benchmark and return the time it took in seconds'''
@@ -281,12 +285,13 @@ def main():
 
             try:
                 prepare_futures, games = future.result()
-                
+
                 logger.info(prepare_logger.getvalue())
 
                 # Wait for the parity games to be constructed.
                 for future in concurrent.futures.as_completed(prepare_futures):
-                    name, logger = future.result()
+                    future.result()
+                    name, logger = prepare_futures[future]
                     logger.info(logger.getvalue())
                     logger.info('Finished parity game for %s', name)
 
