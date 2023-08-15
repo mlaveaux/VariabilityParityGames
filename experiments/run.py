@@ -41,7 +41,7 @@ class MyLogger(logging.Logger):
         handler.setFormatter(formatter)
 
         if filename is not None:
-            self.addHandler(logging.FileHandler(filename, mode='w'))
+            self.addHandler(logging.FileHandler(filename))
 
         standard_output = logging.StreamHandler(sys.stderr)
         standard_output.terminator = terminator
@@ -196,9 +196,9 @@ def run_benchmark(
 
     # Run several experiments and gather their average
     futures = {}
-    for i in range(0, 5):
+    for i in range(0, 1):
         logger.info('Started benchmark %s for %s with game %s', i, tool, os.path.basename(game))
-        benchmark_logger = MyLogger(f'{i}-{tool}-{game}')
+        benchmark_logger = MyLogger(f'{i}-{tool}-{game}', terminator='')
         futures[
             executor.submit(run_benchmark_single, tool, game, benchmark_logger)
         ] = benchmark_logger
