@@ -168,7 +168,7 @@ public class Main {
         }
     }
 
-    private static void projectToLts(Lts fts, String directory)
+    private static void projectToLts(Lts fts, String file)
     {
         for(int i = 0;i< FeatureDiagram.PrimaryFD.products.size();i++)
         {
@@ -180,7 +180,7 @@ public class Main {
             a.add(proj);
 
             try {
-                Files.write(Paths.get(directory, productString + ".aut"),
+                Files.write(Paths.get(file + productString + ".aut"),
                         a,
                         Charset.forName("UTF-8"));
             } catch (IOException e) {
@@ -198,8 +198,8 @@ public class Main {
     {
         String fdfile = readFile(filename);
         try {
-            FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(fdfile.split(System.lineSeparator())[0].split(","),
-                    fdfile.split(System.lineSeparator())[1]
+            FeatureDiagram FD = FeatureDiagram.FeatureDiagramFromBDD(fdfile.split("\\R")[0].split(","),
+                    fdfile.split("\\R")[1]
             );
             FeatureDiagram.PrimaryFD = FD;
         } catch (Exception e) {

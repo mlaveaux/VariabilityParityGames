@@ -161,7 +161,8 @@ public class SVPG {
                 conf.orWith(e.configurations.id());
             }
             if (!conf.isOne()) {
-                System.err.println("Incomplete: " + String.valueOf(i));
+                // TODO: I don't know if this is an error, but printing is slow.
+                // System.err.println("Incomplete: " + String.valueOf(i));
                 for (Edge e : v.edges) {
                     bddIntToString(e.configurations, boolLiteral);
                 }

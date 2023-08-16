@@ -11,7 +11,7 @@
 using namespace std;
 
 /**
- * Decorate the VectoBoolOptimized to represent sets explicitly
+ * Decorate the VectorBoolOptimized to represent sets explicitly
  *
  * @todo: Instead of decorating, this class should extend VectorBoolOptimized.
  */
