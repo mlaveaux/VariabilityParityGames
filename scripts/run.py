@@ -17,9 +17,7 @@ from typing import List
 formatter = logging.Formatter("%(threadName)-11s %(asctime)s %(levelname)s %(message)s")
 logging.basicConfig(level=logging.DEBUG)
 
-# This is just for testing, setting the PATH to find the executable.
-os.environ["PATH"] += os.pathsep + "../../mCRL2-build/stage/bin/RelWithDebInfo/"
-os.environ["PATH"] += os.pathsep + "../build/VPGSolver/RelWithDebInfo/"
+# This path should always be consistent
 FTSMMC_JAR = "../implementation/FTSMMC/app/build/libs/app.jar"
 
 # A regex matching in=out
@@ -28,7 +26,7 @@ mapping_regex = re.compile(r"(.*)=(.*)")
 # A regex matching a transition in the aut format '(from, action, to)'
 transition_regex = re.compile(r"\(([0-9]*),\"(.*)\",([0-9]*)\)")
 confs_regex = re.compile(r"confs .*;")
-conf_regex = re.compile(r"\|-*")
+conf_regex = re.compile(r"\|[-|+|0|1]*")
 
 
 class MyLogger(logging.Logger):
@@ -91,7 +89,8 @@ def prepare(
     logger: MyLogger,
     executor: concurrent.futures.ThreadPoolExecutor,
 ):
-    """To prepare the experiments we have to perform the following steps."""
+    """Prepares the parity games for one experiment, consisting of an mCRL2 specification and several properties.
+    Returns a set of futures"""
 
     # Ensure that tmp directory exists since the mCRL2 tools cannot make it
     try:
@@ -151,8 +150,7 @@ def prepare(
         aut_generated = True
 
     # Generate the SVPG for every property
-    projection_futures = {}
-    game_futures = {}
+    futures = {}
     games = []
     featurediagram_file = os.path.join(directory, "FD")
 
@@ -173,7 +171,7 @@ def prepare(
             # Convert .aut and formula into a VPG
             # run_program requires no terminator when logging
             program_logger = MyLogger(name, terminator="")
-            game_futures[
+            futures[
                 executor.submit(
                     run_program,
                     [
@@ -190,7 +188,7 @@ def prepare(
                     ],
                     program_logger,
                 )
-            ] = (name, program_logger)
+            ] = ("generate", name, program_logger)
 
     # Generate the projections of the .aut
     if aut_generated:
@@ -200,7 +198,7 @@ def prepare(
 
         # run_program requires no terminator when logging
         program_logger = MyLogger(name, terminator="")
-        projection_futures[
+        futures[
             executor.submit(
                 run_program,
                 [
@@ -216,9 +214,9 @@ def prepare(
                 ],
                 program_logger,
             )
-        ] = (name, program_logger)
+        ] = ("project", name, program_logger)
 
-    return (projection_futures, game_futures, games)
+    return (futures, games)
 
 
 def project_single(
@@ -227,7 +225,6 @@ def project_single(
     """Computes the parity game for  a single projection, and computes the parity game without features"""
 
     if is_newer(aut_file, game_file):
-
         # Create a vpg from the aut and property combination.
         run_program(
             [
@@ -284,7 +281,9 @@ def prepare_projections(
                 renamed_game_file = os.path.join(tmp_directory, name + ".pg")
                 games.append((os.path.basename(directory), prop, renamed_game_file))
 
-                if is_newer(aut_file, game_file) or is_newer(game_file, renamed_game_file):
+                if is_newer(aut_file, game_file) or is_newer(
+                    game_file, renamed_game_file
+                ):
                     logger.info(
                         "Generating parity game for projection '%s' and property '%s'",
                         base,
@@ -318,9 +317,10 @@ def run_benchmark_single(tool: str, game: str, logger: MyLogger) -> float:
 
 
 def run_benchmark(
+    experiment: str,
+    prop: str,
     tool: str,
     game: str,
-    logger: MyLogger,
     executor: concurrent.futures.ThreadPoolExecutor,
 ):
     """Run the benchmarks for a single experiment"""
@@ -328,18 +328,87 @@ def run_benchmark(
     # Run several experiments and gather their average
     futures = {}
     for i in range(0, 1):
-        logger.info(
-            "Started benchmark %s for %s with game %s", i, tool, os.path.basename(game)
-        )
-
         # run_program requires no terminator when logging
         benchmark_logger = MyLogger(f"{i}-{tool}-{game}", terminator="")
         futures[
             executor.submit(run_benchmark_single, tool, game, benchmark_logger)
-        ] = benchmark_logger
+        ] = (experiment, prop, game, tool, benchmark_logger)
 
     return futures
 
+def prepare_experiments(experiments, logger: MyLogger, executor: concurrent.futures.ThreadPoolExecutor):
+    """ Runs all preparation steps for the given experiments """
+
+    # First, we submit the jobs to generate the aut files and prepare the experiment.
+    futures = {}
+    for experiment in experiments:
+        directory, mcrl2_name, properties = experiment
+
+        # The directory in which to store all generated files
+        tmp_directory = directory + "tmp/"
+
+        prepare_logger = MyLogger(f"prepare_{mcrl2_name}")
+        logger.info("Starting preparation for experiment '%s'...", directory)
+        futures[
+            executor.submit(
+                prepare,
+                directory,
+                tmp_directory,
+                mcrl2_name,
+                properties,
+                prepare_logger,
+                executor,
+            )
+        ] = (directory, properties, prepare_logger)
+
+    # The list of all games.
+    all_games = []
+    for future in concurrent.futures.as_completed(futures):
+        directory, properties, prepare_logger = futures[future]
+
+        try:
+            prepare_futures, games = future.result()
+            all_games.extend(games)
+            logger.info(prepare_logger.getvalue())
+
+            # We generate the parity games for the projections
+            for future in concurrent.futures.as_completed(prepare_futures):
+                future.result()
+                action, name, future_logger = futures[future]
+                if action == "generate":
+                    name, future_logger = prepare_futures[future]
+                    logger.info(future_logger.getvalue())
+                    logger.info("Finished generating parity game for %s", name)
+                elif action == "project":
+                    logger.info(future_logger.getvalue())
+                    logger.info("Finished generating projections for %s", name)
+
+                    # The directory in which to store all generated files
+                    tmp_directory = directory + "tmp/"
+
+                    # Create a parity game for every projection
+                    prepare_project_logger = MyLogger(
+                        f"prepare_project_{directory}"
+                    )
+                    new_futures, games = prepare_projections(
+                        directory,
+                        tmp_directory,
+                        properties,
+                        prepare_project_logger,
+                        executor,
+                    )
+                    prepare_futures.update(new_futures)
+                    all_games.extend(games)
+
+            logger.info("Finished preparation for experiment '%s'", directory)
+        except OSError as exp:
+            logger.info("Preparation '%s' failed with exception %s", directory, exp)
+            return -1
+        except KeyboardInterrupt:
+            logging.error("Interrupted program")
+            return -1
+
+    return all_games
 
 def main():
     """The main function"""
@@ -352,8 +421,13 @@ def main():
     )
 
     parser.add_argument("-m", "--max_workers", action="store", default=1, type=int)
+    parser.add_argument('-t', "--mcrl2-binpath", action="store", type=str, required=True)
+    parser.add_argument('-s', "--solver-binpath", action="store", type=str, required=True)
 
     args = parser.parse_args()
+
+    os.environ["PATH"] += os.pathsep + args.mcrl2_binpath
+    os.environ["PATH"] += os.pathsep + args.solver_binpath
 
     experiments = [
         (
@@ -361,12 +435,12 @@ def main():
             "elevator.mcrl2",
             [
                 "prop1.mcf",
-                "prop2.mcf",
-                "prop3.mcf",
-                "prop4.mcf",
-                "prop5.mcf",
-                "prop6.mcf",
-                "prop7.mcf",
+                #"prop2.mcf",
+                #"prop3.mcf",
+                #"prop4.mcf",
+                #"prop5.mcf",
+                #"prop6.mcf",
+                #"prop7.mcf",
             ],
         ),
         (
@@ -374,14 +448,14 @@ def main():
             "minepump_fts.mcrl2",
             [
                 "phi1.mcf",
-                "phi2.mcf",
-                "phi3.mcf",
-                "phi4.mcf",
-                "phi5.mcf",
-                "phi6.mcf",
-                "phi7.mcf",
-                "phi8.mcf",
-                "phi9.mcf",
+                #"phi2.mcf",
+                #"phi3.mcf",
+                #"phi4.mcf",
+                #"phi5.mcf",
+                #"phi6.mcf",
+                #"phi7.mcf",
+                #"phi8.mcf",
+                #"phi9.mcf",
             ],
         ),
     ]
@@ -393,143 +467,69 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=args.max_workers
     ) as executor:
-        # First, we submit the jobs to generate the aut files and prepare the experiment.
-        futures = {}
-        for experiment in experiments:
-            directory, mcrl2_name, properties = experiment
+        
+        all_games = prepare_experiments(experiments, logger, executor)
 
-            # The directory in which to store all generated files
-            tmp_directory = directory + "tmp/"
-
-            prepare_logger = MyLogger(f"prepare_{mcrl2_name}")
-            logger.info("Starting preparation for experiment '%s'...", directory)
-            futures[
-                executor.submit(
-                    prepare,
-                    directory,
-                    tmp_directory,
-                    mcrl2_name,
-                    properties,
-                    prepare_logger,
-                    executor,
-                )
-            ] = (directory, properties, prepare_logger)
-
-        # The projections that must still be prepared, and the list of all games.
-        projection_prepare_futures = {}
-        all_games = []
-        for future in concurrent.futures.as_completed(futures):
-            directory, properties, prepare_logger = futures[future]
-
-            try:
-                projection_futures, prepare_futures, games = future.result()
-                all_games.extend(games)
-                logger.info(prepare_logger.getvalue())
-
-                # We generate the parity games for the projections
-                for future in concurrent.futures.as_completed(projection_futures):
-                    future.result()
-                    name, logger = projection_futures[future]
-                    logger.info(logger.getvalue())
-                    logger.info("Finished generating projections for %s", name)
-
-                # The directory in which to store all generated files
-                tmp_directory = directory + "tmp/"
-
-                # Create a parity game for every projection
-                prepare_project_logger = MyLogger(f"prepare_project_{directory}")
-                new_futures, games = prepare_projections(
-                    directory,
-                    tmp_directory,
-                    properties,
-                    prepare_project_logger,
-                    executor,
-                )
-                projection_prepare_futures.update(new_futures)
-                all_games.extend(games)
-
-                # Wait for the parity games to be constructed.
-                for future in concurrent.futures.as_completed(prepare_futures):
-                    future.result()
-                    name, logger = prepare_futures[future]
-                    logger.info(logger.getvalue())
-                    logger.info("Finished generating parity game for %s", name)
-
-                logger.info("Finished preparation for experiment '%s'", directory)
-            except OSError as exp:
-                logger.info("Preparation '%s' failed with exception %s", directory, exp)
-                return -1
-            except KeyboardInterrupt:
-                logging.error("Interrupted program")
-                return -1
-
-        # Wait for the projections to be computed
-        for future in concurrent.futures.as_completed(projection_prepare_futures):
-            name, logger = projection_prepare_futures[future]
-            logger.info(logger.getvalue())
-            logger.info("Finished generating parity game '%s'", name)
-
-        return 0
         # Execute the solvers to measure the solving time.
         benchmark_futures = {}
-        for experiment, game in all_games:
+        for experiment, prop, game in all_games:
             for tool in tools:
-                benchmark_logger = MyLogger(f"{experiment}-{game}-{tool}")
                 logger.info(
                     "Starting benchmarks for '%s' and '%s'",
                     os.path.basename(game),
                     tool,
                 )
 
-                benchmark_futures[
-                    executor.submit(
-                        run_benchmark, tool, game, benchmark_logger, executor
-                    )
-                ] = (experiment, game, tool, benchmark_logger)
+                benchmark_futures.update(
+                    run_benchmark(experiment, prop, tool, game, executor)
+                )
 
+        # Collect the benchmark results.
         all_results = {}
         for future in concurrent.futures.as_completed(benchmark_futures):
-            experiment, game, tool, benchmark_logger = benchmark_futures[future]
-            futures = future.result()
+            experiment, prop, game, tool, benchmark_logger = benchmark_futures[future]
 
-            results = []
-            for future in concurrent.futures.as_completed(futures):
-                try:
-                    measurement = future.result()
-                    benchmark_logger = futures[future]
+            result = {}
+            try:
+                measurement = future.result()
 
-                    logger.info(benchmark_logger.getvalue())
-                    logger.info(
-                        "Finished benchmark %s with game %s in %s",
-                        tool,
-                        os.path.basename(game),
-                        measurement,
-                    )
+                logger.info(benchmark_logger.getvalue())
+                logger.info(
+                    "Finished benchmark %s with game %s in %s",
+                    tool,
+                    os.path.basename(game),
+                    measurement,
+                )
 
-                    results.append({"timing": measurement})
-                except Exception as e:
-                    results.append({"failed"})
-
-            logger.info(benchmark_logger.getvalue())
-            logger.info(
-                "Finished benchmarking for experiment '%s' and '%s'", game, tool
-            )
+                result = {"timing": measurement}
+            except Exception as exp:
+                logger.info(
+                    "Benchmark %s with game %s failed %s",
+                    tool,
+                    os.path.basename(game),
+                    exp,
+                )
+                result = {"timing": -1}
 
             # Construct the dictionary
+            game = os.path.basename(game)
             if experiment not in all_results:
                 all_results[experiment] = {}
 
-            if game not in all_results[experiment]:
-                all_results[experiment][game] = {}
+            if prop not in all_results[experiment]:
+                all_results[experiment][prop] = {}
 
-            all_results[experiment][game][tool] = results
+            if game not in all_results[experiment][prop]:
+                all_results[experiment][prop][game] = {}
+
+            all_results[experiment][prop][game][tool] = result
 
         # writing the dictionary data into the corresponding JSON file
-        for directory, result in all_results.items():
+        for _, result in all_results.items():
             with open(
-                os.path.join(directory, "tmp/", "results.json"), "w", encoding="utf-8"
+                "results.json", "w", encoding="utf-8"
             ) as json_file:
-                json.dump(result, json_file)
+                json.dump(result, json_file, seperators=(os.linesep, os.linesep))
 
 
 if __name__ == "__main__":
