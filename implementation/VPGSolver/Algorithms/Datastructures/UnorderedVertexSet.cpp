@@ -4,10 +4,11 @@
 
 #include "UnorderedVertexSet.h"
 
-UnorderedVertexSet::UnorderedVertexSet(int size)
-    : unordered_set<int>(size)
-{}
+UnorderedVertexSet::UnorderedVertexSet(int size) : unordered_set<int>(size)
+{
 
-UnorderedVertexSet::UnorderedVertexSet()
-    : unordered_set<int>()
-{}
+}
+
+UnorderedVertexSet::UnorderedVertexSet() : unordered_set<int>() {
+
+}
