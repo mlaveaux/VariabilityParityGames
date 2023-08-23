@@ -19,7 +19,7 @@ public class Parser {
         this.lexer = lexer;
 
         this.parseHeader();
-        String[] trans = lexer.input.toString().split("\n");
+        String[] trans = lexer.input.toString().split("\\R");
         assert (trans.length == this.transitions);
         for (int i = 0; i < this.transitions; i++) {
             this.parseTransition(trans[i]);
