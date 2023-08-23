@@ -467,7 +467,7 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=args.max_workers
     ) as executor:
-        
+
         all_games = prepare_experiments(experiments, logger, executor)
 
         # Execute the solvers to measure the solving time.
@@ -529,7 +529,7 @@ def main():
             with open(
                 "results.json", "w", encoding="utf-8"
             ) as json_file:
-                json.dump(result, json_file, seperators=(os.linesep, os.linesep))
+                json.dump(result, json_file, indent=2)
 
 
 if __name__ == "__main__":
