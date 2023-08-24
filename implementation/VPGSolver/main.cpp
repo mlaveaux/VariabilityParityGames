@@ -12,7 +12,6 @@
 #include <fstream>
 #include <iostream>
 
-
 #ifdef SINGLEMODE
 #include "Algorithms/zlnkPG.h"
 #else

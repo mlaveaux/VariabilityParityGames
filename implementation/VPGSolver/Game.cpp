@@ -18,10 +18,8 @@
 #include <string>
 #include <unordered_set>
 
-
 #include "Algorithms/Datastructures/ConfSetExplicit.h"
 #include "Game.h"
-
 
 void Game::set_n_nodes(int nodes)
 {
@@ -269,8 +267,8 @@ void Game::parseVertex(char* line)
   owner[index] = atoi(line);
   line += i + 1;
 
-  //cout << "\nVertex with index: " << index << " and prio: " << priority[index] << " and owner: " << owner[index]
-  //     << "\n";
+  // cout << "\nVertex with index: " << index << " and prio: " << priority[index] << " and owner: " << owner[index]
+  //      << "\n";
   while (*line != '\0') {
     if (*line == ',') {
       line++;

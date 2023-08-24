@@ -26,15 +26,15 @@
 #include "Algorithms/Datastructures/ConfSetExplicit.h"
 #endif
 #define VertexSetZlnkIsBitVector
-//#define VertexSetZlnkIsHashSet
+// #define VertexSetZlnkIsHashSet
 #ifdef VertexSetZlnkIsBitVector
 #include "Algorithms/Datastructures/VectorBoolOptimized.h"
-#define VertexSetZlnk  VectorBoolOptimized
+#define VertexSetZlnk VectorBoolOptimized
 #endif
 #ifdef VertexSetZlnkIsHashSet
 #include "Algorithms/Datastructures/UnorderedVertexSet.h"
-#define VertexSetZlnk  UnorderedVertexSet
+#define VertexSetZlnk UnorderedVertexSet
 #endif
 
 #define VertexSetFPIte VectorBoolOptimized
-#endif //VPGSOLVER_CONF_H
+#endif // VPGSOLVER_CONF_H

@@ -18,7 +18,6 @@
 #include <unordered_set>
 #include <vector>
 
-
 using namespace std;
 
 #define target(a) std::get<0>(a)
