@@ -3,7 +3,7 @@ project(VPGSolver)
 
 add_subdirectory(3rd-party/BuDDy)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/)
 
 add_executable(VPGSolver_explicit 
@@ -15,6 +15,8 @@ add_executable(VPGSolver_explicit
   conf.h 
   Algorithms/Datastructures/ConfSetExplicit.cpp 
   Algorithms/Datastructures/ConfSetExplicit.h 
+  Algorithms/Datastructures/VectorBoolOptimized.cpp 
+  Algorithms/Datastructures/VectorBoolOptimized.h 
   Algorithms/FPIte.cpp 
   Algorithms/FPIte.h
   Algorithms/MBR.cpp 
@@ -34,6 +36,8 @@ add_executable(VPGSolver_bdd
   conf.h 
   Algorithms/Datastructures/ConfSetExplicit.cpp 
   Algorithms/Datastructures/ConfSetExplicit.h 
+  Algorithms/Datastructures/VectorBoolOptimized.cpp 
+  Algorithms/Datastructures/VectorBoolOptimized.h 
   Algorithms/FPIte.cpp 
   Algorithms/FPIte.h 
   Algorithms/MBR.cpp 
@@ -59,6 +63,8 @@ add_executable(VPGSolver_bdd_single
   Algorithms/MBR.h 
   Algorithms/Datastructures/UnorderedVertexSet.cpp 
   Algorithms/Datastructures/UnorderedVertexSet.h 
+  Algorithms/Datastructures/VectorBoolOptimized.cpp 
+  Algorithms/Datastructures/VectorBoolOptimized.h 
   Algorithms/zlnkPG.cpp
   Algorithms/zlnkPG.h)
 
@@ -75,6 +81,8 @@ add_executable(VPGlambdameasure
   conf.h 
   Algorithms/Datastructures/ConfSetExplicit.cpp 
   Algorithms/Datastructures/ConfSetExplicit.h 
+  Algorithms/Datastructures/VectorBoolOptimized.cpp 
+  Algorithms/Datastructures/VectorBoolOptimized.h 
   Algorithms/FPIte.cpp 
   Algorithms/FPIte.h 
   Algorithms/MBR.cpp 
