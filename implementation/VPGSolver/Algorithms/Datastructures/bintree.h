@@ -12,15 +12,14 @@ using namespace std;
  * @tparam T type of value that every node contains
  */
 template <class T>
-class bintree {
+class bintree
+{
 public:
-    T *value = nullptr;
-    bintree<T> *left = nullptr;
-    bintree<T> *right = nullptr;
+  T* value = nullptr;
+  bintree<T>* left = nullptr;
+  bintree<T>* right = nullptr;
 
-
-    bool isLeaf();
+  bool isLeaf();
 };
 
-
-#endif //VPGSOLVER_BINTREE_H
+#endif // VPGSOLVER_BINTREE_H
