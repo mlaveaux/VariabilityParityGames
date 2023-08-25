@@ -207,16 +207,37 @@ void FPIte::solve()
 
 FPIte::~FPIte() = default;
 
+// Maurice: My own unoptimised implementations of copy_n and compare_n
+
+/// Copies [start, start+n] bits from other into result. Requires start + n < result.size()
+void copy_n(VertexSetFPIte& result, VertexSetFPIte& other, std::size_t start, std::size_t n)
+{
+  for (std::size_t i = start; i < start + n; ++i) {
+    result[i] = other[i];
+  }
+}
+
+bool compare_n(const VertexSetFPIte& result, VertexSetFPIte& other, std::size_t start, std::size_t n)
+{
+  for (std::size_t i = start; i < start + n; ++i) {
+    if (result[i] != other[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void FPIte::copyWithPrio(VertexSetFPIte* Z, VertexSetFPIte* ZP, int p)
 {
   int start = game->reindexPCutoff[p];
-  Z->copy_n(ZP, start, game->reindexPCutoff[p + 2] - start);
+  copy_n(*Z, *ZP, start, game->reindexPCutoff[p + 2] - start);
 }
 
 bool FPIte::compareWithPrio(VertexSetFPIte* Z, VertexSetFPIte* ZP, int p)
 {
   int start = game->reindexPCutoff[p];
-  return Z->compare_n(ZP, start, game->reindexPCutoff[p + 2] - start);
+  return compare_n(*Z, *ZP, start, game->reindexPCutoff[p + 2] - start);
 }
 
 void FPIte::copyWithPrio(VertexSetFPIte* Z, VertexSetFPIte* ZP, int sp, int ep)
