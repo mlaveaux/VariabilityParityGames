@@ -35,7 +35,7 @@ MBR::MBR(Game* game)
   this->P0->resize(game->n_nodes);
   this->VP1 = new VertexSetFPIte();
   this->VP1->resize(game->n_nodes);
-  this->VP1->set(true);
+  this->VP1->set();
   this->feature = 0;
 }
 

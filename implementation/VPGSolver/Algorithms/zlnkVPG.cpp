@@ -218,8 +218,8 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
       *bigA = *WOpbigV;
       *ac = *WOpvc;
 #ifdef VertexSetZlnkIsBitVector
-      W0bigV->set(false);
-      W1bigV->set(false);
+      W0bigV->reset();
+      W1bigV->reset();
 #else
       W0bigV->clear();
       W1bigV->clear();
