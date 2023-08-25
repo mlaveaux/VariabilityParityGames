@@ -246,7 +246,7 @@ void FPIte::copyWithPrio(VertexSetFPIte* Z, VertexSetFPIte* ZP, int sp, int ep)
     return;
   }
   int start = game->reindexPCutoff[sp];
-  Z->copy_n(ZP, start, game->reindexPCutoff[ep + 2] - start);
+  copy_n(*Z, *ZP, start, game->reindexPCutoff[ep + 2] - start);
 }
 
 void FPIte::setP0(char* P0string)
