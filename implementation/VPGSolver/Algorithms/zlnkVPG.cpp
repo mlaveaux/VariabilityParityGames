@@ -217,9 +217,9 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
       // clone content and wipe winningConf sets
       *bigA = *WOpbigV;
       *ac = *WOpvc;
-#ifdef VertexSetZlnkIsBitVector //@todo: implement some sort clear function VertexSetZlnkIsBitVector
-      std::fill(W0bigV->begin(), W0bigV->end(), false);
-      std::fill(W1bigV->begin(), W1bigV->end(), false);
+#ifdef VertexSetZlnkIsBitVector
+      W0bigV->set(false);
+      W1bigV->set(false);
 #else
       W0bigV->clear();
       W1bigV->clear();

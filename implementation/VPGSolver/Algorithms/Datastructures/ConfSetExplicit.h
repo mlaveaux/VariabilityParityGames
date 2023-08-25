@@ -4,12 +4,14 @@
 
 #ifndef VPGSOLVER_CONFSETEXPLICIT_H
 #define VPGSOLVER_CONFSETEXPLICIT_H
-#include "VectorBoolOptimized.h"
 #include <vector>
+
+#include "boost/dynamic_bitset.hpp"
+
 using namespace std;
 
 /**
- * Decorate the VectoBoolOptimized to represent sets explicitly
+ * Decorate the VectorBoolOptimized to represent sets explicitly
  *
  * @todo: Instead of decorating, this class should extend VectorBoolOptimized.
  */
@@ -50,7 +52,8 @@ public:
    * @return the number of elements in the set
    */
   int count();
-  VectorBoolOptimized items;
+
+  boost::dynamic_bitset<> items;
 };
 
 #endif // VPGSOLVER_CONFSETEXPLICIT_H
