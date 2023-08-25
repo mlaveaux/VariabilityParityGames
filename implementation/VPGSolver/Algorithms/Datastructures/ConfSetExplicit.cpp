@@ -42,9 +42,11 @@ int ConfSetExplicit::operator==(ConfSetExplicit& other)
 
 ConfSetExplicit::ConfSetExplicit(int bit)
 {
+  size = std::max(bit+1, size);
+
   items.resize(size);
   unsigned int mask = 1 << bit;
-  for (unsigned int i = 0; i <= ConfSetExplicit::size; i++) {
+  for (unsigned int i = 0; i < ConfSetExplicit::size; i++) {
     this->items[i] = (i & mask) != 0;
   }
 }
@@ -52,8 +54,8 @@ ConfSetExplicit::ConfSetExplicit(int bit)
 int ConfSetExplicit::count()
 {
   int c = 0;
-  for (auto b : items) {
-    if (b) {
+  for (std::size_t i = 0; i < items.size(); ++i) {
+    if (items.test(i)) {
       c++;
     }
   }
