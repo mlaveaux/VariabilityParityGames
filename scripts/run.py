@@ -27,7 +27,7 @@ mapping_regex = re.compile(r"(.*)=(.*)")
 transition_regex = re.compile(r"\(([0-9]*),\"(.*)\",([0-9]*)\)")
 confs_regex = re.compile(r"confs .*;")
 conf_regex = re.compile(r"\|[-|+|0|1]*")
-
+solving_time_regex = re.compile(r"Solving time: (.*) ns")
 
 class MyLogger(logging.Logger):
     """My own logger that stores the log messages into a string stream"""
@@ -66,7 +66,7 @@ def is_newer(inputfile: str, outputfile: str, ignore=False) -> bool:
         return True
 
 
-def run_program(cmds, logger):
+def run_program(cmds, logger, process = None):
     """Runs the given program with sensible defaults, and logs the results to the logger"""
 
     with subprocess.Popen(
@@ -74,6 +74,9 @@ def run_program(cmds, logger):
     ) as proc:
         for line in proc.stdout:
             logger.info(line)
+
+            if process is not None:
+                process(line)
 
         proc.wait()
 
@@ -216,13 +219,21 @@ def prepare(
             )
         ] = ("project", name, program_logger)
 
+    # Add the projections to the list of games
+    for prop in properties:
+        prop, _ = os.path.splitext(prop)
+        for file in os.listdir(tmp_directory):
+            if prop in file and "single.svpg" in file:
+                games.append((os.path.basename(directory), prop, os.path.join(tmp_directory, file)))
+
     return (futures, games)
 
 
 def project_single(
-    featurediagram_file, aut_file, mcf_file, game_file, renamed_game_file, logger
+    featurediagram_file, aut_file, mcf_file, game_file, single_game_file, pg_game_file, logger
 ):
-    """Computes the parity game for  a single projection, and computes the parity game without features"""
+    """Computes the parity game for a single projection, computes the single
+       conf and computes the parity game without features"""
 
     if is_newer(aut_file, game_file):
         # Create a vpg from the aut and property combination.
@@ -242,17 +253,27 @@ def project_single(
             logger,
         )
 
-    if is_newer(game_file, renamed_game_file):
+    if is_newer(game_file, pg_game_file):
         # Remove the configurations from the resulting svpg.
-        with open(renamed_game_file, "w", encoding="utf-8") as outfile:
+        with open(pg_game_file, "w", encoding="utf-8") as outfile:
             with open(game_file, encoding="utf-8") as file:
                 for line in file.readlines():
                     result = confs_regex.match(line)
                     if result is not None:
-                        outfile.write("confs;" + os.linesep)
+                        outfile.write("")
                     else:
                         outfile.write(re.sub(conf_regex, "", line))
 
+    if is_newer(game_file, single_game_file):
+        # Remove the configurations from the resulting svpg.
+        with open(single_game_file, "w", encoding="utf-8") as outfile:
+            with open(game_file, encoding="utf-8") as file:
+                for line in file.readlines():
+                    result = confs_regex.match(line)
+                    if result is not None:
+                        outfile.write("confs -;\n")
+                    else:
+                        outfile.write(re.sub(conf_regex, "|-", line))
 
 def prepare_projections(
     directory: str,
@@ -263,7 +284,7 @@ def prepare_projections(
 ):
     """Convert the projected .aut files into parity games"""
 
-    featurediagram_file = os.path.join(directory, "FD_project")
+    featurediagram_file = os.path.join(directory, "FD")
 
     # Convert .aut and formula into a VPG
     futures = {}
@@ -278,11 +299,15 @@ def prepare_projections(
                 mcf_file = os.path.join(directory, prop)
                 aut_file = os.path.join(tmp_directory, filename)
                 game_file = os.path.join(tmp_directory, name + ".svpg")
-                renamed_game_file = os.path.join(tmp_directory, name + ".pg")
-                games.append((os.path.basename(directory), prop, renamed_game_file))
+                pg_game_file = os.path.join(tmp_directory, name + ".pg")
+                single_game_file = os.path.join(tmp_directory, name + "_single.svpg")
+                games.append((os.path.basename(directory), prop, pg_game_file))
+                games.append((os.path.basename(directory), prop, single_game_file))
 
                 if is_newer(aut_file, game_file) or is_newer(
-                    game_file, renamed_game_file
+                    game_file, single_game_file
+                ) or is_newer(
+                    game_file, pg_game_file
                 ):
                     logger.info(
                         "Generating parity game for projection '%s' and property '%s'",
@@ -299,21 +324,34 @@ def prepare_projections(
                             aut_file,
                             mcf_file,
                             game_file,
-                            renamed_game_file,
+                            single_game_file,
+                            pg_game_file,
                             program_logger,
                         )
                     ] = (name, program_logger)
 
     return (futures, games)
 
+class TimeParser:
+    """ Extracts the solving time from the stdout of the program """
+    time: float | None = None
 
-def run_benchmark_single(tool: str, game: str, logger: MyLogger) -> float:
+    def __call__(self, line):
+        result = solving_time_regex.match(line)
+        if result:
+            self.time = float(result.group(1))
+
+def run_benchmark_single(tool: str, game: str, logger: MyLogger) -> tuple[float, float]:
     """Run a single benchmark and return the time it took in seconds"""
     tool_exe = shutil.which(tool)
 
     start = time.time()
-    run_program([tool_exe, game], logger)
-    return time.time() - start
+    time_parser = TimeParser()
+    run_program([tool_exe, game], logger, time_parser)
+
+    assert time_parser.time is not None
+
+    return (time.time() - start, time_parser.time / 1_000_000_000)
 
 
 def run_benchmark(
@@ -374,7 +412,8 @@ def prepare_experiments(experiments, logger: MyLogger, executor: concurrent.futu
             # We generate the parity games for the projections
             for future in concurrent.futures.as_completed(prepare_futures):
                 future.result()
-                action, name, future_logger = futures[future]
+
+                action, name, future_logger = prepare_futures[future]
                 if action == "generate":
                     name, future_logger = prepare_futures[future]
                     logger.info(future_logger.getvalue())
@@ -474,42 +513,33 @@ def main():
         benchmark_futures = {}
         for experiment, prop, game in all_games:
             for tool in tools:
-                logger.info(
-                    "Starting benchmarks for '%s' and '%s'",
-                    os.path.basename(game),
-                    tool,
-                )
+                if ".svpg" in game:
+                    logger.info(
+                        "Starting benchmarks for '%s' and '%s'",
+                        os.path.basename(game),
+                        tool,
+                    )
 
-                benchmark_futures.update(
-                    run_benchmark(experiment, prop, tool, game, executor)
-                )
+                    benchmark_futures.update(
+                        run_benchmark(experiment, prop, tool, game, executor)
+                    )
 
         # Collect the benchmark results.
         all_results = {}
         for future in concurrent.futures.as_completed(benchmark_futures):
             experiment, prop, game, tool, benchmark_logger = benchmark_futures[future]
 
-            result = {}
-            try:
-                measurement = future.result()
+            (total, solving) = future.result()
 
-                logger.info(benchmark_logger.getvalue())
-                logger.info(
-                    "Finished benchmark %s with game %s in %s",
-                    tool,
-                    os.path.basename(game),
-                    measurement,
-                )
+            logger.info(benchmark_logger.getvalue())
+            logger.info(
+                "Finished benchmark %s with game %s in %s",
+                tool,
+                os.path.basename(game),
+                total,
+            )
 
-                result = {"timing": measurement}
-            except Exception as exp:
-                logger.info(
-                    "Benchmark %s with game %s failed %s",
-                    tool,
-                    os.path.basename(game),
-                    exp,
-                )
-                result = {"timing": -1}
+            result = {"total": total, "solving": solving}
 
             # Construct the dictionary
             game = os.path.basename(game)
