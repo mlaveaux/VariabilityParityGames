@@ -27,7 +27,7 @@ mapping_regex = re.compile(r"(.*)=(.*)")
 transition_regex = re.compile(r"\(([0-9]*),\"(.*)\",([0-9]*)\)")
 confs_regex = re.compile(r"confs .*;")
 conf_regex = re.compile(r"\|[-|+|0|1]*")
-solving_time_regex = re.compile(r"Solving time: (.*) ns")
+
 
 class MyLogger(logging.Logger):
     """My own logger that stores the log messages into a string stream"""
@@ -66,7 +66,7 @@ def is_newer(inputfile: str, outputfile: str, ignore=False) -> bool:
         return True
 
 
-def run_program(cmds, logger, process = None):
+def run_program(cmds, logger, process=None):
     """Runs the given program with sensible defaults, and logs the results to the logger"""
 
     with subprocess.Popen(
@@ -163,7 +163,7 @@ def prepare(
         game_file = os.path.join(tmp_directory, prop + ".svpg")
 
         name = f"{os.path.basename(aut_file)} and {os.path.basename(mcf_file)}"
-        games.append((os.path.basename(directory), prop, game_file))
+        games.append((os.path.basename(os.path.normpath(directory)), prop, game_file))
         if (
             is_newer(featurediagram_file, game_file)
             or is_newer(aut_renamed_file, game_file)
@@ -224,16 +224,28 @@ def prepare(
         prop, _ = os.path.splitext(prop)
         for file in os.listdir(tmp_directory):
             if prop in file and "single.svpg" in file:
-                games.append((os.path.basename(directory), prop, os.path.join(tmp_directory, file)))
+                games.append(
+                    (
+                        os.path.basename(os.path.normpath(directory)),
+                        prop,
+                        os.path.join(tmp_directory, file),
+                    )
+                )
 
     return (futures, games)
 
 
 def project_single(
-    featurediagram_file, aut_file, mcf_file, game_file, single_game_file, pg_game_file, logger
+    featurediagram_file,
+    aut_file,
+    mcf_file,
+    game_file,
+    single_game_file,
+    pg_game_file,
+    logger,
 ):
     """Computes the parity game for a single projection, computes the single
-       conf and computes the parity game without features"""
+    conf and computes the parity game without features"""
 
     if is_newer(aut_file, game_file):
         # Create a vpg from the aut and property combination.
@@ -275,6 +287,7 @@ def project_single(
                     else:
                         outfile.write(re.sub(conf_regex, "|-", line))
 
+
 def prepare_projections(
     directory: str,
     tmp_directory: str,
@@ -301,13 +314,13 @@ def prepare_projections(
                 game_file = os.path.join(tmp_directory, name + ".svpg")
                 pg_game_file = os.path.join(tmp_directory, name + ".pg")
                 single_game_file = os.path.join(tmp_directory, name + "_single.svpg")
-                games.append((os.path.basename(directory), prop, pg_game_file))
-                games.append((os.path.basename(directory), prop, single_game_file))
+                games.append((os.path.basename(os.path.normpath(directory)), prop, pg_game_file))
+                games.append((os.path.basename(os.path.normpath(directory)), prop, single_game_file))
 
-                if is_newer(aut_file, game_file) or is_newer(
-                    game_file, single_game_file
-                ) or is_newer(
-                    game_file, pg_game_file
+                if (
+                    is_newer(aut_file, game_file)
+                    or is_newer(game_file, single_game_file)
+                    or is_newer(game_file, pg_game_file)
                 ):
                     logger.info(
                         "Generating parity game for projection '%s' and property '%s'",
@@ -332,14 +345,20 @@ def prepare_projections(
 
     return (futures, games)
 
+
+solving_time_regex = re.compile(r"Solving time: (.*) ns")
+
+
 class TimeParser:
-    """ Extracts the solving time from the stdout of the program """
+    """Extracts the solving time from the stdout of the program"""
+
     time: float | None = None
 
     def __call__(self, line):
         result = solving_time_regex.match(line)
         if result:
             self.time = float(result.group(1))
+
 
 def run_benchmark_single(tool: str, game: str, logger: MyLogger) -> tuple[float, float]:
     """Run a single benchmark and return the time it took in seconds"""
@@ -365,17 +384,94 @@ def run_benchmark(
 
     # Run several experiments and gather their average
     futures = {}
-    for i in range(0, 1):
+    for i in range(0, 5):
         # run_program requires no terminator when logging
         benchmark_logger = MyLogger(f"{i}-{tool}-{game}", terminator="")
-        futures[
-            executor.submit(run_benchmark_single, tool, game, benchmark_logger)
-        ] = (experiment, prop, game, tool, benchmark_logger)
+        futures[executor.submit(run_benchmark_single, tool, game, benchmark_logger)] = (
+            experiment,
+            prop,
+            game,
+            tool,
+            benchmark_logger,
+        )
 
     return futures
 
-def prepare_experiments(experiments, logger: MyLogger, executor: concurrent.futures.ThreadPoolExecutor):
-    """ Runs all preparation steps for the given experiments """
+
+family_solving_regex = re.compile(
+    r"For product ([0-9]*) the following vertices are in: ([0-9, ]*)"
+)
+
+
+class FamilySolveParser:
+    """Extracts the winners for each product on a family based solve"""
+
+    # A mapping from product to the pair of winning sets.
+    solution = {}
+
+    solutions_for = ""
+
+    def __call__(self, line):
+        if "W0" in line:
+            # The next lines contains the winners for W0
+            self.solutions_for = "W0"
+
+        if "W1" in line:
+            # The next lines contains the winners for W1
+            self.solutions_for = "W1"
+
+        result = family_solving_regex.match(line)
+        if result:
+            product = result.group(1)
+            vertices = []
+            for vert in result.group(2).split(","):
+                if vert != "":
+                    # Convert to numbers
+                    vertices.append(int(vert))
+
+            if not product in self.solution:
+                self.solution[product] = (None, None)
+
+            if self.solutions_for == "W0":
+                self.solution[product] = (vertices, self.solution[product][1])
+
+            if self.solutions_for == "W1":
+                self.solution[product] = (self.solution[product][0], vertices)
+
+
+def run_solution_solver(tool: str, game: str, logger: MyLogger) -> dict[type, type]:
+    """Run a single benchmark and return the time it took in seconds"""
+
+    tool_exe = shutil.which(tool)
+
+    parser = FamilySolveParser()
+    run_program([tool_exe, game, "f"], logger, parser)
+
+    return parser.solution
+
+
+def verify_result(executor, tool, game, experiment, prop):
+    """Runs both the family based solver and the product based solver and computes the winning partition."""
+
+    # Run the family based solver and parse the resulting winning partitions
+    futures = {}
+
+    logger = logging.Logger(f"solution-{tool}-{game}", logging.FATAL)
+    futures[executor.submit(run_solution_solver, tool, game, logger)] = (
+        "family",
+        os.path.basename(game),
+        logger,
+        experiment,
+        prop,
+    )
+
+    return futures
+
+
+def prepare_experiments(
+    experiments, logger: MyLogger, executor: concurrent.futures.ThreadPoolExecutor
+) -> List[tuple[str, str, str]]:
+    """Runs all preparation steps for the given experiments"""
 
     # First, we submit the jobs to generate the aut files and prepare the experiment.
     futures = {}
@@ -415,7 +511,6 @@ def prepare_experiments(experiments, logger: MyLogger, executor: concurrent.futu
 
                 action, name, future_logger = prepare_futures[future]
                 if action == "generate":
-                    name, future_logger = prepare_futures[future]
                     logger.info(future_logger.getvalue())
                     logger.info("Finished generating parity game for %s", name)
                 elif action == "project":
@@ -426,9 +521,7 @@ def prepare_experiments(experiments, logger: MyLogger, executor: concurrent.futu
                     tmp_directory = directory + "tmp/"
 
                     # Create a parity game for every projection
-                    prepare_project_logger = MyLogger(
-                        f"prepare_project_{directory}"
-                    )
+                    prepare_project_logger = MyLogger(f"prepare_project_{directory}")
                     new_futures, games = prepare_projections(
                         directory,
                         tmp_directory,
@@ -442,12 +535,13 @@ def prepare_experiments(experiments, logger: MyLogger, executor: concurrent.futu
             logger.info("Finished preparation for experiment '%s'", directory)
         except OSError as exp:
             logger.info("Preparation '%s' failed with exception %s", directory, exp)
-            return -1
+            return []
         except KeyboardInterrupt:
             logging.error("Interrupted program")
-            return -1
+            return []
 
     return all_games
+
 
 def main():
     """The main function"""
@@ -460,8 +554,12 @@ def main():
     )
 
     parser.add_argument("-m", "--max_workers", action="store", default=1, type=int)
-    parser.add_argument('-t', "--mcrl2-binpath", action="store", type=str, required=True)
-    parser.add_argument('-s', "--solver-binpath", action="store", type=str, required=True)
+    parser.add_argument(
+        "-t", "--mcrl2-binpath", action="store", type=str, required=True
+    )
+    parser.add_argument(
+        "-s", "--solver-binpath", action="store", type=str, required=True
+    )
 
     args = parser.parse_args()
 
@@ -506,8 +604,41 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=args.max_workers
     ) as executor:
-
         all_games = prepare_experiments(experiments, logger, executor)
+
+        # Verify the solver results.
+        verify_futures = {}
+        for experiment, prop, game in all_games:
+            for tool in tools:
+                logger.info(
+                    "Verifying game for '%s' with tool '%s'",
+                    os.path.basename(game),
+                    tool,
+                )
+
+                verify_futures.update(
+                    verify_result(executor, tool, game, experiment, prop)
+                )
+
+        solutions = {}
+        for future in concurrent.futures.as_completed(verify_futures):
+            _, game, _, experiment, prop = verify_futures[future]
+
+            solution = future.result()
+            logger.info("Obtained solution for game '%s' and '%s'", game, experiment)
+            if not experiment in solutions:
+                solutions[experiment] = {}
+            
+            if not prop in solutions[experiment]:
+                solutions[experiment][prop] = {}
+
+            solutions[experiment][prop][game] = solution
+
+        # writing the solution data into the corresponding JSON file
+        with open("solutions.json", "w", encoding="utf-8") as json_file:
+            json.dump(solutions, json_file, indent=2)
+
+        return
 
         # Execute the solvers to measure the solving time.
         benchmark_futures = {}
@@ -550,16 +681,18 @@ def main():
                 all_results[experiment][prop] = {}
 
             if game not in all_results[experiment][prop]:
-                all_results[experiment][prop][game] = {}
+                all_results[experiment][prop][game] = []
 
-            all_results[experiment][prop][game][tool] = result
+            entry = {tool: result}
+
+            all_results[experiment][prop][game].append(entry)
 
         # writing the dictionary data into the corresponding JSON file
         for _, result in all_results.items():
-            with open(
-                "results.json", "w", encoding="utf-8"
-            ) as json_file:
+            with open("results.json", "w", encoding="utf-8") as json_file:
                 json.dump(result, json_file, indent=2)
+
+        # Process the results into a table.
 
 
 if __name__ == "__main__":
