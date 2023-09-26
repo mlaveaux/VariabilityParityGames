@@ -144,8 +144,7 @@ def prepare(
                         action = result.group(2)
                         action = mapping.get(action, action)
                         outfile.write(
-                            f'({result.group(1)},"{action}",{result.group(3)})'
-                            + os.linesep
+                            f'({result.group(1)},"{action}",{result.group(3)})\n'
                         )
                     else:
                         outfile.write(line)
