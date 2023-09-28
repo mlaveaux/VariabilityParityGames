@@ -313,8 +313,16 @@ def prepare_projections(
                 game_file = os.path.join(tmp_directory, name + ".svpg")
                 pg_game_file = os.path.join(tmp_directory, name + ".pg")
                 single_game_file = os.path.join(tmp_directory, name + "_single.svpg")
-                games.append((os.path.basename(os.path.normpath(directory)), prop, pg_game_file))
-                games.append((os.path.basename(os.path.normpath(directory)), prop, single_game_file))
+                games.append(
+                    (os.path.basename(os.path.normpath(directory)), prop, pg_game_file)
+                )
+                games.append(
+                    (
+                        os.path.basename(os.path.normpath(directory)),
+                        prop,
+                        single_game_file,
+                    )
+                )
 
                 if (
                     is_newer(aut_file, game_file)
@@ -405,10 +413,10 @@ family_solving_regex = re.compile(
 class FamilySolveParser:
     """Extracts the winners for each product on a family based solve"""
 
-    # A mapping from product to the pair of winning sets.
-    solution = {}
-
-    solutions_for = ""
+    def __init__(self):
+        # A mapping from product to the pair of winning sets.
+        self.solution = {}
+        self.solutions_for = ""
 
     def __call__(self, line):
         if "W0" in line:
@@ -542,6 +550,76 @@ def prepare_experiments(
     return all_games
 
 
+def verify_results(all_games, tools, logger, executor):
+    """ Runs the solver on all the product and family games and compares the winning pairs """
+
+    # Verify the solver results.
+    verify_futures = {}
+    for experiment, prop, game in all_games:
+        for tool in tools:
+            logger.info(
+                "Verifying game for '%s' with tool '%s'",
+                os.path.basename(game),
+                tool,
+            )
+
+            verify_futures.update(verify_result(executor, tool, game, experiment, prop))
+
+    solutions = {}
+    for future in concurrent.futures.as_completed(verify_futures):
+        _, game, _, experiment, prop = verify_futures[future]
+
+        solution = future.result()
+        logger.info("Obtained solution for game '%s' and '%s'", game, experiment)
+        if not experiment in solutions:
+            solutions[experiment] = {}
+
+        if not prop in solutions[experiment]:
+            solutions[experiment][prop] = {}
+
+        solutions[experiment][prop][game] = solution
+
+    for experiment, properties in solutions.items():
+        # Find the family solution
+        family_solutions = {}
+        for prop, games in properties.items():
+            for game, solution in games.items():
+                if "project" not in game:
+                    logging.info("Checking property %s and family game %s", prop, game)
+                    family_solutions = solution
+                    break
+
+            for product, result in family_solutions.items():
+                checked = False
+                for product_prop, solution in games.items():
+                    logging.info(
+                        "Validating product %s for game %s", product, product_prop
+                    )
+                    if product in product_prop:
+                        # The product result must match the family result.
+                        logging.info("Checking product %s", product)
+
+                        left_W0 = set(map(int, result[0]))
+                        left_W1 = set(map(int, result[1]))
+
+                        right_W0 = set(map(int, solution['1'][0]))
+                        right_W1 = set(map(int, solution['1'][1]))
+
+                        diff0 = left_W0 ^ right_W0
+                        if diff0:
+                            logger.fatal("Mismatch in W0 %s", diff0)
+                            assert False
+
+                        diff1 = left_W1 ^ right_W1
+                        if diff1:
+                            logger.error("Mismatch in W1 %s", diff1)
+                            assert False
+                            
+                        checked = True
+
+                assert checked
+
+
 def main():
     """The main function"""
 
@@ -605,37 +683,7 @@ def main():
     ) as executor:
         all_games = prepare_experiments(experiments, logger, executor)
 
-        # Verify the solver results.
-        verify_futures = {}
-        for experiment, prop, game in all_games:
-            for tool in tools:
-                logger.info(
-                    "Verifying game for '%s' with tool '%s'",
-                    os.path.basename(game),
-                    tool,
-                )
-
-                verify_futures.update(
-                    verify_result(executor, tool, game, experiment, prop)
-                )
-
-        solutions = {}
-        for future in concurrent.futures.as_completed(verify_futures):
-            _, game, _, experiment, prop = verify_futures[future]
-
-            solution = future.result()
-            logger.info("Obtained solution for game '%s' and '%s'", game, experiment)
-            if not experiment in solutions:
-                solutions[experiment] = {}
-            
-            if not prop in solutions[experiment]:
-                solutions[experiment][prop] = {}
-
-            solutions[experiment][prop][game] = solution
-
-        # writing the solution data into the corresponding JSON file
-        with open("solutions.json", "w", encoding="utf-8") as json_file:
-            json.dump(solutions, json_file, indent=2)
+        verify_results(all_games, tools, logger, executor)
 
         return
 
