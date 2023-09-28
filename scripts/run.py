@@ -396,15 +396,13 @@ def prepare_experiments(
 
             # Create a parity game for every projection
             prepare_project_logger = MyLogger(f"prepare_project_{directory}")
-            new_futures, games = prepare_projections(
+            project_futures, games = prepare_projections(
                 directory,
                 tmp_directory,
                 properties,
                 prepare_project_logger,
                 executor,
             )
-
-            project_futures.update(new_futures)
 
             # Wait for all projections to be generated.
             for future in concurrent.futures.as_completed(project_futures):
@@ -415,7 +413,7 @@ def prepare_experiments(
                 prop, _ = os.path.splitext(prop)
                 for file in os.listdir(tmp_directory):
                     if prop in file and "single.svpg" in file:
-                        games.append(
+                        all_games.append(
                             (
                                 os.path.basename(os.path.normpath(directory)),
                                 prop,
@@ -685,9 +683,7 @@ def main():
     ) as executor:
         all_games = prepare_experiments(experiments, logger, executor)
 
-        #verify_results(all_games, tools, logger, executor)
-
-        return
+        verify_results(all_games, tools, logger, executor)
 
         # Execute the solvers to measure the solving time.
         benchmark_futures = {}
