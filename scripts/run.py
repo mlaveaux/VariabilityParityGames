@@ -528,7 +528,7 @@ def run_solution_solver(tool: str, game: str, logger: MyLogger) -> dict[type, ty
     tool_exe = shutil.which(tool)
 
     parser = FamilySolveParser()
-    run_program([tool_exe, game, "f"], logger, parser)
+    run_program([tool_exe, game], logger, parser)
 
     return parser.solution
 
@@ -640,8 +640,8 @@ def main():
 
     args = parser.parse_args()
 
-    os.environ["PATH"] += os.pathsep + args.mcrl2_binpath
-    os.environ["PATH"] += os.pathsep + args.solver_binpath
+    os.environ["PATH"] += os.pathsep + args.mcrl2_binpath.strip()
+    os.environ["PATH"] += os.pathsep + args.solver_binpath.strip()
 
     experiments = [
         (
@@ -719,7 +719,7 @@ def main():
 
             # Construct the dictionary
             game = os.path.basename(game)
-            if experiment not in all_results:
+            if not experiment in all_results:
                 all_results[experiment] = {}
 
             if prop not in all_results[experiment]:
@@ -733,11 +733,8 @@ def main():
             all_results[experiment][prop][game].append(entry)
 
         # writing the dictionary data into the corresponding JSON file
-        for _, result in all_results.items():
-            with open("results.json", "w", encoding="utf-8") as json_file:
-                json.dump(result, json_file, indent=2)
-
-        # Process the results into a table.
+        with open("results.json", "w", encoding="utf-8") as json_file:
+            json.dump(all_results, json_file, indent=2)
 
 
 if __name__ == "__main__":
