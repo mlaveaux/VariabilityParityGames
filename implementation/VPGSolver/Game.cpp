@@ -18,7 +18,6 @@
 #include <string>
 #include <unordered_set>
 
-#include "Algorithms/Datastructures/ConfSetExplicit.h"
 #include "Game.h"
 
 void Game::set_n_nodes(int nodes)
@@ -108,24 +107,22 @@ void Game::parseConfs(char* line)
   while (c != '\0' && c != '+' && c != ';');
   bm_n_vars = i - 7;
   bm_vars.resize(bm_n_vars);
-#ifdef subsetbdd
+
   bdd_init(2000000, 2);
   //    bdd_setcacheratio(200);
   bdd_setvarnum(bm_n_vars);
   vector<int> order;
   order.resize(bm_n_vars);
+
   for (i = 0; i < bm_n_vars; i++) {
     order[i] = i;
   }
-#ifdef randombddorder
-  unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-  shuffle(order.begin(), order.end(), default_random_engine(seed));
-#else
+
   if (specificvarlast) {
     order[bm_n_vars - 1] = specificvar;
     order[specificvar] = bm_n_vars - 1;
   }
-#endif
+
   cout << "Bdd order: ";
   for (i = 0; i < bm_n_vars; i++) {
     cout << '[' << i << "]=" << order[i] << ", ";
@@ -134,19 +131,7 @@ void Game::parseConfs(char* line)
   for (i = 0; i < bm_n_vars; i++) {
     bm_vars[order[i]] = bdd_ithvar(i);
   }
-#endif
-#ifdef subsetexplicit
-  ConfSetExplicit::size = (1 << (bm_n_vars));
-  fullset.items.resize(ConfSetExplicit::size);
-  emptyset.items.resize(ConfSetExplicit::size);
-  for (int i = 0; i < 1 << bm_n_vars; i++) {
-    fullset.items[i] = true;
-    emptyset.items[i] = false;
-  }
-  for (int i = 0; i < bm_n_vars; i++) {
-    bm_vars[i] = ConfSetExplicit(bm_n_vars - i - 1);
-  }
-#endif
+
   parseConfSet(line, 6, &bigC);
 }
 
@@ -155,9 +140,11 @@ void Game::parseInitialiser(char* line)
   while (*line == '\n' || *line == '\t' || *line == ' ') {
     line++;
   }
+
   if (strncmp(line, "parity ", 7) != 0) {
     throw std::string("Expected parity");
   }
+
   int parity = atoi(line + 7);
   set_n_nodes(parity);
 }
@@ -363,28 +350,29 @@ void Game::printCV(VertexSetZlnk* bigV, vector<ConfSet>* vc, ConfSet t, char* p,
 
 void Game::printCV(VertexSetZlnk* bigV, vector<ConfSet>* vc, bool fulloutput)
 {
-#ifdef SINGLEMODE
-  cout << "The following vertices are in: ";
-  if (fulloutput) {
-    for (int vi = 0; vi < n_nodes; vi++) {
-      if (!(*bigV)[vi]) {
-        continue;
-      }
-      for (auto j : orgvertices[vi]) {
-        cout << j << ',';
+  if (vc == nullptr)
+  {
+    cout << "The following vertices are in: ";
+    if (fulloutput) {
+      for (int vi = 0; vi < n_nodes; vi++) {
+        if (!(*bigV)[vi]) {
+          continue;
+        }
+        for (auto j : orgvertices[vi]) {
+          cout << j << ',';
+        }
       }
     }
-  }
-  else {
-    if ((*bigV)[findVertexWinningFor0()]) {
-      cout << "0,";
+    else {
+      if ((*bigV)[findVertexWinningFor0()]) {
+        cout << "0,";
+      }
     }
+    cout << "\n";
+    fflush(stdout);
+  } else {
+    printCV(bigV, vc, bigC, new char[bm_n_vars + 1], 0, fulloutput);
   }
-  cout << "\n";
-  fflush(stdout);
-#else
-  printCV(bigV, vc, bigC, new char[bm_n_vars + 1], 0, fulloutput);
-#endif
 }
 
 void Game::compressPriorities()

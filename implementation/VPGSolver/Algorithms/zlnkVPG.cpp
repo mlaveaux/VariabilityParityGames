@@ -8,12 +8,10 @@
 #include <map>
 #include <queue>
 
-bool zlnkVPG::conf_metricoutput = false;
-VertexSetZlnk zlnkVPG::emptyvertexset;
-
-zlnkVPG::zlnkVPG(Game* game)
+zlnkVPG::zlnkVPG(Game* game, bool metrics)
 {
-  zlnkVPG::emptyvertexset = VertexSetZlnk(game->n_nodes);
+  emptyvertexset = VertexSetZlnk(game->n_nodes);
+  conf_metricoutput = metrics;
   vector<ConfSet>* vc = new vector<ConfSet>(game->n_nodes);
   bigV = new VertexSetZlnk(game->n_nodes);
   for (int i = 0; i < game->n_nodes; i++) {
@@ -24,7 +22,7 @@ zlnkVPG::zlnkVPG(Game* game)
   this->vc = vc;
 }
 
-zlnkVPG::zlnkVPG(Game* game, VertexSetZlnk* bigV, vector<ConfSet>* vc)
+zlnkVPG::zlnkVPG(Game* game, VertexSetZlnk* bigV, vector<ConfSet>* vc, bool metrics)
 {
   this->game = game;
   this->bigV = bigV;
@@ -107,14 +105,9 @@ void zlnkVPG::attrQueue(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac)
       qq.push(vi);
 
       // Count how many configurations we were able to attract
-      if (conf_metricoutput)
-#ifdef subsetbdd
+      if (conf_metricoutput) {
         cout << "Attracted " << bdd_satcount(attracted) << " configurations.\n";
-#elif subsetexplicit
-        cout << "Attracted " << attracted.count() << " configurations.\n";
-#else
-      ;
-#endif
+      }
     }
   }
 }
@@ -171,7 +164,7 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
   *subBigV = *bigV;
   *subvc = *vc;
   // create subgame
-  zlnkVPG subgame(game, subBigV, subvc);
+  zlnkVPG subgame(game, subBigV, subvc, conf_metricoutput);
   // attract (bigA, ac), everything that is attracted is removed from (subBigV, subvc) thus creating the correct subgame
   subgame.attr(player, bigA, ac);
   cout << "\nDown1\n";
@@ -217,19 +210,14 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
       // clone content and wipe winningConf sets
       *bigA = *WOpbigV;
       *ac = *WOpvc;
-#ifdef VertexSetZlnkIsBitVector
       W0bigV->reset();
       W1bigV->reset();
-#else
-      W0bigV->clear();
-      W1bigV->clear();
-#endif
       fill(W0vc->begin(), W0vc->end(), emptyset);
       fill(W1vc->begin(), W1vc->end(), emptyset);
 
       // Attract (bigA,ac) (which is now contains the vertices won by player "1- player" in the subgame) for
       // player "1 - player"
-      zlnkVPG subgame2(game, bigV, vc);
+      zlnkVPG subgame2(game, bigV, vc, conf_metricoutput);
       subgame2.attr(1 - player, bigA, ac);
       if (inSolveLocal(1 - player)) {
         localconfs2 = (*ac)[0]; // Vertex 0 is found for these configurations, we are done for these confs

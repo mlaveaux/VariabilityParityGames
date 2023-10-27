@@ -23,7 +23,8 @@ public:
   /**
    * Empty vertex set to check if a set of vertices is empty
    */
-  static VertexSetZlnk emptyvertexset;
+  boost::dynamic_bitset<> emptyvertexset;
+
   /**
    * Indicate if we solve are solving local.
    *
@@ -38,7 +39,8 @@ public:
    * Currently this does nothing but is present to keep the public variables inline with the public variables of
    * zlnkVPG.
    */
-  static bool conf_metricoutput;
+  bool conf_metricoutput;
+
   /**
    * Measure time spent in the attractor set calculation
    */
@@ -48,13 +50,15 @@ public:
    * Initialize solver
    * @param game Parity game
    */
-  explicit zlnkPG(Game* game);
+  zlnkPG(Game* game, bool metrics);
+
   /**
    * Initialize solver for the subgame containing vertices in bigV
    * @param game Parity game
    * @param bigV Vertices in the game
    */
-  zlnkPG(Game* game, VertexSetZlnk* bigV);
+  zlnkPG(Game* game, VertexSetZlnk* bigV, bool metrics);
+
   /**
    * Solve the parity game.
    * Assume the winning sets are empty.
@@ -69,6 +73,7 @@ protected:
    * Parity game
    */
   Game* game;
+  
   /**
    * Indicate what subgame we are solving
    */
@@ -81,33 +86,39 @@ protected:
    * @param bigA Vertices we are attracting
    */
   void attr(int player, VertexSetZlnk* bigA);
+
   /**
    * Attractor implementation using a queue to maintain which vertices were attracted and for we consider predecessors
    * Runs in O(e)
    */
   void attrQueue(int player, VertexSetZlnk* bigA);
+
   /**
    * Find the highest and lowest priority
    * @return tuple containing the lowest priority first and the highest second
    */
   tuple<int, int> getHighLowPrio();
+
   /**
    * Get all the vertices with a specific priority
    * @param bigA Output argument in which we place the vertices found
    * @param prio priority we are looking for
    */
   void getVCWithPrio(VertexSetZlnk* bigA, int prio);
+
   /**
    * Calculate the union of bigA and bigB and store the result in bigA
    * @param bigA Left hand set
    * @param bigB Right hand set
    */
   void unify(VertexSetZlnk* bigA, VertexSetZlnk* bigB);
+
   /**
    * Remove vertices in bigA from bigV
    * @param bigA Vertices to remove
    */
   void removeFromBigV(VertexSetZlnk* bigA);
+
   /**
    * Check if we are allowed to terminate early if we find vertex 0 for player "player"
    */

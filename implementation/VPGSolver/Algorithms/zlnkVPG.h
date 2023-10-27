@@ -28,7 +28,7 @@ public:
   /**
    * Empty vertex set to check if a set of vertices is empty
    */
-  static VertexSetZlnk emptyvertexset;
+  VertexSetZlnk emptyvertexset;
   /**
    * Indicate if we solve are solving local.
    *
@@ -41,7 +41,8 @@ public:
    * Flag to enable metrics. If set to true the algorithm will output the number of configurations we were able to
    * attract simultaneously.
    */
-  static bool conf_metricoutput;
+  bool conf_metricoutput;
+
   /**
    * Measure time spent in the attractor set calculation
    */
@@ -51,14 +52,15 @@ public:
    * Initialize solved
    * @param game Variability parity game
    */
-  explicit zlnkVPG(Game* game);
+  explicit zlnkVPG(Game* game, bool metrics);
   /**
    * Initialize solver for the subgame containing vertices and configuration in (bigV,vc)
    * @param game Variability parity game
    * @param bigV vertices in the game
    * @param vc configurations per vertex that are in the game
    */
-  zlnkVPG(Game* game, VertexSetZlnk* bigV, vector<ConfSet>* vc);
+  zlnkVPG(Game* game, VertexSetZlnk* bigV, vector<ConfSet>* vc, bool metrics);
+
   /**
    * Solve the parity game
    * Assume the winning sets are empty
