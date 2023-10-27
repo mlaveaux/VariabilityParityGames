@@ -11,7 +11,6 @@
 
 zlnkPG::zlnkPG(Game* game, bool metrics)
 {
-  emptyvertexset = VertexSetZlnk(game->n_nodes);
   conf_metricoutput = metrics;
 
   bigV = new boost::dynamic_bitset<>(game->n_nodes);
@@ -23,7 +22,6 @@ zlnkPG::zlnkPG(Game* game, bool metrics)
 
 zlnkPG::zlnkPG(Game* game, VertexSetZlnk* bigV, bool metrics)
 {
-  emptyvertexset = VertexSetZlnk(game->n_nodes);
   conf_metricoutput = metrics;
   
   this->game = game;
@@ -99,7 +97,7 @@ void zlnkPG::attrQueue(int player, VertexSetZlnk* bigA)
 
 void zlnkPG::solve(VertexSetZlnk* W0bigV, VertexSetZlnk* W1bigV)
 {
-  if (*bigV == emptyvertexset) {
+  if (!bigV->any()) {
     return;
   }
 
@@ -153,7 +151,7 @@ void zlnkPG::solve(VertexSetZlnk* W0bigV, VertexSetZlnk* W1bigV)
 
   subgame.solve(W0bigV, W1bigV);
   attracting += subgame.attracting;
-  if (*WOpbigV == emptyvertexset) {
+  if (!WOpbigV->any()) {
     // The entire subgame is won by player "player" and therefore every vertex in this game is won by "player"
     unify(WMebigV, bigA);
   }

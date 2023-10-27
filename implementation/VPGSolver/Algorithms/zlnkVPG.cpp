@@ -10,7 +10,6 @@
 
 zlnkVPG::zlnkVPG(Game* game, bool metrics)
 {
-  emptyvertexset = VertexSetZlnk(game->n_nodes);
   conf_metricoutput = metrics;
   vector<ConfSet>* vc = new vector<ConfSet>(game->n_nodes);
   bigV = new VertexSetZlnk(game->n_nodes);
@@ -114,7 +113,7 @@ void zlnkVPG::attrQueue(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac)
 
 void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk* W1bigV, vector<ConfSet>* W1vc)
 {
-  if (*bigV == zlnkVPG::emptyvertexset) {
+  if (!bigV->any()) {
     return;
   }
 
@@ -184,7 +183,7 @@ void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk*
   subgame.solve(W0bigV, W0vc, W1bigV, W1vc);
   attracting += subgame.attracting;
   cout << "\nUp1\n";
-  if (*WOpbigV == zlnkVPG::emptyvertexset) {
+  if (!WOpbigV->any()) {
     // The entire subgame is won by player "player" for all configurations
     // therefore every vertex in this game is won by "player" for all configurations
     unify(WMebigV, WMevc, bigA, ac);

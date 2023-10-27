@@ -26,10 +26,6 @@ class zlnkVPG
 {
 public:
   /**
-   * Empty vertex set to check if a set of vertices is empty
-   */
-  VertexSetZlnk emptyvertexset;
-  /**
    * Indicate if we solve are solving local.
    *
    * If solvelocal is -1 we are not allowed terminate early, if it is set to 2 we
@@ -52,7 +48,8 @@ public:
    * Initialize solved
    * @param game Variability parity game
    */
-  explicit zlnkVPG(Game* game, bool metrics);
+  zlnkVPG(Game* game, bool metrics);
+
   /**
    * Initialize solver for the subgame containing vertices and configuration in (bigV,vc)
    * @param game Variability parity game
@@ -77,10 +74,12 @@ protected:
    * VPG
    */
   Game* game;
+
   /**
    * Indicate what subgame we are solving
    */
   VertexSetZlnk* bigV;
+
   /**
    * Indicate what subgame we are solving
    */
@@ -94,6 +93,7 @@ protected:
    * @param ac Vertices we are attracting
    */
   void attr(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac);
+  
   /**
    * Attractor implementation using a queue to maintain which vertices were attracted and for we consider predecessors
    * Runs in O(n*c^2*e) when configuration sets are explicit and O(n*c^3*e) when configuration sets are symbolic

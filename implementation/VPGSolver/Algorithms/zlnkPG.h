@@ -20,10 +20,6 @@
 class zlnkPG
 {
 public:
-  /**
-   * Empty vertex set to check if a set of vertices is empty
-   */
-  boost::dynamic_bitset<> emptyvertexset;
 
   /**
    * Indicate if we solve are solving local.
