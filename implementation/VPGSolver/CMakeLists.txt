@@ -14,9 +14,7 @@ add_executable(VPGSolver_bdd
   Algorithms/zlnkPG.h 
   Algorithms/zlnkVPG.cpp 
   Algorithms/zlnkVPG.h 
-  conf.h 
-  Algorithms/Datastructures/bintree.cpp 
-  Algorithms/Datastructures/bintree.h)
+  conf.h)
 
 target_compile_definitions(VPGSolver_bdd PUBLIC subsetbdd)
 target_link_libraries(VPGSolver_bdd PUBLIC bdd)
