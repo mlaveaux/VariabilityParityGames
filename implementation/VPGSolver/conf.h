@@ -21,7 +21,4 @@
 #define fullset bddtrue
 #define emptyset bddfalse
 
-#define VertexSetZlnkIsBitVector
-#define VertexSetZlnk boost::dynamic_bitset<>
-
 #endif // VPGSOLVER_CONF_H

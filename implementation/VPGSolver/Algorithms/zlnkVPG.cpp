@@ -8,339 +8,186 @@
 #include <map>
 #include <queue>
 
-zlnkVPG::zlnkVPG(Game* game, bool metrics)
+zlnkVPG::zlnkVPG(const Game& game, bool metrics)
+  : game(game),
+    conf_metricoutput(metrics),
+    m_vertices(game.number_of_vertices())
+{}
+
+std::pair<std::vector<ConfSet>, std::vector<ConfSet>> zlnkVPG::solve() const
 {
-  conf_metricoutput = metrics;
-  vector<ConfSet>* vc = new vector<ConfSet>(game->n_nodes);
-  bigV = new VertexSetZlnk(game->n_nodes);
-  for (int i = 0; i < game->n_nodes; i++) {
-    (*bigV)[i] = true;
-    (*vc)[i] = game->bigC;
+  // Initially all vertices belong to all configurations
+  std::vector<ConfSet> rho(game.number_of_vertices());
+  for (ConfSet& conf : rho) {
+    conf = game.configurations();
   }
-  this->game = game;
-  this->vc = vc;
+
+  auto result = solve_rec(std::move(rho));
+  return std::make_pair(result[0], result[1]);
 }
 
-zlnkVPG::zlnkVPG(Game* game, VertexSetZlnk* bigV, vector<ConfSet>* vc, bool metrics)
-{
-  this->game = game;
-  this->bigV = bigV;
-  this->vc = vc;
+/// \returns True iff the given confset is equal to lambda x in V. \emptyset
+bool is_confset_empty(const std::vector<ConfSet>& rho) {
+  for (const ConfSet& conf : rho) {
+    if (conf != emptyset) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-void zlnkVPG::attr(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac)
+/// \returns lambda x in V . rhs(x) cup lhs(x), but mutating lhs instead.
+void confset_union(const std::vector<ConfSet>& rhs, std::vector<ConfSet>& lhs) {
+  for (std::size_t i = 0; i < lhs.size(); ++i) {
+    lhs[i] |= rhs[i];
+  }
+}
+
+void confset_minus(const std::vector<ConfSet>& rhs, std::vector<ConfSet>& lhs) {
+  for (std::size_t i = 0; i < lhs.size(); ++i) {
+    lhs[i] -= rhs[i];
+  }
+}
+
+std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_rec(std::vector<ConfSet>&& rho) const {
+  // 1. if rho == lambda v in V. \emptyset then
+  if (is_confset_empty(rho)) {
+    return std::array<std::vector<ConfSet>, 2>({rho, rho});
+  } else {
+    // m := max { p(v) | v in V && rho(v) \neq \emptyset }
+    int m = get_highest_prio(rho);
+
+    // 6. \alpha := m mod 2
+    int alpha = (m % 2);
+    int not_alpha = 1 - alpha;
+
+    // 7. U := lambda v in V. { \rho(v) | p(v) = m }
+    std::vector<ConfSet> U(game.number_of_vertices());
+    for (const auto& v : game.priority_vertices(m)) {
+      U[v] = rho[v];
+    }
+
+    // 8. A := attr_alpha(U), we update U.
+    attr(alpha, rho, U);
+    const std::vector<ConfSet>& A = U;
+
+    // 9. (W'_0, W'_1) := solve(rho \ A)
+    std::vector<ConfSet> rho_minus = rho;
+    confset_minus(A, rho_minus);
+
+    std::array<std::vector<ConfSet>, 2> W_prime = solve_rec(std::move(rho_minus));
+
+    // 10.
+    if (is_confset_empty(W_prime[not_alpha])) {
+      // W_prime[alpha] not used after this so can be changed.
+      // 11. W_alpha := W'_alpha \cup A
+      // 20. return (W_0, W_1) 
+      confset_union(A, W_prime[alpha]);
+      return W_prime;
+    } else {
+      // B := attr_notalpha(W'_notalpha)
+      // W_prime[not_alpha] not used after this so can be changed.
+      attr(not_alpha, rho, W_prime[not_alpha]);
+      const std::vector<ConfSet>& B = W_prime[not_alpha];
+
+      // rho not used after this so can be changed.
+      // 15. (W''_0, W''_1) := solve(rho \ B)
+      confset_minus(B, rho);
+      std::array<std::vector<ConfSet>, 2> W_doubleprime = solve_rec(std::move(rho));
+
+      // 16. W_alpha := W'_notalpha \cup B
+      // 20. return (W_0, W_1) 
+      confset_union(B, W_doubleprime[not_alpha]);
+      return W_doubleprime;
+    }
+  }
+}
+
+void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfSet>& A) const
 {
   auto start = std::chrono::high_resolution_clock::now();
 
-  removeFromBigV(bigA, ac);
-  attrQueue(player, bigA, ac);
-  auto end = std::chrono::high_resolution_clock::now();
+  // We use a dynamic bitset to tag vertices are being part of Q to speed up checks for inclusion in Q.
+  m_vertices.reset();
 
-  auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-  cout << "Attracting took " << elapsed.count() << "ns";
-  attracting += elapsed.count();
-}
-
-void zlnkVPG::attrQueue(int player, VertexSetZlnk* bigA, vector<ConfSet>* ac)
-{
-  queue<int> qq;
-#ifdef VertexSetZlnkIsBitVector
-  for (int vi = 0; vi < game->n_nodes; vi++) {
-    if (!(*bigA)[vi]) {
-      continue;
+  // 2. Queue Q := {v \in V | U(v) != \emptset }
+  std::queue<int> Q;
+  for (int v = 0; v < game.number_of_vertices(); v++) {
+    // Note A is the input U.
+    if (A[v] != emptyset) {
+      Q.push(v);
+      m_vertices[v] = true;
     }
-#else
-  for (const auto& vi : *bigA) {
-#endif
-    qq.push(vi);
   }
-  while (!qq.empty()) {
-    int vii = qq.front();
-    qq.pop();
 
-    for (int i = 0; i < game->in_edges[vii].size(); i++) {
-      int vi = target(game->in_edges[vii][i]);
-      int gi = edge_index(game->in_edges[vii][i]);
-      if (!(*bigV)[vi]) { // vertex not in the playing area anymore
-        continue;
-      }
-      // try to attract as many configurations as possible for vertex vi
-      ConfSet attracted;
-      // This follows the attractor definition precisely, see preudo code and definitions in the report
-      if (game->owner[vi] == player) {
-        attracted = (*vc)[vi];
-        attracted &= (*ac)[vii];
-        attracted &= game->edge_guards[gi];
-      }
-      else {
-        attracted = (*vc)[vi];
-        for (auto& j : game->out_edges[vi]) {
-          int target = target(j);
-          ConfSet s = game->bigC;
-          ConfSet s2 = game->bigC;
-          s -= game->edge_guards[edge_index(j)];
-          s2 -= (*vc)[target];
-          s |= s2;
-          attracted &= s;
+  // 3. A := U, we mutate U directly.
+
+  // 4. while Q is not empty do
+  while (!Q.empty()) {
+    // 5. w := Q.pop()
+    int w = Q.front();
+    Q.pop();
+
+    // 6. For every v \in Ew such that rho(v) \intersect \theta(v, w) \intersect A(w) != \emptyset do
+    // Our theta is represented by a edge_guard for a given edge index.
+    for (const auto& [v, edge] : game.predecessors(w)) {
+      ConfSet a;
+      a = rho[v];
+      a &= A[w];
+      a &= game.edge_guard(edge);
+
+      if (a != emptyset) {
+        // 7. if v in V_\alpha
+        if (game.owner(v) == alpha) {
+          // 8. a := rho(v) \intersect \theta(v, w) \intersect A(w) != \emptyset
+          // This assignment has already been computed above.
+        } 
+        // 9. Else
+        else {
+          // 10. a := rho(v)
+          a = rho[v];
+          // 11. for w' \in vE such that rho(v) && theta(v, w') && \rho(w') != \emptyset do
+          for (const auto& [w_prime, edge] : game.successors(v)) {
+            ConfSet tmp = rho[v];
+            tmp &= game.edge_guard(edge);
+            tmp &= rho[w];
+            if (tmp != emptyset) {
+              // 12. a := a && (C \ (theta(v, w') && \rho(w'))) \cup A(w')
+              ConfSet rhs = (game.configurations() - game.edge_guard(edge)) | A[w];
+              a &= rhs;              
+            }
+          }
+
+          // 15. a \ A(v) != \emptyset
+          if ((a - A[v]) != emptyset) {
+            // 16. A(v) := A(v) \cup a
+            A[v] |= a;
+
+            // 17. If v not in Q then Q.push(v)
+            if (!m_vertices[v]) {
+              Q.push(v);
+              m_vertices[v] = true;
+            }
+          }
         }
       }
-      if (attracted == emptyset) {
-        continue;
-      }
-      if (!(*bigA)[vi]) {
-        // add vertex to attracted set
-        (*bigA)[vi] = true;
-        (*ac)[vi] = attracted;
-      }
-      else {
-        (*ac)[vi] |= attracted;
-      }
-      // remove attracted confs from the game
-      (*vc)[vi] -= attracted;
-      if ((*vc)[vi] == emptyset) {
-        (*bigV)[vi] = false;
-      }
-      // if we attracted anything we need to reevaluate the predecessors of vi
-      qq.push(vi);
-
-      // Count how many configurations we were able to attract
-      if (conf_metricoutput) {
-        cout << "Attracted " << bdd_satcount(attracted) << " configurations.\n";
-      }
     }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    attracting += elapsed.count();
   }
 }
 
-void zlnkVPG::solve(VertexSetZlnk* W0bigV, vector<ConfSet>* W0vc, VertexSetZlnk* W1bigV, vector<ConfSet>* W1vc)
-{
-  if (!bigV->any()) {
-    return;
-  }
-
-  auto [h, l] = getHighLowPrio();
-  int player = (h % 2);
-  if (h == l) {
-    if (player == 0) {
-      *W0bigV = *bigV;
-      *W0vc = *vc;
-    }
-    else {
-      *W1bigV = *bigV;
-      *W1vc = *vc;
-    }
-    return;
-  }
-
-  VertexSetZlnk* WMebigV;
-  vector<ConfSet>* WMevc;
-  VertexSetZlnk* WOpbigV;
-  vector<ConfSet>* WOpvc;
-  if (player == 0) {
-    WMebigV = W0bigV;
-    WMevc = W0vc;
-    WOpbigV = W1bigV;
-    WOpvc = W1vc;
-  }
-  else {
-    WMebigV = W1bigV;
-    WMevc = W1vc;
-    WOpbigV = W0bigV;
-    WOpvc = W0vc;
-  }
-
-  // initialize (bigA,ac) which is used to attract
-  auto* bigA = new VertexSetZlnk(game->n_nodes);
-  ;
-  vector<ConfSet>* ac = new vector<ConfSet>(game->n_nodes);
-
-  // initialize (subBigV,subvc) which describes the subgame
-  auto* subBigV = new VertexSetZlnk(game->n_nodes);
-  ;
-  vector<ConfSet>* subvc = new vector<ConfSet>(game->n_nodes);
-  // fill (bigA,ac) with the highest priorities
-  getVCWithPrio(bigA, ac, h);
-  // initially, fill subgame with the entire game
-  *subBigV = *bigV;
-  *subvc = *vc;
-  // create subgame
-  zlnkVPG subgame(game, subBigV, subvc, conf_metricoutput);
-  // attract (bigA, ac), everything that is attracted is removed from (subBigV, subvc) thus creating the correct subgame
-  subgame.attr(player, bigA, ac);
-  cout << "\nDown1\n";
-
-  // Everything won by player "1 - player" in the subgame is also won by "1 - player" in this game.
-  // If we are allowed to terminate early when finding vertex 0 for "1 - player" then we are tell the subgame it is
-  // also allowed to termiante early for "1 - player", otherwise it is never allowed to terminate early.
-  // It is never allowed to terminate early when vertex 0 is found for player "player" since we are not sure if vertex
-  // 0 is then also won by "player" in this game.
-  if (inSolveLocal(1 - player)) {
-    subgame.solvelocal = 1 - player;
-  }
-  else {
-    subgame.solvelocal = -1;
-  }
-
-  subgame.solve(W0bigV, W0vc, W1bigV, W1vc);
-  attracting += subgame.attracting;
-  cout << "\nUp1\n";
-  if (!WOpbigV->any()) {
-    // The entire subgame is won by player "player" for all configurations
-    // therefore every vertex in this game is won by "player" for all configurations
-    unify(WMebigV, WMevc, bigA, ac);
-  }
-  else {
-    ConfSet localconfs, localconfs2;
-    if (inSolveLocal(1 - player) && (*WOpbigV)[0]) {
-      localconfs = (*WOpvc)[0]; // Vertex 0 is found for these configurations, we are done for these confs
-    }
-    if (!(localconfs == emptyset)
-        && !removeCSet(WOpbigV, WOpvc, localconfs)) { // remove all confs in localconfs from the game
-      // WOp is empty
-      // The entire subgame is won by player "player" for all configuration except those in localconfs
-      // therefore every vertex in this game is won by "player" for all configurations not in localconfs
-
-      // create incomplete winning sets for confs in localconfs
-      (*WOpbigV)[0] = true;
-      (*WOpvc)[0] |= localconfs;
-      // other confs are winning for player "player"
-      unify(WMebigV, WMevc, bigA, ac);
-    }
-    else {
-      // clone content and wipe winningConf sets
-      *bigA = *WOpbigV;
-      *ac = *WOpvc;
-      W0bigV->reset();
-      W1bigV->reset();
-      fill(W0vc->begin(), W0vc->end(), emptyset);
-      fill(W1vc->begin(), W1vc->end(), emptyset);
-
-      // Attract (bigA,ac) (which is now contains the vertices won by player "1- player" in the subgame) for
-      // player "1 - player"
-      zlnkVPG subgame2(game, bigV, vc, conf_metricoutput);
-      subgame2.attr(1 - player, bigA, ac);
-      if (inSolveLocal(1 - player)) {
-        localconfs2 = (*ac)[0]; // Vertex 0 is found for these configurations, we are done for these confs
-        localconfs |= localconfs2;
-      }
-      // remove the newly found confs from the game and only continue of something is left
-      if (!inSolveLocal(1 - player) || removeCSet(bigV, vc, localconfs2)) {
-        // Go into the second recursion for the remaining confs
-        cout << "\nDown2\n";
-        subgame2.solvelocal = solvelocal;
-        subgame2.solve(W0bigV, W0vc, W1bigV, W1vc);
-        attracting += subgame.attracting;
-        cout << "\nUp2\n";
-        unify(WOpbigV, WOpvc, bigA, ac);
-      }
-      if (!(localconfs == emptyset)) {
-        // Add incomplete winning sets for the localconfs found
-        (*WOpbigV)[0] = true;
-        (*WOpvc)[0] |= localconfs;
-      }
-    }
-  }
-  delete bigA;
-  delete ac;
-  delete subBigV;
-  delete subvc;
-}
-
-tuple<int, int> zlnkVPG::getHighLowPrio()
+int zlnkVPG::get_highest_prio(const std::vector<ConfSet>& rho) const
 {
   int highest = 0;
-  int lowest = INT32_MAX;
-#ifdef VertexSetZlnkIsBitVector //@todo: implement some sort of iteration for VertexSetZlnkIsBitVector
-  for (int vi = 0; vi < game->n_nodes; vi++) {
-    if (!(*bigV)[vi]) {
-      continue;
-    }
-#else
-  for (const auto& vi : *bigV) {
-#endif
-    int prio = game->priority[vi];
-    if (prio < lowest) {
-      lowest = prio;
-    }
-    if (prio > highest) {
-      highest = prio;
+  for (int v = 0; v < rho.size(); v++) {
+    if (rho[v] != emptyset) {
+      highest = std::max(highest, game.priority(v));
     }
   }
-  return make_tuple(highest, lowest);
-}
 
-void zlnkVPG::getVCWithPrio(VertexSetZlnk* bigA, vector<ConfSet>* ac, int prio)
-{
-  // use inverse priority assignment function
-  for (const auto& vi : game->priorityI[prio]) {
-    if ((*bigV)[vi]) {
-      (*bigA)[vi] = true;
-      (*ac)[vi] = (*vc)[vi];
-    }
-  }
-}
-
-void zlnkVPG::unify(VertexSetZlnk* bigA, vector<ConfSet>* ac, VertexSetZlnk* bigB, vector<ConfSet>* bc)
-{
-#ifdef VertexSetZlnkIsBitVector
-  for (int vi = 0; vi < game->n_nodes; vi++) {
-    if (!(*bigB)[vi]) {
-      continue;
-    }
-#else
-  for (const auto& vi : *bigB) {
-#endif
-    (*bigA)[vi] = true;
-    (*ac)[vi] |= (*bc)[vi];
-  }
-}
-
-void zlnkVPG::removeFromBigV(VertexSetZlnk* bigA, vector<ConfSet>* ac)
-{
-#ifdef VertexSetZlnkIsBitVector
-  for (int vi = 0; vi < game->n_nodes; vi++) {
-    if (!(*bigA)[vi]) {
-      continue;
-    }
-#else
-  for (const auto& vi : *bigA) {
-#endif
-    removeFromBigV(vi, (*ac)[vi]);
-  }
-}
-
-void zlnkVPG::removeFromBigV(int i, ConfSet c)
-{
-  (*vc)[i] -= c;
-  if ((*vc)[i] == emptyset) {
-    (*bigV)[i] = false;
-  }
-}
-
-bool zlnkVPG::inSolveLocal(int player)
-{
-  if (solvelocal == 2) {
-    return true;
-  }
-  return player == solvelocal;
-}
-
-bool zlnkVPG::removeCSet(VertexSetZlnk* bigA, vector<ConfSet>* ac, ConfSet C)
-{
-  if (C == emptyset) {
-    return true;
-  }
-  bool somethingleft = false;
-  for (int vi = 0; vi < game->n_nodes; vi++) {
-    if (!(*bigA)[vi]) {
-      continue;
-    }
-    (*ac)[vi] -= C;
-    if ((*ac)[vi] == emptyset) {
-      (*bigA)[vi] = false;
-    }
-    else {
-      somethingleft = true;
-    }
-  }
-  return somethingleft;
+  return highest;
 }

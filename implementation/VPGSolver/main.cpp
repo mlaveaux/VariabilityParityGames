@@ -6,35 +6,62 @@
 #include "Algorithms/zlnkVPG.h"
 #include "Game.h"
 
-using namespace std;
+void print_set(const std::vector<ConfSet>& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
+{
+  for (const auto& product : configurations) {    
+    std::cout << "For product " << product.second << " the following vertices are in: ";
+    for (int v = 0; v < W.size(); v++) {
+      ConfSet tmp = W[v];
+      tmp &= product.first;
+
+      if (tmp != emptyset) {
+        std::cout << v << ',';
+      }
+
+      if (!full_solution) {
+        // Only show first vertex otherwise.
+        break;
+      }
+    }
+    std::cout << "\n";
+  }
+}
+
+void print_set(const boost::dynamic_bitset<>& V, bool full_solution)
+{
+  std::cout << "The following vertices are in: ";
+  for (int v = 0; v < V.size(); v++) {
+    if (V[v]) {
+      std::cout << v << ',';
+    }
+
+    if (!full_solution) {
+      // Only show first vertex otherwise.
+      break;
+    }
+  }
+  std::cout << "\n";
+}
 
 int main(int argc, char** argv)
 {
   if (argc < 2) {
-    cerr << "Incorect params";
+    std::cerr << "Incorrect number of params";
     return 2;
   }
 
-  Game g;
+  char const* specificconf = "";
 
-  char* specificconf;
-  bool specificconfenabled = false;
+  bool debug = false;
 
-  bool fulloutput = false;
+  /// 
+  bool print_solution = false;
   bool metricoutput = false;
-  bool priocompress = false;
-  bool SolveFPIte = false;
-  bool assistedW0 = false;
-  char* assistanceW0;
-  bool assistrandom = false;
-  int assistn;
-  bool solvelocal = false;
 
   // Parse the input as a regular parity game and use the respective solver.
-  bool regulargame = false;
+  bool is_parity_game = false;
 
-  bool compressvertices = false;
-  char* metricdir;
+  // Projection mode, for every configuration generates the flatted parity game.
   bool projectmode = false;
   char* projectname;
 
@@ -45,86 +72,37 @@ int main(int argc, char** argv)
       projectname = argv[i+1];
       i++;
     } else if (argument.compare("--parity-game") == 0) {
-      regulargame = true;
+      is_parity_game = true;
     } else if (argument.compare("--print-solution") == 0) {
-      fulloutput = true;
-    }
-    else {
-      switch (*argv[i]) {
-      case 'v':
-        compressvertices = true;
-        break;
-      case 'o':
-        g.specificvarlast = true;
-        g.specificvar = atoi(argv[i] + 1);
-        break;
-      case 'l':
-        solvelocal = true;
-        break;
-      case 'P':
-        assistedW0 = true;
-        assistanceW0 = argv[i] + 1;
-        break;
-      case 'a':
-        assistrandom = true;
-        assistn = atoi(argv[i] + 1);
-        break;
-      case 'c':
-        specificconfenabled = true;
-        specificconf = argv[i] + 1;
-        break;
-      case 'm':
-        metricoutput = true;
-        metricdir = argv[i] + 1;
-        break;
-      case 'p':
-        priocompress = true;
-        break;
-      case 'F':
-        SolveFPIte = true;
-        priocompress = true;
-        break;
-      default:
-        cerr << "Unknown parameter: " << argv[i];
-        break;
-      }
+      print_solution = true;
+    } else if (argument.compare("--debug") == 0) {
+      debug = true;
+    } else {
+      std::cerr << "Unknown parameter: " << argv[i];
+      return -1;
     }
   }
 
-  if (regulargame) {
-    g.parsePGFromFile(argv[1]);
-  }
-
-  else {
-    if (specificconfenabled) {
-      g.parseVPGFromFile(argv[1], specificconf);
-    }
-    else {
-      g.parseVPGFromFile(argv[1]);
-    }
-  }
+  // Read the input game
+  Game g(argv[1], specificconf, is_parity_game);
 
   if (projectmode) {
     // Determine all configurations
-    vector<tuple<ConfSet, string>> allconfs;
-    g.findAllElements(g.bigC, &allconfs);
+    std::vector<std::pair<ConfSet, std::string>> allconfs = g.configurations_explicit();
 
     // Write the projected VPG
     for (const auto& conf : allconfs) {
-      string output_name = string(projectname);
-      output_name += get<1>(conf) + ".pg";
+      std::string output_name = std::string(projectname);
+      output_name += conf.second + ".pg";
 
       // Write the projection.
-      ofstream output;
-      output.open(output_name);
-      g.writePG(&output, get<0>(conf));
-      std::cout << "Projected to " << output_name << endl;
+      std::ofstream output(output_name);
+      g.write(output, conf.first);
+      std::cout << "Projected to " << output_name << std::endl;
     }
     return 0;
   }
   
-  time_t t = time(0);
-
   // enable cache after parsing
   bdd_gbc();
   bdd_setcacheratio(200);
@@ -132,53 +110,32 @@ int main(int argc, char** argv)
 
   auto start = std::chrono::high_resolution_clock::now();
 
-  if (compressvertices) {
-    g.compressVertices();
-  }
+  if (is_parity_game) {
 
-  if (priocompress) {
-    g.compressPriorities();
-  }
+    zlnkPG z(g, debug);
+    const auto [W0, W1] = z.solve();
 
-  auto* W0BigV = new VertexSetZlnk(g.n_nodes);
-  auto* W1BigV = new VertexSetZlnk(g.n_nodes);
-  vector<ConfSet>* W0vc = nullptr;
-  vector<ConfSet>* W1vc = nullptr;    
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
 
-  if (regulargame) {
-    zlnkPG z(&g, metricoutput);
-
-    if (solvelocal) {
-      z.solvelocal = 2;
-    }
-
-    z.solve(W0BigV, W1BigV);
+    std::cout << "W0: \n";
+    print_set(W0, print_solution);
+    std::cout << "W1: \n";
+    print_set(W1, print_solution);
   } else {
-    zlnkVPG z(&g, metricoutput);
+    assert(g.configurations() != emptyset);
 
-    W0vc = new vector<ConfSet>(g.n_nodes);
-    W1vc = new vector<ConfSet>(g.n_nodes);
-    for (int i = 0; i < g.n_nodes; i++) {
-      (*W0vc)[i] = emptyset;
-      (*W1vc)[i] = emptyset;
-    }
+    zlnkVPG z(g, print_solution);
+    const auto [W0, W1] = z.solve();
 
-    if (solvelocal) {
-      z.solvelocal = 2;
-    }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
 
-    z.solve(W0BigV, W0vc, W1BigV, W1vc);
+    std::cout << "W0: \n";
+    print_set(W0, g.configurations_explicit(), print_solution);
+    std::cout << "W1: \n";
+    print_set(W1, g.configurations_explicit(), print_solution);
   }
-
-  auto end = std::chrono::high_resolution_clock::now();
-
-  auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-  std::cout << "Solving time: " << elapsed.count() << " ns";
-
-  std::cout << "W0: \n";
-  g.printCV(W0BigV, W0vc, fulloutput);
-  std::cout << "W1: \n";
-  g.printCV(W1BigV, W1vc, fulloutput);
 
   return 0;
 }
