@@ -18,7 +18,7 @@ class zlnkPG
 public:
 
   /// Initialize a solver for the complete game.
-  zlnkPG(const Game& game, bool metrics);
+  zlnkPG(const Game& game, bool debug);
 
   //// Solve the parity game.
   std::pair<boost::dynamic_bitset<>, boost::dynamic_bitset<>> solve() const;
@@ -37,8 +37,8 @@ private:
   /// The parity game
   const Game& game;
     
-  /// Flag to enable metrics.
-  bool conf_metricoutput;
+  /// Flag to enable logging
+  bool m_debug = false;
 
   /// Measure time spent in the attractor set calculation
   mutable long attracting = 0;

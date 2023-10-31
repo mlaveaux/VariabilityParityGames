@@ -9,9 +9,9 @@
 #include <queue>
 
 
-zlnkPG::zlnkPG(const Game& game, bool metrics)
+zlnkPG::zlnkPG(const Game& game, bool debug)
   : game(game),
-    conf_metricoutput(metrics),
+    m_debug(debug),
     m_vertices(game.number_of_vertices())
 {}
 
@@ -47,7 +47,9 @@ std::array<boost::dynamic_bitset<>,2> zlnkPG::solve_rec(boost::dynamic_bitset<>&
     const boost::dynamic_bitset<>& A = U; // U has been mutated to A.
 
     // TODO: W_prime[alpha] is unnecessarily created when W_prime[not_alpha] is empty.
+    if (m_debug) { std::cerr << "begin solve_rec(V-A)" << std::endl; }
     std::array<boost::dynamic_bitset<>,2> W_prime = solve_rec(V - A);
+    if (m_debug) { std::cerr << "end solve_rec(V-A)" << std::endl; }
     if (!W_prime[not_alpha].any()) {
       // W_prime[alpha] not used after this so can be changed.
       W_prime[alpha] |= A;
@@ -59,7 +61,9 @@ std::array<boost::dynamic_bitset<>,2> zlnkPG::solve_rec(boost::dynamic_bitset<>&
 
       // V not used after this so can be changed.
       V -= B;
+      if (m_debug) { std::cerr << "begin solve_rec(V-B)" << std::endl; }
       std::array<boost::dynamic_bitset<>,2> W_doubleprime = solve_rec(std::move(V));
+      if (m_debug) { std::cerr << "end solve_rec(V-B)" << std::endl; }
 
       W_doubleprime[not_alpha] |= B;
       return W_doubleprime;
@@ -82,6 +86,8 @@ void zlnkPG::attr(int alpha, const boost::dynamic_bitset<>& V, boost::dynamic_bi
       m_vertices[v] = true;
     }
   }
+
+  int initial_size = A.count();
 
   // 4. While Q is not empty do
   while (!Q.empty()) {
@@ -119,6 +125,8 @@ void zlnkPG::attr(int alpha, const boost::dynamic_bitset<>& V, boost::dynamic_bi
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   attracting += elapsed.count();
+
+  if (m_debug) { std::cerr << "attracted " << A.count() << " verticed towards " << initial_size << " vertices" << std::endl; }
 }
 
 

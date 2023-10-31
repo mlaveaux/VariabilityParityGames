@@ -8,9 +8,9 @@
 #include <map>
 #include <queue>
 
-zlnkVPG::zlnkVPG(const Game& game, bool metrics)
+zlnkVPG::zlnkVPG(const Game& game, bool debug)
   : game(game),
-    conf_metricoutput(metrics),
+    m_debug(debug),
     m_vertices(game.number_of_vertices())
 {}
 
@@ -77,7 +77,9 @@ std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_rec(std::vector<ConfSet>&& rh
     std::vector<ConfSet> rho_minus = rho;
     confset_minus(A, rho_minus);
 
+    if (m_debug) { std::cerr << "begin solve_rec(rho-A)" << std::endl; }
     std::array<std::vector<ConfSet>, 2> W_prime = solve_rec(std::move(rho_minus));
+    if (m_debug) { std::cerr << "end solve_rec(rho-A)" << std::endl; }
 
     // 10.
     if (is_confset_empty(W_prime[not_alpha])) {
@@ -95,7 +97,9 @@ std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_rec(std::vector<ConfSet>&& rh
       // rho not used after this so can be changed.
       // 15. (W''_0, W''_1) := solve(rho \ B)
       confset_minus(B, rho);
+      if (m_debug) { std::cerr << "begin solve_rec(rho-B)" << std::endl; }
       std::array<std::vector<ConfSet>, 2> W_doubleprime = solve_rec(std::move(rho));
+      if (m_debug) { std::cerr << "end solve_rec(rho-B)" << std::endl; }
 
       // 16. W_alpha := W'_notalpha \cup B
       // 20. return (W_0, W_1) 
@@ -176,6 +180,8 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
     }
   }
 
+  int initial_size = m_vertices.count();
+
   // 3. A := U, we mutate U directly.
   std::vector<ConfSet>& A = U;
 
@@ -195,21 +201,20 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
       if (a != emptyset) {
         // 7. if v in V_\alpha
         if (game.owner(v) == alpha) {
-          // 8. a := rho(v) \intersect \theta(v, w) \intersect A(w) != \emptyset
+          // 8. a := rho(v) \intersect \theta(v, w) \intersect A(w)
           // This assignment has already been computed above.
-        } 
-        // 9. Else
+        }
         else {
           // 10. a := rho(v)
           a = rho[v];
           // 11. for w' \in vE such that rho(v) && theta(v, w') && \rho(w') != \emptyset do
-          for (const auto& [w_prime, edge] : game.successors(v)) {
+          for (const auto& [w_prime, edge_succ] : game.successors(v)) {
             ConfSet tmp = rho[v];
-            tmp &= game.edge_guard(edge);
+            tmp &= game.edge_guard(edge_succ);
             tmp &= rho[w_prime];
             if (tmp != emptyset) {
               // 12. a := a && (C \ (theta(v, w') && \rho(w'))) \cup A(w')
-              ConfSet tmp = game.edge_guard(edge);
+              ConfSet tmp = game.edge_guard(edge_succ);
               tmp &= rho[w_prime];
               tmp = (game.configurations() - tmp) | A[w_prime];
               a &= tmp;              
@@ -230,11 +235,14 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
         }
       }
     }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    attracting += elapsed.count();
   }
+
+  auto end = std::chrono::high_resolution_clock::now();
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+  if (m_debug) { std::cerr << "attracted " << m_vertices.count() << " verticed towards " << initial_size << " vertices" << std::endl; }
+
+  attracting += elapsed.count();
 }
 
 int zlnkVPG::get_highest_prio(const std::vector<ConfSet>& rho) const

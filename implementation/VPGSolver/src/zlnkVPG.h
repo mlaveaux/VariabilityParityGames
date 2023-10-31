@@ -20,8 +20,8 @@ class zlnkVPG
 {
 public:
 
-  /// Initialize solver for full variability parity game
-  zlnkVPG(const Game& game, bool metrics);
+  /// Initialize solver for variability parity games
+  zlnkVPG(const Game& game, bool debug);
 
   /// Solve the parity game
   std::pair<std::vector<ConfSet>, std::vector<ConfSet>> solve() const;
@@ -39,8 +39,8 @@ protected:
   /// \returns max { p(v) | v in V && g(v) \neq \emptyset } 
   int get_highest_prio(const std::vector<ConfSet>& rho) const;
   
-  /// Flag to enable metrics. If set to true the algorithm will output the number of configurations we were able to attract simultaneously.
-  bool conf_metricoutput;
+  /// Enable more extensive logging.
+  bool m_debug = false;
 
   /// Measure time spent in the attractor set calculation
   mutable long attracting = 0;
