@@ -2,8 +2,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "Algorithms/zlnkPG.h"
-#include "Algorithms/zlnkVPG.h"
+#include "zlnkPG.h"
+#include "zlnkVPG.h"
 #include "Game.h"
 
 void print_set(const std::vector<ConfSet>& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
@@ -29,7 +29,6 @@ void print_set(const std::vector<ConfSet>& W, const std::vector<std::pair<ConfSe
 
 void print_set(const boost::dynamic_bitset<>& V, bool full_solution)
 {
-  std::cout << "The following vertices are in: ";
   for (int v = 0; v < V.size(); v++) {
     if (V[v]) {
       std::cout << v << ',';
@@ -40,10 +39,9 @@ void print_set(const boost::dynamic_bitset<>& V, bool full_solution)
       break;
     }
   }
-  std::cout << "\n";
 }
 
-int main(int argc, char** argv)
+int run(int argc, char** argv)
 {
   if (argc < 2) {
     std::cerr << "Incorrect number of params";
@@ -118,14 +116,16 @@ int main(int argc, char** argv)
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
 
-    std::cout << "W0: \n";
+    std::cout << "W0: ";
     print_set(W0, print_solution);
-    std::cout << "W1: \n";
+    std::cout << "\n";
+    std::cout << "W1: ";
     print_set(W1, print_solution);
+    std::cout << "\n";
   } else {
     assert(g.configurations() != emptyset);
 
-    zlnkVPG z(g, print_solution);
+    zlnkVPG z(g, debug);
     const auto [W0, W1] = z.solve();
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -135,6 +135,19 @@ int main(int argc, char** argv)
     print_set(W0, g.configurations_explicit(), print_solution);
     std::cout << "W1: \n";
     print_set(W1, g.configurations_explicit(), print_solution);
+  }
+
+  return 0;
+}
+
+int main(int argc, char** argv)
+{
+  try {
+    run(argc, argv);
+  }
+  catch(const std::exception& ex) {
+    std::cerr << ex.what();
+    return 1;
   }
 
   return 0;

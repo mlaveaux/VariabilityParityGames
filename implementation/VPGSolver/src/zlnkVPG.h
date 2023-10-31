@@ -5,7 +5,9 @@
 #ifndef VPGSOLVER_ZLNKVPG_H
 #define VPGSOLVER_ZLNKVPG_H
 
-#include "../Game.h"
+#include "Game.h"
+
+#include <boost/dynamic_bitset.hpp>
 
 /// Implementation of the recursive algorithm for VPGs.
 ///
@@ -23,7 +25,11 @@ public:
   std::pair<std::vector<ConfSet>, std::vector<ConfSet>> solve() const;
 
 protected:  
+  /// \brief Implementation of SOLVE(rho)
   std::array<std::vector<ConfSet>, 2> solve_rec(std::vector<ConfSet>&& rho) const;
+
+  /// \brief Implementation of SOLVE_OPTIMISED(rho)
+  std::array<std::vector<ConfSet>, 2> solve_optimised_rec(std::vector<ConfSet>&& rho) const;
 
   /// Attract restriction to rho for player alpha towards A, adds these to A as well.
   void attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfSet>& A) const;

@@ -7,14 +7,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/)
 
 add_executable(VPGSolver_bdd 
-  main.cpp
-  Game.cpp 
-  Game.h 
-  Algorithms/zlnkPG.cpp 
-  Algorithms/zlnkPG.h 
-  Algorithms/zlnkVPG.cpp 
-  Algorithms/zlnkVPG.h 
-  conf.h)
+  src/main.cpp
+  src/Game.cpp 
+  src/Game.h 
+  src/zlnkPG.cpp 
+  src/zlnkPG.h 
+  src/zlnkVPG.cpp 
+  src/zlnkVPG.h)
 
 target_compile_definitions(VPGSolver_bdd PUBLIC subsetbdd)
 target_link_libraries(VPGSolver_bdd PUBLIC bdd)

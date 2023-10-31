@@ -5,7 +5,9 @@
 #ifndef VPGSOLVER_ZLNKPG_H
 #define VPGSOLVER_ZLNKPG_H
 
-#include "../Game.h"
+#include "Game.h"
+
+#include <boost/dynamic_bitset.hpp>
 
 /// Implementation of Zielonka's recursive algorithm.
 class zlnkPG

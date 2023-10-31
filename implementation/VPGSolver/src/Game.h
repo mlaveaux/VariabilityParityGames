@@ -2,15 +2,19 @@
 #ifndef VPGSOLVER_GAME_H
 #define VPGSOLVER_GAME_H
 
-
 #include <iostream>
 #include <optional>
+#include <functional>
 #include <map>
 #include <tuple>
 #include <unordered_set>
 #include <vector>
 
-#include "conf.h"
+#include "bdd.h"
+
+#define ConfSet bdd
+#define fullset bddtrue
+#define emptyset bddfalse
 
 #define target(a) std::get<0>(a)
 #define edge_index(a) std::get<1>(a)
