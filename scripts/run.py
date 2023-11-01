@@ -75,10 +75,10 @@ def run_program(cmds, logger, process=None):
         cmds, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
     ) as proc:
         for line in proc.stdout:
-            logger.info(line)
+            logger.info(line.strip())
 
             if process is not None:
-                process(line)
+                process(line.strip())
 
         proc.wait()
 
