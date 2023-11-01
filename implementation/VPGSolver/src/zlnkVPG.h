@@ -9,6 +9,8 @@
 
 #include <boost/dynamic_bitset.hpp>
 
+#include <array>
+#include <vector>
 /// Implementation of the recursive algorithm for VPGs.
 ///
 /// A restriction \rho: V -> 2^C is represented by a vector of ConfSet for every vertex and a bitvector indicating
