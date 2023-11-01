@@ -9,6 +9,9 @@
 
 #include <boost/dynamic_bitset.hpp>
 
+#include <array>
+#include <vector>
+
 /// Implementation of Zielonka's recursive algorithm.
 class zlnkPG
 {

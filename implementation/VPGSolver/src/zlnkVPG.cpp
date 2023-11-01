@@ -64,7 +64,7 @@ std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_rec(std::vector<ConfSet>&& rh
     int not_alpha = 1 - alpha;
 
     // 7. U := lambda v in V. { \rho(v) | p(v) = m }
-    std::vector<ConfSet> U(game.number_of_vertices());
+    std::vector<ConfSet> U(game.number_of_vertices(), emptyset);
     for (const auto& v : game.priority_vertices(m)) {
       U[v] = rho[v];
     }
@@ -188,8 +188,7 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
     // 6. For every v \in Ew such that rho(v) \intersect \theta(v, w) \intersect A(w) != \emptyset do
     // Our theta is represented by a edge_guard for a given edge index.
     for (const auto& [v, edge] : game.predecessors(w)) {
-      ConfSet a;
-      a = rho[v];
+      ConfSet a = rho[v];
       a &= A[w];
       a &= game.edge_guard(edge);
 
@@ -212,21 +211,21 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
               // 12. a := a && (C \ (theta(v, w') && \rho(w'))) \cup A(w')
               ConfSet tmp = game.edge_guard(edge);
               tmp &= rho[w_prime];
-              tmp = (game.configurations() - tmp) | A[w];
+              tmp = (game.configurations() - tmp) | A[w_prime];
               a &= tmp;              
             }
           }
+        }
 
-          // 15. a \ A(v) != \emptyset
-          if ((a - A[v]) != emptyset) {
-            // 16. A(v) := A(v) \cup a
-            A[v] |= a;
+        // 15. a \ A(v) != \emptyset
+        if ((a - A[v]) != emptyset) {
+          // 16. A(v) := A(v) \cup a
+          A[v] |= a;
 
-            // 17. If v not in Q then Q.push(v)
-            if (!m_vertices[v]) {
-              Q.push(v);
-              m_vertices[v] = true;
-            }
+          // 17. If v not in Q then Q.push(v)
+          if (!m_vertices[v]) {
+            Q.push(v);
+            m_vertices[v] = true;
           }
         }
       }
