@@ -350,18 +350,18 @@ def verify_results(experiments, logger):
                 for product, solution in family_parser.solution.items():
 
                     base, _ = os.path.splitext(file)
-                    for file in os.listdir(tmp_directory):
-                        file = tmp_directory + file
-                        if base in file and product in file:
+                    for product_file in os.listdir(tmp_directory):
+                        product_file = tmp_directory + product_file
+                        if base in product_file and product in product_file:
                             # The product result must match the family result.
                             logging.info("Checking product  %s", product)
 
                             product_parser = ProductSolveParser()
-                            run_program([vpgsolver_exe, file, "--print-solution", "--parity-game"], logging.Logger('ignore'), product_parser)
+                            run_program([vpgsolver_exe, product_file, "--print-solution", "--parity-game"], logging.Logger('ignore'), product_parser)
 
                             if pgsolver_exe:
                                 pgsolve_parser = PGSolveParser()
-                                run_program([pgsolver_exe, file, "-global", "recursive"], logging.Logger('ignore'), pgsolve_parser)
+                                run_program([pgsolver_exe, product_file, "-global", "recursive"], logging.Logger('ignore'), pgsolve_parser)
 
                                 diff0 = product_parser.solution[0] ^ pgsolve_parser.solution[0]
                                 assert not diff0, f"Mismatch in W0 {diff0}"
