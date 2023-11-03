@@ -11,6 +11,100 @@
 
 #include <array>
 #include <vector>
+
+class RestrictionProxy {
+
+public:
+  RestrictionProxy(ConfSet& entry, std::size_t& nonempty_count)
+    : m_nonempty_count(nonempty_count),
+      m_entry(entry)
+  {}
+
+  RestrictionProxy& operator=(const ConfSet& other) {
+    if (m_entry == emptyset && other != emptyset) {
+      m_nonempty_count += 1;
+    } else if (m_entry != emptyset && other == emptyset) {
+      m_nonempty_count -= 1;
+    }
+
+    m_entry = other;
+    return *this;
+  }
+
+  RestrictionProxy& operator|=(const ConfSet& other) {
+    if (m_entry == emptyset && other != emptyset) {
+      m_nonempty_count += 1;
+    } else if (m_entry != emptyset && other == emptyset) {
+      m_nonempty_count -= 1;
+    }
+
+    m_entry |= other;
+    return *this;
+  }
+
+  operator ConfSet() const {
+    return m_entry;
+  }
+
+private:
+  ConfSet& m_entry;
+  std::size_t& m_nonempty_count;
+};
+
+/// \brief A mapping from vertices to configurations.
+class Restriction {
+
+public:
+  Restriction(std::size_t number_of_vertices, ConfSet initial = emptyset)
+    : m_mapping(number_of_vertices, initial)
+  {}
+
+  /// \returns The size of the restriction. 
+  std::size_t size() const {
+    return m_mapping.size();
+  }
+
+  /// \returns True iff the given confset is equal to lambda x in V. \emptyset
+  bool is_empty() const {
+    return m_nonempty_count == 0;
+  }
+
+  ConfSet operator[](std::size_t index) const {
+    return m_mapping[index];
+  }
+
+  RestrictionProxy operator[](std::size_t index) {
+    return RestrictionProxy(m_mapping[index], m_nonempty_count);
+  }
+
+  Restriction& operator|=(const Restriction& other) {
+    assert(m_mapping.size() == other.m_mapping.size());
+
+    for (std::size_t i = 0; i < m_mapping.size(); ++i) {
+      m_mapping[i] |= other.m_mapping[i];
+    }
+    
+    return *this;
+  }
+  
+  Restriction& operator-=(const Restriction& other) {    
+    assert(m_mapping.size() == other.m_mapping.size());
+
+    for (std::size_t i = 0; i < m_mapping.size(); ++i) {
+      m_mapping[i] -= other.m_mapping[i];
+    }
+
+    return *this;
+  }
+
+private:
+  friend RestrictionProxy;
+
+  std::vector<ConfSet> m_mapping;
+
+  std::size_t m_nonempty_count = 0; // Invariant: counts the number of empty positions in the mapping.
+};
+
 /// Implementation of the recursive algorithm for VPGs.
 ///
 /// A restriction \rho: V -> 2^C is represented by a vector of ConfSet for every vertex and a bitvector indicating
@@ -24,20 +118,20 @@ public:
   zlnkVPG(const Game& game, bool debug);
 
   /// Solve the parity game
-  std::pair<std::vector<ConfSet>, std::vector<ConfSet>> solve() const;
+  std::pair<Restriction, Restriction> solve() const;
 
 protected:  
   /// \brief Implementation of SOLVE(rho)
-  std::array<std::vector<ConfSet>, 2> solve_rec(std::vector<ConfSet>&& rho) const;
+  std::array<Restriction, 2> solve_rec(Restriction&& rho) const;
 
   /// \brief Implementation of SOLVE_OPTIMISED(rho)
-  std::array<std::vector<ConfSet>, 2> solve_optimised_rec(std::vector<ConfSet>&& rho) const;
+  std::array<Restriction, 2> solve_optimised_rec(Restriction&& rho) const;
 
   /// Attract restriction to rho for player alpha towards A, adds these to A as well.
-  void attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfSet>& A) const;
+  void attr(int alpha, const Restriction& rho, Restriction& A) const;
   
   /// \returns max { p(v) | v in V && g(v) \neq \emptyset } 
-  int get_highest_prio(const std::vector<ConfSet>& rho) const;
+  int get_highest_prio(const Restriction& rho) const;
   
   /// Enable more extensive logging.
   bool m_debug = false;

@@ -14,47 +14,20 @@ zlnkVPG::zlnkVPG(const Game& game, bool debug)
     m_vertices(game.number_of_vertices())
 {}
 
-std::pair<std::vector<ConfSet>, std::vector<ConfSet>> zlnkVPG::solve() const
+std::pair<Restriction, Restriction> zlnkVPG::solve() const
 {
   // Initially all vertices belong to all configurations
-  std::vector<ConfSet> rho(game.number_of_vertices());
-  for (ConfSet& conf : rho) {
-    conf = game.configurations();
-  }
+  Restriction rho(game.number_of_vertices(), game.configurations());
 
   auto result = solve_rec(std::move(rho));
   return std::make_pair(result[0], result[1]);
 }
 
-/// \returns True iff the given confset is equal to lambda x in V. \emptyset
-/// TODO: This could be sped up by introducing a bitvector to indicate that a configuration is empty.
-bool is_confset_empty(const std::vector<ConfSet>& rho) {
-  for (const ConfSet& conf : rho) {
-    if (conf != emptyset) {
-      return false;
-    }
-  }
 
-  return true;
-}
-
-/// \returns lambda x in V . rhs(x) cup lhs(x), but mutating lhs instead.
-void confset_union(const std::vector<ConfSet>& rhs, std::vector<ConfSet>& lhs) {
-  for (std::size_t i = 0; i < lhs.size(); ++i) {
-    lhs[i] |= rhs[i];
-  }
-}
-
-void confset_minus(const std::vector<ConfSet>& rhs, std::vector<ConfSet>& lhs) {
-  for (std::size_t i = 0; i < lhs.size(); ++i) {
-    lhs[i] -= rhs[i];
-  }
-}
-
-std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_rec(std::vector<ConfSet>&& rho) const {
+std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& rho) const {
   // 1. if rho == lambda v in V. \emptyset then
-  if (is_confset_empty(rho)) {
-    return std::array<std::vector<ConfSet>, 2>({rho, rho});
+  if (rho.is_empty()) {
+    return std::array<Restriction, 2>({rho, rho});
   } else {
     // m := max { p(v) | v in V && rho(v) \neq \emptyset }
     int m = get_highest_prio(rho);
@@ -64,55 +37,55 @@ std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_rec(std::vector<ConfSet>&& rh
     int not_alpha = 1 - alpha;
 
     // 7. U := lambda v in V. { \rho(v) | p(v) = m }
-    std::vector<ConfSet> U(game.number_of_vertices(), emptyset);
+    Restriction U(game.number_of_vertices());
     for (const auto& v : game.priority_vertices(m)) {
-      U[v] = rho[v];
+      U[v] = (bdd)rho[v];
     }
 
     // 8. A := attr_alpha(U), we update U.
     attr(alpha, rho, U);
-    const std::vector<ConfSet>& A = U;
+    const Restriction& A = U;
 
     // 9. (W'_0, W'_1) := solve(rho \ A)
-    std::vector<ConfSet> rho_minus = rho;
-    confset_minus(A, rho_minus);
+    Restriction rho_minus = rho;
+    rho_minus -= A;
 
     if (m_debug) { std::cerr << "begin solve_rec(rho-A)" << std::endl; }
-    std::array<std::vector<ConfSet>, 2> W_prime = solve_rec(std::move(rho_minus));
+    std::array<Restriction, 2> W_prime = solve_rec(std::move(rho_minus));
     if (m_debug) { std::cerr << "end solve_rec(rho-A)" << std::endl; }
 
     // 10.
-    if (is_confset_empty(W_prime[not_alpha])) {
+    if (W_prime[not_alpha].is_empty()) {
       // W_prime[alpha] not used after this so can be changed.
       // 11. W_alpha := W'_alpha \cup A
       // 20. return (W_0, W_1) 
-      confset_union(A, W_prime[alpha]);
+      W_prime[alpha] |= A;
       return W_prime;
     } else {
       // B := attr_notalpha(W'_notalpha)
       // W_prime[not_alpha] not used after this so can be changed.
       attr(not_alpha, rho, W_prime[not_alpha]);
-      const std::vector<ConfSet>& B = W_prime[not_alpha];
+      const Restriction& B = W_prime[not_alpha];
 
       // rho not used after this so can be changed.
       // 15. (W''_0, W''_1) := solve(rho \ B)
-      confset_minus(B, rho);
+      rho -= B;
       if (m_debug) { std::cerr << "begin solve_rec(rho-B)" << std::endl; }
-      std::array<std::vector<ConfSet>, 2> W_doubleprime = solve_rec(std::move(rho));
+      std::array<Restriction, 2> W_doubleprime = solve_rec(std::move(rho));
       if (m_debug) { std::cerr << "end solve_rec(rho-B)" << std::endl; }
 
       // 16. W_alpha := W'_notalpha \cup B
       // 20. return (W_0, W_1) 
-      confset_union(B, W_doubleprime[not_alpha]);
+      W_doubleprime[not_alpha] |= B;
       return W_doubleprime;
     }
   }
 }
 
-std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_optimised_rec(std::vector<ConfSet>&& rho) const {
+std::array<Restriction, 2> zlnkVPG::solve_optimised_rec(Restriction&& rho) const {
   // 1. if rho == lambda v in V. \emptyset then
-  if (is_confset_empty(rho)) {
-    return std::array<std::vector<ConfSet>, 2>({rho, rho});
+  if (rho.is_empty()) {
+    return std::array<Restriction, 2>({rho, rho});
   } else {
     // 5. m := max { p(v) | v in V && rho(v) \neq \emptyset }
     int m = get_highest_prio(rho);
@@ -122,49 +95,49 @@ std::array<std::vector<ConfSet>, 2> zlnkVPG::solve_optimised_rec(std::vector<Con
     int not_alpha = 1 - alpha;
 
     // 7. U := lambda v in V. { \rho(v) | p(v) = m }
-    std::vector<ConfSet> U(game.number_of_vertices());
+    Restriction U(game.number_of_vertices());
     for (const auto& v : game.priority_vertices(m)) {
-      U[v] = rho[v];
+      U[v] = (bdd)rho[v];
     }
 
     // 8. A := attr_alpha(U), we update U.
     attr(alpha, rho, U);
-    const std::vector<ConfSet>& A = U;
+    const Restriction& A = U;
 
     // 9. (W'_0, W'_1) := solve(rho \ A)
-    std::vector<ConfSet> rho_minus = rho;
-    confset_minus(A, rho_minus);
+    Restriction rho_minus = rho;
+    rho_minus -= A;
 
-    std::array<std::vector<ConfSet>, 2> W_prime = solve_optimised_rec(std::move(rho_minus));
+    std::array<Restriction, 2> W_prime = solve_optimised_rec(std::move(rho_minus));
 
     // 10.
-    if (is_confset_empty(W_prime[not_alpha])) {
+    if (W_prime[not_alpha].is_empty()) {
       // W_prime[alpha] not used after this so can be changed.
       // 11. W_alpha := W'_alpha \cup A
       // 20. return (W_0, W_1) 
-      confset_union(A, W_prime[alpha]);
+      W_prime[alpha] |= A;
       return W_prime;
     } else {
       // TODO: Finish this case
       // B := attr_notalpha(W'_notalpha)
       // W_prime[not_alpha] not used after this so can be changed.
       attr(not_alpha, rho, W_prime[not_alpha]);
-      const std::vector<ConfSet>& B = W_prime[not_alpha];
+      const Restriction& B = W_prime[not_alpha];
 
       // rho not used after this so can be changed.
       // 15. (W''_0, W''_1) := solve(rho \ B)
-      confset_minus(B, rho);
-      std::array<std::vector<ConfSet>, 2> W_doubleprime = solve_optimised_rec(std::move(rho));
+      rho -= B;
+      std::array<Restriction, 2> W_doubleprime = solve_optimised_rec(std::move(rho));
 
       // 16. W_alpha := W'_notalpha \cup B
       // 20. return (W_0, W_1) 
-      confset_union(B, W_doubleprime[not_alpha]);
+      W_doubleprime[not_alpha] |= B;
       return W_doubleprime;
     }
   }
 }
 
-void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfSet>& U) const
+void zlnkVPG::attr(int alpha, const Restriction& rho, Restriction& U) const
 {
   auto start = std::chrono::high_resolution_clock::now();
 
@@ -174,7 +147,7 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
   // 2. Queue Q := {v \in V | U(v) != \emptset }
   std::queue<int> Q;
   for (int v = 0; v < game.number_of_vertices(); v++) {
-    if (U[v] != emptyset) {
+    if ((bdd)U[v] != emptyset) {
       Q.push(v);
       m_vertices[v] = true;
     }
@@ -183,7 +156,7 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
   int initial_size = m_vertices.count();
 
   // 3. A := U, we mutate U directly.
-  std::vector<ConfSet>& A = U;
+  Restriction& A = U;
 
   // 4. while Q is not empty do
   while (!Q.empty()) {
@@ -245,7 +218,7 @@ void zlnkVPG::attr(int alpha, const std::vector<ConfSet>& rho, std::vector<ConfS
   attracting += elapsed.count();
 }
 
-int zlnkVPG::get_highest_prio(const std::vector<ConfSet>& rho) const
+int zlnkVPG::get_highest_prio(const Restriction& rho) const
 {
   int highest = 0;
   for (int v = 0; v < rho.size(); v++) {
