@@ -306,13 +306,20 @@ void Game::write(std::ostream& output, std::optional<ConfSet> conf)
   output << "parity " << n_nodes << ';';
   for (int v = 0; v < n_nodes; v++) {
     output << std::endl << v << ' ' << m_priority[v] << ' ' << m_owner[v];
-    char seperator = ' ';
+    char separator = ' ';
     for (const auto& e : out_edges[v]) {
-      if (!conf || conf && edge_guards[edge_index(e)] != emptyset) {
-        output << seperator << target(e);
-        seperator = ',';
-      }
+      bool is_enabled = true;
+      if (conf) {
+        ConfSet tmp = conf.value();
+        tmp &= edge_guards[edge_index(e)];
 
+        is_enabled = (tmp != emptyset);
+      } 
+      
+      if (is_enabled) {                 
+        output << separator << target(e);
+        separator = ',';
+      }
     }
     output << ';';
   }

@@ -6,11 +6,11 @@
 #include "zlnkVPG.h"
 #include "Game.h"
 
-void print_set(const std::vector<ConfSet>& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
+void print_set(const Restriction& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
 {
   for (const auto& product : configurations) {    
     std::cout << "For product " << product.second << " the following vertices are in: ";
-    for (int v = 0; v < W.size(); v++) {
+    for (std::size_t v = 0; v < W.size(); v++) {
       ConfSet tmp = W[v];
       tmp &= product.first;
 
