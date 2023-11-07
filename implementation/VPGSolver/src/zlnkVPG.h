@@ -34,11 +34,19 @@ public:
   RestrictionProxy& operator|=(const ConfSet& other) {
     if (m_entry == emptyset && other != emptyset) {
       m_nonempty_count += 1;
-    } else if (m_entry != emptyset && other == emptyset) {
-      m_nonempty_count -= 1;
     }
 
     m_entry |= other;
+    return *this;
+  }
+  
+  RestrictionProxy& operator-=(const ConfSet& other) {
+    bool was_empty = (m_entry == emptyset);
+    m_entry -= other;
+
+    if (!was_empty && m_entry == emptyset) {
+      m_nonempty_count -= 1;
+    }
     return *this;
   }
 
@@ -57,11 +65,24 @@ class Restriction {
 public:
   Restriction(std::size_t number_of_vertices, ConfSet initial = emptyset)
     : m_mapping(number_of_vertices, initial)
-  {}
+  {
+    m_nonempty_count = initial == emptyset ? 0 : number_of_vertices;
+  }
 
   /// \returns The size of the restriction. 
-  std::size_t size() const {
+  std::size_t number_of_vertices() const {
     return m_mapping.size();
+  }
+  
+  /// \returns The size of the restriction. 
+  std::size_t size() const {
+    std::size_t count = 0;
+    for (const auto& entry : m_mapping) {
+      count += (entry != emptyset);
+    }
+    assert(m_nonempty_count == count);
+
+    return m_nonempty_count;
   }
 
   /// \returns True iff the given confset is equal to lambda x in V. \emptyset
@@ -81,7 +102,7 @@ public:
     assert(m_mapping.size() == other.m_mapping.size());
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
-      m_mapping[i] |= other.m_mapping[i];
+      (*this)[i] |= other[i];
     }
     
     return *this;
@@ -89,11 +110,13 @@ public:
   
   Restriction& operator-=(const Restriction& other) {    
     assert(m_mapping.size() == other.m_mapping.size());
+    assert(size() >= 0);
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
-      m_mapping[i] -= other.m_mapping[i];
+      (*this)[i] -= other[i];
     }
 
+    assert(size() >= 0);
     return *this;
   }
 
@@ -131,7 +154,7 @@ protected:
   void attr(int alpha, const Restriction& rho, Restriction& A) const;
   
   /// \returns max { p(v) | v in V && g(v) \neq \emptyset } 
-  int get_highest_prio(const Restriction& rho) const;
+  std::pair<std::size_t, std::size_t> get_highest_lowest_prio(const Restriction& rho) const;
   
   /// Enable more extensive logging.
   bool m_debug = false;
