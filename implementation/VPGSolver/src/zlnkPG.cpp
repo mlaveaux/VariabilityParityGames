@@ -30,7 +30,7 @@ std::array<boost::dynamic_bitset<>,2> zlnkPG::solve_rec(boost::dynamic_bitset<>&
   if (!V.any()) {
     return std::array<boost::dynamic_bitset<>,2>({V, V});
   } else {
-    int m = get_highest_prio(V);
+    auto [m, l] = get_highest_lowest_prio(V);
 
     int alpha = m % 2;
     int not_alpha = 1 - alpha;
@@ -42,6 +42,11 @@ std::array<boost::dynamic_bitset<>,2> zlnkPG::solve_rec(boost::dynamic_bitset<>&
         U[v] = true;
       }      
     }
+
+    if (m_debug) { std::cerr << "solve_rec(V) |V| = " 
+      << V.count() << ", m = " 
+      << m << ", l = " 
+      << l << " and |U| = " << U.count() << std::endl; }
 
     attr(alpha, V, U);
     const boost::dynamic_bitset<>& A = U; // U has been mutated to A.
@@ -130,15 +135,17 @@ void zlnkPG::attr(int alpha, const boost::dynamic_bitset<>& V, boost::dynamic_bi
 }
 
 
-int zlnkPG::get_highest_prio(const boost::dynamic_bitset<>& V) const
+std::pair<std::size_t, std::size_t> zlnkPG::get_highest_lowest_prio(const boost::dynamic_bitset<>& V) const
 {
-  int highest = 0;
+  std::size_t highest = 0;  
+  std::size_t lowest = std::numeric_limits<std::size_t >::max();
 
-  for (int v = 0; v < game.number_of_vertices(); v++) {
+  for (std::size_t v = 0; v < game.number_of_vertices(); v++) {
     if (V[v]) {
       highest = std::max(highest, game.priority(v));
+      lowest = std::min(lowest, game.priority(v));
     }
   }
 
-  return highest;
+  return std::make_pair(highest, lowest);
 }

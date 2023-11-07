@@ -32,7 +32,7 @@ private:
   std::array<boost::dynamic_bitset<>,2> solve_rec(boost::dynamic_bitset<>&& V) const;
 
   /// \returns max{p(v) | v \in V}
-  int get_highest_prio(const boost::dynamic_bitset<>& V) const;
+  std::pair<std::size_t, std::size_t> get_highest_lowest_prio(const boost::dynamic_bitset<>& V) const;
   
   /// The parity game
   const Game& game;
