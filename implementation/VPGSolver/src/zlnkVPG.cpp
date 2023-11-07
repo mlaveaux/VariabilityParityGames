@@ -162,7 +162,7 @@ void zlnkVPG::attr(int alpha, const Restriction& rho, Restriction& U) const
   auto start = std::chrono::high_resolution_clock::now();
 
   // We use a dynamic bitset to tag vertices are being part of Q to speed up checks for inclusion in Q.
-  m_vertices.reset();
+  //m_vertices.reset();
 
   // 2. Queue Q := {v \in V | U(v) != \emptset }
   std::queue<int> Q;
@@ -173,7 +173,7 @@ void zlnkVPG::attr(int alpha, const Restriction& rho, Restriction& U) const
     }
   }
 
-  int initial_size = m_vertices.count();
+  int initial_size = Q.size();
 
   // 3. A := U, we mutate U directly.
   Restriction& A = U;
@@ -183,6 +183,7 @@ void zlnkVPG::attr(int alpha, const Restriction& rho, Restriction& U) const
     // 5. w := Q.pop()
     int w = Q.front();
     Q.pop();
+    m_vertices[w] = false;
 
     // 6. For every v \in Ew such that rho(v) \intersect \theta(v, w) \intersect A(w) != \emptyset do
     // Our theta is represented by a edge_guard for a given edge index.
