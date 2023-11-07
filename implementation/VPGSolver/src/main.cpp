@@ -10,7 +10,7 @@ void print_set(const Restriction& W, const std::vector<std::pair<ConfSet, std::s
 {
   for (const auto& product : configurations) {    
     std::cout << "For product " << product.second << " the following vertices are in: ";
-    for (std::size_t v = 0; v < W.size(); v++) {
+    for (std::size_t v = 0; v < W.number_of_vertices(); v++) {
       ConfSet tmp = W[v];
       tmp &= product.first;
 
