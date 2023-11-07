@@ -49,7 +49,7 @@ public:
   int owner(int vertex) const { return m_owner[vertex]; }
 
   /// \returns The owner of the vertex.
-  int priority(int vertex) const { return m_priority[vertex]; }
+  std::size_t priority(int vertex) const { return m_priority[vertex]; }
 
   /// \returns The vertices for the given priority
   const std::unordered_set<int>& priority_vertices(int prio) const { return priorityI[prio]; }

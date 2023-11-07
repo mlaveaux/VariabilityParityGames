@@ -4,7 +4,7 @@ project(VPGSolver)
 add_subdirectory(3rd-party/BuDDy)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
 add_executable(VPGSolver_bdd 
   src/main.cpp
