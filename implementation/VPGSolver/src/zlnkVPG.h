@@ -70,12 +70,12 @@ public:
   }
 
   /// \returns The size of the restriction. 
-  std::size_t number_of_vertices() const {
+  std::size_t size() const {
     return m_mapping.size();
   }
   
   /// \returns The size of the restriction. 
-  std::size_t size() const {
+  std::size_t count() const {
     std::size_t count = 0;
     for (const auto& entry : m_mapping) {
       count += (entry != emptyset);
@@ -142,6 +142,9 @@ public:
 
   /// Solve the parity game
   std::pair<Restriction, Restriction> solve() const;
+
+  /// Solve the parity game with the optimised recursion
+  std::pair<Restriction, Restriction> solve_optimised() const;
 
 protected:  
   /// \brief Implementation of SOLVE(rho)

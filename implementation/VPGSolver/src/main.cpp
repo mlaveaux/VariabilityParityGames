@@ -10,7 +10,7 @@ void print_set(const Restriction& W, const std::vector<std::pair<ConfSet, std::s
 {
   for (const auto& product : configurations) {    
     std::cout << "For product " << product.second << " the following vertices are in: ";
-    for (std::size_t v = 0; v < W.number_of_vertices(); v++) {
+    for (std::size_t v = 0; v < W.size(); v++) {
       ConfSet tmp = W[v];
       tmp &= product.first;
 
@@ -63,6 +63,9 @@ int run(int argc, char** argv)
   bool projectmode = false;
   char* projectname;
 
+  // Solve optimised
+  bool solve_optimised = false;
+
   for (int i = 2; i < argc; i++) {
     std::string argument(argv[i]);
     if (argument.compare("--project") == 0) {
@@ -71,6 +74,8 @@ int run(int argc, char** argv)
       i++;
     } else if (argument.compare("--parity-game") == 0) {
       is_parity_game = true;
+    } else if (argument.compare("--optimised") == 0) {
+      solve_optimised = true;
     } else if (argument.compare("--print-solution") == 0) {
       print_solution = true;
     } else if (argument.compare("--debug") == 0) {
@@ -126,7 +131,7 @@ int run(int argc, char** argv)
     assert(g.configurations() != emptyset);
 
     zlnkVPG z(g, debug);
-    const auto [W0, W1] = z.solve();
+    const auto [W0, W1] = solve_optimised ? z.solve_optimised() : z.solve();
 
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";

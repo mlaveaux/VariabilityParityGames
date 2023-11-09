@@ -23,6 +23,14 @@ std::pair<Restriction, Restriction> zlnkVPG::solve() const
   return std::make_pair(result[0], result[1]);
 }
 
+std::pair<Restriction, Restriction> zlnkVPG::solve_optimised() const
+{
+  // Initially all vertices belong to all configurations
+  Restriction rho(game.number_of_vertices(), game.configurations());
+
+  auto result = solve_optimised_rec(std::move(rho));
+  return std::make_pair(result[0], result[1]);
+}
 
 std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& rho) const {
   // 1. if rho == lambda v in V. \emptyset then
@@ -55,9 +63,9 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& rho) const {
     }
     
     if (m_debug) { std::cerr << "solve_rec(rho) |rho| = " 
-      << rho.size() << ", m = " 
+      << rho.count() << ", m = " 
       << m << ", l = " 
-      << l << " and |U| = " << U.size() << std::endl; }
+      << l << " and |U| = " << U.count() << std::endl; }
 
     // 8. A := attr_alpha(U), we update U.
     attr(alpha, rho, U);
@@ -70,7 +78,7 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& rho) const {
     if (m_debug) { std::cerr << "begin solve_rec(rho-A)" << std::endl; }
     std::array<Restriction, 2> W_prime = solve_rec(std::move(rho_minus));
     if (m_debug) { std::cerr << "end solve_rec(rho-A)" << std::endl; }
-    if (m_debug) { std::cerr << "|W0| = " << W_prime[0].size() << " and |W1| = " << W_prime[1].size() << std::endl; }
+    if (m_debug) { std::cerr << "|W0| = " << W_prime[0].count() << " and |W1| = " << W_prime[1].count() << std::endl; }
 
     // 10.
     if (W_prime[not_alpha].is_empty()) {
