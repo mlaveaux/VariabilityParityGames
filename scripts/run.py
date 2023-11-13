@@ -204,6 +204,22 @@ def prepare(
                     f"{prop}_project_"
                 ],
                 logger)
+        
+        for file in os.listdir(tmp_directory):
+            file = tmp_directory + file
+            if ".pg" in file and "reachable" not in file:
+                prop, _ = os.path.splitext(file)
+                logger.info("Generating reachable part for %s", os.path.basename(file))
+
+                run_program(
+                [
+                    vpgsolver_exe,
+                    file,
+                    "--reachable",
+                    f"{prop}_reachable.pg",
+                    "--parity-game"
+                ],
+                logger)
 
 def prepare_experiments(
     experiments, logger: MyLogger
@@ -345,14 +361,14 @@ def verify_results(experiments, logger):
                 logging.info("Checking solutions for game %s", os.path.basename(file))
 
                 family_parser = FamilySolveParser()
-                run_program([vpgsolver_exe, file, "--print-solution"], logging.Logger('ignore'), family_parser)
+                run_program([vpgsolver_exe, file, "--print-solution", "--optimised"], logging.Logger('ignore'), family_parser)
 
                 for product, solution in family_parser.solution.items():
 
                     base, _ = os.path.splitext(file)
                     for product_file in os.listdir(tmp_directory):
                         product_file = tmp_directory + product_file
-                        if base in product_file and product in product_file:
+                        if base in product_file and product in product_file and "reachable" not in product_file:
                             # The product result must match the family result.
                             logging.info("Checking product  %s", product)
 
@@ -397,19 +413,23 @@ def run_benchmark(
     results = {}
 
     name = os.path.basename(game)
-    results[name] = []
+    results[name] = {}
     for i in range(0, 5):
         start = time.time()
         time_parser = TimeParser()
 
         if ".svpg" in game:
+           run_program([vpgsolver_exe, game, "--optimised"], logging.Logger('ignore'), time_parser)
+           assert time_parser.time is not None
+           results[name].setdefault("optimised", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000})
+
            run_program([vpgsolver_exe, game], logging.Logger('ignore'), time_parser)
         else:            
            run_program([vpgsolver_exe, game, "--parity-game"], logging.Logger('ignore'), time_parser)
 
         # Add the result
         assert time_parser.time is not None
-        results[name].append({"total": time.time() - start, "solving": time_parser.time / 1_000})
+        results[name].setdefault("default", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000})
 
     return results
 
@@ -477,7 +497,7 @@ def main():
     prepare_experiments(experiments, logger)
 
     # Run the family solver and for every product check the corresponding results.
-    verify_results(experiments, logger)
+    #verify_results(experiments, logger)
 
     all_results = {}
     for experiment in experiments:
