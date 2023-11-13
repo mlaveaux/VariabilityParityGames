@@ -146,11 +146,23 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_rec(Restriction&& rho) const
       W_prime[alpha] |= A;
       return W_prime;
     } else {
-      // TODO: Finish this case
       // B := attr_notalpha(W'_notalpha)
       // W_prime[not_alpha] not used after this so can be changed.
       attr(not_alpha, rho, W_prime[not_alpha]);
       const Restriction& B = W_prime[not_alpha];
+
+      // 15. C := { c in \bigC | forall v in V : c \not\in B(v) }
+      ConfSet C = emptyset;
+      for (std::size_t i = 0; i < B.size(); ++i) {
+        C |= B[i];
+      }
+
+      ConfSet tmp = game.configurations();
+      tmp -= C;
+      C = tmp;
+
+      // 16. A := ((A \cup W'_))
+
 
       // rho not used after this so can be changed.
       // 15. (W''_0, W''_1) := solve(rho \ B)

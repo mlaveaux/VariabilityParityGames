@@ -8,6 +8,8 @@
 // Created by sjef on 5-6-19.
 //
 
+#include "Game.h"
+
 #include <algorithm>
 #include <chrono>
 #include <cstring>
@@ -17,14 +19,17 @@
 #include <sstream>
 #include <string>
 #include <unordered_set>
+#include <queue>
 
-#include "Game.h"
+#include <boost/dynamic_bitset.hpp>
 
 #define PARSER_LINE_SIZE 16777216
 
-Game::Game(const std::string& filename, const char* specificconf, bool is_parity_game)
-  : is_parity_game(is_parity_game)
+
+Game GameParser::parse(const std::string& filename, const char* specificconf, bool is_parity_game)
 {
+  this->is_parity_game = is_parity_game;
+
   int c = 0;
   if (is_parity_game) {
     c++;
@@ -61,47 +66,11 @@ Game::Game(const std::string& filename, const char* specificconf, bool is_parity
   if (!infile.eof()) {
     throw std::string("could not open file");
   }
-  buildInEdges();
+
+  return Game(bm_vars, bigC, m_priority, m_owner, out_edges, edge_guards);
 }
 
-void configurations_explicit_rec(ConfSet s, 
-  std::vector<std::pair<ConfSet, std::string>>& result, 
-  std::vector<char>& buffer,
-  int var, 
-  int max_var,
-  const std::vector<ConfSet>& vars)
-{
-  if (s == emptyset) {
-    return;
-  }
-
-  if (var == max_var) {
-    buffer[var] = '\0';
-    result.push_back(std::make_pair(s, std::string( buffer.data())));
-  }
-  else {
-    ConfSet tmp = s;
-    tmp &= vars[var];
-    buffer[var] = '1';
-    configurations_explicit_rec(tmp, result, buffer, var + 1, max_var, vars);
-
-    tmp = s;
-    tmp -= vars[var];
-    buffer[var] = '0';
-    configurations_explicit_rec(tmp, result, buffer, var + 1, max_var, vars);
-  }
-}
-
-std::vector<std::pair<ConfSet, std::string>> Game::configurations_explicit() const
-{
-  std::vector<std::pair<ConfSet, std::string>> result;
-
-  std::vector<char> characters(bm_n_vars);
-  configurations_explicit_rec(configurations(), result, characters, 0, bm_n_vars, bm_vars);
-  return result;
-}
-
-void Game::parseConfs(char const* line)
+void GameParser::parseConfs(char const* line)
 {
   while (*line == '\n' || *line == '\t' || *line == ' ') {
     line++;
@@ -147,7 +116,7 @@ void Game::parseConfs(char const* line)
   parseConfSet(line, 6, bigC);
 }
 
-void Game::parseInitialiser(char* line)
+void GameParser::parseInitialiser(char* line)
 {
   while (*line == '\n' || *line == '\t' || *line == ' ') {
     line++;
@@ -161,13 +130,12 @@ void Game::parseInitialiser(char* line)
   
   n_nodes = parity;
   out_edges = std::vector<std::vector<std::tuple<int, int>>>(n_nodes);
-  in_edges = std::vector<std::vector<std::tuple<int, int>>>(n_nodes);
   m_priority.resize(n_nodes);
   m_owner.resize(n_nodes);
   declared.resize(n_nodes);
 }
 
-int Game::parseConfSet(const char* line, int i, ConfSet& result)
+int GameParser::parseConfSet(const char* line, int i, ConfSet& result)
 {
   if (is_parity_game) {
     result = fullset;
@@ -233,7 +201,7 @@ int Game::parseConfSet(const char* line, int i, ConfSet& result)
   }
 }
 
-void Game::parseVertex(char* line)
+void GameParser::parseVertex(char* line)
 {
   while (*line == '\n' || *line == '\t' || *line == ' ') {
     line++;
@@ -251,11 +219,6 @@ void Game::parseVertex(char* line)
   i = readUntil(line, ' ');
   int p = atoi(line);
   m_priority[index] = p;
-  if (p + 1 > priorityI.size()) {
-    priorityI.resize(p + 1);
-  }
-
-  priorityI[p].insert(index);
   line += i + 1;
   i = readUntil(line, ' ');
   m_owner[index] = atoi(line);
@@ -292,7 +255,7 @@ void Game::parseVertex(char* line)
   declared[index] = true;
 }
 
-int Game::readUntil(const char* line, char delim)
+int GameParser::readUntil(const char* line, char delim)
 {
   int i = 0;
   while (*(line + i) != delim && *(line + i) != '\0') {
@@ -301,10 +264,83 @@ int Game::readUntil(const char* line, char delim)
   return i;
 }
 
+Game::Game(std::vector<ConfSet> bm_vars, 
+  ConfSet bigC,
+  std::vector<int> priority, 
+  std::vector<int> owner, 
+  std::vector<std::vector<std::tuple<int, int>>> out_edges,
+  std::vector<ConfSet> edge_guards) :
+  bm_vars(bm_vars),
+  bigC(bigC),
+  m_priority(priority),
+  m_owner(owner),
+  out_edges(out_edges),
+  edge_guards(edge_guards)
+{
+  // Compute the inverse mapping of priority
+  for(std::size_t v = 0; v < m_priority.size(); ++v) {
+    int p = m_priority[v];
+    if (p + 1 > priorityI.size()) {
+      priorityI.resize(p + 1);
+    }
+
+    priorityI[p].insert(v);
+  }
+
+  in_edges.resize(out_edges.size());
+  
+  // Compute the input edges.
+  for (int i = 0; i < owner.size(); i++) {
+    for (const auto& e : out_edges[i]) {
+      int t = target(e);
+      int index = in_edges[t].size();
+      in_edges[t].resize(index + 1);
+      in_edges[t][index] = std::make_tuple(i, edge_index(e));
+    }
+  }
+}
+
+void configurations_explicit_rec(ConfSet s, 
+  std::vector<std::pair<ConfSet, std::string>>& result, 
+  std::vector<char>& buffer,
+  int var, 
+  int max_var,
+  const std::vector<ConfSet>& vars)
+{
+  if (s == emptyset) {
+    return;
+  }
+
+  if (var == max_var) {
+    buffer[var] = '\0';
+    result.push_back(std::make_pair(s, std::string( buffer.data())));
+  }
+  else {
+    ConfSet tmp = s;
+    tmp &= vars[var];
+    buffer[var] = '1';
+    configurations_explicit_rec(tmp, result, buffer, var + 1, max_var, vars);
+
+    tmp = s;
+    tmp -= vars[var];
+    buffer[var] = '0';
+    configurations_explicit_rec(tmp, result, buffer, var + 1, max_var, vars);
+  }
+}
+
+std::vector<std::pair<ConfSet, std::string>> Game::configurations_explicit() const
+{
+  std::vector<std::pair<ConfSet, std::string>> result;
+
+  std::vector<char> characters(bm_vars.size());
+  configurations_explicit_rec(configurations(), result, characters, 0, bm_vars.size(), bm_vars);
+  return result;
+}
+
 void Game::write(std::ostream& output, std::optional<ConfSet> conf)
 {
-  output << "parity " << n_nodes << ';';
-  for (int v = 0; v < n_nodes; v++) {
+  output << "parity " << m_owner.size() << ';';
+  for (int v = 0; v < m_owner.size(); v++) {
     output << std::endl << v << ' ' << m_priority[v] << ' ' << m_owner[v];
     char separator = ' ';
     for (const auto& e : out_edges[v]) {
@@ -325,14 +361,58 @@ void Game::write(std::ostream& output, std::optional<ConfSet> conf)
   }
 }
 
-void Game::buildInEdges()
-{
-  for (int i = 0; i < n_nodes; i++) {
-    for (const auto& e : out_edges[i]) {
-      int t = target(e);
-      int index = in_edges[t].size();
-      in_edges[t].resize(index + 1);
-      in_edges[t][index] = std::make_tuple(i, edge_index(e));
+
+std::pair<Game, std::vector<int>> Game::compute_reachable() const {
+
+  // The new graph.
+  std::vector<std::vector<std::tuple<int, int>>> new_out_edges;
+  std::vector<ConfSet> new_edge_guards;
+  std::vector<int> priority;
+  std::vector<int> owner;
+
+  // A mapping from old vertex indices to new vertices.
+  std::vector<int> mapping(m_owner.size(), -1);
+  boost::dynamic_bitset<> visited(m_owner.size());
+
+  auto add_vertex = [&](std::size_t v) {
+    if (mapping[v] != -1) {
+      return mapping[v];
+    }
+    
+    // Add a new vertex for this one
+    int new_v = priority.size();
+    priority.push_back(m_priority[v]);
+    owner.push_back( m_owner[v]);
+    new_out_edges.resize(out_edges.size() + 1);
+
+    // Update mapping.
+    mapping[v] = new_v;
+    return new_v;
+  };
+
+  std::queue<int> Q;
+  Q.push(0);
+  visited[0] = true;
+
+  while(!Q.empty()) {
+    auto v = Q.front();
+    Q.pop();
+
+    std::size_t new_v = add_vertex(v);
+
+    // For every outgoing edge, visit the resulting state.
+    for (const auto& [w_prime, edge_succ] : successors(v)) {
+      std::size_t new_edge = edge_guards.size();
+      std::size_t new_w = add_vertex(w_prime);
+      new_edge_guards.push_back(edge_guards[edge_succ]);
+      new_out_edges[new_v].push_back(std::make_tuple(new_w, new_edge));
+
+      if (!visited[w_prime]) {
+        visited[w_prime] = true;
+        Q.push(w_prime);
+      }
     }
   }
+
+  return std::make_pair(Game(bm_vars, bigC, priority, owner, new_out_edges, new_edge_guards), mapping);
 }
