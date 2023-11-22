@@ -20,6 +20,8 @@ std::pair<Restriction, Restriction> zlnkVPG::solve() const
   Restriction rho(game.number_of_vertices(), game.configurations());
 
   auto result = solve_rec(std::move(rho));
+  std::cerr << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
+  
   return std::make_pair(result[0], result[1]);
 }
 
@@ -29,10 +31,14 @@ std::pair<Restriction, Restriction> zlnkVPG::solve_optimised() const
   Restriction rho(game.number_of_vertices(), game.configurations());
 
   auto result = solve_optimised_rec(std::move(rho));
+  std::cerr << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
+
   return std::make_pair(result[0], result[1]);
 }
 
 std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& rho) const {
+  m_recursive_calls += 1;
+
   // 1. if rho == lambda v in V. \emptyset then
   if (rho.is_empty()) {
     if (m_debug) { std::cerr << "empty subgame" << std::endl; }
@@ -111,6 +117,8 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& rho) const {
 }
 
 std::array<Restriction, 2> zlnkVPG::solve_optimised_rec(Restriction&& rho) const {
+  m_recursive_calls += 1;
+
   // 1. if rho == lambda v in V. \emptyset then
   if (rho.is_empty()) {
     return std::array<Restriction, 2>({rho, rho});

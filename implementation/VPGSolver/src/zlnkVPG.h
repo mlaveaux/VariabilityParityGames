@@ -162,6 +162,9 @@ protected:
   /// Enable more extensive logging.
   bool m_debug = false;
 
+  /// \brief Counts the number of recursive calls performed.
+  mutable std::size_t m_recursive_calls = 0;
+
   /// Measure time spent in the attractor set calculation
   mutable long attracting = 0;
 
