@@ -392,16 +392,22 @@ def verify_results(experiments, logger):
                             assert not diff1, f"Mismatch in W1 {diff1}"    
 
 solving_time_regex = re.compile(r"Solving time: (.*) ms")
+recursive_calls_regex = re.compile(r"Performed ([0-9]*) recursive calls")
 
 class TimeParser:
     """Extracts the solving time from the stdout of the program"""
 
-    time: float | None = None
+    time: float|None = None
+    recursive_calls: int|None = None
 
     def __call__(self, line):
         result = solving_time_regex.match(line)
         if result:
             self.time = float(result.group(1))
+
+        result = recursive_calls_regex.match(line)
+        if result:
+            self.recursive_calls = int(result.group(1))
 
 def run_benchmark(
     game: str,
@@ -421,15 +427,15 @@ def run_benchmark(
         if ".svpg" in game:
            run_program([vpgsolver_exe, game, "--optimised"], logging.Logger('ignore'), time_parser)
            assert time_parser.time is not None
-           results[name].setdefault("optimised", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000})
+           results[name].setdefault("optimised", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000, "recursive_calls": time_parser.recursive_calls})
 
            run_program([vpgsolver_exe, game], logging.Logger('ignore'), time_parser)
         else:            
-           run_program([vpgsolver_exe, game, "--parity-game"], logging.Logger('ignore'), time_parser)
+           run_program([vpgsolver_exe, game, "--parity-game"], logging.Logger('ignore'), time_parser,)
 
         # Add the result
         assert time_parser.time is not None
-        results[name].setdefault("default", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000})
+        results[name].setdefault("default", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000, "recursive_calls": time_parser.recursive_calls})
 
     return results
 
