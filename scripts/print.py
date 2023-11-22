@@ -11,7 +11,7 @@ def average(timings):
     for result in timings:
         total += result['solving']
 
-    return total / 5 * 1000.0
+    return total / 5.0 * 1000.0
 
 
 def main():
@@ -31,6 +31,11 @@ def main():
     with open(args.input, "r", encoding="utf-8") as json_file:
         timings = json.load(json_file)
 
+        print("\\begin{table}[h]")
+        print("\\begin{tabular}{r|r|r|r|r}")
+        print("model & property & family & family-optimised & product \\\\ \\hline")
+
+        old_experiment = None
         for experiment, properties in timings.items():
             family_time = 0.0
             family_optimised_time = 0.0
@@ -44,11 +49,16 @@ def main():
                     elif "reachable" in game:
                         reachable_time += average(timings['default'])
                     else:
-                        print(game)
                         family_time = average(timings['default'])
-                        family_optimised_time = average(timings['optimised'])
 
-                print(f"Experiment {experiment} and property {prop} timing family {family_time:.2f} optimised {family_optimised_time:.2f} and product time {product_time:.2f}, reachable {reachable_time:.2f}")
+                        if "optimised" in timings:
+                            family_optimised_time = average(timings['optimised'])
+
+                print(f"{experiment if experiment != old_experiment else ''} & {prop} & {family_time:.1f} & {family_optimised_time:.1f} & {reachable_time:.1f} \\\\")
+                old_experiment = experiment
+
+        print("\\end{tabular}")
+        print("\\end{table}")
 
 if __name__ == "__main__":
     main()
