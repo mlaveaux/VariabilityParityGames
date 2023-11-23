@@ -22,11 +22,15 @@ std::pair<boost::dynamic_bitset<>, boost::dynamic_bitset<>> zlnkPG::solve() cons
   V.set();
 
   std::array<boost::dynamic_bitset<>,2> result = solve_rec(std::move(V));
+  std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
+  
   return std::make_pair(result[0], result[1]);
 }
 
 std::array<boost::dynamic_bitset<>,2> zlnkPG::solve_rec(boost::dynamic_bitset<>&& V) const
 {
+  m_recursive_calls += 1;
+
   if (!V.any()) {
     return std::array<boost::dynamic_bitset<>,2>({V, V});
   } else {
