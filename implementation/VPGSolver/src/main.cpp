@@ -66,8 +66,8 @@ int run(int argc, char** argv)
   // Compute the reachable part of the parity game.
   std::optional<std::string> output_reachable;
 
-  // Solve optimised
-  bool solve_optimised = false;
+  // Solve family, optimised, right or left.
+  int algorithm = 0;
 
   for (int i = 2; i < argc; i++) {
     std::string argument(argv[i]);
@@ -79,8 +79,9 @@ int run(int argc, char** argv)
       i++;
     } else if (argument.compare("--parity-game") == 0) {
       is_parity_game = true;
-    } else if (argument.compare("--optimised") == 0) {
-      solve_optimised = true;
+    } else if (argument.compare("--algorithm") == 0) {
+      algorithm = std::stoi(argv[i+1]);
+      i++;
     } else if (argument.compare("--print-solution") == 0) {
       print_solution = true;
     } else if (argument.compare("--debug") == 0) {
@@ -155,7 +156,7 @@ int run(int argc, char** argv)
     const auto [W0, W1] = z.solve();
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
+    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000.0 << " ms\n";
 
     std::cout << "W0: ";
     print_set(W0, print_solution);
@@ -167,10 +168,21 @@ int run(int argc, char** argv)
     assert(g.configurations() != emptyset);
 
     zlnkVPG z(g, debug);
-    const auto [W0, W1] = solve_optimised ? z.solve_optimised() : z.solve();
+
+    Restriction W0(0);
+    Restriction W1(0);
+    if (algorithm == 0) {
+      std::tie(W0, W1) = z.solve();
+    } else if (algorithm == 1) {
+      std::tie(W0, W1) = z.solve_optimised();
+    } else if (algorithm == 2) {
+      std::tie(W0, W1) = z.solve_optimised_left();
+    } else {
+      std::abort();
+    }
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
+    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000.0 << " ms\n";
 
     std::cout << "W0: \n";
     print_set(W0, g.configurations_explicit(), print_solution);
