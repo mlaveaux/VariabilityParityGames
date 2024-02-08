@@ -86,6 +86,14 @@ public:
     return m_nonempty_count == 0;
   }
 
+  void clear() {
+    for (std::size_t i = 0; i < m_mapping.size(); ++i) {
+      m_mapping[i] = emptyset;
+    }
+
+    m_nonempty_count = 0;
+  }
+
   ConfSet operator[](std::size_t index) const {
     return m_mapping[index];
   }
@@ -110,6 +118,18 @@ public:
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
       (*this)[i] -= other[i];
+    }
+
+    assert(size() >= 0);
+    return *this;
+  }
+
+  Restriction& operator-=(const ConfSet& C) {    
+    assert(m_mapping.size() == other.m_mapping.size());
+    assert(size() >= 0);
+
+    for (std::size_t i = 0; i < m_mapping.size(); ++i) {
+      (*this)[i] -= C;
     }
 
     assert(size() >= 0);
