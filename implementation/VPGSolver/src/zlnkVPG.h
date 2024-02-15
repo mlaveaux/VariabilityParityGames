@@ -28,15 +28,21 @@ public:
   /// Solve the parity game
   std::pair<Restriction, Restriction> solve() const;
 
-  /// Solve the parity game with the optimised recursion
+  /// Solve the parity game with the optimised recursion by Tim, not in the article.
   std::pair<Restriction, Restriction> solve_optimised() const;
+
+  /// Solve the parity game with the optimised recursion in Algorithm 2
+  std::pair<Restriction, Restriction> solve_optimised_left() const;
 
 protected:  
   /// \brief Implementation of SOLVE(rho)
   std::array<Restriction, 2> solve_rec(Restriction&& rho) const;
 
-  /// \brief Implementation of SOLVE_OPTIMISED(rho)
+  /// \brief Implementation of SOLVE_OPTIMISED(rho) in Algorithm 2
   std::array<Restriction, 2> solve_optimised_rec(Restriction&& rho) const;
+
+  /// \brief Implementation of SOLVE_OPTIMISED(rho) in Algorithm 4
+  std::array<Restriction, 2> solve_optimised_left_rec(Restriction&& rho) const;
 
   /// Attract restriction to rho for player alpha towards A, adds these to A as well.
   void attr(int alpha, const Restriction& rho, Restriction& A) const;
