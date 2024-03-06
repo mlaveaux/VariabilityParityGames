@@ -3,6 +3,7 @@
 //
 
 #include "zlnkVPG.h"
+#include "Restriction.h"
 #include <chrono>
 #include <iostream>
 #include <map>
@@ -96,14 +97,14 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& gamma) const {
     if (m_debug) { std::cerr << "begin solve_rec(gamma \\ alpha)" << std::endl; }
     std::array<Restriction, 2> omega_prime = solve_rec(std::move(gamma_minus));
     if (m_debug) { std::cerr << "end solve_rec(gamma \\ alpha)" << std::endl; }
-    if (m_debug) { std::cerr << "|omega_0| = " << omega_prime[0].count() << " and |omega_1| = " << omega_prime[1].count() << std::endl; }
+    if (m_debug) { std::cerr << "|omega'_0| = " << omega_prime[0].count() << " and |omega'_1| = " << omega_prime[1].count() << std::endl; }
 
     // 10. if omega_prime_x == \epsilon then
     if (omega_prime[not_x].is_empty()) {
       // W_prime[alpha] not used after this so can be changed.
       // 11. omega_x := omega'_x \cup alpha
       // 20. return (omega_0, omega_1) 
-      if (m_debug) { std::cerr << "return (W'_0, W'_1) " << std::endl; }
+      if (m_debug) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
       omega_prime[x] = gamma;
       omega_prime[not_x].clear();
       return omega_prime;
@@ -166,7 +167,6 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_rec(Restriction&& rho) const
       // 11. W_alpha := W'_alpha \cup A
       // 20. return (W_0, W_1) 
       W_prime[alpha] |= A;
-      W_prime[not_alpha].clear();
       return W_prime;
     } else {
       // 14. B := attr_notalpha(W'_notalpha)
@@ -206,6 +206,7 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
   // 1. if \gamma == \epsilon then
   if (gamma.is_empty()) {
     // 2. return (\epsilon, \epsilon)
+    if (m_debug) { std::cerr << "empty subgame" << std::endl; }
     return std::array<Restriction, 2>({gamma, gamma});
   } else {
     // 5. m := max { p(v) | v in V && \gamma(v) \neq \emptyset }
@@ -215,13 +216,23 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
     int x = (m % 2);
     int not_x = 1 - x;
 
-    // 7. C := { c in \bigC | exists v in V : p(v) = m && c in \rho(v) }
+    // 7. C := { c in \bigC | exists v in V : p(v) = m && c in \gamma(v) }
     // 8. \mu := lambda v in V. { \gamma(v) | p(v) = m }
     Restriction mu(game.number_of_vertices());
     ConfSet C = emptyset;
     for (const auto& v : game.priority_vertices(m)) {
       mu[v] = (bdd)gamma[v];
       C |= gamma[v];
+    }
+    
+    if (m_debug) { std::cerr << "solve_optimised_left_rec(gamma) |gamma| = " 
+      << gamma.count() << ", m = " 
+      << m << ", l = " 
+      << l << " and |mu| = " << mu.count() << std::endl; }
+
+    if (m_debug) {
+      std::cerr << "C = " << std::endl;
+      print_set(game, C);
     }
 
     // 9. \alph := attr_x(\mu), we update \mu.
@@ -232,55 +243,73 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
     Restriction gamma_minus = gamma;
     gamma_minus -= alpha;
 
+    if (m_debug) { std::cerr << "begin solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
     std::array<Restriction, 2> omega_prime = solve_optimised_left_rec(std::move(gamma_minus));
+    if (m_debug) { std::cerr << "end solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
 
     // omega_prime[not_x] restricted to C
     ConfSet C_restriction = game.configurations();
     C_restriction -= C;
-    Restriction omega_not_prime_restricted = omega_prime[not_x];
-    omega_not_prime_restricted -= C_restriction;
+    Restriction omega_prime_not_x_restricted = omega_prime[not_x];
+    omega_prime_not_x_restricted -= C_restriction;
 
     // 10.
-    if (omega_not_prime_restricted.is_empty()) {
+    if (omega_prime_not_x_restricted.is_empty()) {
       // \omega'[x] not used after this so can be changed.
       // 11. \omega_x := \omega'_x \cup A
-      // 20. return (\omega_0, \omega_1) 
-      omega_prime[x] = gamma;
+      // 20. return (\omega_0, \omega_1)
+      if (m_debug) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
       omega_prime[x] |= alpha;
-      omega_prime[not_x].clear();
+      print_set(omega_prime[0], game.configurations_explicit(), true);
+      print_set(omega_prime[1], game.configurations_explicit(), true);
       return omega_prime;
     } else {
-      // 14. C' := { c in C | exists v in V : c \not\in \omega'_not_x(v) }
-      ConfSet C_prime = C;
-      for (std::size_t i = 0; i < omega_prime[not_x].size(); ++i) {
-        C_prime -= omega_prime[not_x][i];
+      // 14. C' := { c in C | exists v in V : c \in \omega'_not_x(v) }
+      ConfSet C_prime = emptyset;
+      for (std::size_t v = 0; v < game.number_of_vertices(); ++v) {
+        C_prime |= omega_prime[not_x][v];
       }
+      C_prime ^= C;
+      
+      if (m_debug) {
+        std::cerr << "C' = " << std::endl;
+        print_set(game, C_prime);
+      }
+
       ConfSet C_prime_restriction = game.configurations();
       C_prime_restriction -= C_prime;
 
-      // omega_prime[not_x] restricted to C
-      omega_prime[not_x] -= C_prime_restriction;
-      omega_not_prime_restricted  = omega_prime[not_x];
+      // No longer used so can be overwritten
+      // omega_prime[not_x] restricted to C'
+      Restriction& omega_prime_not_x_restricted_prime = omega_prime_not_x_restricted;
+      omega_prime_not_x_restricted_prime = omega_prime[not_x];
+      omega_prime_not_x_restricted_prime -= C_prime_restriction;
 
-      // 16. B := attr_not_x(\omega'_not_x)
-      // omega_not_prime_restricted not used after this so can be changed.
-      attr(not_x, gamma, omega_not_prime_restricted);
-      const Restriction& alpha_prime = omega_not_prime_restricted;
+      // 16. B := attr_not_x(\omega'_not_x | C')
+      attr(not_x, gamma, omega_prime_not_x_restricted_prime);
+      const Restriction& alpha_prime = omega_prime_not_x_restricted_prime;
 
       // gamma not used after this so can be changed.
       // 15. (W''_0, W''_1) := solve(gamma|C' \ \alpha'))
       gamma -= C_prime_restriction;
       gamma -= alpha_prime;
+      if (m_debug) { std::cerr << "begin solve_optimised_left_rec(gamma | C - alpha')" << std::endl; }
       std::array<Restriction, 2> omega_doubleprime = solve_optimised_left_rec(std::move(gamma));
+      if (m_debug) { std::cerr << "end solve_optimised_left_rec(gamma | C - alpha')" << std::endl; }
 
-      // 16. \omega_x := \omega'_x|C' \cup \omega''_x
+      // 16. \omega'_x := \omega'_x|C' \cup \omega''_x
       // 16. \omega_not_x := \omega'_not_x|C' \cup \omega''_x \cup \alpha'
       // 20. return (W_0, W_1)
-      omega_prime[x] -= C_prime_restriction;
+      omega_prime[x] -= C_prime;
+      omega_prime[not_x] -= C_prime;
 
       omega_doubleprime[x] |= omega_prime[x];
       omega_doubleprime[not_x] |= omega_prime[not_x];
       omega_doubleprime[not_x] |= alpha_prime;
+
+      if (m_debug) { std::cerr << "return (omega''_0, omega''_1) " << std::endl; }
+      print_set(omega_doubleprime[0], game.configurations_explicit(), true);
+      print_set(omega_doubleprime[1], game.configurations_explicit(), true);
       return omega_doubleprime;
     }
   }
@@ -364,7 +393,7 @@ void zlnkVPG::attr(int alpha, const Restriction& gamma, Restriction& U) const
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  if (m_debug) { std::cerr << "attracted " << m_vertices.count() << " verticed towards " << initial_size << " vertices" << std::endl; }
+  if (m_debug) { std::cerr << "attracted " << U.count() << " vertices towards " << initial_size << " vertices" << std::endl; }
 
   attracting += elapsed.count();
 }

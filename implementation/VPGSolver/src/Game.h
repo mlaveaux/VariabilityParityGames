@@ -48,6 +48,9 @@ public:
   /// \returns Returns the full set of configurations as pair of bdd representation and explicit representation.
   std::vector<std::pair<ConfSet, std::string>> configurations_explicit() const;
 
+  /// \returns Returns the full set of configurations as pair of bdd representation and explicit representation.
+  std::vector<std::pair<ConfSet, std::string>> configurations_explicit(ConfSet set) const;
+
   /// \returns The owner of the vertex.
   int owner(int vertex) const { return m_owner[vertex]; }
 

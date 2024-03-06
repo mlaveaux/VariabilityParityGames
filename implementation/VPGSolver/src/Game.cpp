@@ -337,6 +337,15 @@ std::vector<std::pair<ConfSet, std::string>> Game::configurations_explicit() con
   return result;
 }
 
+std::vector<std::pair<ConfSet, std::string>> Game::configurations_explicit(ConfSet set) const
+{
+  std::vector<std::pair<ConfSet, std::string>> result;
+
+  std::vector<char> characters(bm_vars.size());
+  configurations_explicit_rec(set, result, characters, 0, bm_vars.size(), bm_vars);
+  return result;
+}
+
 void Game::write(std::ostream& output, std::optional<ConfSet> conf)
 {
   output << "parity " << m_owner.size() << ';';

@@ -7,41 +7,6 @@
 #include <iostream>
 #include <optional>
 
-void print_set(const Restriction& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
-{
-  for (const auto& product : configurations) {    
-    std::cout << "For product " << product.second << " the following vertices are in: ";
-    for (std::size_t v = 0; v < W.size(); v++) {
-      ConfSet tmp = W[v];
-      tmp &= product.first;
-
-      if (tmp != emptyset) {
-        std::cout << v << ',';
-      }
-
-      if (!full_solution) {
-        // Only show first vertex otherwise.
-        break;
-      }
-    }
-    std::cout << "\n";
-  }
-}
-
-void print_set(const boost::dynamic_bitset<>& V, bool full_solution)
-{
-  for (int v = 0; v < V.size(); v++) {
-    if (V[v]) {
-      std::cout << v << ',';
-    }
-
-    if (!full_solution) {
-      // Only show first vertex otherwise.
-      break;
-    }
-  }
-}
-
 int run(int argc, char** argv)
 {
   if (argc < 2) {
