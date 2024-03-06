@@ -8,6 +8,17 @@
 #include <array>
 #include <vector>
 
+inline
+void print_set(const Game& game, ConfSet set)
+{
+  std::cout << "{ ";
+  for (const auto& product : game.configurations_explicit(set)) {
+    std::cout << product.second << ", ";    
+  }
+
+  std::cout << "}" << std::endl;  
+}
+
 class RestrictionProxy {
 
 public:
@@ -83,6 +94,7 @@ public:
 
   /// \returns True iff the given confset is equal to lambda x in V. \emptyset
   bool is_empty() const {
+    assert(count() == 0);
     return m_nonempty_count == 0;
   }
 
@@ -136,6 +148,30 @@ public:
     return *this;
   }
 
+  bool operator==(const Restriction& other) {
+    for (std::size_t i = 0; i < m_mapping.size(); ++i) {
+      if (m_mapping[i] != other.m_mapping[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  
+  bool operator!=(const Restriction& other) {
+    return !(*this == other);
+  }
+
+  void print(const Game& game) {
+
+    for (int i = 0; i < m_mapping.size(); ++i) {
+      if (m_mapping[i] != emptyset) {
+        std::cout << i << ": ";
+        print_set(game, m_mapping[i]);
+      }
+    }
+  }
+
 private:
   friend RestrictionProxy;
 
@@ -164,17 +200,6 @@ void print_set(const Restriction& W, const std::vector<std::pair<ConfSet, std::s
     }
     std::cout << "\n";
   }
-}
-
-inline
-void print_set(const Game& game, ConfSet set)
-{
-  std::cout << "{ ";
-  for (const auto& product : game.configurations_explicit(set)) {
-    std::cout << product.second << ", ";    
-  }
-
-  std::cout << "}" << std::endl;  
 }
 
 inline
