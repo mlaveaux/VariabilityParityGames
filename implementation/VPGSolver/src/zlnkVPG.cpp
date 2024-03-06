@@ -269,7 +269,7 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       for (std::size_t v = 0; v < game.number_of_vertices(); ++v) {
         C_prime |= omega_prime[not_x][v];
       }
-      C_prime ^= C;
+      C_prime &= C;
       
       if (m_debug) {
         std::cerr << "C' = " << std::endl;
