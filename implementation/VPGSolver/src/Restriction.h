@@ -56,6 +56,16 @@ public:
     }
     return *this;
   }
+  
+  RestrictionProxy& operator&=(const ConfSet& other) {
+    bool was_empty = (m_entry == emptyset);
+    m_entry &= other;
+
+    if (!was_empty && m_entry == emptyset) {
+      m_nonempty_count -= 1;
+    }
+    return *this;
+  }
 
   operator ConfSet() const {
     return m_entry;
@@ -130,6 +140,18 @@ public:
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
       (*this)[i] -= other[i];
+    }
+
+    assert(size() >= 0);
+    return *this;
+  }
+  
+  Restriction& operator&=(const Restriction& other) {    
+    assert(m_mapping.size() == other.m_mapping.size());
+    assert(size() >= 0);
+
+    for (std::size_t i = 0; i < m_mapping.size(); ++i) {
+      (*this)[i] &= other[i];
     }
 
     assert(size() >= 0);

@@ -3,6 +3,7 @@
 //
 
 #include "zlnkVPG.h"
+#include "Game.h"
 #include "Restriction.h"
 #include <chrono>
 #include <iostream>
@@ -243,7 +244,7 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
 
     // 9. \alph := attr_x(\mu), we update \mu.
     attr(x, gamma, mu);
-    const Restriction& alpha = mu;
+    Restriction& alpha = mu;
 
     // 10. (\omega'_0, \omega'_1) := solve(gamma \ A)
     Restriction gamma_minus = gamma;
@@ -271,6 +272,10 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       Restriction tmp = omega_prime[0];
       tmp |= omega_prime[1];
       assert(tmp == gamma_copy);
+      
+      Restriction tmp4 = omega_prime[0];
+      tmp4 &= omega_prime[1];
+      assert(tmp4.is_empty());
 
       m_depth -= 1;
       return omega_prime;
@@ -315,7 +320,15 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       omega_prime[x] -= C_prime;
       omega_prime[not_x] -= C_prime;
 
+      ConfSet tmp3 = C;
+      tmp3 -= C_prime;
+
+      ConfSet tmp2 = game.configurations();
+      tmp2 -= tmp3;
+      alpha -= tmp2;
+
       omega_doubleprime[x] |= omega_prime[x];
+      omega_doubleprime[x] |= alpha;
       omega_doubleprime[not_x] |= omega_prime[not_x];
       omega_doubleprime[not_x] |= alpha_prime;
 
@@ -329,6 +342,10 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       std::cerr << tmp.count() << std::endl;
       std::cerr << gamma_copy.count() << std::endl;
       assert(tmp == gamma_copy);
+
+      Restriction tmp4 = omega_doubleprime[0];
+      tmp4 &= omega_doubleprime[1];
+      assert(tmp4.is_empty());
 
       m_depth -= 1;
       return omega_doubleprime;
