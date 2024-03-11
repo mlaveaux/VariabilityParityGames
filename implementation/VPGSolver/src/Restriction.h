@@ -94,7 +94,7 @@ public:
 
   /// \returns True iff the given confset is equal to lambda x in V. \emptyset
   bool is_empty() const {
-    assert(count() == 0);
+    assert((m_nonempty_count == 0) == (count() == 0));
     return m_nonempty_count == 0;
   }
 
@@ -151,6 +151,9 @@ public:
   bool operator==(const Restriction& other) {
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
       if (m_mapping[i] != other.m_mapping[i]) {
+        std::cerr << "Mismatch on vertex " << i << std::endl;
+        print_set(*m_game, m_mapping[i]);
+        print_set(*m_game, other.m_mapping[i]);
         return false;
       }
     }
@@ -176,6 +179,8 @@ private:
   friend RestrictionProxy;
 
   std::vector<ConfSet> m_mapping;
+
+  const Game* m_game; ///< Only for debugging purposes.
 
   std::size_t m_nonempty_count = 0; // Invariant: counts the number of empty positions in the mapping.
 };
