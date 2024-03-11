@@ -11,14 +11,14 @@
 
 zlnkVPG::zlnkVPG(const Game& game, bool debug)
   : game(game),
-    m_debug(debug),
+    m_verbose(debug),
     m_vertices(game.number_of_vertices())
 {}
 
 std::pair<Restriction, Restriction> zlnkVPG::solve() const
 {
   // Initially all vertices belong to all configurations
-  Restriction rho(game.number_of_vertices(), game.configurations());
+  Restriction rho(game, game.configurations());
 
   auto result = solve_rec(std::move(rho));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
@@ -29,7 +29,7 @@ std::pair<Restriction, Restriction> zlnkVPG::solve() const
 std::pair<Restriction, Restriction> zlnkVPG::solve_optimised() const
 {
   // Initially all vertices belong to all configurations
-  Restriction rho(game.number_of_vertices(), game.configurations());
+  Restriction rho(game, game.configurations());
 
   auto result = solve_optimised_rec(std::move(rho));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
@@ -40,7 +40,7 @@ std::pair<Restriction, Restriction> zlnkVPG::solve_optimised() const
 std::pair<Restriction, Restriction> zlnkVPG::solve_optimised_left() const
 {
   // Initially all vertices belong to all configurations
-  Restriction rho(game.number_of_vertices(), game.configurations());
+  Restriction rho(game, game.configurations());
 
   auto result = solve_optimised_left_rec(std::move(rho));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
@@ -54,7 +54,7 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& gamma) const {
 
   // 1. if \gamma == \epsilon then
   if (gamma.is_empty()) {
-    if (m_debug) { std::cerr << "empty subgame" << std::endl; }
+    if (m_verbose) { std::cerr << "empty subgame" << std::endl; }
     return std::array<Restriction, 2>({gamma, gamma});
   } else {
     // m := max { p(v) | v in V && \gamma(v) \neq \emptyset }
@@ -67,21 +67,21 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& gamma) const {
     // Optimisation, terminate early when whole game has a single priority. Then A == U == rho.
     // if (m == l) {
     //   if (alpha == 0) {
-    //     if (m_debug) { std::cerr << "single priority won by player 0" << std::endl; }
+    //     if (m_verbose) { std::cerr << "single priority won by player 0" << std::endl; }
     //     return std::array<Restriction, 2>({rho, Restriction(game.number_of_vertices())});
     //   } else {        
-    //     if (m_debug) { std::cerr << "single priority won by player 1" << std::endl; }
+    //     if (m_verbose) { std::cerr << "single priority won by player 1" << std::endl; }
     //     return std::array<Restriction, 2>({Restriction(game.number_of_vertices()), rho});
     //   }
     // }
 
     // 7. \mu := lambda v in V. { \gamma(v) | p(v) = m }
-    Restriction mu(game.number_of_vertices());
+    Restriction mu(game);
     for (const auto& v : game.priority_vertices(m)) {
       mu[v] = (bdd)gamma[v];
     }
     
-    if (m_debug) { std::cerr << "solve_rec(gamma) |gamma| = " 
+    if (m_verbose) { std::cerr << "solve_rec(gamma) |gamma| = " 
       << gamma.count() << ", m = " 
       << m << ", l = " 
       << l << " and |mu| = " << mu.count() << std::endl; }
@@ -94,17 +94,17 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& gamma) const {
     Restriction gamma_minus = gamma;
     gamma_minus -= alpha;
 
-    if (m_debug) { std::cerr << "begin solve_rec(gamma \\ alpha)" << std::endl; }
+    if (m_verbose) { std::cerr << "begin solve_rec(gamma \\ alpha)" << std::endl; }
     std::array<Restriction, 2> omega_prime = solve_rec(std::move(gamma_minus));
-    if (m_debug) { std::cerr << "end solve_rec(gamma \\ alpha)" << std::endl; }
-    if (m_debug) { std::cerr << "|omega'_0| = " << omega_prime[0].count() << " and |omega'_1| = " << omega_prime[1].count() << std::endl; }
+    if (m_verbose) { std::cerr << "end solve_rec(gamma \\ alpha)" << std::endl; }
+    if (m_verbose) { std::cerr << "|omega'_0| = " << omega_prime[0].count() << " and |omega'_1| = " << omega_prime[1].count() << std::endl; }
 
     // 10. if omega_prime_x == \epsilon then
     if (omega_prime[not_x].is_empty()) {
       // W_prime[alpha] not used after this so can be changed.
       // 11. omega_x := omega'_x \cup alpha
       // 20. return (omega_0, omega_1) 
-      if (m_debug) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
+      if (m_verbose) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
       omega_prime[x] = gamma;
       omega_prime[not_x].clear();
       return omega_prime;
@@ -117,14 +117,14 @@ std::array<Restriction, 2> zlnkVPG::solve_rec(Restriction&& gamma) const {
       // rho not used after this so can be changed.
       // 15. (omega''_0, omega''_1) := solve(gamma \ beta)
       gamma -= beta;
-      if (m_debug) { std::cerr << "begin solve_rec(gamma - beta)" << std::endl; }
+      if (m_verbose) { std::cerr << "begin solve_rec(gamma - beta)" << std::endl; }
       std::array<Restriction, 2> omega_doubleprime = solve_rec(std::move(gamma));
-      if (m_debug) { std::cerr << "end solve_rec(gamma - beta)" << std::endl; }
+      if (m_verbose) { std::cerr << "end solve_rec(gamma - beta)" << std::endl; }
 
       // 16. W_alpha := W'_notalpha \cup B
       // 20. return (W_0, W_1) 
       omega_doubleprime[not_x] |= beta;
-      if (m_debug) { std::cerr << "return (omega''_0, omega''_1) " << std::endl; }
+      if (m_verbose) { std::cerr << "return (omega''_0, omega''_1) " << std::endl; }
       return omega_doubleprime;
     }
   }
@@ -146,7 +146,7 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_rec(Restriction&& rho) const
     int not_alpha = 1 - alpha;
 
     // 7. U := lambda v in V. { \rho(v) | p(v) = m }
-    Restriction U(game.number_of_vertices());
+    Restriction U(game);
     for (const auto& v : game.priority_vertices(m)) {
       U[v] = (bdd)rho[v];
     }
@@ -202,13 +202,16 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_rec(Restriction&& rho) const
 
 std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma) const {
   m_recursive_calls += 1;
+  Restriction gamma_copy = gamma;
 
   // 1. if \gamma == \epsilon then
   if (gamma.is_empty()) {
     // 2. return (\epsilon, \epsilon)
-    if (m_debug) { std::cerr << "empty subgame" << std::endl; }
+    if (m_verbose) { std::cerr << "empty subgame" << std::endl; }
     return std::array<Restriction, 2>({gamma, gamma});
   } else {
+    m_depth += 1;
+
     // 5. m := max { p(v) | v in V && \gamma(v) \neq \emptyset }
     auto [m, l] = get_highest_lowest_prio(gamma);
 
@@ -218,20 +221,23 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
 
     // 7. C := { c in \bigC | exists v in V : p(v) = m && c in \gamma(v) }
     // 8. \mu := lambda v in V. { \gamma(v) | p(v) = m }
-    Restriction mu(game.number_of_vertices());
+    Restriction mu(game);
     ConfSet C = emptyset;
     for (const auto& v : game.priority_vertices(m)) {
       mu[v] = (bdd)gamma[v];
       C |= gamma[v];
     }
     
-    if (m_debug) { std::cerr << "solve_optimised_left_rec(gamma) |gamma| = " 
+    if (m_verbose) { std::cerr << "solve_optimised_left_rec(gamma) |gamma| = " 
       << gamma.count() << ", m = " 
       << m << ", l = " 
       << l << " and |mu| = " << mu.count() << std::endl; }
 
     if (m_debug) {
-      std::cerr << "C = " << std::endl;
+      std::cerr << "gamma = ";
+      gamma.print(game);
+
+      std::cerr << "C = ";
       print_set(game, C);
     }
 
@@ -243,9 +249,9 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
     Restriction gamma_minus = gamma;
     gamma_minus -= alpha;
 
-    if (m_debug) { std::cerr << "begin solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
+    if (m_verbose) { std::cerr << m_depth << " - begin solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
     std::array<Restriction, 2> omega_prime = solve_optimised_left_rec(std::move(gamma_minus));
-    if (m_debug) { std::cerr << "end solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
+    if (m_verbose) { std::cerr << m_depth << " - end solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
 
     // omega_prime[not_x] restricted to C
     ConfSet C_restriction = game.configurations();
@@ -258,10 +264,15 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       // \omega'[x] not used after this so can be changed.
       // 11. \omega_x := \omega'_x \cup A
       // 20. return (\omega_0, \omega_1)
-      if (m_debug) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
+      if (m_verbose) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
       omega_prime[x] |= alpha;
-      print_set(omega_prime[0], game.configurations_explicit(), true);
-      print_set(omega_prime[1], game.configurations_explicit(), true);
+
+      // Assert that the winning sets form a partition.
+      Restriction tmp = omega_prime[0];
+      tmp |= omega_prime[1];
+      assert(tmp == gamma_copy);
+
+      m_depth -= 1;
       return omega_prime;
     } else {
       // 14. C' := { c in C | exists v in V : c \in \omega'_not_x(v) }
@@ -271,8 +282,8 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       }
       C_prime &= C;
       
-      if (m_debug) {
-        std::cerr << "C' = " << std::endl;
+      if (m_verbose) {
+        std::cerr << "C' = ";
         print_set(game, C_prime);
       }
 
@@ -293,9 +304,10 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       // 15. (W''_0, W''_1) := solve(gamma|C' \ \alpha'))
       gamma -= C_prime_restriction;
       gamma -= alpha_prime;
-      if (m_debug) { std::cerr << "begin solve_optimised_left_rec(gamma | C - alpha')" << std::endl; }
+
+      if (m_verbose) { std::cerr << m_depth << " - begin solve_optimised_left_rec(gamma | C' - alpha')" << std::endl; }
       std::array<Restriction, 2> omega_doubleprime = solve_optimised_left_rec(std::move(gamma));
-      if (m_debug) { std::cerr << "end solve_optimised_left_rec(gamma | C - alpha')" << std::endl; }
+      if (m_verbose) { std::cerr << m_depth << " - end solve_optimised_left_rec(gamma | C' - alpha')" << std::endl; }
 
       // 16. \omega'_x := \omega'_x|C' \cup \omega''_x
       // 16. \omega_not_x := \omega'_not_x|C' \cup \omega''_x \cup \alpha'
@@ -307,9 +319,18 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       omega_doubleprime[not_x] |= omega_prime[not_x];
       omega_doubleprime[not_x] |= alpha_prime;
 
-      if (m_debug) { std::cerr << "return (omega''_0, omega''_1) " << std::endl; }
-      print_set(omega_doubleprime[0], game.configurations_explicit(), true);
-      print_set(omega_doubleprime[1], game.configurations_explicit(), true);
+      if (m_verbose) { std::cerr << "return (omega''_0, omega''_1) " << std::endl; }
+
+      if (m_verbose) { std::cerr << alpha_prime.count() << std::endl; }
+      
+      // Assert that the winning sets form a partition.
+      Restriction tmp = omega_doubleprime[0];
+      tmp |= omega_doubleprime[1];
+      std::cerr << tmp.count() << std::endl;
+      std::cerr << gamma_copy.count() << std::endl;
+      assert(tmp == gamma_copy);
+
+      m_depth -= 1;
       return omega_doubleprime;
     }
   }
@@ -393,7 +414,7 @@ void zlnkVPG::attr(int alpha, const Restriction& gamma, Restriction& U) const
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  if (m_debug) { std::cerr << "attracted " << U.count() << " vertices towards " << initial_size << " vertices" << std::endl; }
+  if (m_verbose) { std::cerr << "attracted " << U.count() << " vertices towards " << initial_size << " vertices" << std::endl; }
 
   attracting += elapsed.count();
 }

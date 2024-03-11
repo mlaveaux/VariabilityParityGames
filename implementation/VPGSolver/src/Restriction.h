@@ -70,10 +70,10 @@ private:
 class Restriction {
 
 public:
-  Restriction(std::size_t number_of_vertices, ConfSet initial = emptyset)
-    : m_mapping(number_of_vertices, initial)
+  Restriction(const Game& game, ConfSet initial = emptyset)
+    : m_game(&game), m_mapping(game.number_of_vertices(), initial)
   {
-    m_nonempty_count = initial == emptyset ? 0 : number_of_vertices;
+    m_nonempty_count = initial == emptyset ? 0 : game.number_of_vertices();
   }
 
   /// \returns The size of the restriction. 
@@ -137,7 +137,6 @@ public:
   }
 
   Restriction& operator-=(const ConfSet& C) {    
-    assert(m_mapping.size() == other.m_mapping.size());
     assert(size() >= 0);
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
@@ -154,6 +153,7 @@ public:
         std::cerr << "Mismatch on vertex " << i << std::endl;
         print_set(*m_game, m_mapping[i]);
         print_set(*m_game, other.m_mapping[i]);
+
         return false;
       }
     }

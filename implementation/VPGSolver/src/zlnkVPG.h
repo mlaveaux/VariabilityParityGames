@@ -53,6 +53,9 @@ protected:
   /// Enable more extensive logging.
   bool m_debug = false;
 
+  /// Enable certain amount of logging.
+  bool m_verbose = false;
+
   /// \brief Counts the number of recursive calls performed.
   mutable std::size_t m_recursive_calls = 0;
 
@@ -61,6 +64,8 @@ protected:
 
   /// \brief A shared dynamic bitset used to speed up internal computations.
   mutable boost::dynamic_bitset<> m_vertices;
+
+  mutable std::size_t m_depth = 0;
 
   /// The variability parity game.
   const Game& game;
