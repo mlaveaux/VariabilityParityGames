@@ -19,15 +19,15 @@ void print_set(const Game& game, ConfSet set)
   std::cout << "}" << std::endl;  
 }
 
-class RestrictionProxy {
+class SubmapProxy {
 
 public:
-  RestrictionProxy(ConfSet& entry, std::size_t& nonempty_count)
+  SubmapProxy(ConfSet& entry, std::size_t& nonempty_count)
     : m_nonempty_count(nonempty_count),
       m_entry(entry)
   {}
 
-  RestrictionProxy& operator=(const ConfSet& other) {
+  SubmapProxy& operator=(const ConfSet& other) {
     if (m_entry == emptyset && other != emptyset) {
       m_nonempty_count += 1;
     } else if (m_entry != emptyset && other == emptyset) {
@@ -38,7 +38,7 @@ public:
     return *this;
   }
 
-  RestrictionProxy& operator|=(const ConfSet& other) {
+  SubmapProxy& operator|=(const ConfSet& other) {
     if (m_entry == emptyset && other != emptyset) {
       m_nonempty_count += 1;
     }
@@ -47,7 +47,7 @@ public:
     return *this;
   }
   
-  RestrictionProxy& operator-=(const ConfSet& other) {
+  SubmapProxy& operator-=(const ConfSet& other) {
     bool was_empty = (m_entry == emptyset);
     m_entry -= other;
 
@@ -57,7 +57,7 @@ public:
     return *this;
   }
   
-  RestrictionProxy& operator&=(const ConfSet& other) {
+  SubmapProxy& operator&=(const ConfSet& other) {
     bool was_empty = (m_entry == emptyset);
     m_entry &= other;
 
@@ -77,10 +77,10 @@ private:
 };
 
 /// \brief A mapping from vertices to configurations.
-class Restriction {
+class Submap {
 
 public:
-  Restriction(const Game& game, ConfSet initial = emptyset)
+  Submap(const Game& game, ConfSet initial = emptyset)
     : m_game(&game), m_mapping(game.number_of_vertices(), initial)
   {
     m_nonempty_count = initial == emptyset ? 0 : game.number_of_vertices();
@@ -120,11 +120,11 @@ public:
     return m_mapping[index];
   }
 
-  RestrictionProxy operator[](std::size_t index) {
-    return RestrictionProxy(m_mapping[index], m_nonempty_count);
+  SubmapProxy operator[](std::size_t index) {
+    return SubmapProxy(m_mapping[index], m_nonempty_count);
   }
 
-  Restriction& operator|=(const Restriction& other) {
+  Submap& operator|=(const Submap& other) {
     assert(m_mapping.size() == other.m_mapping.size());
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
@@ -134,7 +134,7 @@ public:
     return *this;
   }
   
-  Restriction& operator-=(const Restriction& other) {    
+  Submap& operator-=(const Submap& other) {    
     assert(m_mapping.size() == other.m_mapping.size());
     assert(size() >= 0);
 
@@ -146,7 +146,7 @@ public:
     return *this;
   }
   
-  Restriction& operator&=(const Restriction& other) {    
+  Submap& operator&=(const Submap& other) {    
     assert(m_mapping.size() == other.m_mapping.size());
     assert(size() >= 0);
 
@@ -158,7 +158,7 @@ public:
     return *this;
   }
 
-  Restriction& operator-=(const ConfSet& C) {    
+  Submap& operator-=(const ConfSet& C) {    
     assert(size() >= 0);
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
@@ -169,7 +169,7 @@ public:
     return *this;
   }
 
-  bool operator==(const Restriction& other) {
+  bool operator==(const Submap& other) {
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
       if (m_mapping[i] != other.m_mapping[i]) {
         std::cerr << "Mismatch on vertex " << i << std::endl;
@@ -183,7 +183,7 @@ public:
     return true;
   }
   
-  bool operator!=(const Restriction& other) {
+  bool operator!=(const Submap& other) {
     return !(*this == other);
   }
 
@@ -198,7 +198,7 @@ public:
   }
 
 private:
-  friend RestrictionProxy;
+  friend SubmapProxy;
 
   std::vector<ConfSet> m_mapping;
 
@@ -208,7 +208,7 @@ private:
 };
 
 inline
-void print_set(const Restriction& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
+void print_set(const Submap& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
 {
   for (const auto& product : configurations) {    
     std::cout << "For product " << product.second << " the following vertices are in: ";

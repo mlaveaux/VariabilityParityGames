@@ -134,8 +134,8 @@ int run(int argc, char** argv)
 
     zlnkVPG z(g, debug);
 
-    Restriction W0(g);
-    Restriction W1(g);
+    Submap W0(g);
+    Submap W1(g);
     if (algorithm == 0) {
       std::tie(W0, W1) = z.solve();
     } else if (algorithm == 1) {

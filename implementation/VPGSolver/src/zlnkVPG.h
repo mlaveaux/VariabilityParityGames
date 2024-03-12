@@ -6,7 +6,7 @@
 #define VPGSOLVER_ZLNKVPG_H
 
 #include "Game.h"
-#include "Restriction.h"
+#include "Submap.h"
 
 #include <boost/dynamic_bitset.hpp>
 
@@ -26,29 +26,29 @@ public:
   zlnkVPG(const Game& game, bool debug);
 
   /// Solve the parity game
-  std::pair<Restriction, Restriction> solve() const;
+  std::pair<Submap, Submap> solve() const;
 
   /// Solve the parity game with the optimised recursion by Tim, not in the article.
-  std::pair<Restriction, Restriction> solve_optimised() const;
+  std::pair<Submap, Submap> solve_optimised() const;
 
   /// Solve the parity game with the optimised recursion in Algorithm 2
-  std::pair<Restriction, Restriction> solve_optimised_left() const;
+  std::pair<Submap, Submap> solve_optimised_left() const;
 
 protected:  
   /// \brief Implementation of SOLVE(rho)
-  std::array<Restriction, 2> solve_rec(Restriction&& rho) const;
+  std::array<Submap, 2> solve_rec(Submap&& rho) const;
 
   /// \brief Implementation of SOLVE_OPTIMISED(rho) in Algorithm 2
-  std::array<Restriction, 2> solve_optimised_rec(Restriction&& rho) const;
+  std::array<Submap, 2> solve_optimised_rec(Submap&& rho) const;
 
   /// \brief Implementation of SOLVE_OPTIMISED(rho) in Algorithm 4
-  std::array<Restriction, 2> solve_optimised_left_rec(Restriction&& rho) const;
+  std::array<Submap, 2> solve_optimised_left_rec(Submap&& rho) const;
 
   /// Attract restriction to rho for player alpha towards A, adds these to A as well.
-  void attr(int alpha, const Restriction& rho, Restriction& A) const;
+  void attr(int alpha, const Submap& rho, Submap& A) const;
   
   /// \returns max { p(v) | v in V && g(v) \neq \emptyset } 
-  std::pair<std::size_t, std::size_t> get_highest_lowest_prio(const Restriction& rho) const;
+  std::pair<std::size_t, std::size_t> get_highest_lowest_prio(const Submap& rho) const;
   
   /// Enable more extensive logging.
   bool m_debug = false;
