@@ -32,8 +32,8 @@ def main():
         timings = json.load(json_file)
 
         print("\\begin{table}[h]")
-        print("\\begin{tabular}{r|r|r|r|r}")
-        print("model & property & family & family-optimised & product \\\\ \\hline")
+        print("\\begin{tabular}{r|r|r|r|r|r}")
+        print("model & property & family & family-optimised & family-left-optimised & product \\\\ \\hline")
 
         old_experiment = None
         for experiment, properties in timings.items():
@@ -43,26 +43,32 @@ def main():
                 family_recursive_calls = 0
                 family_optimised_time = 0.0
                 family_optimised_recursive_calls = 0
+                family_left_optimised_time = 0.0
+                family_left_optimised_recursive_calls = 0
                 product_time = 0.0
                 product_recursive_calls = 0
                 reachable_time = 0.0
 
                 for game, timings in values.items():
                     if "project" in game and "reachable" not in game:
-                        product_time += average(timings['default'])
+                        product_time += average(timings['solver'])
                     elif "reachable" in game:
-                        reachable_time += average(timings['default'])
-                        product_recursive_calls = max(product_recursive_calls, timings['default'][0].get('recursive_calls', 0))
+                        reachable_time += average(timings['solver'])
+                        product_recursive_calls = max(product_recursive_calls, timings['solver'][0].get('recursive_calls', 0))
                     else:
-                        family_time = average(timings['default'])
-                        family_recursive_calls = timings['default'][0].get('recursive_calls', 0)
+                        family_time = average(timings['algorithm0'])
+                        family_recursive_calls = timings['algorithm0'][0].get('recursive_calls', 0)
 
-                        if "optimised" in timings:
-                            family_optimised_time = average(timings['optimised'])
-                            family_optimised_recursive_calls = timings['optimised'][0].get('recursive_calls', 0)
+                        if "algorithm1" in timings:
+                            family_optimised_time = average(timings['algorithm1'])
+                            family_optimised_recursive_calls = timings['algorithm1'][0].get('recursive_calls', 0)
+
+                        if "algorithm2" in timings:
+                            family_left_optimised_time = average(timings['algorithm2'])
+                            family_left_optimised_recursive_calls = timings['algorithm2'][0].get('recursive_calls', 0)
 
                 print(f"{experiment if experiment != old_experiment else ''} & {prop} \
-                    & {family_time:.1f} ({family_recursive_calls}) & {family_optimised_time:.1f} ({family_optimised_recursive_calls}) & {reachable_time:.1f} ({product_recursive_calls}) \\\\")
+                    & {family_time:.1f} ({family_recursive_calls}) & {family_optimised_time:.1f} ({family_optimised_recursive_calls}) &  {family_left_optimised_time:.1f} ({family_left_optimised_recursive_calls}) & {reachable_time:.1f} ({product_recursive_calls}) \\\\")
                 old_experiment = experiment
 
         print("\\end{tabular}")

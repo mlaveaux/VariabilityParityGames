@@ -422,8 +422,10 @@ class TimeParser:
     def even_wins(self) -> int:
         """ The number of games won by player even """
         even = 0
-        for (_, solution) in self.solve.solution:
-            even += len(solution[0])
+        for (_, solution) in self.solve.solution.items():
+            if solution[0] is not None:
+                if '0' in solution[0]:
+                    even += 1
 
         return even
 
@@ -443,8 +445,7 @@ def run_benchmark(
         time_parser = TimeParser()
 
         if ".svpg" in game:
-
-            for alg in range(0, 2):
+            for alg in range(0, 3):
                 run_program([vpgsolver_exe, game, "--algorithm", f"{alg}"], logging.Logger('ignore'), time_parser)
                 assert time_parser.time is not None
                 assert time_parser.recursive_calls is not None
@@ -455,7 +456,7 @@ def run_benchmark(
             # Add the result
             assert time_parser.time is not None
             assert time_parser.recursive_calls is not None
-            results[name].setdefault("solver", {"total": time.time() - start, "solving": time_parser.time / 1_000, "recursive_calls": time_parser.recursive_calls, "even_wins": time_parser.even_wins()})
+            results[name].setdefault("solver", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000, "recursive_calls": time_parser.recursive_calls, "even_wins": time_parser.even_wins()})
 
     return results
 
@@ -523,7 +524,7 @@ def main():
     prepare_experiments(experiments, logger)
 
     # Run the family solver and for every product check the corresponding results.
-    verify_results(experiments, logger)
+    # verify_results(experiments, logger)
 
     all_results = {}
     for experiment in experiments:

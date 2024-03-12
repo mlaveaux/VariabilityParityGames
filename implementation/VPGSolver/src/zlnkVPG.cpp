@@ -320,13 +320,7 @@ std::array<Restriction, 2> zlnkVPG::solve_optimised_left_rec(Restriction&& gamma
       omega_prime[x] -= C_prime;
       omega_prime[not_x] -= C_prime;
 
-      ConfSet tmp3 = C;
-      tmp3 -= C_prime;
-
-      ConfSet tmp2 = game.configurations();
-      tmp2 -= tmp3;
-      alpha -= tmp2;
-
+      alpha -= C_prime;
       omega_doubleprime[x] |= omega_prime[x];
       omega_doubleprime[x] |= alpha;
       omega_doubleprime[not_x] |= omega_prime[not_x];
