@@ -10,8 +10,9 @@
 #include <map>
 #include <queue>
 
-zlnkVPG::zlnkVPG(const Game& game, bool debug)
+zlnkVPG::zlnkVPG(const Game& game, BDD_MANAGER& manager, bool debug)
   : game(game),
+    m_manager(manager),
     m_verbose(debug),
     m_vertices(game.number_of_vertices())
 {}
@@ -19,7 +20,7 @@ zlnkVPG::zlnkVPG(const Game& game, bool debug)
 std::pair<Submap, Submap> zlnkVPG::solve() const
 {
   // Initially all vertices belong to all configurations
-  Submap gamma(game, game.configurations());
+  Submap gamma(game, m_manager, game.configurations());
 
   auto result = solve_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
@@ -30,7 +31,7 @@ std::pair<Submap, Submap> zlnkVPG::solve() const
 std::pair<Submap, Submap> zlnkVPG::solve_optimised() const
 {
   // Initially all vertices belong to all configurations
-  Submap gamma(game, game.configurations());
+  Submap gamma(game, m_manager, game.configurations());
 
   auto result = solve_optimised_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
@@ -41,7 +42,7 @@ std::pair<Submap, Submap> zlnkVPG::solve_optimised() const
 std::pair<Submap, Submap> zlnkVPG::solve_optimised_left() const
 {
   // Initially all vertices belong to all configurations
-  Submap gamma(game, game.configurations());
+  Submap gamma(game, m_manager, game.configurations());
 
   auto result = solve_optimised_left_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
@@ -77,9 +78,9 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
     // }
 
     // 7. \mu := lambda v in V. { \gamma(v) | p(v) = m }
-    Submap mu(game);
+    Submap mu(game, m_manager, BDD_EMPTYSET(m_manager));
     for (const auto& v : game.priority_vertices(m)) {
-      mu[v] = (bdd)gamma[v];
+      mu[v] = (BDD)gamma[v];
     }
     
     if (m_verbose) { std::cerr << "solve_rec(gamma) |gamma| = " 
@@ -146,9 +147,9 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& rho) const {
     int not_alpha = 1 - alpha;
 
     // 7. U := lambda v in V. { \rho(v) | p(v) = m }
-    Submap U(game);
+    Submap U(game, m_manager, BDD_EMPTYSET(m_manager));
     for (const auto& v : game.priority_vertices(m)) {
-      U[v] = (bdd)rho[v];
+      U[v] = (BDD)rho[v];
     }
 
     // 8. A := attr_alpha(U), we update U.
@@ -175,7 +176,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& rho) const {
       const Submap& B = W_prime[not_alpha];
 
       // 15. { c \in bigC | \exists v in V: B(v) }
-      ConfSet C = emptyset;
+      BDD C = BDD_EMPTYSET(m_manager);
       for (std::size_t i = 0; i < B.size(); ++i) {
         C |= B[i];
       }
@@ -222,10 +223,10 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
 
     // 7. C := { c in \bigC | exists v in V : p(v) = m && c in \gamma(v) }
     // 8. \mu := lambda v in V. { \gamma(v) | p(v) = m }
-    Submap mu(game);
-    ConfSet C = emptyset;
+    Submap mu(game, m_manager, BDD_EMPTYSET(m_manager));
+    BDD C = BDD_EMPTYSET(m_manager);
     for (const auto& v : game.priority_vertices(m)) {
-      mu[v] = (bdd)gamma[v];
+      mu[v] = (BDD)gamma[v];
       C |= gamma[v];
     }
     
@@ -255,8 +256,8 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
     if (m_verbose) { std::cerr << m_depth << " - end solve_optimised_left_rec(gamma \\ alpha)" << std::endl; }
 
     // omega_prime[not_x] restricted to C
-    ConfSet C_restriction = game.configurations();
-    C_restriction -= C;
+    BDD C_restriction = game.configurations();
+    C_restriction = BDD_MINUS(m_manager, C_restriction, C);
     Submap omega_prime_not_x_restricted = omega_prime[not_x];
     omega_prime_not_x_restricted -= C_restriction;
 
@@ -281,7 +282,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
       return omega_prime;
     } else {
       // 14. C' := { c in C | exists v in V : c \in \omega'_not_x(v) }
-      ConfSet C_prime = emptyset;
+      BDD C_prime = BDD_EMPTYSET(m_manager);
       for (std::size_t v = 0; v < game.number_of_vertices(); ++v) {
         C_prime |= omega_prime[not_x][v];
       }
@@ -292,8 +293,8 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
         print_set(game, C_prime);
       }
 
-      ConfSet C_prime_restriction = game.configurations();
-      C_prime_restriction -= C_prime;
+      BDD C_prime_restriction = game.configurations();
+      C_prime_restriction = BDD_MINUS(m_manager, C_restriction, C_prime);
 
       // No longer used so can be overwritten
       // omega_prime[not_x] restricted to C'
@@ -358,7 +359,7 @@ void zlnkVPG::attr(int alpha, const Submap& gamma, Submap& U) const
   // 2. Queue Q := {v \in V | U(v) != \emptset }
   std::queue<int> Q;
   for (int v = 0; v < game.number_of_vertices(); v++) {
-    if ((bdd)U[v] != emptyset) {
+    if (!BDD_IS_EMPTY(m_manager, (BDD)U[v])) {
       Q.push(v);
       m_vertices[v] = true;
     }
@@ -379,11 +380,11 @@ void zlnkVPG::attr(int alpha, const Submap& gamma, Submap& U) const
     // 6. For every v \in Ew such that gamma(v) \intersect \theta(v, w) \intersect A(w) != \emptyset do
     // Our theta is represented by a edge_guard for a given edge index.
     for (const auto& [v, edge] : game.predecessors(w)) {
-      ConfSet a = gamma[v];
+      BDD a = gamma[v];
       a &= A[w];
       a &= game.edge_guard(edge);
 
-      if (a != emptyset) {
+    if (!BDD_IS_EMPTY(m_manager,a)) {
         // 7. if v in V_\alpha
         if (game.owner(v) == alpha) {
           // 8. a := gamma(v) \intersect \theta(v, w) \intersect A(w)
@@ -394,21 +395,22 @@ void zlnkVPG::attr(int alpha, const Submap& gamma, Submap& U) const
           a = gamma[v];
           // 11. for w' \in vE such that gamma(v) && theta(v, w') && \gamma(w') != \emptyset do
           for (const auto& [w_prime, edge_succ] : game.successors(v)) {
-            ConfSet tmp = gamma[v];
+            BDD tmp = gamma[v];
             tmp &= game.edge_guard(edge_succ);
             tmp &= gamma[w_prime];
-            if (tmp != emptyset) {
+            if (!BDD_IS_EMPTY(m_manager, tmp)) {
               // 12. a := a && (C \ (theta(v, w') && \gamma(w'))) \cup A(w')
-              ConfSet tmp = game.edge_guard(edge_succ);
+              BDD tmp = game.edge_guard(edge_succ);
               tmp &= gamma[w_prime];
-              tmp = (game.configurations() - tmp) | A[w_prime];
+              tmp = (BDD_MINUS(m_manager, game.configurations(), tmp)) | A[w_prime];
               a &= tmp;              
             }
           }
         }
 
         // 15. a \ A(v) != \emptyset
-        if ((a - A[v]) != emptyset) {
+        auto what = BDD_MINUS(m_manager, a, (BDD)A[v]);
+        if (!BDD_IS_EMPTY(m_manager, what)) {
           // 16. A(v) := A(v) \cup a
           A[v] |= a;
 
@@ -436,7 +438,7 @@ std::pair<std::size_t, std::size_t> zlnkVPG::get_highest_lowest_prio(const Subma
   std::size_t lowest = std::numeric_limits<std::size_t >::max();
 
   for (std::size_t v = 0; v < game.number_of_vertices(); v++) {
-    if (gamma[v] != emptyset) {
+    if (!BDD_IS_EMPTY(m_manager, gamma[v])) {
       highest = std::max(highest, game.priority(v));
       lowest = std::min(lowest, game.priority(v));
     }

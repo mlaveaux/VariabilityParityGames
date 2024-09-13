@@ -67,7 +67,7 @@ Game GameParser::parse(const std::string& filename, const char* specificconf, bo
     throw std::string("could not open file");
   }
 
-  return Game(bm_vars, bigC, m_priority, m_owner, out_edges, edge_guards);
+  return Game(m_manager, bm_vars, bigC, m_priority, m_owner, out_edges, edge_guards);
 }
 
 void GameParser::parseConfs(char const* line)
@@ -89,8 +89,13 @@ void GameParser::parseConfs(char const* line)
   bm_n_vars = i - 7;
   bm_vars.resize(bm_n_vars);
 
+#ifdef ENABLE_BUDDY
   bdd_init(2000000, 2);
   bdd_setvarnum(bm_n_vars);
+#else
+
+#endif
+
   std::vector<int> order;
   order.resize(bm_n_vars);
 
@@ -110,7 +115,11 @@ void GameParser::parseConfs(char const* line)
 
   std::cout << "\n";
   for (i = 0; i < bm_n_vars; i++) {
+#ifdef ENABLE_BUDDY
     bm_vars[order[i]] = bdd_ithvar(i);
+#else
+    bm_vars[order[i]] = m_manager.new_var();
+#endif
   }
 
   parseConfSet(line, 6, bigC);
@@ -135,10 +144,10 @@ void GameParser::parseInitialiser(char* line)
   declared.resize(n_nodes);
 }
 
-int GameParser::parseConfSet(const char* line, int i, ConfSet& result)
+int GameParser::parseConfSet(const char* line, int i, BDD& result)
 {
   if (is_parity_game) {
-    result = fullset;
+    result = BDD_UNIVERSE(m_manager);
     return i + 1;
   } else {
     bool inverse = false;
@@ -147,8 +156,8 @@ int GameParser::parseConfSet(const char* line, int i, ConfSet& result)
       i++;
     }
 
-    result = emptyset;
-    ConfSet entry = fullset;
+    result = BDD_EMPTYSET(m_manager);
+    BDD entry = BDD_UNIVERSE(m_manager);
     int var = 0;
     char c;
     do {
@@ -157,13 +166,13 @@ int GameParser::parseConfSet(const char* line, int i, ConfSet& result)
         if (var != 0) {
           throw std::string("Unexpected F");
         }
-        entry = emptyset;
+        entry = BDD_EMPTYSET(m_manager);
       }
       else if (c == '0') {
         if (var > bm_n_vars) {
           throw std::string("Too many bits");
         }
-        entry -= bm_vars[var];
+        entry = BDD_MINUS(m_manager, entry, bm_vars[var]);
         var++;
       }
       else if (c == '1') {
@@ -181,7 +190,7 @@ int GameParser::parseConfSet(const char* line, int i, ConfSet& result)
       }
       else if (c == '+') {
         result |= entry;
-        entry = fullset;
+        entry = BDD_UNIVERSE(m_manager);
         var = 0;
       }
     }
@@ -192,9 +201,9 @@ int GameParser::parseConfSet(const char* line, int i, ConfSet& result)
 
     if (inverse) {
       // Compute the complement set.
-      ConfSet a = result;
-      result = fullset;
-      result -= a;
+      BDD a = result;
+      result = BDD_UNIVERSE(m_manager);
+      result = BDD_MINUS(m_manager, result, a);
     }
 
     return i;
@@ -244,7 +253,7 @@ void GameParser::parseVertex(char* line)
     edge_guards.resize(guardindex + 1);
     i = parseConfSet(line, 0, edge_guards[guardindex]);
     edge_guards[guardindex] &= bigC;
-    if (!(edge_guards[guardindex] == emptyset)) {
+    if (!BDD_IS_EMPTY(m_manager, edge_guards[guardindex])) {
       int outindex = out_edges[index].size();
       out_edges[index].resize(outindex + 1);
       out_edges[index][outindex] = std::make_tuple(target, guardindex);
@@ -264,12 +273,14 @@ int GameParser::readUntil(const char* line, char delim)
   return i;
 }
 
-Game::Game(std::vector<ConfSet> bm_vars, 
-  ConfSet bigC,
+Game::Game(BDD_MANAGER& manager,
+  std::vector<BDD> bm_vars, 
+  BDD bigC,
   std::vector<int> priority, 
   std::vector<int> owner, 
   std::vector<std::vector<std::tuple<int, int>>> out_edges,
-  std::vector<ConfSet> edge_guards) :
+  std::vector<BDD> edge_guards) :
+  m_manager(manager),
   bm_vars(bm_vars),
   bigC(bigC),
   m_priority(priority),
@@ -292,7 +303,7 @@ Game::Game(std::vector<ConfSet> bm_vars,
   // Compute the input edges.
   for (int i = 0; i < owner.size(); i++) {
     for (const auto& e : out_edges[i]) {
-      int t = target(e);
+      int t = SMH_TARGET(e);
       int index = in_edges[t].size();
       in_edges[t].resize(index + 1);
       in_edges[t][index] = std::make_tuple(i, edge_index(e));
@@ -300,14 +311,15 @@ Game::Game(std::vector<ConfSet> bm_vars,
   }
 }
 
-void configurations_explicit_rec(ConfSet s, 
-  std::vector<std::pair<ConfSet, std::string>>& result, 
+void configurations_explicit_rec(BDD_MANAGER& manager,
+  BDD s, 
+  std::vector<std::pair<BDD, std::string>>& result, 
   std::vector<char>& buffer,
   int var, 
   int max_var,
-  const std::vector<ConfSet>& vars)
+  const std::vector<BDD>& vars)
 {
-  if (s == emptyset) {
+  if (BDD_IS_EMPTY(manager, s)) {
     return;
   }
 
@@ -316,37 +328,37 @@ void configurations_explicit_rec(ConfSet s,
     result.push_back(std::make_pair(s, std::string( buffer.data())));
   }
   else {
-    ConfSet tmp = s;
+    BDD tmp = s;
     tmp &= vars[var];
     buffer[var] = '1';
-    configurations_explicit_rec(tmp, result, buffer, var + 1, max_var, vars);
+    configurations_explicit_rec(manager, tmp, result, buffer, var + 1, max_var, vars);
 
     tmp = s;
-    tmp -= vars[var];
+    tmp = BDD_MINUS(manager, tmp, vars[var]);
     buffer[var] = '0';
-    configurations_explicit_rec(tmp, result, buffer, var + 1, max_var, vars);
+    configurations_explicit_rec(manager, tmp, result, buffer, var + 1, max_var, vars);
   }
 }
 
-std::vector<std::pair<ConfSet, std::string>> Game::configurations_explicit() const
+std::vector<std::pair<BDD, std::string>> Game::configurations_explicit() const
 {
-  std::vector<std::pair<ConfSet, std::string>> result;
+  std::vector<std::pair<BDD, std::string>> result;
 
   std::vector<char> characters(bm_vars.size());
-  configurations_explicit_rec(configurations(), result, characters, 0, bm_vars.size(), bm_vars);
+  configurations_explicit_rec(m_manager, configurations(), result, characters, 0, bm_vars.size(), bm_vars);
   return result;
 }
 
-std::vector<std::pair<ConfSet, std::string>> Game::configurations_explicit(ConfSet set) const
+std::vector<std::pair<BDD, std::string>> Game::configurations_explicit(BDD set) const
 {
-  std::vector<std::pair<ConfSet, std::string>> result;
+  std::vector<std::pair<BDD, std::string>> result;
 
   std::vector<char> characters(bm_vars.size());
-  configurations_explicit_rec(set, result, characters, 0, bm_vars.size(), bm_vars);
+  configurations_explicit_rec(m_manager, set, result, characters, 0, bm_vars.size(), bm_vars);
   return result;
 }
 
-void Game::write(std::ostream& output, std::optional<ConfSet> conf)
+void Game::write(std::ostream& output, std::optional<BDD> conf)
 {
   output << "parity " << m_owner.size() << ';';
   for (int v = 0; v < m_owner.size(); v++) {
@@ -355,14 +367,14 @@ void Game::write(std::ostream& output, std::optional<ConfSet> conf)
     for (const auto& e : out_edges[v]) {
       bool is_enabled = true;
       if (conf) {
-        ConfSet tmp = conf.value();
+        BDD tmp = conf.value();
         tmp &= edge_guards[edge_index(e)];
 
-        is_enabled = (tmp != emptyset);
+        is_enabled = !BDD_IS_EMPTY(m_manager, tmp);
       } 
       
       if (is_enabled) {                 
-        output << separator << target(e);
+        output << separator << SMH_TARGET(e);
         separator = ',';
       }
     }
@@ -375,7 +387,7 @@ std::pair<Game, std::vector<int>> Game::compute_reachable() const {
 
   // The new graph.
   std::vector<std::vector<std::tuple<int, int>>> new_out_edges;
-  std::vector<ConfSet> new_edge_guards;
+  std::vector<BDD> new_edge_guards;
   std::vector<int> priority;
   std::vector<int> owner;
 
@@ -423,5 +435,5 @@ std::pair<Game, std::vector<int>> Game::compute_reachable() const {
     }
   }
 
-  return std::make_pair(Game(bm_vars, bigC, priority, owner, new_out_edges, new_edge_guards), mapping);
+  return std::make_pair(Game(m_manager, bm_vars, bigC, priority, owner, new_out_edges, new_edge_guards), mapping);
 }

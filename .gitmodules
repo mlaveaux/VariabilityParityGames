@@ -4,3 +4,6 @@
 [submodule "implementation/VPGSolver/3rd-party/boost-include-only"]
 	path = implementation/VPGSolver/3rd-party/boost-include-only
 	url = https://github.com/mlaveaux/boost-include-only
+[submodule "implementation/VPGSolver/3rd-party/oxidd"]
+	path = implementation/VPGSolver/3rd-party/oxidd
+	url = https://github.com/OxiDD/oxidd.git

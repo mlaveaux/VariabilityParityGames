@@ -9,7 +9,7 @@
 #include <vector>
 
 inline
-void print_set(const Game& game, ConfSet set)
+void print_set(const Game& game, BDD set)
 {
   std::cout << "{ ";
   for (const auto& product : game.configurations_explicit(set)) {
@@ -22,15 +22,16 @@ void print_set(const Game& game, ConfSet set)
 class SubmapProxy {
 
 public:
-  SubmapProxy(ConfSet& entry, std::size_t& nonempty_count)
+  SubmapProxy(BDD_MANAGER& manager, BDD& entry, std::size_t& nonempty_count)
     : m_nonempty_count(nonempty_count),
+      m_manager(manager),
       m_entry(entry)
   {}
 
-  SubmapProxy& operator=(const ConfSet& other) {
-    if (m_entry == emptyset && other != emptyset) {
+  SubmapProxy& operator=(const BDD& other) {
+    if (BDD_IS_EMPTY(m_manager, m_entry) && !(BDD_IS_EMPTY(m_manager, other))) {
       m_nonempty_count += 1;
-    } else if (m_entry != emptyset && other == emptyset) {
+    } else if (!BDD_IS_EMPTY(m_manager, m_entry) && BDD_IS_EMPTY(m_manager, other)) {
       m_nonempty_count -= 1;
     }
 
@@ -38,8 +39,8 @@ public:
     return *this;
   }
 
-  SubmapProxy& operator|=(const ConfSet& other) {
-    if (m_entry == emptyset && other != emptyset) {
+  SubmapProxy& operator|=(const BDD& other) {
+    if (BDD_IS_EMPTY(m_manager, m_entry) && !BDD_IS_EMPTY(m_manager, other)) {
       m_nonempty_count += 1;
     }
 
@@ -47,43 +48,55 @@ public:
     return *this;
   }
   
-  SubmapProxy& operator-=(const ConfSet& other) {
-    bool was_empty = (m_entry == emptyset);
-    m_entry -= other;
+  SubmapProxy& operator-=(const BDD& other) {
+    bool was_empty = (BDD_IS_EMPTY(m_manager, m_entry));
+    m_entry = BDD_MINUS(manager, m_entry, other);
 
-    if (!was_empty && m_entry == emptyset) {
+    if (!was_empty && BDD_IS_EMPTY(m_manager, m_entry)) {
       m_nonempty_count -= 1;
     }
     return *this;
   }
   
-  SubmapProxy& operator&=(const ConfSet& other) {
-    bool was_empty = (m_entry == emptyset);
+  SubmapProxy& operator&=(const BDD& other) {
+    bool was_empty = (BDD_IS_EMPTY(m_manager, m_entry));
     m_entry &= other;
 
-    if (!was_empty && m_entry == emptyset) {
+    if (!was_empty && BDD_IS_EMPTY(m_manager, m_entry)) {
       m_nonempty_count -= 1;
     }
     return *this;
   }
 
-  operator ConfSet() const {
+  operator BDD() const {
     return m_entry;
   }
 
 private:
-  ConfSet& m_entry;
+  BDD& m_entry;
   std::size_t& m_nonempty_count;
+  BDD_MANAGER& m_manager;
 };
 
 /// \brief A mapping from vertices to configurations.
 class Submap {
 
 public:
-  Submap(const Game& game, ConfSet initial = emptyset)
-    : m_game(&game), m_mapping(game.number_of_vertices(), initial)
+  Submap(const Game& game, BDD_MANAGER& manager, BDD initial)
+    : m_game(&game), m_mapping(game.number_of_vertices(), initial),
+      m_manager(manager)
   {
-    m_nonempty_count = initial == emptyset ? 0 : game.number_of_vertices();
+    m_nonempty_count = BDD_IS_EMPTY(m_manager, initial) ? 0 : game.number_of_vertices();
+  }
+
+  Submap& operator=(const Submap& other)
+  {
+    // Nice boilerplate
+    m_mapping = other.m_mapping;
+    m_game = other.m_game;
+    m_manager = other.m_manager;
+    m_nonempty_count = other.m_nonempty_count;
+    return *this;
   }
 
   /// \returns The size of the restriction. 
@@ -95,14 +108,14 @@ public:
   std::size_t count() const {
     std::size_t count = 0;
     for (const auto& entry : m_mapping) {
-      count += (entry != emptyset);
+      count += !BDD_IS_EMPTY(m_manager, entry);
     }
     assert(m_nonempty_count == count);
 
     return m_nonempty_count;
   }
 
-  /// \returns True iff the given confset is equal to lambda x in V. \emptyset
+  /// \returns True iff the given BDD is equal to lambda x in V. \emptyset
   bool is_empty() const {
     assert((m_nonempty_count == 0) == (count() == 0));
     return m_nonempty_count == 0;
@@ -110,18 +123,18 @@ public:
 
   void clear() {
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
-      m_mapping[i] = emptyset;
+      m_mapping[i] = BDD_EMPTYSET(m_manager);
     }
 
     m_nonempty_count = 0;
   }
 
-  ConfSet operator[](std::size_t index) const {
+  BDD operator[](std::size_t index) const {
     return m_mapping[index];
   }
 
   SubmapProxy operator[](std::size_t index) {
-    return SubmapProxy(m_mapping[index], m_nonempty_count);
+    return SubmapProxy(m_manager, m_mapping[index], m_nonempty_count);
   }
 
   Submap& operator|=(const Submap& other) {
@@ -158,7 +171,7 @@ public:
     return *this;
   }
 
-  Submap& operator-=(const ConfSet& C) {    
+  Submap& operator-=(const BDD& C) {    
     assert(size() >= 0);
 
     for (std::size_t i = 0; i < m_mapping.size(); ++i) {
@@ -190,7 +203,7 @@ public:
   void print(const Game& game) {
 
     for (int i = 0; i < m_mapping.size(); ++i) {
-      if (m_mapping[i] != emptyset) {
+      if (!BDD_IS_EMPTY(m_manager, m_mapping[i])) {
         std::cout << i << ": ";
         print_set(game, m_mapping[i]);
       }
@@ -200,23 +213,24 @@ public:
 private:
   friend SubmapProxy;
 
-  std::vector<ConfSet> m_mapping;
+  std::vector<BDD> m_mapping;
 
   const Game* m_game; ///< Only for debugging purposes.
+  BDD_MANAGER& m_manager;
 
   std::size_t m_nonempty_count = 0; // Invariant: counts the number of empty positions in the mapping.
 };
 
 inline
-void print_set(const Submap& W, const std::vector<std::pair<ConfSet, std::string>>& configurations, bool full_solution)
+void print_set(BDD_MANAGER& manager, const Submap& W, const std::vector<std::pair<BDD, std::string>>& configurations, bool full_solution)
 {
   for (const auto& product : configurations) {    
     std::cout << "For product " << product.second << " the following vertices are in: ";
     for (std::size_t v = 0; v < W.size(); v++) {
-      ConfSet tmp = W[v];
+      BDD tmp = W[v];
       tmp &= product.first;
 
-      if (tmp != emptyset) {
+      if (!BDD_IS_EMPTY(manager, tmp)) {
         std::cout << v << ',';
       }
 

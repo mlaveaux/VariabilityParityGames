@@ -57,12 +57,18 @@ int run(int argc, char** argv)
     }
   }
 
+#ifdef ENABLE_BUDDY
+  BDD_MANAGER manager;
+#else
+  BDD_MANAGER manager(2000000, 2000000, 1);
+#endif
+
   // Read the input game
-  Game g = GameParser().parse(argv[1], specificconf, is_parity_game);
+  Game g = GameParser(manager).parse(argv[1], specificconf, is_parity_game);
 
   if (output_projection) {
     // Determine all configurations
-    std::vector<std::pair<ConfSet, std::string>> allconfs = g.configurations_explicit();
+    std::vector<std::pair<BDD, std::string>> allconfs = g.configurations_explicit();
 
     // Write the projected VPG
     for (const auto& conf : allconfs) {
@@ -109,9 +115,11 @@ int run(int argc, char** argv)
   }
   
   // enable cache after parsing
+#ifdef ENABLE_BUDDY
   bdd_gbc();
-  bdd_setcacheratio(200);
+  bdd_setcacheratio(1);
   bdd_gbc();
+#endif
 
   auto start = std::chrono::high_resolution_clock::now();
 
@@ -132,10 +140,10 @@ int run(int argc, char** argv)
   } else {
     assert(g.configurations() != emptyset);
 
-    zlnkVPG z(g, debug);
+    zlnkVPG z(g, manager, debug);
 
-    Submap W0(g);
-    Submap W1(g);
+    Submap W0(g, manager, BDD_EMPTYSET(manager));
+    Submap W1(g, manager, BDD_EMPTYSET(manager));
     if (algorithm == 0) {
       std::tie(W0, W1) = z.solve();
     } else if (algorithm == 1) {
@@ -150,9 +158,9 @@ int run(int argc, char** argv)
     std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000.0 << " ms\n";
 
     std::cout << "W0: \n";
-    print_set(W0, g.configurations_explicit(), print_solution);
+    print_set(manager, W0, g.configurations_explicit(), print_solution);
     std::cout << "W1: \n";
-    print_set(W1, g.configurations_explicit(), print_solution);
+    print_set(manager, W1, g.configurations_explicit(), print_solution);
   }
 
   return 0;
