@@ -20,9 +20,9 @@
 #define BDD_EMPTYSET(manager) bddfalse
 #define BDD_UNIVERSE(manager) bddtrue
 #else
-#include "oxidd/zbdd.hpp"
-#define BDD_MANAGER oxidd::zbdd_manager
-#define BDD oxidd::zbdd_function
+#include "oxidd/bdd.hpp"
+#define BDD_MANAGER oxidd::bdd_manager
+#define BDD oxidd::bdd_function
 #define BDD_IS_EMPTY(manager, set) (set == manager.f())
 #define BDD_MINUS(manager, a, b) (b).imp_strict(a)
 #define BDD_EMPTYSET(manager) manager.f()

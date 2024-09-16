@@ -138,7 +138,7 @@ int run(int argc, char** argv)
     print_set(W1, print_solution);
     std::cout << "\n";
   } else {
-    assert(g.configurations() != emptyset);
+    assert(!BDD_IS_EMPTY(manager, g.configurations()));
 
     zlnkVPG z(g, manager, debug);
 
