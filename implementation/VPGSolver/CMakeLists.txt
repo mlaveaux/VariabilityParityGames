@@ -16,7 +16,7 @@ add_executable(VPGSolver_bdd
 
   if (ENABLE_BUDDY)
     add_subdirectory(3rd-party/BuDDy)
-    target_link_libraries(VPGSolver_bdd PUBLIC bdd)
+    target_link_libraries(VPGSolver_bdd PUBLIC buddy)
     add_compile_definitions(ENABLE_BUDDY)
   else()
     add_subdirectory(3rd-party/oxidd)

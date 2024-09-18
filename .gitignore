@@ -13,3 +13,4 @@ bin/
 
 # Ignore temporary files
 tmp/
+.cache/
