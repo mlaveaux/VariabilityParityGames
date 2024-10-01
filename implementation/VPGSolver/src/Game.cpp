@@ -92,6 +92,7 @@ void GameParser::parseConfs(char const* line)
 #ifdef ENABLE_BUDDY
   bdd_init(2000000, 2);
   bdd_setvarnum(bm_n_vars);
+  bdd_varblockall();
 #else
 
 #endif
