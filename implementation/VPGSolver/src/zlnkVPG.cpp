@@ -59,7 +59,7 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
     if (m_verbose) { std::cerr << "empty subgame" << std::endl; }
     return std::array<Submap, 2>({gamma, gamma});
   } else {
-    // m := max { p(v) | v in V && \gamma(v) \neq \emptyset }
+    // 5. m := max { p(v) | v in V && \gamma(v) \neq \emptyset }
     auto [m, l] = get_highest_lowest_prio(gamma);
 
     // 6. x := m mod 2
@@ -77,7 +77,7 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
     //   }
     // }
 
-    // 7. \mu := lambda v in V. { \gamma(v) | p(v) = m }
+    // 7. \mu := lambda v in V. bigcup { \gamma(v) | p(v) = m }
     Submap mu(game, m_manager, BDD_EMPTYSET(m_manager));
     for (const auto& v : game.priority_vertices(m)) {
       mu[v] = (BDD)gamma[v];
@@ -92,7 +92,7 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
     attr(x, gamma, mu);
     const Submap& alpha = mu;
 
-    // 9. (W'_0, W'_1) := solve(\gamma \ \alpha)
+    // 9. (omega'_0, omega'_1) := solve(\gamma \ \alpha)
     Submap gamma_minus = gamma;
     gamma_minus -= alpha;
 
@@ -103,7 +103,7 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
 
     // 10. if omega_prime_x == \epsilon then
     if (omega_prime[not_x].is_empty()) {
-      // W_prime[alpha] not used after this so can be changed.
+      // omega_prime[alpha] not used after this so can be changed.
       // 11. omega_x := omega'_x \cup alpha
       // 20. return (omega_0, omega_1) 
       if (m_verbose) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
@@ -111,7 +111,7 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
       omega_prime[not_x].clear();
       return omega_prime;
     } else {
-      // \beta := attr_notalpha(\omega'_notalpha)
+      // 14. \beta := attr_notalpha(\omega'_notalpha)
       // \omega'[not_x] not used after this so can be changed.
       attr(not_x, gamma, omega_prime[not_x]);
       const Submap& beta = omega_prime[not_x];
@@ -123,8 +123,8 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
       std::array<Submap, 2> omega_doubleprime = solve_rec(std::move(gamma));
       if (m_verbose) { std::cerr << "end solve_rec(gamma - beta)" << std::endl; }
 
-      // 16. W_alpha := W'_notalpha \cup B
-      // 20. return (W_0, W_1) 
+      // 17. omega_notx := omega'_notx \cup \beta
+      // 20. return (omega_0, omega_1) 
       omega_doubleprime[not_x] |= beta;
       if (m_verbose) { std::cerr << "return (omega''_0, omega''_1) " << std::endl; }
       return omega_doubleprime;
@@ -132,29 +132,29 @@ std::array<Submap, 2> zlnkVPG::solve_rec(Submap&& gamma) const {
   }
 }
 
-std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& rho) const {
+std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& gamma) const {
   m_recursive_calls += 1;
 
-  // 1. if rho == lambda v in V. \emptyset then
-  if (rho.is_empty()) {
-    return std::array<Submap, 2>({rho, rho});
+  // 1. if gamma == lambda v in V. \emptyset then
+  if (gamma.is_empty()) {
+    return std::array<Submap, 2>({gmma, gamma});
   } else {
-    // 5. m := max { p(v) | v in V && rho(v) \neq \emptyset }
-    auto [m, l] = get_highest_lowest_prio(rho);
+    // 5. m := max { p(v) | v in V && gamma(v) \neq \emptyset }
+    auto [m, l] = get_highest_lowest_prio(gamma);
 
-    // 6. \alpha := m mod 2
-    int alpha = (m % 2);
-    int not_alpha = 1 - alpha;
+    // 6. x := m mod 2
+    int x = (m % 2);
+    int not_x = 1 - x;
 
-    // 7. U := lambda v in V. { \rho(v) | p(v) = m }
-    Submap U(game, m_manager, BDD_EMPTYSET(m_manager));
+    // 7. mu := lambda v in V. bigcup { \gamma(v) | p(v) = m }
+    Submap mutate(game, m_manager, BDD_EMPTYSET(m_manager));
     for (const auto& v : game.priority_vertices(m)) {
-      U[v] = (BDD)rho[v];
+      mu[v] = (BDD)gamma[v];
     }
 
-    // 8. A := attr_alpha(U), we update U.
-    attr(alpha, rho, U);
-    Submap& A = U;
+    // 9. alpha := attr_x(mu)
+    attr(x, gamma, mu);
+    Submap& A = mu;
 
     // 9. (W'_0, W'_1) := solve(rho \ A)
     Submap rho_minus = rho;
@@ -222,7 +222,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
     int not_x = 1 - x;
 
     // 7. C := { c in \bigC | exists v in V : p(v) = m && c in \gamma(v) }
-    // 8. \mu := lambda v in V. { \gamma(v) | p(v) = m }
+    // 8. \mu := lambda v in V. bigcup { \gamma(v) | p(v) = m }
     Submap mu(game, m_manager, BDD_EMPTYSET(m_manager));
     BDD C = BDD_EMPTYSET(m_manager);
     for (const auto& v : game.priority_vertices(m)) {
@@ -243,11 +243,11 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
       print_set(game, C);
     }
 
-    // 9. \alph := attr_x(\mu), we update \mu.
+    // 9. alpha := attr_x(\mu), we update \mu.
     attr(x, gamma, mu);
     Submap& alpha = mu;
 
-    // 10. (\omega'_0, \omega'_1) := solve(gamma \ A)
+    // 10. (omega'_0, omega'_1) := solve(gamma \ alpha)
     Submap gamma_minus = gamma;
     gamma_minus -= alpha;
 
@@ -263,9 +263,9 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
 
     // 10.
     if (omega_prime_not_x_restricted.is_empty()) {
-      // \omega'[x] not used after this so can be changed.
-      // 11. \omega_x := \omega'_x \cup A
-      // 20. return (\omega_0, \omega_1)
+      // omega'[x] not used after this so can be changed.
+      // 11. omega_x := omega'_x \cup A
+      // 22. return (omega_0, omega_1)
       if (m_verbose) { std::cerr << "return (omega'_0, omega'_1) " << std::endl; }
       omega_prime[x] |= alpha;
 
@@ -281,7 +281,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
       m_depth -= 1;
       return omega_prime;
     } else {
-      // 14. C' := { c in C | exists v in V : c \in \omega'_not_x(v) }
+      // 15. C' := { c in C | exists v in V : c \in omega'_not_x(v) }
       BDD C_prime = BDD_EMPTYSET(m_manager);
       for (std::size_t v = 0; v < game.number_of_vertices(); ++v) {
         C_prime |= omega_prime[not_x][v];
@@ -302,12 +302,12 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
       omega_prime_not_x_restricted_prime = omega_prime[not_x];
       omega_prime_not_x_restricted_prime -= C_prime_restriction;
 
-      // 16. B := attr_not_x(\omega'_not_x | C')
+      // 16. beta := attr_not_x(omega'_not_x | C')
       attr(not_x, gamma, omega_prime_not_x_restricted_prime);
       const Submap& alpha_prime = omega_prime_not_x_restricted_prime;
 
       // gamma not used after this so can be changed.
-      // 15. (W''_0, W''_1) := solve(gamma|C' \ \alpha'))
+      // 17. (omega''_0, omega''_1) := solve(gamma|C' \ \alpha'))
       gamma -= C_prime_restriction;
       gamma -= alpha_prime;
 
@@ -315,9 +315,9 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
       std::array<Submap, 2> omega_doubleprime = solve_optimised_left_rec(std::move(gamma));
       if (m_verbose) { std::cerr << m_depth << " - end solve_optimised_left_rec(gamma | C' - alpha')" << std::endl; }
 
-      // 16. \omega'_x := \omega'_x|C' \cup \omega''_x
-      // 16. \omega_not_x := \omega'_not_x|C' \cup \omega''_x \cup \alpha'
-      // 20. return (W_0, W_1)
+      // 18. omega'_x := omega'_x\C' cup alpha\C' cup omega''_x
+      // 19. omega_not_x := omega'_not_x\C' cup omega''_x cup beta
+      // 22. return (omega_0, omega_1)
       omega_prime[x] -= C_prime;
       omega_prime[not_x] -= C_prime;
 
