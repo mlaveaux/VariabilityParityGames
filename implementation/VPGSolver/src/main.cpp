@@ -60,7 +60,7 @@ int run(int argc, char** argv)
 #ifdef ENABLE_BUDDY
   BDD_MANAGER manager;
 #else
-  BDD_MANAGER manager(2000000, 2000000, 1);
+  BDD_MANAGER manager(2000000, 1000000, 1);
 #endif
 
   // Read the input game
@@ -116,6 +116,9 @@ int run(int argc, char** argv)
   
   // enable cache after parsing
 #ifdef ENABLE_BUDDY
+  bdd_reorder_verbose(2);
+  bdd_reorder(BDD_REORDER_SIFT);
+  
   bdd_gbc();
   bdd_setcacheratio(1);
   bdd_gbc();
