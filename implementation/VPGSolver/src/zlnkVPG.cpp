@@ -137,7 +137,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& gamma) const {
 
   // 1. if gamma == lambda v in V. \emptyset then
   if (gamma.is_empty()) {
-    return std::array<Submap, 2>({gmma, gamma});
+    return std::array<Submap, 2>({gamma, gamma});
   } else {
     // 5. m := max { p(v) | v in V && gamma(v) \neq \emptyset }
     auto [m, l] = get_highest_lowest_prio(gamma);
@@ -147,7 +147,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& gamma) const {
     int not_x = 1 - x;
 
     // 7. mu := lambda v in V. bigcup { \gamma(v) | p(v) = m }
-    Submap mutate(game, m_manager, BDD_EMPTYSET(m_manager));
+    Submap mu(game, m_manager, BDD_EMPTYSET(m_manager));
     for (const auto& v : game.priority_vertices(m)) {
       mu[v] = (BDD)gamma[v];
     }
@@ -157,23 +157,23 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& gamma) const {
     Submap& A = mu;
 
     // 9. (W'_0, W'_1) := solve(rho \ A)
-    Submap rho_minus = rho;
-    rho_minus -= A;
+    Submap gamma_minus = gamma;
+    gamma_minus -= A;
 
-    std::array<Submap, 2> W_prime = solve_optimised_rec(std::move(rho_minus));
+    std::array<Submap, 2> W_prime = solve_optimised_rec(std::move(gamma_minus));
 
     // 10.
-    if (W_prime[not_alpha].is_empty()) {
+    if (W_prime[not_x].is_empty()) {
       // W_prime[alpha] not used after this so can be changed.
       // 11. W_alpha := W'_alpha \cup A
-      // 20. return (W_0, W_1) 
-      W_prime[alpha] |= A;
+      // 20. x (W_0, W_1) 
+      W_prime[x] |= A;
       return W_prime;
     } else {
       // 14. B := attr_notalpha(W'_notalpha)
       // W_prime[not_alpha] not used after this so can be changed.
-      attr(not_alpha, rho, W_prime[not_alpha]);
-      const Submap& B = W_prime[not_alpha];
+      attr(not_x, gamma, W_prime[not_x]);
+      const Submap& B = W_prime[not_x];
 
       // 15. { c \in bigC | \exists v in V: B(v) }
       BDD C = BDD_EMPTYSET(m_manager);
@@ -182,20 +182,20 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_rec(Submap&& gamma) const {
       }
 
       // 16. A := ((A cup W_\alpha) \ B) \ lambda v in V. C 
-      A |= W_prime[alpha];
+      A |= W_prime[x];
       A -= B;
       A -= C;
 
       // rho not used after this so can be changed.
       // 15. (W''_0, W''_1) := solve(rho \ (A \cup B))
-      rho -= A;
-      rho -= B;
-      std::array<Submap, 2> W_doubleprime = solve_optimised_rec(std::move(rho));
+      gamma -= A;
+      gamma -= B;
+      std::array<Submap, 2> W_doubleprime = solve_optimised_rec(std::move(gamma));
 
       // 16. W_alpha := W'_notalpha \cup B
       // 20. return (W_0, W_1) 
-      W_doubleprime[alpha] |= A;
-      W_doubleprime[not_alpha] |= B;
+      W_doubleprime[x] |= A;
+      W_doubleprime[not_x] |= B;
       return W_doubleprime;
     }
   }
@@ -294,7 +294,7 @@ std::array<Submap, 2> zlnkVPG::solve_optimised_left_rec(Submap&& gamma) const {
       }
 
       BDD C_prime_restriction = game.configurations();
-      C_prime_restriction = BDD_MINUS(m_manager, C_restriction, C_prime);
+      C_prime_restriction = BDD_MINUS(m_manager, C_prime_restriction, C_prime);
 
       // No longer used so can be overwritten
       // omega_prime[not_x] restricted to C'
