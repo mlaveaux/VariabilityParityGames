@@ -46,6 +46,7 @@ def main():
                 family_left_optimised_time = 0.0
                 family_left_optimised_recursive_calls = 0
                 product_time = 0.0
+                product_max_recursive_calls = 0
                 product_recursive_calls = 0
                 reachable_time = 0.0
 
@@ -54,7 +55,8 @@ def main():
                         product_time += average(timings['solver'])
                     elif "reachable" in game:
                         reachable_time += average(timings['solver'])
-                        product_recursive_calls = max(product_recursive_calls, timings['solver'][0].get('recursive_calls', 0))
+                        product_max_recursive_calls = max(product_max_recursive_calls, timings['solver'][0].get('recursive_calls', 0))
+                        product_recursive_calls = product_recursive_calls + timings['solver'][0].get('recursive_calls', 0)
                     else:
                         family_time = average(timings['algorithm0'])
                         family_recursive_calls = timings['algorithm0'][0].get('recursive_calls', 0)
@@ -68,7 +70,7 @@ def main():
                             family_left_optimised_recursive_calls = timings['algorithm2'][0].get('recursive_calls', 0)
 
                 print(f"{experiment if experiment != old_experiment else ''} & {prop} \
-                    & {family_time:.1f} ({family_recursive_calls}) & {family_optimised_time:.1f} ({family_optimised_recursive_calls}) &  {family_left_optimised_time:.1f} ({family_left_optimised_recursive_calls}) & {reachable_time:.1f} ({product_recursive_calls}) \\\\")
+                    & {family_time:.1f} ({family_recursive_calls}) & {family_optimised_time:.1f} ({family_optimised_recursive_calls}) &  {family_left_optimised_time:.1f} ({family_left_optimised_recursive_calls}) & {reachable_time:.1f} ({product_max_recursive_calls} / {product_recursive_calls}) \\\\")
                 old_experiment = experiment
 
         print("\\end{tabular}")

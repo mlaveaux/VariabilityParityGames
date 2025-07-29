@@ -23,7 +23,7 @@ class zlnkVPG
 public:
 
   /// Initialize solver for variability parity games
-  zlnkVPG(const Game& game, bool debug);
+  zlnkVPG(const Game& game, BDD_MANAGER& manager, bool debug);
 
   /// Solve the parity game
   std::pair<Submap, Submap> solve() const;
@@ -69,6 +69,8 @@ protected:
 
   /// The variability parity game.
   const Game& game;
+
+  BDD_MANAGER& m_manager;
 };
 
 #endif // VPGSOLVER_ZLNKVPG_H

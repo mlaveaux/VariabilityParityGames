@@ -524,7 +524,7 @@ def main():
     prepare_experiments(experiments, logger)
 
     # Run the family solver and for every product check the corresponding results.
-    # verify_results(experiments, logger)
+    verify_results(experiments, logger)
 
     all_results = {}
     for experiment in experiments:
