@@ -69,8 +69,11 @@ def is_newer(inputfile: str, outputfile: str, ignore=False) -> bool:
 
 
 def run_program(cmds, logger, process=None):
-    """Runs the given program with sensible defaults, and logs the results to the logger"""
+    """Runs the given program with sensible defaults, and logs the results to the logger.
+    Returns the execution time in seconds."""
 
+    start_time = time.time()
+    
     with subprocess.Popen(
         cmds, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
     ) as proc:
@@ -84,6 +87,9 @@ def run_program(cmds, logger, process=None):
 
         if proc.returncode != 0:
             raise subprocess.CalledProcessError(proc.returncode, proc.args)
+
+    elapsed_time = time.time() - start_time
+    return elapsed_time
 
 #
 # PREPARATION
@@ -185,7 +191,7 @@ def prepare(
             ],
             logger)
 
-            update_projections = True
+    update_projections = True
 
     vpgsolver_exe = shutil.which("VPGSolver_bdd")
 
@@ -488,34 +494,41 @@ def main():
         os.environ["PATH"] += os.pathsep + args.pgsolver_binpath.strip()
 
     experiments = [
+        # (
+        #     "../cases/elevator/",
+        #     "elevator.mcrl2",
+        #     [
+        #         "prop1.mcf",
+        #         "prop2.mcf",
+        #         "prop3.mcf",
+        #         "prop4.mcf",
+        #         "prop5.mcf",
+        #         "prop6.mcf",
+        #         "prop7.mcf",
+        #     ],
+        # ),
+        # (
+        #     "../cases/minepump/",
+        #     "minepump_fts.mcrl2",
+        #     [
+        #         "phi1.mcf",
+        #         "phi2.mcf",
+        #         "phi3.mcf",
+        #         "phi4.mcf",
+        #         "phi5.mcf",
+        #         "phi6.mcf",
+        #         "phi7.mcf",
+        #         "phi8.mcf",
+        #         "phi9.mcf",
+        #     ],
+        # ),
         (
-            "../cases/elevator/",
-            "elevator.mcrl2",
+            "../cases/vending_machine/",
+            "VendingMachine.mcrl2",
             [
-                "prop1.mcf",
-                "prop2.mcf",
-                "prop3.mcf",
-                "prop4.mcf",
-                "prop5.mcf",
-                "prop6.mcf",
-                "prop7.mcf",
-            ],
-        ),
-        (
-            "../cases/minepump/",
-            "minepump_fts.mcrl2",
-            [
-                "phi1.mcf",
-                "phi2.mcf",
-                "phi3.mcf",
-                "phi4.mcf",
-                "phi5.mcf",
-                "phi6.mcf",
-                "phi7.mcf",
-                "phi8.mcf",
-                "phi9.mcf",
-            ],
-        ),
+                "infinitely_often_cappuccino.mcf"
+            ]
+        )
     ]
 
     logger = MyLogger("main", "results.log")
