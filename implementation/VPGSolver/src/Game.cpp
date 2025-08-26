@@ -359,8 +359,15 @@ std::vector<std::pair<BDD, std::string>> Game::configurations_explicit(BDD set) 
   return result;
 }
 
-void Game::write(std::ostream& output, std::optional<BDD> conf)
-{
+void Game::write(std::ostream& output,  bool is_parity_game, std::optional<BDD> conf)
+{  
+  if (!is_parity_game)
+  {
+    output << "confs ";
+    write_bdd_confset(output, configurations());
+    output << ";\n";
+  }
+
   output << "parity " << m_owner.size() << ';';
   for (int v = 0; v < m_owner.size(); v++) {
     output << std::endl << v << ' ' << m_priority[v] << ' ' << m_owner[v];
@@ -376,10 +383,82 @@ void Game::write(std::ostream& output, std::optional<BDD> conf)
       
       if (is_enabled) {                 
         output << separator << SMH_TARGET(e);
+        if (!is_parity_game) {
+          output << '|' ;
+          write_bdd_confset_buddy(output, edge_guards[edge_index(e)]);
+        }
         separator = ',';
       }
     }
     output << ';';
+  }
+}
+
+// Nice globals
+bool g_first = true;
+std::ostream* g_output = &std::cout;
+
+static void handler(char* array, int size)
+{
+    if (!g_first) {
+      *g_output << "+";
+    }
+    g_first = false;
+    
+    for (int i = 0; i < size; ++i) {
+      int val = array[i];
+      if (val == -1) {
+        *g_output << "-";
+      } else if (val == 1) {
+        *g_output << "1";
+      } else {
+        *g_output << "0";
+      }
+    }
+}
+
+void Game::write_bdd_confset_buddy(std::ostream& output, const BDD& conf) const
+{
+#ifdef ENABLE_BUDDY
+  if (conf == bddtrue) {
+    output << std::string(bm_vars.size(), '-');
+    return;
+  }
+  
+  g_first = true;
+  g_output = &output;
+  bdd_allsat(conf, &handler);
+  g_output = &std::cout;
+#else
+  // Fallback to existing implementation when Buddy is not enabled
+  write_bdd_confset(output, conf);
+#endif
+}
+
+void Game::write_bdd_confset(std::ostream& output, const BDD& conf) const
+{
+  if (BDD_UNIVERSE(m_manager) == conf) {
+    output << std::string(bm_vars.size(), '-');
+    return;
+  }
+  
+  std::vector<std::pair<BDD, std::string>> configs = configurations_explicit(conf);
+  
+  bool first = true;
+  for (const auto& [config_bdd, config_str] : configs) {
+    if (!first) {
+      output << "+";
+    }
+    first = false;
+    
+    // Write the configuration string, replacing '\0' terminator
+    for (std::size_t i = 0; i < bm_vars.size(); ++i) {
+      if (i < config_str.length()) {
+        output << config_str[i];
+      } else {
+        output << "-";
+      }
+    }
   }
 }
 
@@ -424,7 +503,7 @@ std::pair<Game, std::vector<int>> Game::compute_reachable() const {
 
     // For every outgoing edge, visit the resulting state.
     for (const auto& [w_prime, edge_succ] : successors(v)) {
-      std::size_t new_edge = edge_guards.size();
+      std::size_t new_edge = new_edge_guards.size();
       std::size_t new_w = add_vertex(w_prime);
       new_edge_guards.push_back(edge_guards[edge_succ]);
       new_out_edges[new_v].push_back(std::make_tuple(new_w, new_edge));

@@ -49,7 +49,7 @@ public:
 
 
   // Write the parity game to the output stream
-  void write(std::ostream& output, std::optional<BDD> conf = std::optional<BDD>({}));
+  void write(std::ostream& output,  bool is_parity_game = false, std::optional<BDD> conf = std::optional<BDD>({}));
 
   /// \returns A game only containing the vertices reachable from the initial state (0).
   std::pair<Game, std::vector<int>> compute_reachable() const;
@@ -87,6 +87,10 @@ public:
   const BDD& edge_guard(int edge_index) const { return edge_guards[edge_index]; }
 
 private:
+  void write_bdd_confset_buddy(std::ostream& output, const BDD& conf) const;
+
+  void write_bdd_confset(std::ostream& output, const BDD& bdd) const;
+
   BDD_MANAGER& m_manager;
   
   std::vector<BDD> bm_vars;

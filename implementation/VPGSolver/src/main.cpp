@@ -77,7 +77,7 @@ int run(int argc, char** argv)
 
       // Write the projection.
       std::ofstream output(output_name);
-      g.write(output, conf.first);
+      g.write(output, true, conf.first);
       std::cout << "Projected to " << output_name << std::endl;
     }
 
@@ -85,13 +85,10 @@ int run(int argc, char** argv)
   }
 
   if (output_reachable) {
-    if (!is_parity_game) {
-      std::cerr << "reachability can only be used with parity games, not vpgs" << std::endl;
-    }
 
     auto [reachable, mapping] = g.compute_reachable();
     std::ofstream output(output_reachable.value());
-    reachable.write(output);
+    reachable.write(output, is_parity_game);
 
     // Check whether reachable is correct.
     if(true) {
@@ -115,11 +112,7 @@ int run(int argc, char** argv)
   }
   
   // enable cache after parsing
-#ifdef ENABLE_BUDDY
-  bdd_reorder_verbose(2);
-  bdd_reorder(BDD_REORDER_SIFT);
-  
-  bdd_gbc();
+#ifdef ENABLE_BUDDY  
   bdd_setcacheratio(1);
   bdd_gbc();
 #endif
