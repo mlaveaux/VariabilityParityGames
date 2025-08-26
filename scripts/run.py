@@ -191,7 +191,7 @@ def prepare(
             ],
             logger)
 
-    update_projections = True
+            update_projections = True
 
     vpgsolver_exe = shutil.which("VPGSolver_bdd")
 
@@ -494,34 +494,34 @@ def main():
         os.environ["PATH"] += os.pathsep + args.pgsolver_binpath.strip()
 
     experiments = [
-        # (
-        #     "../cases/elevator/",
-        #     "elevator.mcrl2",
-        #     [
-        #         "prop1.mcf",
-        #         "prop2.mcf",
-        #         "prop3.mcf",
-        #         "prop4.mcf",
-        #         "prop5.mcf",
-        #         "prop6.mcf",
-        #         "prop7.mcf",
-        #     ],
-        # ),
-        # (
-        #     "../cases/minepump/",
-        #     "minepump_fts.mcrl2",
-        #     [
-        #         "phi1.mcf",
-        #         "phi2.mcf",
-        #         "phi3.mcf",
-        #         "phi4.mcf",
-        #         "phi5.mcf",
-        #         "phi6.mcf",
-        #         "phi7.mcf",
-        #         "phi8.mcf",
-        #         "phi9.mcf",
-        #     ],
-        # ),
+        (
+            "../cases/elevator/",
+            "elevator.mcrl2",
+            [
+                "prop1.mcf",
+                "prop2.mcf",
+                "prop3.mcf",
+                "prop4.mcf",
+                "prop5.mcf",
+                "prop6.mcf",
+                "prop7.mcf",
+            ],
+        ),
+        (
+            "../cases/minepump/",
+            "minepump_fts.mcrl2",
+            [
+                "phi1.mcf",
+                "phi2.mcf",
+                "phi3.mcf",
+                "phi4.mcf",
+                "phi5.mcf",
+                "phi6.mcf",
+                "phi7.mcf",
+                "phi8.mcf",
+                "phi9.mcf",
+            ],
+        ),
         (
             "../cases/vending_machine/",
             "VendingMachine.mcrl2",
