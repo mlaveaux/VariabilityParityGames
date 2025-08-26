@@ -31,6 +31,7 @@ conf_regex = re.compile(r"\|[-|+|0|1]*")
 # UTILITY
 #
 
+
 class MyLogger(logging.Logger):
     """My own logger that stores the log messages into a string stream"""
 
@@ -73,7 +74,7 @@ def run_program(cmds, logger, process=None):
     Returns the execution time in seconds."""
 
     start_time = time.time()
-    
+
     with subprocess.Popen(
         cmds, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
     ) as proc:
@@ -91,9 +92,11 @@ def run_program(cmds, logger, process=None):
     elapsed_time = time.time() - start_time
     return elapsed_time
 
+
 #
 # PREPARATION
 #
+
 
 def prepare(
     directory: str,
@@ -177,19 +180,20 @@ def prepare(
 
             # Convert .aut and formula into a VPG
             run_program(
-            [
-                "java",
-                "-jar",
-                "-Xss100M",
-                "-Xmx6G",
-                FTSMMC_JAR,
-                "vpg",
-                featurediagram_file,
-                aut_renamed_file,
-                mcf_file,
-                game_file,
-            ],
-            logger)
+                [
+                    "java",
+                    "-jar",
+                    "-Xss100M",
+                    "-Xmx6G",
+                    FTSMMC_JAR,
+                    "vpg",
+                    featurediagram_file,
+                    aut_renamed_file,
+                    mcf_file,
+                    game_file,
+                ],
+                logger,
+            )
 
             update_projections = True
 
@@ -203,14 +207,9 @@ def prepare(
                 logger.info("Generating projections for %s", os.path.basename(file))
 
                 run_program(
-                [
-                    vpgsolver_exe,
-                    file,
-                    "--project",
-                    f"{prop}_project_"
-                ],
-                logger)
-        
+                    [vpgsolver_exe, file, "--project", f"{prop}_project_"], logger
+                )
+
         for file in os.listdir(tmp_directory):
             file = tmp_directory + file
             if ".pg" in file and "reachable" not in file:
@@ -218,18 +217,18 @@ def prepare(
                 logger.info("Generating reachable part for %s", os.path.basename(file))
 
                 run_program(
-                [
-                    vpgsolver_exe,
-                    file,
-                    "--reachable",
-                    f"{prop}_reachable.pg",
-                    "--parity-game"
-                ],
-                logger)
+                    [
+                        vpgsolver_exe,
+                        file,
+                        "--reachable",
+                        f"{prop}_reachable.pg",
+                        "--parity-game",
+                    ],
+                    logger,
+                )
 
-def prepare_experiments(
-    experiments, logger: MyLogger
-):
+
+def prepare_experiments(experiments, logger: MyLogger):
     """Runs all preparation steps for the given experiments"""
 
     for experiment in experiments:
@@ -239,19 +238,16 @@ def prepare_experiments(
         tmp_directory = directory + "tmp/"
 
         logger.info("Starting preparation for experiment '%s'...", directory)
-        prepare(
-                directory,
-                tmp_directory,
-                mcrl2_name,
-                properties,
-                logger)  
-                  
+        prepare(directory, tmp_directory, mcrl2_name, properties, logger)
+
+
 #
 # VALIDATION
 #
 family_solving_regex = re.compile(
     r"For product ([0-9]*) the following vertices are in: ([0-9, ]*)"
 )
+
 
 class FamilySolveParser:
     """Extracts the winners for each product on a family based solve"""
@@ -288,9 +284,9 @@ class FamilySolveParser:
             if self.solutions_for == "W1":
                 self.solution[product] = (self.solution[product][0], vertices)
 
-product_solving_regex = re.compile(
-    r"(W[0,1]): ([0-9, ]*)"
-)
+
+product_solving_regex = re.compile(r"(W[0,1]): ([0-9, ]*)")
+
 
 class ProductSolveParser:
     """Extracts the winners for each product on a product based solve"""
@@ -300,7 +296,6 @@ class ProductSolveParser:
         self.solution = (set(), set())
 
     def __call__(self, line):
-
         result = product_solving_regex.match(line)
         if result:
             vertices = set()
@@ -316,9 +311,9 @@ class ProductSolveParser:
             else:
                 assert False, "Neither expected values match"
 
-pgsolve_solving_regex = re.compile(
-    r"\{([0-9, ]*)\}"
-)
+
+pgsolve_solving_regex = re.compile(r"\{([0-9, ]*)\}")
+
 
 class PGSolveParser:
     def __init__(self):
@@ -348,8 +343,9 @@ class PGSolveParser:
             elif self.solutions_for == "W1":
                 self.solution = (self.solution[0], vertices)
 
+
 def verify_results(experiments, logger):
-    """ Runs the solver on all the product and family games and compares the winning pairs """
+    """Runs the solver on all the product and family games and compares the winning pairs"""
 
     vpgsolver_exe = shutil.which("VPGSolver_bdd")
     pgsolver_exe = shutil.which("pgsolver")
@@ -367,48 +363,89 @@ def verify_results(experiments, logger):
             for file in os.listdir(tmp_directory):
                 file = tmp_directory + file
                 if ".svpg" in file:
-                    logging.info("Checking solutions for game %s", os.path.basename(file))
+                    logging.info(
+                        "Checking solutions for game %s", os.path.basename(file)
+                    )
 
                     family_parser = FamilySolveParser()
                     print(vpgsolver_exe)
-                    run_program([vpgsolver_exe, file, "--print-solution", "--algorithm", f"{alg}"], logging.Logger('ignore'), family_parser)
+                    run_program(
+                        [
+                            vpgsolver_exe,
+                            file,
+                            "--print-solution",
+                            "--algorithm",
+                            f"{alg}",
+                        ],
+                        logging.Logger("ignore"),
+                        family_parser,
+                    )
 
                     for product, solution in family_parser.solution.items():
-
                         base, _ = os.path.splitext(file)
                         for product_file in os.listdir(tmp_directory):
                             product_file = tmp_directory + product_file
-                            if base in product_file and product in product_file and "reachable" not in product_file:
+                            if (
+                                base in product_file
+                                and product in product_file
+                                and "reachable" not in product_file
+                            ):
                                 # The product result must match the family result.
                                 logging.info("Checking product  %s", product)
 
                                 product_parser = ProductSolveParser()
-                                run_program([vpgsolver_exe, product_file, "--print-solution", "--parity-game"], logging.Logger('ignore'), product_parser)
+                                run_program(
+                                    [
+                                        vpgsolver_exe,
+                                        product_file,
+                                        "--print-solution",
+                                        "--parity-game",
+                                    ],
+                                    logging.Logger("ignore"),
+                                    product_parser,
+                                )
 
                                 if pgsolver_exe:
                                     pgsolve_parser = PGSolveParser()
-                                    run_program([pgsolver_exe, product_file, "-global", "recursive"], logging.Logger('ignore'), pgsolve_parser)
+                                    run_program(
+                                        [
+                                            pgsolver_exe,
+                                            product_file,
+                                            "-global",
+                                            "recursive",
+                                        ],
+                                        logging.Logger("ignore"),
+                                        pgsolve_parser,
+                                    )
 
-                                    diff0 = product_parser.solution[0] ^ pgsolve_parser.solution[0]
+                                    diff0 = (
+                                        product_parser.solution[0]
+                                        ^ pgsolve_parser.solution[0]
+                                    )
                                     assert not diff0, f"Mismatch in W0 {diff0}"
 
-                                    diff1 = product_parser.solution[1] ^ pgsolve_parser.solution[1]
+                                    diff1 = (
+                                        product_parser.solution[1]
+                                        ^ pgsolve_parser.solution[1]
+                                    )
                                     assert not diff1, f"Mismatch in W1 {diff1}"
 
                                 diff0 = product_parser.solution[0] ^ solution[0]
                                 assert not diff0, f"Mismatch in W0 {diff0}"
 
                                 diff1 = product_parser.solution[1] ^ solution[1]
-                                assert not diff1, f"Mismatch in W1 {diff1}"    
+                                assert not diff1, f"Mismatch in W1 {diff1}"
+
 
 solving_time_regex = re.compile(r"Solving time: (.*) ms")
 recursive_calls_regex = re.compile(r"Performed ([0-9]*) recursive calls")
 
+
 class TimeParser:
     """Extracts the solving time from the stdout of the program"""
 
-    time: float|None = None
-    recursive_calls: int|None = None
+    time: float | None = None
+    recursive_calls: int | None = None
     solve: FamilySolveParser
 
     def __init__(self):
@@ -426,14 +463,15 @@ class TimeParser:
         self.solve(line)
 
     def even_wins(self) -> int:
-        """ The number of games won by player even """
+        """The number of games won by player even"""
         even = 0
-        for (_, solution) in self.solve.solution.items():
+        for _, solution in self.solve.solution.items():
             if solution[0] is not None:
-                if '0' in solution[0]:
+                if "0" in solution[0]:
                     even += 1
 
         return even
+
 
 def run_benchmark(
     game: str,
@@ -452,19 +490,42 @@ def run_benchmark(
 
         if ".svpg" in game:
             for alg in range(0, 3):
-                run_program([vpgsolver_exe, game, "--algorithm", f"{alg}"], logging.Logger('ignore'), time_parser)
+                run_program(
+                    [vpgsolver_exe, game, "--algorithm", f"{alg}"],
+                    logging.Logger("ignore"),
+                    time_parser,
+                )
                 assert time_parser.time is not None
                 assert time_parser.recursive_calls is not None
-                results[name].setdefault(f"algorithm{alg}", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000, "recursive_calls": time_parser.recursive_calls, "even_wins": time_parser.even_wins()})
-        else:            
-            run_program([vpgsolver_exe, game, "--parity-game"], logging.Logger('ignore'), time_parser)
+                results[name].setdefault(f"algorithm{alg}", []).append(
+                    {
+                        "total": time.time() - start,
+                        "solving": time_parser.time / 1_000,
+                        "recursive_calls": time_parser.recursive_calls,
+                        "even_wins": time_parser.even_wins(),
+                    }
+                )
+        else:
+            run_program(
+                [vpgsolver_exe, game, "--parity-game"],
+                logging.Logger("ignore"),
+                time_parser,
+            )
 
             # Add the result
             assert time_parser.time is not None
             assert time_parser.recursive_calls is not None
-            results[name].setdefault("solver", []).append({"total": time.time() - start, "solving": time_parser.time / 1_000, "recursive_calls": time_parser.recursive_calls, "even_wins": time_parser.even_wins()})
+            results[name].setdefault("solver", []).append(
+                {
+                    "total": time.time() - start,
+                    "solving": time_parser.time / 1_000,
+                    "recursive_calls": time_parser.recursive_calls,
+                    "even_wins": time_parser.even_wins(),
+                }
+            )
 
     return results
+
 
 def main():
     """The main function"""
@@ -482,9 +543,7 @@ def main():
     parser.add_argument(
         "-s", "--solver-binpath", action="store", type=str, required=True
     )
-    parser.add_argument(
-        "-p", "--pgsolver-binpath", action="store", type=str
-    )
+    parser.add_argument("-p", "--pgsolver-binpath", action="store", type=str)
 
     args = parser.parse_args()
 
@@ -525,10 +584,8 @@ def main():
         (
             "../cases/vending_machine/",
             "VendingMachine.mcrl2",
-            [
-                "infinitely_often_cappuccino.mcf"
-            ]
-        )
+            ["infinitely_often_cappuccino.mcf"],
+        ),
     ]
 
     logger = MyLogger("main", "results.log")
@@ -551,7 +608,11 @@ def main():
         all_results[experiment] = {}
 
         for prop in properties:
-            logger.info("Starting benchmarks for experiment '%s' and property '%s'...", experiment, prop)
+            logger.info(
+                "Starting benchmarks for experiment '%s' and property '%s'...",
+                experiment,
+                prop,
+            )
             all_results[experiment][prop] = {}
 
             for file in os.listdir(tmp_directory):
