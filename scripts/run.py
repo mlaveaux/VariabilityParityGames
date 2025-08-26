@@ -104,7 +104,7 @@ def prepare(
     mcrl2_name: str,
     properties: List[str],
     logger: MyLogger,
-):
+) -> dict[str, float]:
     """Prepares the parity games for one experiment, consisting of an mCRL2 specification and several properties.
     Returns a set of futures"""
 
@@ -199,6 +199,9 @@ def prepare(
 
     vpgsolver_exe = shutil.which("VPGSolver_bdd")
 
+    projection_time = 0
+    reachability_time = 0
+
     if update_projections:
         for file in os.listdir(tmp_directory):
             file = tmp_directory + file
@@ -206,7 +209,7 @@ def prepare(
                 prop, _ = os.path.splitext(file)
                 logger.info("Generating projections for %s", os.path.basename(file))
 
-                run_program(
+                projection_time += run_program(
                     [vpgsolver_exe, file, "--project", f"{prop}_project_"], logger
                 )
 
@@ -216,7 +219,7 @@ def prepare(
                 prop, _ = os.path.splitext(file)
                 logger.info("Generating reachable part for %s", os.path.basename(file))
 
-                run_program(
+                reachability_time += run_program(
                     [
                         vpgsolver_exe,
                         file,
@@ -227,9 +230,13 @@ def prepare(
                     logger,
                 )
 
+    return { "projection_time": projection_time, "reachability_time": reachability_time }
 
-def prepare_experiments(experiments, logger: MyLogger):
+
+def prepare_experiments(experiments: list[tuple[str, str, str]], logger: MyLogger):
     """Runs all preparation steps for the given experiments"""
+
+    timing_results: dict[str, dict[str, float]] = {}
 
     for experiment in experiments:
         directory, mcrl2_name, properties = experiment
@@ -238,7 +245,10 @@ def prepare_experiments(experiments, logger: MyLogger):
         tmp_directory = directory + "tmp/"
 
         logger.info("Starting preparation for experiment '%s'...", directory)
-        prepare(directory, tmp_directory, mcrl2_name, properties, logger)
+        timing_results.update(directory, prepare(directory, tmp_directory, mcrl2_name, properties, logger))
+
+    with open("preprocessing.json", "w", encoding="utf-8") as json_file:
+        json.dump(timing_results, json_file, indent=2)
 
 
 #
