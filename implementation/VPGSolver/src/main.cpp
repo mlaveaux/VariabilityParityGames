@@ -18,9 +18,11 @@ int run(int argc, char** argv)
 
   bool debug = false;
 
-  /// 
+  /// Print the solution of every configuration
   bool print_solution = false;
-  bool metricoutput = false;
+
+  // Solve the full game, but only show the winners for the valid configurations (as opposed to only solving them.)
+  bool alternative_solving_strategy = false;
 
   // Parse the input as a regular parity game and use the respective solver.
   bool is_parity_game = false;
@@ -43,7 +45,10 @@ int run(int argc, char** argv)
       output_reachable = argv[i+1];
       i++;
     } else if (argument.compare("--parity-game") == 0) {
-      is_parity_game = true;
+      is_parity_game = true;      
+    } else if (argument.compare("--alternative") == 0) {
+      std::cout << "Using alternative solving strategy\n";
+      alternative_solving_strategy = true;
     } else if (argument.compare("--algorithm") == 0) {
       algorithm = std::stoi(argv[i+1]);
       i++;
@@ -136,7 +141,7 @@ int run(int argc, char** argv)
   } else {
     assert(!BDD_IS_EMPTY(manager, g.configurations()));
 
-    zlnkVPG z(g, manager, debug);
+    zlnkVPG z(g, manager, alternative_solving_strategy, debug);
 
     Submap W0(g, manager, BDD_EMPTYSET(manager));
     Submap W1(g, manager, BDD_EMPTYSET(manager));

@@ -23,7 +23,7 @@ class zlnkVPG
 public:
 
   /// Initialize solver for variability parity games
-  zlnkVPG(const Game& game, BDD_MANAGER& manager, bool debug);
+  zlnkVPG(const Game& game, BDD_MANAGER& manager, bool alternative_solving_strategy, bool debug);
 
   /// Solve the parity game
   std::pair<Submap, Submap> solve() const;
@@ -50,6 +50,9 @@ protected:
   /// \returns max { p(v) | v in V && g(v) \neq \emptyset } 
   std::pair<std::size_t, std::size_t> get_highest_lowest_prio(const Submap& rho) const;
   
+  /// Use an alternative solving strategy where the configurations are applied after solving.
+  bool m_alternative_solving_strategy = false;
+
   /// Enable more extensive logging.
   bool m_debug = false;
 

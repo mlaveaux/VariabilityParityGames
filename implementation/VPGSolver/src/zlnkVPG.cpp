@@ -10,9 +10,10 @@
 #include <map>
 #include <queue>
 
-zlnkVPG::zlnkVPG(const Game& game, BDD_MANAGER& manager, bool debug)
+zlnkVPG::zlnkVPG(const Game& game, BDD_MANAGER& manager, bool alternative_solving_strategy, bool debug)
   : game(game),
     m_manager(manager),
+    m_alternative_solving_strategy(alternative_solving_strategy),
     m_verbose(debug),
     m_vertices(game.number_of_vertices())
 {}
@@ -20,10 +21,17 @@ zlnkVPG::zlnkVPG(const Game& game, BDD_MANAGER& manager, bool debug)
 std::pair<Submap, Submap> zlnkVPG::solve() const
 {
   // Initially all vertices belong to all configurations
-  Submap gamma(game, m_manager, game.configurations());
+  BDD initial = m_alternative_solving_strategy ? BDD_UNIVERSE(m_manager) : game.configurations();
+  Submap gamma(game, m_manager, initial);
 
   auto result = solve_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
+
+  if (m_alternative_solving_strategy)
+  {
+     result[0] &= Submap(game, m_manager, game.configurations());
+     result[1] &= Submap(game, m_manager, game.configurations());
+  }
   
   return std::make_pair(result[0], result[1]);
 }
@@ -31,10 +39,17 @@ std::pair<Submap, Submap> zlnkVPG::solve() const
 std::pair<Submap, Submap> zlnkVPG::solve_optimised() const
 {
   // Initially all vertices belong to all configurations
-  Submap gamma(game, m_manager, game.configurations());
+  BDD initial = m_alternative_solving_strategy ? BDD_UNIVERSE(m_manager) : game.configurations();
+  Submap gamma(game, m_manager, initial);
 
   auto result = solve_optimised_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
+
+  if (m_alternative_solving_strategy)
+  {
+     result[0] &= Submap(game, m_manager, game.configurations());
+     result[1] &= Submap(game, m_manager, game.configurations());
+  }
 
   return std::make_pair(result[0], result[1]);
 }
@@ -42,10 +57,17 @@ std::pair<Submap, Submap> zlnkVPG::solve_optimised() const
 std::pair<Submap, Submap> zlnkVPG::solve_optimised_left() const
 {
   // Initially all vertices belong to all configurations
-  Submap gamma(game, m_manager, game.configurations());
+  BDD initial = m_alternative_solving_strategy ? BDD_UNIVERSE(m_manager) : game.configurations();
+  Submap gamma(game, m_manager, initial);
 
   auto result = solve_optimised_left_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
+
+  if (m_alternative_solving_strategy)
+  {
+     result[0] &= Submap(game, m_manager, game.configurations());
+     result[1] &= Submap(game, m_manager, game.configurations());
+  }
 
   return std::make_pair(result[0], result[1]);
 }
