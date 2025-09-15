@@ -205,12 +205,17 @@ def prepare(
     if update_projections:
         for file in os.listdir(tmp_directory):
             file = tmp_directory + file
-            if ".svpg" in file:
+            if ".svpg" in file and "reachable" not in file:
                 prop, _ = os.path.splitext(file)
                 logger.info("Generating projections for %s", os.path.basename(file))
 
                 projection_time += run_program(
                     [vpgsolver_exe, file, "--project", f"{prop}_project_"], logger
+                )
+
+                logger.info("Generating reachable svpg for %s", os.path.basename(file))
+                run_program(
+                    [vpgsolver_exe, file, "--reachable", f"{prop}_reachable.svpg"], logger
                 )
 
         for file in os.listdir(tmp_directory):
@@ -233,7 +238,7 @@ def prepare(
     return { "projection_time": projection_time, "reachability_time": reachability_time }
 
 
-def prepare_experiments(experiments: list[tuple[str, str, str]], logger: MyLogger):
+def prepare_experiments(experiments: list[tuple[str, str, list[str]]], logger: MyLogger):
     """Runs all preparation steps for the given experiments"""
 
     timing_results: dict[str, dict[str, float]] = {}
@@ -245,7 +250,7 @@ def prepare_experiments(experiments: list[tuple[str, str, str]], logger: MyLogge
         tmp_directory = directory + "tmp/"
 
         logger.info("Starting preparation for experiment '%s'...", directory)
-        timing_results.update(directory, prepare(directory, tmp_directory, mcrl2_name, properties, logger))
+        timing_results.update({directory: prepare(directory, tmp_directory, mcrl2_name, properties, logger)})
 
     with open("preprocessing.json", "w", encoding="utf-8") as json_file:
         json.dump(timing_results, json_file, indent=2)
@@ -285,7 +290,7 @@ class FamilySolveParser:
                     # Convert to numbers
                     vertices.add(int(vert))
 
-            if not product in self.solution:
+            if product not in self.solution:
                 self.solution[product] = (None, None)
 
             if self.solutions_for == "W0":
@@ -373,78 +378,85 @@ def verify_results(experiments, logger):
             for file in os.listdir(tmp_directory):
                 file = tmp_directory + file
                 if ".svpg" in file:
-                    logging.info(
-                        "Checking solutions for game %s", os.path.basename(file)
-                    )
+                    for alternative in [True, False]:
+                        logging.info(
+                            "Checking solutions for game %s", os.path.basename(file)
+                        )
 
-                    family_parser = FamilySolveParser()
-                    print(vpgsolver_exe)
-                    run_program(
-                        [
-                            vpgsolver_exe,
-                            file,
-                            "--print-solution",
-                            "--algorithm",
-                            f"{alg}",
-                        ],
-                        logging.Logger("ignore"),
-                        family_parser,
-                    )
+                        family_parser = FamilySolveParser()
+                        print(vpgsolver_exe)
+                        args = [
+                                vpgsolver_exe,
+                                file,
+                                "--print-solution",
+                                "--algorithm",
+                            ]
+                        
+                        if alternative:
+                            logging.info("Alternative solving!")
+                            args += ["--alternative-solving"]
 
-                    for product, solution in family_parser.solution.items():
-                        base, _ = os.path.splitext(file)
-                        for product_file in os.listdir(tmp_directory):
-                            product_file = tmp_directory + product_file
-                            if (
-                                base in product_file
-                                and product in product_file
-                                and "reachable" not in product_file
-                            ):
-                                # The product result must match the family result.
-                                logging.info("Checking product  %s", product)
+                        args += [f"{alg}"]
+                        
+                        run_program(args,
+                            logging.Logger("ignore"),
+                            family_parser,
+                        )
 
-                                product_parser = ProductSolveParser()
-                                run_program(
-                                    [
-                                        vpgsolver_exe,
-                                        product_file,
-                                        "--print-solution",
-                                        "--parity-game",
-                                    ],
-                                    logging.Logger("ignore"),
-                                    product_parser,
-                                )
+                        for product, solution in family_parser.solution.items():
+                            base, _ = os.path.splitext(file)
+                            for product_file in os.listdir(tmp_directory):
+                                product_file = tmp_directory + product_file
+                                if (
+                                    base in product_file
+                                    and product in product_file
+                                    and "reachable" not in product_file
+                                ):
+                                    # The product result must match the family result.
+                                    logging.info("Checking product  %s", product)
 
-                                if pgsolver_exe:
-                                    pgsolve_parser = PGSolveParser()
+                                    product_parser = ProductSolveParser()
                                     run_program(
                                         [
-                                            pgsolver_exe,
+                                            vpgsolver_exe,
                                             product_file,
-                                            "-global",
-                                            "recursive",
+                                            "--print-solution",
+                                            "--parity-game",
                                         ],
                                         logging.Logger("ignore"),
-                                        pgsolve_parser,
+                                        product_parser,
                                     )
 
-                                    diff0 = (
-                                        product_parser.solution[0]
-                                        ^ pgsolve_parser.solution[0]
-                                    )
+                                    if pgsolver_exe:
+                                        pgsolve_parser = PGSolveParser()
+                                        run_program(
+                                            [
+                                                pgsolver_exe,
+                                                product_file,
+                                                "-global",
+                                                "recursive",
+                                            ],
+                                            logging.Logger("ignore"),
+                                            pgsolve_parser,
+                                        )
+
+                                        diff0 = (
+                                            product_parser.solution[0]
+                                            ^ pgsolve_parser.solution[0]
+                                        )
+                                        assert not diff0, f"Mismatch in W0 {diff0}"
+
+                                        diff1 = (
+                                            product_parser.solution[1]
+                                            ^ pgsolve_parser.solution[1]
+                                        )
+                                        assert not diff1, f"Mismatch in W1 {diff1}"
+
+                                    diff0 = product_parser.solution[0] ^ solution[0]
                                     assert not diff0, f"Mismatch in W0 {diff0}"
 
-                                    diff1 = (
-                                        product_parser.solution[1]
-                                        ^ pgsolve_parser.solution[1]
-                                    )
+                                    diff1 = product_parser.solution[1] ^ solution[1]
                                     assert not diff1, f"Mismatch in W1 {diff1}"
-
-                                diff0 = product_parser.solution[0] ^ solution[0]
-                                assert not diff0, f"Mismatch in W0 {diff0}"
-
-                                diff1 = product_parser.solution[1] ^ solution[1]
-                                assert not diff1, f"Mismatch in W1 {diff1}"
 
 
 solving_time_regex = re.compile(r"Solving time: (.*) ms")

@@ -39,24 +39,46 @@ def main():
         for experiment, properties in timings.items():
 
             for prop, values in properties.items():
+                # Family variant
                 family_time = 0.0
                 family_recursive_calls = 0
                 family_optimised_time = 0.0
                 family_optimised_recursive_calls = 0
                 family_left_optimised_time = 0.0
                 family_left_optimised_recursive_calls = 0
+
+                # Reachable family variant
+                family_reachable_time = 0.0
+                family_reachable_recursive_calls = 0
+                family_reachable_optimised_time = 0.0
+                family_reachable_optimised_recursive_calls = 0
+                family_reachable_left_optimised_time = 0.0
+                family_reachable_left_optimised_recursive_calls = 0
+
+                # Product variant
                 product_time = 0.0
                 product_max_recursive_calls = 0
                 product_recursive_calls = 0
                 reachable_time = 0.0
 
                 for game, timings in values.items():
-                    if "project" in game and "reachable" not in game:
+                    if "project" in game and "reachable.pg" not in game:
                         product_time += average(timings['solver'])
-                    elif "reachable" in game:
+                    elif "reachable.pg" in game:
                         reachable_time += average(timings['solver'])
                         product_max_recursive_calls = max(product_max_recursive_calls, timings['solver'][0].get('recursive_calls', 0))
                         product_recursive_calls = product_recursive_calls + timings['solver'][0].get('recursive_calls', 0)
+                    elif "reachable.svpg" in game:
+                        family_reachable_time = average(timings['algorithm0'])
+                        family_reachable_recursive_calls = timings['algorithm0'][0].get('recursive_calls', 0)
+
+                        if "algorithm1" in timings:
+                            family_reachable_optimised_time = average(timings['algorithm1'])
+                            family_reachable_optimised_recursive_calls = timings['algorithm1'][0].get('recursive_calls', 0)
+
+                        if "algorithm2" in timings:
+                            family_reachable_left_optimised_time = average(timings['algorithm2'])
+                            family_reachable_left_optimised_recursive_calls = timings['algorithm2'][0].get('recursive_calls', 0)
                     else:
                         family_time = average(timings['algorithm0'])
                         family_recursive_calls = timings['algorithm0'][0].get('recursive_calls', 0)
