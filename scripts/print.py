@@ -92,7 +92,7 @@ def main():
                             family_left_optimised_recursive_calls = timings['algorithm2'][0].get('recursive_calls', 0)
 
                 print(f"{experiment if experiment != old_experiment else ''} & {prop} \
-                    & {family_time:.1f} ({family_recursive_calls}) & {family_optimised_time:.1f} ({family_optimised_recursive_calls}) &  {family_left_optimised_time:.1f} ({family_left_optimised_recursive_calls}) & {reachable_time:.1f} ({product_max_recursive_calls} / {product_recursive_calls}) \\\\")
+                    & {family_reachable_time:.1f} ({family_reachable_recursive_calls}) & {family_reachable_optimised_time:.1f} ({family_reachable_optimised_recursive_calls}) &  {family_reachable_left_optimised_time:.1f} ({family_reachable_left_optimised_recursive_calls}) & {reachable_time:.1f} ({product_max_recursive_calls} / {product_recursive_calls}) \\\\")
                 old_experiment = experiment
 
         print("\\end{tabular}")

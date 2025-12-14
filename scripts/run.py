@@ -378,7 +378,7 @@ def verify_results(experiments, logger):
             for file in os.listdir(tmp_directory):
                 file = tmp_directory + file
                 if ".svpg" in file:
-                    for alternative in [True, False]:
+                    for alternative in [False]:
                         logging.info(
                             "Checking solutions for game %s", os.path.basename(file)
                         )
@@ -391,12 +391,11 @@ def verify_results(experiments, logger):
                                 "--print-solution",
                                 "--algorithm",
                             ]
-                        
-                        if alternative:
-                            logging.info("Alternative solving!")
-                            args += ["--alternative-solving"]
 
                         args += [f"{alg}"]
+                        if alternative:
+                            logging.info("Alternative solving!")
+                            args += ["--alternative"]
                         
                         run_program(args,
                             logging.Logger("ignore"),
@@ -506,7 +505,7 @@ def run_benchmark(
 
     name = os.path.basename(game)
     results[name] = {}
-    for i in range(0, 5):
+    for i in range(0, 1):
         start = time.time()
         time_parser = TimeParser()
 
@@ -616,7 +615,7 @@ def main():
     prepare_experiments(experiments, logger)
 
     # Run the family solver and for every product check the corresponding results.
-    verify_results(experiments, logger)
+    # verify_results(experiments, logger)
 
     all_results = {}
     for experiment in experiments:
