@@ -172,6 +172,10 @@ int main(int argc, char** argv)
   try {
     run(argc, argv);
   }
+  catch(const std::string& ex) {
+    std::cerr << ex;
+    return 1;
+  }
   catch(const std::exception& ex) {
     std::cerr << ex.what();
     return 1;
