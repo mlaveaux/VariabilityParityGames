@@ -179,21 +179,22 @@ def prepare(
             logger.info(f"Generating parity game for {name}")
 
             # Convert .aut and formula into a VPG
-            run_program(
-                [
-                    "java",
-                    "-jar",
-                    "-Xss100M",
-                    "-Xmx6G",
-                    FTSMMC_JAR,
-                    "vpg",
-                    featurediagram_file,
-                    aut_renamed_file,
-                    mcf_file,
-                    game_file,
-                ],
-                logger,
-            )
+            # run_program(
+            #     [
+            #         "java",
+            #         "-jar",
+            #         "-Xss100M",
+            #         "-Xmx6G",
+            #         FTSMMC_JAR,
+            #         "vpg",
+            #         featurediagram_file,
+            #         aut_renamed_file,
+            #         mcf_file,
+            #         game_file,
+            #     ],
+            #     logger,
+            # )
+            run_program(["merc-vpg", "translate", featurediagram_file, aut_renamed_file, mcf_file, game_file], logger)
 
             update_projections = True
 
@@ -211,11 +212,6 @@ def prepare(
 
                 projection_time += run_program(
                     [vpgsolver_exe, file, "--project", f"{prop}_project_"], logger
-                )
-
-                logger.info("Generating reachable svpg for %s", os.path.basename(file))
-                run_program(
-                    [vpgsolver_exe, file, "--reachable", f"{prop}_reachable.svpg"], logger
                 )
 
         for file in os.listdir(tmp_directory):
@@ -372,13 +368,13 @@ def verify_results(experiments, logger):
         tmp_directory = directory + "tmp/"
 
         # For every property solve the family based game, and then each corresponding product game.
-        for alg in range(0, 3):
+        for alg in [0, 2]:
             logging.info(f"Checking algorithm {alg}")
 
             for file in os.listdir(tmp_directory):
                 file = tmp_directory + file
                 if ".svpg" in file:
-                    for alternative in [False]:
+                    for alternative in [True]:
                         logging.info(
                             "Checking solutions for game %s", os.path.basename(file)
                         )
@@ -505,12 +501,12 @@ def run_benchmark(
 
     name = os.path.basename(game)
     results[name] = {}
-    for i in range(0, 1):
+    for i in range(0, 5):
         start = time.time()
         time_parser = TimeParser()
 
         if ".svpg" in game:
-            for alg in range(0, 3):
+            for alg in [0, 2]:
                 run_program(
                     [vpgsolver_exe, game, "--algorithm", f"{alg}"],
                     logging.Logger("ignore"),
@@ -527,23 +523,24 @@ def run_benchmark(
                     }
                 )
         else:
-            run_program(
-                [vpgsolver_exe, game, "--parity-game"],
-                logging.Logger("ignore"),
-                time_parser,
-            )
+            if "reachable" in game:
+                run_program(
+                    [vpgsolver_exe, game, "--parity-game"],
+                    logging.Logger("ignore"),
+                    time_parser,
+                )
 
-            # Add the result
-            assert time_parser.time is not None
-            assert time_parser.recursive_calls is not None
-            results[name].setdefault("solver", []).append(
-                {
-                    "total": time.time() - start,
-                    "solving": time_parser.time / 1_000,
-                    "recursive_calls": time_parser.recursive_calls,
-                    "even_wins": time_parser.even_wins(),
-                }
-            )
+                # Add the result
+                assert time_parser.time is not None
+                assert time_parser.recursive_calls is not None
+                results[name].setdefault("solver", []).append(
+                    {
+                        "total": time.time() - start,
+                        "solving": time_parser.time / 1_000,
+                        "recursive_calls": time_parser.recursive_calls,
+                        "even_wins": time_parser.even_wins(),
+                    }
+                )
 
     return results
 
@@ -564,49 +561,46 @@ def main():
     parser.add_argument(
         "-s", "--solver-binpath", action="store", type=str, required=True
     )
+    parser.add_argument(
+        "-m", "--merc-binpath", action="store", type=str, required=True
+    )
     parser.add_argument("-p", "--pgsolver-binpath", action="store", type=str)
 
     args = parser.parse_args()
 
     os.environ["PATH"] += os.pathsep + args.mcrl2_binpath.strip()
     os.environ["PATH"] += os.pathsep + args.solver_binpath.strip()
+    os.environ["PATH"] += os.pathsep + args.merc_binpath.strip()
     if args.pgsolver_binpath:
         os.environ["PATH"] += os.pathsep + args.pgsolver_binpath.strip()
 
     experiments = [
-        (
-            "../cases/elevator/",
-            "elevator.mcrl2",
-            [
-                "prop1.mcf",
-                "prop2.mcf",
-                "prop3.mcf",
-                "prop4.mcf",
-                "prop5.mcf",
-                "prop6.mcf",
-                "prop7.mcf",
-            ],
-        ),
+        # (
+        #     "../cases/elevator/",
+        #     "elevator.mcrl2",
+        #     [
+        #         "prop1.mcf",
+        #         "prop2.mcf",
+        #         "prop3.mcf",
+        #         "prop4.mcf",
+        #         "prop5.mcf",
+        #         "prop6.mcf",
+        #         "prop7.mcf",
+        #     ],
+        # ),
         (
             "../cases/minepump/",
             "minepump_fts.mcrl2",
             [
-                "phi1.mcf",
-                "phi2.mcf",
-                "phi3.mcf",
-                "phi4.mcf",
-                "phi5.mcf",
-                "phi6.mcf",
-                "phi7.mcf",
-                "phi8.mcf",
-                "phi9.mcf",
+                "prop1.mcf",
+                "prop2.mcf",
             ],
         ),
-        (
-            "../cases/vending_machine/",
-            "VendingMachine.mcrl2",
-            ["infinitely_often_cappuccino.mcf"],
-        ),
+        # (
+        #     "../cases/vending_machine/",
+        #     "VendingMachine.mcrl2",
+        #     ["infinitely_often_cappuccino.mcf"],
+        # ),
     ]
 
     logger = MyLogger("main", "results.log")
@@ -638,8 +632,8 @@ def main():
 
             for file in os.listdir(tmp_directory):
                 base, _ = os.path.splitext(prop)
-                if base in file:
-                    logger.info("Benchmaking solving %s", file)
+                if base in file and (".svpg" in file or "reachable" in file):
+                    logger.info("Benchmarking solving %s", file)
                     file = tmp_directory + file
                     result = run_benchmark(file)
 
