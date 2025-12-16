@@ -26,12 +26,6 @@ std::pair<Submap, Submap> zlnkVPG::solve() const
 
   auto result = solve_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
-
-  if (m_alternative_solving_strategy)
-  {
-     result[0] &= Submap(game, m_manager, game.configurations());
-     result[1] &= Submap(game, m_manager, game.configurations());
-  }
   
   return std::make_pair(result[0], result[1]);
 }
@@ -45,12 +39,6 @@ std::pair<Submap, Submap> zlnkVPG::solve_optimised() const
   auto result = solve_optimised_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
 
-  if (m_alternative_solving_strategy)
-  {
-     result[0] &= Submap(game, m_manager, game.configurations());
-     result[1] &= Submap(game, m_manager, game.configurations());
-  }
-
   return std::make_pair(result[0], result[1]);
 }
 
@@ -62,12 +50,6 @@ std::pair<Submap, Submap> zlnkVPG::solve_optimised_left() const
 
   auto result = solve_optimised_left_rec(std::move(gamma));
   std::cout << "Performed " << m_recursive_calls << " recursive calls" << std::endl;
-
-  if (m_alternative_solving_strategy)
-  {
-     result[0] &= Submap(game, m_manager, game.configurations());
-     result[1] &= Submap(game, m_manager, game.configurations());
-  }
 
   return std::make_pair(result[0], result[1]);
 }
