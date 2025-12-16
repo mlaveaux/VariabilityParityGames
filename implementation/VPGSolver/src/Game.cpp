@@ -217,6 +217,10 @@ void GameParser::parseVertex(char* line)
     line++;
   }
 
+  if (line == nullptr || *line == '\0') {
+    return;
+  }
+
   int index;
   int i;
   i = readUntil(line, ' ');
