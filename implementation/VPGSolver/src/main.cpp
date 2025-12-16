@@ -27,6 +27,9 @@ int run(int argc, char** argv)
   // Parse the input as a regular parity game and use the respective solver.
   bool is_parity_game = false;
 
+  // Checks whether the reachable part is computed correctly.
+  bool check_reachable = false;
+
   // Projection mode, for every configuration generates the parity game with the enabled edges.
   std::optional<std::string> output_projection;
 
@@ -56,6 +59,8 @@ int run(int argc, char** argv)
       print_solution = true;
     } else if (argument.compare("--debug") == 0) {
       debug = true;
+    } else if (argument.compare("--check-reachable") == 0) {
+      check_reachable = true;
     } else {
       std::cerr << "Unknown parameter: " << argv[i];
       return -1;
@@ -91,12 +96,16 @@ int run(int argc, char** argv)
 
   if (output_reachable) {
 
+    auto start = std::chrono::high_resolution_clock::now();
     auto [reachable, mapping] = g.compute_reachable();
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Reachable time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
+
     std::ofstream output(output_reachable.value());
     reachable.write(output, is_parity_game);
 
     // Check whether reachable is correct.
-    if(true) {
+    if(check_reachable) {
       zlnkPG z(g, debug);
       const auto [W0, W1] = z.solve();
 
@@ -130,7 +139,7 @@ int run(int argc, char** argv)
     const auto [W0, W1] = z.solve();
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000.0 << " ms\n";
+    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
 
     std::cout << "W0: ";
     print_set(W0, print_solution);
@@ -153,6 +162,21 @@ int run(int argc, char** argv)
       std::tie(W0, W1) = z.solve_optimised_left();
     } else {
       std::abort();
+    }
+    
+    if (alternative_solving_strategy)
+    {
+      if (print_solution) {
+        // Want all solutions.
+        Submap restricted(g, manager, g.configurations());
+        W0 &= restricted;
+        W1 &= restricted;
+      }
+      else {
+        // Only care about the initial vertex.
+        W0[0] &= g.configurations();
+        W1[0] &= g.configurations();
+      }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
