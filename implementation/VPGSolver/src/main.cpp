@@ -30,6 +30,9 @@ int run(int argc, char** argv)
   // Checks whether the reachable part is computed correctly.
   bool check_reachable = false;
 
+  /// Check whether to write the actual game or just simulate.
+  bool dont_write = false;
+
   // Projection mode, for every configuration generates the parity game with the enabled edges.
   std::optional<std::string> output_projection;
 
@@ -59,6 +62,8 @@ int run(int argc, char** argv)
       print_solution = true;
     } else if (argument.compare("--debug") == 0) {
       debug = true;
+    } else if (argument.compare("--dont-write") == 0) {
+      dont_write = true;
     } else if (argument.compare("--check-reachable") == 0) {
       check_reachable = true;
     } else {
@@ -81,15 +86,20 @@ int run(int argc, char** argv)
     std::vector<std::pair<BDD, std::string>> allconfs = g.configurations_explicit();
 
     // Write the projected VPG
+    long long duration = 0;
     for (const auto& conf : allconfs) {
       std::string output_name = output_projection.value();
       output_name += conf.second + ".pg";
 
       // Write the projection.
       std::ofstream output(output_name);
-      g.write(output, true, conf.first);
+      auto start = std::chrono::high_resolution_clock::now();
+      g.write(output, true, conf.first, !dont_write);
+      auto end = std::chrono::high_resolution_clock::now();
+      duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
       std::cout << "Projected to " << output_name << std::endl;
     }
+    std::cout << "Projection time: " << duration << " ms\n";
 
     return 0;
   }
@@ -180,7 +190,7 @@ int run(int argc, char** argv)
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000.0 << " ms\n";
+    std::cout << "Solving time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
 
     std::cout << "W0: \n";
     print_set(manager, W0, g.configurations_explicit(), print_solution);
