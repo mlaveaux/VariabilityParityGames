@@ -49,7 +49,7 @@ public:
 
 
   // Write the parity game to the output stream
-  void write(std::ostream& output,  bool is_parity_game = false, std::optional<BDD> conf = std::optional<BDD>({}));
+  void write(std::ostream& output,  bool is_parity_game = false, std::optional<BDD> conf = std::optional<BDD>({}), bool actually_write = true);
 
   /// \returns A game only containing the vertices reachable from the initial state (0).
   std::pair<Game, std::vector<int>> compute_reachable() const;
