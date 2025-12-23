@@ -4,10 +4,10 @@
 
 % [true*]forall i: Floor.[landingButton(i)](mu X. ([!open(i)]X && <true>true) )
 
-%   [true*][landingButton(1)](mu X. ([!open(1)]X && <true>true) )
-%&& [true*][landingButton(2)](mu X. ([!open(2)]X && <true>true) )
-%&& [true*][landingButton(3)](mu X. ([!open(3)]X && <true>true) )
-%&& [true*][landingButton(4)](mu X. ([!open(4)]X && <true>true) )
-%&& [true*][landingButton(5)](mu X. ([!open(5)]X && <true>true) )
+%   [true*]([landingButton(1)](mu X. ([!open(1)]X && <true>true) )
+%&& [landingButton(2)](mu X. ([!open(2)]X && <true>true) )
+%&& [landingButton(3)](mu X. ([!open(3)]X && <true>true) )
+%&& [landingButton(4)](mu X. ([!open(4)]X && <true>true) )
+%&& [landingButton(5)](mu X. ([!open(5)]X && <true>true) ))
 
-nu X. (nu X1. [landingButton_1](mu Y1. [!open_1]Y1 && <true>true) && [true]X1) && (nu Z1. [landingButton_2](mu X2. [!open_2]X2 && <true>true) && [true]Z1) && (nu Y2. [landingButton_3](mu Z2. [!open_3]Z2 && <true>true) && [true]Y2) && (nu X3. [landingButton_4](mu Y3. [!open_4]Y3 && <true>true) && [true]X3) && (nu Z3. [landingButton_5](mu X4. [!open_5]X4 && <true>true) && [true]Z3)
+nu Z. [landingButton_1](mu X0. [!open_1]X0 && <true>true) && [landingButton_2](mu Y0. [!open_2]Y0 && <true>true) && [landingButton_3](mu Z0. [!open_3]Z0 && <true>true) && [landingButton_4](mu X1. [!open_4]X1 && <true>true) && [landingButton_5](mu Y1. [!open_5]Y1 && <true>true) && [true]Z
