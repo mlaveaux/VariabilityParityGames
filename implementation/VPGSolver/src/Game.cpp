@@ -363,38 +363,55 @@ std::vector<std::pair<BDD, std::string>> Game::configurations_explicit(BDD set) 
   return result;
 }
 
-void Game::write(std::ostream& output,  bool is_parity_game, std::optional<BDD> conf)
+void Game::write(std::ostream& output,  bool is_parity_game, std::optional<BDD> conf, bool actually_write)
 {  
-  if (!is_parity_game)
+  if (actually_write)
   {
-    output << "confs ";
-    write_bdd_confset(output, configurations());
-    output << ";\n";
-  }
+    if (!is_parity_game)
+    {
+      output << "confs ";
+      write_bdd_confset(output, configurations());
+      output << ";\n";
+    }
 
-  output << "parity " << m_owner.size() << ';';
-  for (int v = 0; v < m_owner.size(); v++) {
-    output << std::endl << v << ' ' << m_priority[v] << ' ' << m_owner[v];
-    char separator = ' ';
-    for (const auto& e : out_edges[v]) {
-      bool is_enabled = true;
-      if (conf) {
-        BDD tmp = conf.value();
-        tmp &= edge_guards[edge_index(e)];
+    output << "parity " << m_owner.size() << ';';
+    for (int v = 0; v < m_owner.size(); v++) {
+      output << std::endl << v << ' ' << m_priority[v] << ' ' << m_owner[v];
+      char separator = ' ';
+      for (const auto& e : out_edges[v]) {
+        bool is_enabled = true;
+        if (conf) {
+          BDD tmp = conf.value();
+          tmp &= edge_guards[edge_index(e)];
 
-        is_enabled = !BDD_IS_EMPTY(m_manager, tmp);
-      } 
-      
-      if (is_enabled) {                 
-        output << separator << SMH_TARGET(e);
-        if (!is_parity_game) {
-          output << '|' ;
-          write_bdd_confset_buddy(output, edge_guards[edge_index(e)]);
+          is_enabled = !BDD_IS_EMPTY(m_manager, tmp);
+        } 
+        
+        if (is_enabled) {                 
+          output << separator << SMH_TARGET(e);
+          if (!is_parity_game) {
+            output << '|' ;
+            write_bdd_confset_buddy(output, edge_guards[edge_index(e)]);
+          }
+          separator = ',';
         }
-        separator = ',';
+      }
+      output << ';';
+    }
+  } else {
+    std::size_t i = 0;
+    for (int v = 0; v < m_owner.size(); v++) {
+      for (const auto& e : out_edges[v]) {
+        if (conf) {
+          BDD tmp = conf.value();
+          tmp &= edge_guards[edge_index(e)];
+
+          bool is_enabled = !BDD_IS_EMPTY(m_manager, tmp);
+          i += is_enabled;
+        } 
       }
     }
-    output << ';';
+    std::cout << i << std::endl; // Avoid the compiler deleting this useless loop.
   }
 }
 
