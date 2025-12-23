@@ -96,6 +96,25 @@ def run_program(cmds, logger, process=None):
 #
 # PREPARATION
 #
+# Parsers for lines like "Solving time: <num> ms" and "Reachable time: <num> ms"
+prep_projection_time_regex = re.compile(r"^\s*Projection time:\s*([0-9]+(?:\.[0-9]+)?)\s*ms\s*$")
+prep_reachable_time_regex = re.compile(r"^\s*Reachable time:\s*([0-9]+(?:\.[0-9]+)?)\s*ms\s*$")
+
+class SolveReachTimeParser:
+    """Parser that captures 'Solving time' and 'Reachable time' (in ms) from tool output."""
+    def __init__(self):
+        self.projection_time_ms: float | None = None
+        self.reachable_time_ms: float | None = None
+
+    def __call__(self, line: str):
+        s = line.strip()
+        m = prep_projection_time_regex.match(s)
+        if m:
+            self.projection_time_ms = float(m.group(1))
+            return
+        m = prep_reachable_time_regex.match(s)
+        if m:
+            self.reachable_time_ms = float(m.group(1))
 
 
 def prepare(
@@ -200,8 +219,8 @@ def prepare(
 
     vpgsolver_exe = shutil.which("VPGSolver_bdd")
 
-    projection_time = 0
-    reachability_time = 0
+    projection_time = 0.0
+    reachability_time = 0.0
 
     if update_projections:
         for file in os.listdir(tmp_directory):
@@ -210,7 +229,14 @@ def prepare(
                 prop, _ = os.path.splitext(file)
                 logger.info("Generating projections for %s", os.path.basename(file))
 
-                projection_time += run_program(
+                time = SolveReachTimeParser()
+                run_program(
+                    [vpgsolver_exe, file, "--project", f"{prop}_project_", "--dont-write"], logger, time
+                )
+                assert time.projection_time_ms is not None
+                projection_time += time.projection_time_ms
+
+                run_program(
                     [vpgsolver_exe, file, "--project", f"{prop}_project_"], logger
                 )
 
@@ -220,7 +246,8 @@ def prepare(
                 prop, _ = os.path.splitext(file)
                 logger.info("Generating reachable part for %s", os.path.basename(file))
 
-                reachability_time += run_program(
+                time = SolveReachTimeParser()
+                run_program(
                     [
                         vpgsolver_exe,
                         file,
@@ -229,7 +256,11 @@ def prepare(
                         "--parity-game",
                     ],
                     logger,
+                    time
                 )
+                assert time.reachable_time_ms is not None
+                reachability_time += time.reachable_time_ms
+
 
     return { "projection_time": projection_time, "reachability_time": reachability_time }
 
@@ -579,28 +610,48 @@ def main():
         #     "../cases/elevator/",
         #     "elevator.mcrl2",
         #     [
-        #         "prop1.mcf",
-        #         "prop2.mcf",
-        #         "prop3.mcf",
-        #         "prop4.mcf",
-        #         "prop5.mcf",
-        #         "prop6.mcf",
-        #         "prop7.mcf",
+        #         "property1.mcf",
+        #         "property2.mcf",
+        #         "property3.mcf",
+        #         "property4.mcf",
+        #         "property5.mcf",
+        #         "property6.mcf",
+        #         "property7.mcf",
+        #     ],
+        # ),
+        # (
+        #     "../cases/minepump/",
+        #     "minepump_fts.mcrl2",
+        #     [
+        #         "phi1.mcf",
+        #         "phi2.mcf",
+        #         "phi3.mcf",
+        #         "phi4.mcf",
+        #         "phi5.mcf",
+        #         "phi6.mcf",
+        #         "phi7.mcf",
+        #         "phi8.mcf",
+        #         "phi9.mcf",
         #     ],
         # ),
         (
-            "../cases/minepump/",
-            "minepump_fts.mcrl2",
-            [
-                "prop1.mcf",
-                "prop2.mcf",
-            ],
+            "../cases/vending_machine/",
+            "VendingMachine.mcrl2",
+            ["infinitely_many_latte_then_infinitely_often_clean_nozzle.mcf",
+             "infinitely_often_cappuccino.mcf",
+             "infinitely_often_cleaning_nozzle.mcf",
+             "infinitely_often_coffee.mcf",
+             "infinitely_often_espresso.mcf",
+             "infinitely_often_hot_water.mcf",
+             "infinitely_often_jug.mcf",
+             "infinitely_often_latte_macchiato.mcf",
+             "infinitely_often_tea.mcf",
+             "infinitely_often_warm_milk.mcf",
+             "invariantly_possibly_cappuccino.mcf",
+             "no_clean_nozzle_if_no_milk_can_be_heated_or_steamed.mcf",
+             "no_espresso_without_grinder.mcf",
+             ],
         ),
-        # (
-        #     "../cases/vending_machine/",
-        #     "VendingMachine.mcrl2",
-        #     ["infinitely_often_cappuccino.mcf"],
-        # ),
     ]
 
     logger = MyLogger("main", "results.log")
